@@ -1,0 +1,6 @@
+############### List of Host Names ##########################
+127.0.0.1 localhost
+namenode_public_hostname namenode_hostname
+datanode1_public_hostname datanode1_hostname
+datanode2_public_hostname datanode2_hostname
+datanode3_public_hostname datanode3_hostname

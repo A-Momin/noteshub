@@ -1,0 +1,142 @@
+{
+    "workbench.settings.editor": "json",
+    "workbench.settings.openDefaultSettings": true,
+    "workbench.settings.useSplitJSON": true,
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.foldingStrategy": "indentation",
+    "editor.minimap.enabled": false,
+    "editor.fontSize": 16,
+    "editor.formatOnPaste": true,
+    "editor.snippetSuggestions": "top",
+    "editor.insertSpaces": true, //Insert spaces when pressing Tab. This setting is overridden based on the file contents when #editor.detectIndentation# is on.
+    "editor.detectIndentation": false,
+    "debug.console.fontSize": 14,
+    "terminal.integrated.fontSize": 16,
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.DS_Store": true,
+        "**/.git": true,
+        "**/.hg": true,
+        // "**/.idea": true,
+        "**/.metadata": true,
+        "**/.project": true,
+        "**/.pydevproject": true,
+        "**/.svn": true,
+        // "**/.vscode": true,
+        "**/*.class": true,
+        "**/CVS": true
+    },
+    "workbench.statusBar.visible": true,
+    "liveServer.settings.donotShowInfoMsg": true,
+    "editor.cursorSmoothCaretAnimation": true,
+    "editor.cursorBlinking": "expand",
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[html]": {
+        // "editor.defaultFormatt÷er": "esbenp.prettier-vscode"
+    },
+    "[python]": {
+        // "editor.defaultFormatter": "remimarsal.prettier-now"
+    },
+    "[markdown]": {
+        "editor.wordWrap": "off",
+        "editor.tabSize": 4,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        // "editor.wordWrapColumn": 80,
+    },
+    "editor.suggestSelection": "first",
+    "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+    // "java.configuration.checkProjectSettingsExclusions": false,
+    "python.jediEnabled": false,
+    "printcode.printFilePath": "none",
+    "printcode.tabSize": 4,
+    "printcode.fontSize": 10,
+    "printcode.paperSize": "letter",
+    // "python.pythonPath": "/.venv/bin/python3",
+    // "python.pythonPath": "/usr/local/bin/python3",
+    "python.linting.flake8Enabled": true,
+    // "python.linting.pydocstyleEnabled": true,
+    "python.linting.flake8Args": [
+        "--ignore=E265, E305, E302, E501, E401, F401, E701, W293, E226, E251, E266, E731, E303, E242, F405, E402, F403"
+    ],
+    "python.analysis.typeCheckingMode": "off",
+    "extensions.ignoreRecommendations": false,
+    "bracket-pair-colorizer-2.activeScopeCSS": [
+        "borderStyle : solid",
+        "borderWidth : 3px",
+        "borderColor : {color}",
+        "opacity: 0.5"
+    ],
+    "bracket-pair-colorizer-2.colors": [
+        "#FF9900",
+        "FireBrick",
+        "Tomato",
+        "DodgerBlue",
+        "DeepPink",
+        "Orchid"
+    ],
+    "material-icon-theme.folders.color": "#4169E1",
+    "workbench.colorCustomizations": {
+        "activityBarBadge.background": "#2979FF",
+        "activityBar.activeBorder": "#2979FF",
+        "list.activeSelectionForeground": "#2979FF",
+        "list.inactiveSelectionForeground": "#2979FF",
+        "list.highlightForeground": "#2979FF",
+        "scrollbarSlider.activeBackground": "#2979FF50",
+        "editorSuggestWidget.highlightForeground": "#2979FF",
+        "textLink.foreground": "#2979FF",
+        "progressBar.background": "#2979FF",
+        "pickerGroup.foreground": "#2979FF",
+        "tab.activeBorder": "#2979FF",
+        "notificationLink.foreground": "#2979FF",
+        "editorWidget.resizeBorder": "#2979FF",
+        "editorWidget.border": "#2979FF",
+        "settings.modifiedItemIndicator": "#2979FF",
+        "settings.headerForeground": "#2979FF",
+        "panelTitle.activeBorder": "#2979FF",
+        "breadcrumb.activeSelectionForeground": "#2979FF",
+        "menu.selectionForeground": "#2979FF",
+        "menubar.selectionForeground": "#2979FF",
+        "editor.findMatchBorder": "#2979FF",
+        "selection.background": "#2979FF40"
+    },
+    // "breadcrumbs.enabled": false,
+    "editor.renderWhitespace": "all",
+    "editor.fontFamily": "Fira Code",
+    "editor.fontLigatures": true,
+    "workbench.colorTheme": "2077",
+    "python.languageServer": "Pylance",
+    "workbench.sideBar.location": "right",
+    "workbench.iconTheme": "material-icon-theme",
+    "bracket-pair-colorizer-2.depreciation-notice": false,
+    "security.workspace.trust.untrustedFiles": "open",
+    // "emmet.triggerExpansionOnTab": true,
+    "files.associations": {
+        "*.html": "jinja-html",
+        "**/templates/**/*.html": "django-html",
+        // "**/templates/**/*": "django-txt",
+    },
+    "emmet.includeLanguages": {
+        "jinja-html": "html",
+        "django-html": "html"
+
+    },
+    "material-icon-theme.activeIconPack": "react_redux",
+    "markdown.extension.print.theme": "dark",
+    "markdown.styles": [
+        "/Users/a.momin/gd/Software_Development/WORKSPACE_SETUP/style.css"
+    ],
+    "markdown-preview-enhanced.hideDefaultVSCodeMarkdownPreviewButtons": false,
+    "markdown.extension.print.absoluteImgPath": false,
+    "markdown-preview-enhanced.previewTheme": "none.css",
+    "liveServer.settings.CustomBrowser": "chrome",
+    "editor.inlineSuggest.enabled": true,
+    "prettier.tabWidth": 4,
+    "terminal.integrated.inheritEnv": false,
+    "redhat.telemetry.enabled": false,
+}

@@ -1,0 +1,65 @@
+
+NodeJS:
+    NodeJS Global Packages @ ~/../../usr/local/lib/node_modules/
+    ** code ~/../../usr/local/lib/node_modules/
+    ** npm list -g --depth 1     ->> List out the GLOBALLY installed packages.
+
+
+NPM (Node Package Manager):
+    documentation: https://docs.npmjs.com/cli-documentation/
+    npm install npm@latest -g  ->> to upgrade npm into latest version
+
+    npm help
+    npm install -h           ->> Display different way to use the 'specified' (install in this case) command
+    npm <command> -h         --> quick help on <command>
+    npm update -h            ->> Display the documentation for the 'specified' (update) ttext
+    npm help-search update   ->> Allow you search the npm documentation for the 'specified' (update in this case) text.
+
+    npm init -yes
+    npm config list -l
+    npm config set init-author-name "Aminul Momin"
+    npm config get init-author-name
+    npm set init-license "MIT"
+    npm config delete init-license
+    npm config delete init-author-name
+
+    npm install moment              ->> install moment package
+    npm install moment --save       ->> install moment package  adding the package name (moment) into the 'dependencies', aka production dependency list, of 'package.json' file.
+    npm install moment -g           ->> install moment package globaly.
+
+    # npm uninstall [<@scope>/]<pkg>[@<version>]... [-S|--save|-D|--save-dev|-O|--save-optional|--no-save]
+    # aliases: remove, rm, r, un, unlink    
+    npm uninstall moment            ->> uninstall moment package WITHOUT removing its record from package.json file
+    npm uninstall moment --save     ->> uninstall moment package WITH removing its record from package.json file
+    npm uninstall moment -g         ->> uninstall moment package globally.
+        npm un moment -g        
+        npm remove moment -g
+        npm rm moment -g
+    
+    npm install lodash --save-dev       ->> install lodash package adding the package-name (lodash) into the 'devDependency', aka development dependency list, of 'package.json' file.
+    npm uninstall lodash --save-dev     ->> uninstall lodash package WITH removing its record from package.json file
+
+    npm list                            ->> List out the LOCALLY installed packages.
+        npm list --depth 1
+        npm list --depth 0
+    npm list --global true --depth 0    ->> List out the GLOBALLY installed packages.
+
+    npm install lodash@3.3.0            ->> install lodash with exact version
+    npm install lodash@4.14             ->> install lodash with exact major and minor but latest patch versions.
+
+    npm install 
+        "^4.14.1"    ->> install latest minor and patch version leaving major version as it is.
+         "~4.14.1"   ->> install latest patch version leaving major and minor version as it is.
+         "4.14.1"    ->> install as it is.
+         "*"         ->> install latest version irespective to major, minor or patch
+
+    npm update lodash --save        ->> update the 'specified' (lodash) package to latest available version
+    npm update --dev --save-dev     ->> update just the dev dependencies
+    npm update                      ->> update all dev and production dependencies
+    npm update -g                   ->> update all global packages.
+    npm update -g  gulp             ->> update gulp packages globaly.
+
+
+
+NPM Sub Tools:
+    eslint --init

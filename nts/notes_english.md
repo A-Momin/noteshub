@@ -1,0 +1,103 @@
+<details><summary style="font-size:22px;color:Orange;text-align:left">Common Technical Adverbs</summary>
+
+-   supposedly
+
+</details>
+
+---
+
+<details><summary style="font-size:22px;color:Orange;text-align:left">Common Technical Vocabulary</summary>
+
+-   ephemeral
+-   breach
+-   abstrus
+-   albeit
+-   allegory
+-   augment
+-   anticipate
+-   belabor
+-   blasphemers
+-   canonical
+-   cast
+-   caveat
+-   clumsy
+-   conglomarate
+-   contengency
+-   crappy
+-   introspection
+-   deprecate
+-   drasticly
+-   deceive
+-   bashfull
+-   automagically
+-   stale
+-   hurtle
+-   tentative
+-   tungsten
+-   breach
+-   facet
+-   debunk
+-   atrocity
+-   buyout
+-   denounce
+-   relentless
+-   ramification
+-   perseverance
+-   rhetoric
+-   obsolete
+-   subjugate
+-   flurry
+-   anticipate
+-   prorate
+-   rigorous
+-   nuisance
+-   paranoid
+-   procurement
+-   earnest
+-   emulate
+-   endever
+-   evocative
+-   fidelity
+-   foster
+-   funkey
+-   harness
+-   heuristic
+-   horendous
+-   incarnation
+-   incur
+-   ironic
+-   logistic
+-   obsolete
+-   occuluded
+-   padagogy
+-   paradigm
+-   paranoid
+-   perpatrator
+-   perseverance
+-   pertain
+-   plusible
+-   podcast
+-   pragmatic
+-   profound
+-   prone
+-   ramify
+-   resitient
+-   rhetoric
+-   scrap
+-   sorcastic
+-   streamline
+-   indigenous
+-   gruesome
+-   infallible
+-   blaspheme
+-   succinctly
+-   synthesis
+-   tangible
+-   tentative
+-   undertake
+-   voluminous
+-   whimsical
+-   tailor
+-   denounce
+
+</details>

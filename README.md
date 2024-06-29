@@ -1,0 +1,4 @@
+-   `$ git clone git@gh2:Aminul-Momin/notes_hub.git` → Clone the project
+-   `$ git add .`
+-   `$ git commit -m "update"`
+-   `$ git push -u origin master`

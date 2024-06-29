@@ -1,0 +1,24 @@
+[Linux Security - UFW Complete Guide (Uncomplicated Firewall)](https://www.youtube.com/watch?v=-CzvPjZ9hp8)
+
+-   `$ sudo ufw status`
+-   `$ sudo ufw disable`
+-   `$ sudo ufw reset` (dangerous.)
+-   `$ sudo ufw default deny incoming`
+-   `$ sudo ufw default allow outgoing`
+-   `$ sudo systemctl status ufw`
+-   `$ sudo systemctl stop ufw`
+-   `$ sudo ufw allow ssh`
+-   `$ sudo ufw allow http`
+-   `$ sudo ufw allow https`
+-   `$ sudo ufw allow ftp`
+-   `$ sudo ufw allow from 124.02.0.1`
+-   `$ sudo ufw allow from 124.02.0.1 to any port 22`
+-   `$ sudo ufw allow from 124.02.0.1/24 to any port 22`
+-   `$ sudo systemctl start ufw`
+-   `$ sudo ufw  enable`
+-   `$ sudo ufw status`
+-   `$ sudo ufw status numbered`
+-   `$ sudo ufw delete 5`
+-   `$ sudo ufw `
+-   `$ sudo ufw `
+-   `$ `

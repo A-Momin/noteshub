@@ -1,0 +1,64 @@
+// Place your key bindings in this file to override the defaultsauto[]
+[
+    {
+        "key": "ctrl+enter",
+        "command": "filesExplorer.openFilePreserveFocus",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsFolder && !inputFocus"
+    },
+    {
+        "key": "space",
+        "command": "-filesExplorer.openFilePreserveFocus",
+        "when": "explorerViewletVisible && filesExplorerFocus && !explorerResourceIsFolder && !inputFocus"
+    },
+    {
+        "key": "space",
+        "command": "explorer.openToSide",
+        "when": "explorerViewletFocus && explorerViewletVisible && !inputFocus"
+    },
+    {
+        "key": "ctrl+enter",
+        "command": "-explorer.openToSide",
+        "when": "explorerViewletFocus && explorerViewletVisible && !inputFocus"
+    },
+    // Toggle between terminal and editor focus
+    {
+        "key": "ctrl+`",
+        "command": "workbench.action.terminal.focus"
+    },
+    {
+        "key": "ctrl+`",
+        "command": "workbench.action.focusActiveEditorGroup",
+        "when": "terminalFocus"
+    }
+    {"key": "cmd+1", "command": "workbench.action.openEditorAtIndex1"},
+    {"key": "cmd+2", "command": "workbench.action.openEditorAtIndex2"},
+    {"key": "cmd+3", "command": "workbench.action.openEditorAtIndex3"},
+    {"key": "cmd+4", "command": "workbench.action.openEditorAtIndex4"},
+    {"key": "cmd+5", "command": "workbench.action.openEditorAtIndex5"},
+    {
+        "key": "cmd+6",
+        "command": "workbench.action.openEditorAtIndex6"
+    },
+    {
+        "key": "shift+cmd+v",
+        "command": "-csv.preview",
+        "when": "editorLangId == 'csv (pipe)'"
+    },
+    {
+        "key": "shift+cmd+v",
+        "command": "-csv.preview",
+        "when": "editorLangId == 'csv (semicolon)'"
+    },
+    ////////////////// Vim Settings ///////////////////////////////////////
+    // {
+    //     "key": "tab",
+    //     "command": "outdent",
+    //     "when": "editorTextFocus && !editorTabMovesFocus"
+    // },
+    // {
+    //     "key": "shift+tab",
+    //     "command": "tab",
+    //     "when": "editorTextFocus && !editorTabMovesFocus"
+    // }
+    ////////////////////////////////////////////////////////////////////////
+]
