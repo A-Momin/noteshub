@@ -1,19 +1,146 @@
-<details><summary style="font-size:25px;color:Red;text-align:left">QA Testing</summary>
+<details><summary style="font-size:25px;color:Orange">QA Testing</summary>
 
--   `Smoke Test`: A smoke test, also known as a sanity test or build verification test, is a basic and preliminary type of software testing that aims to verify that the most critical and essential functionalities of a software application are working correctly. The term "smoke test" originates from the electronics industry, where devices were tested to see if they would catch fire or emit smoke during initial power-up.
+Software testing encompasses various types and approaches, each serving specific purposes in verifying, validating, and improving software quality.
+Each type of testing is chosen based on the specific phase of development, goals, and the criticality of software requirements. Here are the main types:
+
+#### Functional Testing
+
+-   **Unit Testing**: Testing individual components or functions of a program, typically done by developers. It ensures that each unit performs as expected.
+
+    The unittest library in Python is a built-in testing framework that provides a standardized way to write and execute test cases for your code. It's inspired by the JUnit framework and follows the xUnit style of testing. Here are some key terms and concepts related to the unittest library:
+
+    -   `setUp`: The setUp method is an instance method that is used to set up resources or perform actions that are required for a specific test method. This method is executed before each test method in the test case class is run. It's commonly used to initialize objects, create instances, or set up any other conditions necessary for the test to run successfully.
+    -   `tearDown`: The tearDown method is an instance method that is used to perform cleanup or teardown operations after a specific test method has been run. This method is executed after each test method in the test case class has completed. It's commonly used to release resources, close connections, or perform any necessary cleanup actions.
+    -   `setUpClass`: The setUpClass method is a class-level method that is used to set up resources or perform actions that are shared among all test methods within a test case class. This method is executed once before any of the test methods in the class are run. It's commonly used to create connections, set up databases, or initialize objects that will be used by multiple test methods.
+    -   `tearDownClass`: The tearDownClass method is a class-level method that is used to perform cleanup or teardown operations after all the test methods within a test case class have been run. This method is executed once after all the test methods in the class have been completed. It's commonly used to close connections, release resources, or perform cleanup actions that need to happen after all the tests are finished.
+    -   `Test Case`: A test case is a class that defines individual test methods. Each test method within a test case tests a specific aspect of your code.
+    -   `Test Fixture`: A test fixture is the preparation needed for running a test, including setup and cleanup. In unittest, this is often handled using setUp and tearDown methods.
+    -   `Test Runner`: The test runner is responsible for discovering and running test cases. In unittest, the TextTestRunner and other runners execute your tests and display the results.
+    -   `Test Suite`: A test suite is a collection of test cases that are grouped together. You can create suites to organize and run multiple test cases.
+    -   `Test Discovery`: The process of finding and collecting test cases within your codebase. unittest can automatically discover and run tests using various naming conventions and patterns.
+    -   `Assertions`: Assertions are statements that validate the expected behavior of your code. In unittest, you can use various assertion methods like assertEqual, assertTrue, assertFalse, etc.
+    -   `Test Result`: After running the tests, you get a test result that indicates which tests passed, failed, or were skipped. The result includes detailed information about the outcomes.
+    -   `Test Fixtures Sharing`: You can share fixtures between multiple test methods by using class-level attributes like cls.setUpClass and cls.tearDownClass.
+    -   `Test Skipping`: You can use decorators like @unittest.skip and @unittest.skipIf to mark tests that should be skipped during execution.
+    -   `Expected Failure`: You can use the @unittest.expectedFailure decorator to mark tests that are expected to fail, but you still want them to run and report the failure.
+    -   `SubTest`: The unittest.subTest context manager allows you to run multiple assertions within a single test method, even if one assertion fails.
+    -   `Test Discovery and Execution`: You can run tests using the unittest command-line interface, specifying the module, class, or method names to execute.
+    -   `Test Report`: unittest provides basic text-based test reports, showing the outcomes of individual tests.
+    -   `Extensibility`: The unittest framework is extensible, allowing you to create custom test runners, result reporters, and plugins.
+
+-   **Integration Testing**: Integration Testing focuses on verifying the interactions and data flow between integrated components or systems. It ensures that individual modules or services work together as intended.
+
+    -   `Purpose`:
+
+        -   To test the interfaces and interactions between different modules or systems.
+        -   To identify defects in communication and data transfer between components.
+
+    -   `When Performed`: After Unit Testing and before System Testing.
+
+    -   `Types of Integration Testing`:
+
+        -   **Big Bang Approach**: All modules are integrated simultaneously, and the system is tested as a whole.
+        -   **Incremental Approach**: Modules are integrated and tested one by one.
+
+    -   `Tools Used`: Jenkins (CI/CD), Postman (API Testing), JUnit, Pytest.
+
+-   **System Testing**: System Testing evaluates the complete and fully integrated system to ensure it meets the specified requirements. It validates both functional and non-functional aspects of the system.
+
+    -   `Purpose`:
+        -   To test the entire application as a unified system.
+        -   To verify that the system functions correctly in all intended environments.
+
+    -   `When Performed`: After Integration Testing and before UAT.
+
+    -   `Types of System Testing`:
+
+        1. **Functional Testing**: Validates that the system performs as per the functional requirements (e.g., form submissions, user logins).
+
+        2. **Non-Functional Testing**: Focuses on aspects like performance, reliability, scalability, and security.
+            - _Performance Testing_: Load testing, stress testing, etc.
+            - _Security Testing_: Ensures protection against threats.
+            - _Usability Testing_: Evaluates user-friendliness.
+
+    -   `Tools Used`: Selenium, JMeter, LoadRunner, TestComplete.
+
+    -   `Key Considerations`: System Testing involves end-to-end testing in environments that simulate production to uncover integration and environment-related issues.
+
+-   **User Acceptance Testing (UAT)**: UAT is the final phase of testing, where the end-users or business stakeholders validate the system to ensure it meets their requirements and is ready for deployment.
+
+    -   `Purpose`:
+
+        -   To confirm that the software delivers value to the business.
+        -   To verify that the system meets real-world use cases and expectations.
+
+    -   `When Performed`: After System Testing and before deployment.
+
+    -   `Types of UAT`:
+
+        1. **Alpha Testing**:
+
+            - Conducted by internal teams or a limited group of users in a controlled environment.
+            - Typically done at the developer's site.
+
+        2. **Beta Testing**:
+
+            - Conducted by a broader user base in the actual production environment.
+            - Provides feedback on real-world usage and identifies last-minute bugs.
+
+    -   `Key Activities in UAT`:
+
+        -   Test case creation based on business requirements.
+        -   Executing test scenarios and reporting issues.
+        -   Signing off on the system readiness for deployment.
+
+    -   `Tools Used`: stRail, Jira, Trello.
+
+#### Non-Functional Testing
+
+-   **Performance Testing**: Examines the speed, responsiveness, and stability under a particular workload. Includes:
+
+    -   **Load Testing**: Determines how the system behaves under expected load.
+    -   **Stress Testing**: Evaluates the system’s ability to handle heavy or peak loads.
+    -   **Scalability Testing**: Tests the ability to scale up or down with demand.
+    -   **Volume Testing**: Checks the system’s ability to handle a large amount of data.
+
+-   **Security Testing**: Identifies vulnerabilities in software to ensure it is protected from unauthorized access and data breaches.
+-   **Usability Testing**: Assesses how easy and intuitive the software is for end-users, focusing on user interface (UI) and experience.
+-   **Compatibility Testing**: Ensures the software works across different devices, browsers, networks, and operating systems.
+-   **Reliability Testing**: Measures the software’s stability and consistency over time under different conditions.
+-   **Compliance Testing**: Verifies that software adheres to industry standards, regulations, and legal requirements.
+
+#### Maintenance Testing
+
+-   **Regression Testing**: After changes or updates, regression tests check that existing functionality hasn’t been affected.
+-   **Retesting**: Focuses on verifying if specific defects have been fixed correctly.
+-   **Sanity Testing**: A subset of regression testing to ensure that certain functions work as expected after minor changes.
+-   **Smoke Testing**: A smoke test, also known as a sanity test or build verification test, is a basic and preliminary type of software testing that aims to verify that the most critical and essential functionalities of a software application are working correctly. The term "smoke test" originates from the electronics industry, where devices were tested to see if they would catch fire or emit smoke during initial power-up.
+    -   `Basic Functionality`: It focuses on the core features of the application to confirm they work as expected.
+    -   `Quick Check`: It’s a shallow and broad test that covers essential aspects without going into detailed test cases.
+    -   `Early Detection`: Smoke testing helps identify major issues early in the development process, saving time and effort for the QA team.
+    -   `Build Verification`: It confirms that the software build is stable enough to proceed with more extensive testing.
+
+#### White-Box vs. Black-Box Testing
+
+-   **White-Box Testing**: Testers have knowledge of the internal code structure. It’s often used in unit and integration testing.
+-   **Black-Box Testing**: Testers focus on input and output without knowledge of the internal code structure, focusing on functionality and usability.
+
+#### Automated vs. Manual Testing
+
+-   **Manual Testing**: Test cases are executed manually by QA testers without the use of automated tools. It’s best for exploratory, usability, and ad-hoc testing.
+-   **Automated Testing**: Uses tools and scripts to run tests repeatedly, which is ideal for regression, performance, and load testing where repetitive tasks can be automated.
+
 </details>
 
 ---
 
-<details open><summary style="font-size:25px;color:Red;text-align:left">Pytest</summary>
+<details open><summary style="font-size:25px;color:Orange">Pytest</summary>
 
 -   [Pytest Tutorial – How to Test Python Code](https://www.youtube.com/watch?v=cHYq1MRoyI0)
 -   [API Reference](https://docs.pytest.org/en/latest/reference/reference.html#)
 -   [Pytest Master Class Full Course](https://www.youtube.com/watch?v=IN4qt-9bMiE)
 
-<details open><summary style="font-size:18px;color:Orange;text-align:left">Pytest CLI, Terms and Concepts</summary>
-
-Pytest is a testing framework for Python that provides a number of terms and concepts to help you write effective and maintainable test code. Here are some of the most important terms and concepts in Pytest:
+<details><summary style="font-size:20px;color:#FF1493">Pytest Basics and Configurations</summary>
 
 -   TERMS & CONCEPTS:
 
@@ -44,12 +171,23 @@ Pytest is a testing framework for Python that provides a number of terms and con
     -   `$ pytest --log-format=LOG_FORMAT` → Log format used by the logging module
     -   `$ pytest --log-date-format=LOG_DATE_FORMAT` → Log date format used by the logging module
 
-</details>
-
 -   [API Reference](https://docs.pytest.org/en/stable/reference/reference.html)
 
 -   `$ pytest --version` → shows where pytest was imported from
 -   `$ pytest --fixtures` → show available builtin function arguments
+
+#### conftest.py
+
+`conftest.py` is a special file used in pytest, a popular testing framework for Python. The purpose of `conftest.py` is to define fixtures and configuration options that can be shared across multiple test modules or packages within a pytest project.
+
+By defining fixtures in `conftest.py`, they become available to all test modules without the need for import statements or duplicating code.
+
+Here are the key aspects of `conftest.py`:
+
+-   `Fixture Definitions`: `conftest.py` can define one or more fixtures using the `@pytest.fixture` decorator. These fixtures are functions or methods that perform setup actions and return a value or resource to be used by tests. Fixtures can be parameterized to provide different values or variations for tests.
+-   `Scope`: Fixtures defined in `conftest.py` can have different scopes, such as function, module, class, or session scope. The scope determines how often the fixture function is invoked during testing.
+-   `Discovery and Sharing`: pytest automatically discovers `conftest.py` files in the project directory and its subdirectories. Any fixtures defined in `conftest.py` are shared across all test modules within the same directory and its subdirectories. This allows for the reuse of fixtures and consistent setup across tests.
+-   `Configuration Options`: `conftest.py` can also define configuration options and hooks that affect pytest's behavior. For example, it can specify custom command-line options, configure logging, or define pytest hooks to customize test execution.
 
 ### How to Run Tests
 
@@ -64,27 +202,29 @@ Pytest is a testing framework for Python that provides a number of terms and con
 -   `$ pytest test_mod.py::test_func` → To run a specific test function within a module
 -   `$ pytest test_mod.py::TestClass::test_method` → To run a specific test method within a test class.
 
-#### Run tests by node ids
+-   **Run tests by node ids**
 
-In Pytest, a node is a representation of a test item (e.g., a test function or a test class) that Pytest has discovered during the test collection phase. Each node in Pytest represents a single test item that can be executed as part of a test run.
+    In Pytest, a node is a representation of a test item (e.g., a test function or a test class) that Pytest has discovered during the test collection phase. Each node in Pytest represents a single test item that can be executed as part of a test run.
 
-When Pytest is executed, it recursively searches for test modules and test functions in the specified test directories. Once all test items have been discovered, Pytest creates a tree-like structure of nodes that represents the hierarchy of the test items.
+    When Pytest is executed, it recursively searches for test modules and test functions in the specified test directories. Once all test items have been discovered, Pytest creates a tree-like structure of nodes that represents the hierarchy of the test items.
 
-Each node in the Pytest tree represents a test item and contains metadata such as the name of the test item, the file path where it is located, and any markers or attributes that have been associated with the test item. The node also contains information about any fixtures that are required by the test item.
+    Each node in the Pytest tree represents a test item and contains metadata such as the name of the test item, the file path where it is located, and any markers or attributes that have been associated with the test item. The node also contains information about any fixtures that are required by the test item.
 
-During the test execution phase, Pytest traverses the tree of nodes and executes each test item in the order specified by the tree structure. This allows Pytest to efficiently execute tests in parallel and to optimize the order in which tests are executed to minimize setup and teardown times.
+    During the test execution phase, Pytest traverses the tree of nodes and executes each test item in the order specified by the tree structure. This allows Pytest to efficiently execute tests in parallel and to optimize the order in which tests are executed to minimize setup and teardown times.
 
-Overall, nodes in Pytest provide a flexible and extensible way to represent and execute test items, allowing developers to easily create and run tests for their Python applications.
+    Overall, nodes in Pytest provide a flexible and extensible way to represent and execute test items, allowing developers to easily create and run tests for their Python applications.
 
-Each collected test is assigned a unique nodeid which consist of the module filename followed by specifiers like class names, function names and parameters from parametrization, separated by :: characters.
+    Each collected test is assigned a unique nodeid which consist of the module filename followed by specifiers like class names, function names and parameters from parametrization, separated by :: characters.
 
--   `$ pytest test_mod.py::test_func` → To run a specific test function within a module
+    -   `$ pytest test_mod.py::test_func` → To run a specific test function within a module
 
--   `$ pytest test_mod.py::TestClass::test_method` → To run a specific test method within a test class.
+    -   `$ pytest test_mod.py::TestClass::test_method` → To run a specific test method within a test class.
 
--   `$ `
+    -   `$ `
 
-### Fixtures
+</details>
+
+<details><summary style="font-size:20px;color:#FF1493">Fixtures</summary>
 
 -   [everything you need to know about fixtures](https://www.youtube.com/watch?v=ScEQRKwUePI)
 -   Scope
@@ -331,20 +471,9 @@ def test_get_topper(make_dummy_student):
 
 ```
 
-#### conftest.py
+</details>
 
-`conftest.py` is a special file used in pytest, a popular testing framework for Python. The purpose of `conftest.py` is to define fixtures and configuration options that can be shared across multiple test modules or packages within a pytest project.
-
-By defining fixtures in `conftest.py`, they become available to all test modules without the need for import statements or duplicating code.
-
-Here are the key aspects of `conftest.py`:
-
--   `Fixture Definitions`: `conftest.py` can define one or more fixtures using the `@pytest.fixture` decorator. These fixtures are functions or methods that perform setup actions and return a value or resource to be used by tests. Fixtures can be parameterized to provide different values or variations for tests.
--   `Scope`: Fixtures defined in `conftest.py` can have different scopes, such as function, module, class, or session scope. The scope determines how often the fixture function is invoked during testing.
--   `Discovery and Sharing`: pytest automatically discovers `conftest.py` files in the project directory and its subdirectories. Any fixtures defined in `conftest.py` are shared across all test modules within the same directory and its subdirectories. This allows for the reuse of fixtures and consistent setup across tests.
--   `Configuration Options`: `conftest.py` can also define configuration options and hooks that affect pytest's behavior. For example, it can specify custom command-line options, configure logging, or define pytest hooks to customize test execution.
-
-### Mark
+<details><summary style="font-size:20px;color:#FF1493">Mark</summary>
 
 Pytest mark is a feature of the Pytest testing framework that allows you to attach metadata or attributes to a test function or method. The `@pytest.mark` decorator is used to apply a mark to a test, and it takes one or more arguments that specify the name(s) of the mark(s) to be applied.
 
@@ -392,7 +521,9 @@ Here are some of the commonly used Pytest marks:
 -   You also can run the test and show that it was xfailed with the reason "Expected failure".
     -   `$ pytest -rx`
 
-### Mocking
+</details>
+
+<details><summary style="font-size:20px;color:#FF1493">Mocking</summary>
 
 -   [Unit Testing in Python with pytest | Introduction to mock (Part-9)](https://www.youtube.com/watch?v=dw2eNCzwBkk&list=PLyb_C2HpOQSBWGekd7PfhHnb9GnqDgrxS&index=9)
 -   []
@@ -403,21 +534,31 @@ A mock object is a fake object that behaves like the real component but with pre
 
 Mocking can be especially useful in situations where the external component is slow, unreliable, or expensive to use in testing. By simulating the external component with a mock object, testing can be performed more quickly and reliably, without the need for the external component to be present or configured for testing.
 
-### Plugins and Extensions:
+</details>
+
+#### Plugins and Extensions:
 
 -   Pytest has a rich ecosystem of plugins and extensions that can enhance its capabilities. You can install and use plugins to extend Pytest's functionality for reporting, parallel testing, test parameterization, and more.
 
-### Reporting:
+```sh
+# Install and run pytest-cov for code coverage
+pip install pytest-cov
+pip install pytest-xdist
+pytest --cov=src_directory
 
--   Pytest generates detailed test reports, including pass/fail results and any error messages or traceback information. You can view these reports in the console or generate more comprehensive reports in different formats (e.g., HTML, XML, JUnit) using plugins like pytest-html or pytest-xdist.
+```
 
-### Continuous Integration (CI) Integration:
+#### Reporting:
 
--   Integrate Pytest with your CI/CD pipelines to automatically run tests whenever code changes are pushed. Most CI/CD platforms like Jenkins, Travis CI, and GitHub Actions support Pytest integration.
+-   Pytest generates detailed test reports, including pass/fail results and any error messages or traceback information. You can view these reports in the console or generate more comprehensive reports in different formats (e.g., HTML, XML, JUnit) using plugins like `pytest-html` or `pytest-xdist`.
 
-### Customization:
+#### Continuous Integration (CI) Integration:
 
--   You can customize Pytest behavior and settings by creating a pytest.ini or pytest.cfg configuration file in your project directory.
+-   Integrate Pytest with your CI/CD pipelines to automatically run tests whenever code changes are pushed. Most CI/CD platforms like `Jenkins`, `Travis CI`, and `GitHub Actions` support Pytest integration.
+
+#### Customization:
+
+-   You can customize Pytest behavior and settings by creating a `pytest.ini` or `pytest.cfg` configuration file in your project directory.
 
 </details>
 
@@ -425,7 +566,7 @@ Mocking can be especially useful in situations where the external component is s
 
 ---
 
-<details><summary style="font-size:25px;color:Red;text-align:left">Interview Question on Pytest</summary>
+<details><summary style="font-size:25px;color:Orange">Interview Question on Pytest</summary>
 
 1. What is Pytest?
     - Pytest is a testing framework for Python that simplifies writing and executing test cases.
@@ -475,28 +616,3 @@ These questions cover a range of topics related to Pytest, including fixtures, m
 </details>
 
 ---
-
-<details><summary style="font-size:25px;color:Red;text-align:left">unittest</summary>
-
-The unittest library in Python is a built-in testing framework that provides a standardized way to write and execute test cases for your code. It's inspired by the JUnit framework and follows the xUnit style of testing. Here are some key terms and concepts related to the unittest library:
-
--   `setUp`: The setUp method is an instance method that is used to set up resources or perform actions that are required for a specific test method. This method is executed before each test method in the test case class is run. It's commonly used to initialize objects, create instances, or set up any other conditions necessary for the test to run successfully.
--   `tearDown`: The tearDown method is an instance method that is used to perform cleanup or teardown operations after a specific test method has been run. This method is executed after each test method in the test case class has completed. It's commonly used to release resources, close connections, or perform any necessary cleanup actions.
--   `setUpClass`: The setUpClass method is a class-level method that is used to set up resources or perform actions that are shared among all test methods within a test case class. This method is executed once before any of the test methods in the class are run. It's commonly used to create connections, set up databases, or initialize objects that will be used by multiple test methods.
--   `tearDownClass`: The tearDownClass method is a class-level method that is used to perform cleanup or teardown operations after all the test methods within a test case class have been run. This method is executed once after all the test methods in the class have been completed. It's commonly used to close connections, release resources, or perform cleanup actions that need to happen after all the tests are finished.
--   `Test Case`: A test case is a class that defines individual test methods. Each test method within a test case tests a specific aspect of your code.
--   `Test Fixture`: A test fixture is the preparation needed for running a test, including setup and cleanup. In unittest, this is often handled using setUp and tearDown methods.
--   `Test Runner`: The test runner is responsible for discovering and running test cases. In unittest, the TextTestRunner and other runners execute your tests and display the results.
--   `Test Suite`: A test suite is a collection of test cases that are grouped together. You can create suites to organize and run multiple test cases.
--   `Test Discovery`: The process of finding and collecting test cases within your codebase. unittest can automatically discover and run tests using various naming conventions and patterns.
--   `Assertions`: Assertions are statements that validate the expected behavior of your code. In unittest, you can use various assertion methods like assertEqual, assertTrue, assertFalse, etc.
--   `Test Result`: After running the tests, you get a test result that indicates which tests passed, failed, or were skipped. The result includes detailed information about the outcomes.
--   `Test Fixtures Sharing`: You can share fixtures between multiple test methods by using class-level attributes like cls.setUpClass and cls.tearDownClass.
--   `Test Skipping`: You can use decorators like @unittest.skip and @unittest.skipIf to mark tests that should be skipped during execution.
--   `Expected Failure`: You can use the @unittest.expectedFailure decorator to mark tests that are expected to fail, but you still want them to run and report the failure.
--   `SubTest`: The unittest.subTest context manager allows you to run multiple assertions within a single test method, even if one assertion fails.
--   `Test Discovery and Execution`: You can run tests using the unittest command-line interface, specifying the module, class, or method names to execute.
--   `Test Report`: unittest provides basic text-based test reports, showing the outcomes of individual tests.
--   `Extensibility`: The unittest framework is extensible, allowing you to create custom test runners, result reporters, and plugins.
-
-</details>

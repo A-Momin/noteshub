@@ -2,7 +2,7 @@
 
 ---
 
-<details><summary style="font-size:18px;color:Orange;text-align:left">Documents & Tutorials</summary>
+<details><summary style="font-size:25px;color:Orange">Documents & Tutorials</summary>
 
 -   [Corey Schafer: Linux/Mac Tutorials](https://www.youtube.com/playlist?list=PL-osiE80TeTvGhHkpvfmKWOiIPF8UVy6c)
 -   [Introduction to Linux – Full Course for Beginners](https://www.youtube.com/watch?v=sWbUDq4S6Y8)
@@ -16,7 +16,7 @@
 
 ---
 
-<details><summary style="font-size:18px;color:Orange;text-align:left">Terms, Concepts & Helps</summary>
+<details><summary style="font-size:25px;color:Orange">Terms, Concepts & Helps</summary>
 
 -   **Shell**: A shell is a command-line interpreter that acts as a user interface to interact with the operating system. It interprets user commands and executes them. Shells can be graphical or text-based. Text-based shells are commonly referred to as `Command-line` Shells. Examples of command-line shells include Bash (Bourne Again SHell), Zsh (Z Shell), and PowerShell (for Windows). Shells provide features such as command execution, script interpretation, variable assignment, and control structures. Users interact with the shell by typing commands, and the shell interprets and executes those commands.
 -   **Terminal**: A terminal is a program that provides a text-based interface to interact with the shell. It acts as a window into the shell environment. Terminals can be graphical or text-based. Graphical terminals are often terminal emulators embedded in a graphical user interface (GUI). Text-based terminals may be physical terminals or terminal emulators in a text-based environment. The terminal program communicates with the shell, allowing users to input commands and receive the output. In a graphical environment, you may have multiple terminal windows open, each representing a separate session with the shell.
@@ -69,7 +69,7 @@
 
 ---
 
-<details><summary style="font-size:18px;color:Orange;text-align:left">Shell Configurations</summary>
+<details><summary style="font-size:25px;color:Orange">Shell Configurations</summary>
 
 ### How to set default shell to bash.
 
@@ -167,7 +167,7 @@
 
 ---
 
-<details><summary style="font-size:18px;color:Orange;text-align:left">Basic Bash Commands</summary>
+<details><summary style="font-size:25px;color:Orange">Basic Bash Commands</summary>
 
 ### FILE/DIRECTORY COMMANDS
 
@@ -208,19 +208,38 @@
 
 ---
 
-<details><summary style="font-size:18px;color:Orange;text-align:left">SSH: Usage, Options, Configuration</summary>
+<details><summary style="font-size:25px;color:Orange">SSH: Usage, Options, Configuration</summary>
 
 -   [Documents](https://www.ssh.com/academy/ssh/command#ssh-client-configuration-file) || [SSH: Usage, Options, Configuration](https://www.ssh.com/academy/ssh/command#ssh-client-configuration-file) || [SSH Agent Explained](https://smallstep.com/blog/ssh-agent-explained/)
 
--   SSH (Secure Shell), SSH Agent, and SSH Client are all components of the SSH protocol, but they have different roles and functions.
--   `SSH (Secure Shell or Secure Socket Shell)`: SSH is a network protocol that gives users, particularly system administrators, a secure way to access a computer over an unsecured network.
--   `SSH Clint`: An SSH client is a software program that allows you to connect to a remote server using the Secure Shell (SSH) protocol. An SSH client can interact with an SSH agent to perform passwordless authentication to remote servers, which can be more convenient and secure than using a password.
--   `SSH Agent`: SSH Agent is a utility that allows a user to store and use private keys for SSH authentication, without having to re-enter the passphrase for each use. It runs as a background process on the user's local system, holding the private key in memory and responding to authentication requests from remote systems.
--   `OpenSSH`: OpenSSH is a free and open-source implementation of the SSH protocol, including both the client and server programs. It is one of the most widely used SSH implementations in the world and is included with many operating systems.
--   `authorized_keys`: The authorized_keys file resides on the SSH server and contains a list of public keys that are authorized to access a particular user's account. When an SSH client attempts to authenticate with the server using public key authentication, the server checks if the client's public key is present in the authorized_keys file for the user account being accessed. If the client's public key is found in the authorized_keys file and the corresponding private key is used for authentication by the client, the authentication is successful, and the client gains access to the server. Otherwise, the authentication fails.
--   `known_host`: The known_hosts file stores host keys for all hosts that an SSH client has previously connected to. When an SSH client connects to a server for the first time, it saves the server's public key in the known_hosts file. Subsequent connections to the same server are then compared against this stored key to detect any potential man-in-the-middle attacks or server impersonation attempts.
+-   SSH (Secure Shell or Secure Socket Shell), SSH Agent, and SSH Client are all components of the SSH protocol, but they have different roles and functions.
+-   **SSH**: SSH is a network protocol that gives users, particularly system administrators, a secure way to access a computer over an unsecured network.
+-   **SSH Clint**: An SSH client is a software program that allows you to connect to a remote server using the Secure Shell (SSH) protocol. An SSH client can interact with an SSH agent to perform passwordless authentication to remote servers, which can be more convenient and secure than using a password.
+-   **SSH Agent**: SSH Agent is a utility that allows a user to store and use private keys for SSH authentication, without having to re-enter the passphrase for each use. It runs as a background process on the user's local system, holding the private key in memory and responding to authentication requests from remote systems.
 
--   The file `/etc/ssh/sshd_config` is a configuration file used by the OpenSSH server (sshd) on Linux systems.
+    -   `How it Works`:
+
+        -   You add a private key to the SSH Agent:
+            ```sh
+            ssh-add ~/.ssh/id_rsa
+            ```
+        -   The SSH Agent securely stores the key in memory.
+        -   When you initiate an SSH connection, the agent provides the key for authentication automatically.
+
+    -   `config`: The `~/.ssh/config` file on unix is a user-specific SSH configuration file. It allows you to define shortcuts and settings for SSH connections, saving time and reducing repetitive command-line options.
+
+-   **OpenSSH**: OpenSSH is a free and open-source implementation of the SSH protocol, including both the client and server programs. It is one of the most widely used SSH implementations in the world and is included with many operating systems.
+
+-   **authorized_keys**:
+    -   The `authorized_keys` file resides on the SSH server and contains a list of public keys that are authorized to access a particular user's account.
+    -   When an SSH client attempts to authenticate with the server using public key authentication, the server checks if the client's public key is present in the `authorized_keys` file for the user account being accessed. If the client's public key is found in the `authorized_keys` file and the corresponding private key is used for authentication by the client, the authentication is successful, and the client gains access to the server. Otherwise, the authentication fails.
+-   **known_hosts**:
+
+    -   The `known_hosts` file stores host keys for all hosts that an SSH client has previously connected to.
+    -   When an SSH client connects to a server for the first time, it saves the server's public key in `it's` `~/.ssh/known_hosts` file.
+    -   For subsequent connections, the client checks if the server's public key matches the entry in its `known_hosts`.
+
+-   **sshd_config**: The file `/etc/ssh/sshd_config` is a configuration file used by the OpenSSH server (sshd) on Linux systems.
 
     -   `$ cat /etc/ssh/sshd_config` → List out SSH Clint Configurations.
 
@@ -250,17 +269,26 @@
     -   `$ ssh A.Momin@mos02.lan`
     -   `$ ssh A.Momin@mos02.local`
     -   `$ ssh farzana@mos02.local`
-    -   `$ ssh datanode1 'cat >> ~/.ssh/authorized_keys' < ~/.ssh/id_rsa.pub`
-    -   `$ ssh -i ~/.ssh/aws-ht.pem ubuntu@54.156.211.234 'cat >> ~/.ssh/authorized_keys' < ~/.ssh/id_rsa.pub`
-    -   `$ ssh -o StrictHostKeyChecking=no -i ~/.ssh/aws-ht.pem ubuntu@44.222.195.42 'cat >> ~/.ssh/authorized_keys' < ~/.ssh/jenkins_master.pub`
+    -   `$ ssh ubun 'cat >> ~/.ssh/authorized_keys' < ~/.ssh/id_rsa.pub`
+    -   `$ ssh -o StrictHostKeyChecking=no -i ~/.ssh/aws-ht.pem ubuntu@54.156.211.234 'cat >> ~/.ssh/authorized_keys' < ~/.ssh/id_rsa.pub` -> Appends the contents of your local `~/.ssh/id_rsa.pub` public key to the `~/.ssh/authorized_keys` file on the remote machine.
+
+        -   `< ~/.ssh/id_rsa.pub` -> Redirects the contents of your local public key file (`id_rsa.pub`) as input to the remote `cat` command.
+        -   `-o StrictHostKeyChecking=no` -> Disables strict host key checking. This option ensures that SSH does not prompt for confirmation if the host's key is not already in your known_hosts file. Useful for automation, but use with caution for security reasons.
+
     -   `$ ssh -i ~/.ssh/id_rsa user@hostname 'bash -s' < local_machine/path/to/script.sh`
+        -   `'bash -x -s'`
+            -   Runs a bash shell on the remote machine.
+            -   The `-s` option tells bash to read commands from standard input (in this case, the content of your local script).
+            -   `-x` enables verbose logging for easier debugging.
+    -   `$ ssh user@remote_host 'bash -s' < script.sh`
+    -   `$ `
 
 -   **scp:**
 
     -   `$ scp -i /path/to/private_key_file source_file user@remote_host:/path/to/destination` →
     -   `$ scp -r /local/directory/ username@to_host:/remote/directory/` → Copy directory from local host to a remote hos SCP example
     -   `$ scp file.txt username@to_host:/remote/directory/` → Copy file from local host to a remote host
-    -   `$ scp file.txt rhel:/home/ec2-user` → 'rhel' is node name configured in `~/.ssh/config` file.
+    -   `$ scp file.txt rhel:/home/ec2_user_name` → 'rhel' is node name configured in `~/.ssh/config` file.
     -   `$ scp -r rhel:/home/ec2-user/file.txt /local_machine/directory/` → scp the entire directory from remote machine to local machine
 
 -   **ssh-copy-id:**
@@ -402,7 +430,7 @@ rsync -avz \                            # run in archival and vervose mode
 
 ---
 
-<details><summary style="font-size:18px;color:Orange;text-align:left">File Permission</summary>
+<details><summary style="font-size:25px;color:Orange">File Permission</summary>
 
 -   [chmod:](https://en.wikipedia.org/wiki/Chmod)
 
@@ -480,7 +508,7 @@ rsync -avz \                            # run in archival and vervose mode
 
 ---
 
-<details><summary style="font-size:18px;color:Orange;text-align:left">Managing Users & Groups</summary>
+<details><summary style="font-size:25px;color:Orange">Managing Users & Groups</summary>
 
 -   `$ cut -d: -f1 /etc/passwd` → get the list of all users
     -   The `-d` option specifies the delimiter (in this case, a colon)
@@ -542,33 +570,33 @@ sudo useradd \
 
 ---
 
-<details><summary style="font-size:18px;color:Orange;text-align:left">Systemd & Service Management</summary>
+<details><summary style="font-size:25px;color:Orange">Systemd & Service Management</summary>
 
 -   [How To Use Systemctl to Manage Systemd Services and Units](https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units)
 
-<details><summary style="font-size:15px;color:red;">Terminology</summary>
+<details><summary style="font-size:18px;color:Magenta;">Terminology</summary>
 
--   **System Services:**
+#### **System Services:**
 
-    -   In Linux, a system service is a program or process that runs continuously in the background and provides some kind of functionality or service to the operating system or other applications. System services are typically started automatically when the system boots up and continue to run until the system is shut down.
+In Linux, a system service is a program or process that runs continuously in the background and provides some kind of functionality or service to the operating system or other applications. System services are typically started automatically when the system boots up and continue to run until the system is shut down.
 
-    -   System services are essential to the functioning of Linux because they perform many of the critical tasks required by the operating system, such as managing system resources, handling input/output operations, providing network services, and performing system maintenance and security tasks.
+-   System services are essential to the functioning of Linux because they perform many of the critical tasks required by the operating system, such as managing system resources, handling input/output operations, providing network services, and performing system maintenance and security tasks.
 
-    -   Examples of system services in Linux include:
+-   Examples of system services in Linux include:
 
-        -   `Systemd`: A system and service manager for Linux that provides a range of services including device management, network management, logging, and process management.
-        -   `Apache`: A web server that provides HTTP services for serving web pages and applications.
-        -   `OpenSSH`: A secure shell (SSH) server that provides remote access to the Linux command line.
-        -   `CUPS`: The Common Unix Printing System, which provides printer services for Linux.
-        -   `MySQL`: A database management system that provides database services for applications running on Linux.
-        -   `NTP`: The Network Time Protocol, which provides time synchronization services for Linux.
-        -   `Samba`: A file and print server that provides file sharing and printer services for Linux.
+    -   `Systemd`: A system and service manager for Linux that provides a range of services including device management, network management, logging, and process management.
+    -   `Apache`: A web server that provides HTTP services for serving web pages and applications.
+    -   `OpenSSH`: A secure shell (SSH) server that provides remote access to the Linux command line.
+    -   `CUPS`: The Common Unix Printing System, which provides printer services for Linux.
+    -   `MySQL`: A database management system that provides database services for applications running on Linux.
+    -   `NTP`: The Network Time Protocol, which provides time synchronization services for Linux.
+    -   `Samba`: A file and print server that provides file sharing and printer services for Linux.
 
-    -   System services are typically managed using specialized tools such as `systemctl` or `service`, which allow you to start, stop, enable, or disable services as needed. Understanding how system services work and how to manage them is an important aspect of Linux administration and operation.
+-   System services are typically managed using specialized tools such as `systemctl` or `service`, which allow you to start, stop, enable, or disable services as needed. Understanding how system services work and how to manage them is an important aspect of Linux administration and operation.
 
--   **Systemd:** `systemd` is a software suite that provides an array of system components for Linux operating systems. It is a system and service manager in Linux that provides a range of functionalities for managing system processes, services, and resources. It provides replacements for various daemons and utilities, including device management, login management, network connection management, and event logging. The main components of systemd are following.
+#### **Systemd:**
 
--   `systemd daemon (systemd)`: The systemd daemon, also known as systemd, is the core component of systemd. It is responsible for initializing the system, managing system processes, and providing various system services.
+`systemd` is a software suite that provides an array of system components for Linux operating systems. It is a system and service manager in Linux that provides a range of functionalities for managing system processes, services, and resources. It provides replacements for various daemons and utilities, including device management, login management, network connection management, and event logging. The main components of systemd are following.
 
 -   `systemd units`: Units are the configuration files that define system services, devices, sockets, mount points, and other components managed by systemd. The units are written in a declarative format and are stored in specific directories, such as `/etc/systemd/system` or `/usr/lib/systemd/system`. Some commonly used unit types include:
 
@@ -587,25 +615,9 @@ sudo useradd \
 
 -   `systemd-timedated`: systemd-timedated provides time and date management functionality in systemd. It allows setting the system clock, managing time synchronization with network time servers, and handling time zones.
 
--   **Configuration of systemd:**
+-   **Configuration of systemd**: `systemd` records initialization instructions for each daemon in a configuration file (referred to as a "unit file") that uses a declarative language, replacing the traditionally used per-daemon startup shell scripts. The syntax of the language is inspired by .ini files. Unit-file types include: - .service - .socket - .device (automatically initiated by systemd) - .mount - .automount - .swap - .target - .path - .timer (which can be used as a cron-like job scheduler) - .snapshot - .slice (used to group and manage processes and resources) - .scope (used to group worker processes, isn't intended to be configured via unit files[69])
 
-    -   systemd records initialization instructions for each daemon in a configuration file (referred to as a "unit file") that uses a declarative language, replacing the traditionally used per-daemon startup shell scripts. The syntax of the language is inspired by .ini files. Unit-file types include:
-        -   .service
-        -   .socket
-        -   .device (automatically initiated by systemd)
-        -   .mount
-        -   .automount
-        -   .swap
-        -   .target
-        -   .path
-        -   .timer (which can be used as a cron-like job scheduler)
-        -   .snapshot
-        -   .slice (used to group and manage processes and resources)
-        -   .scope (used to group worker processes, isn't intended to be configured via unit files[69])
-
--   **Socket:**
-
--   What is Unix Domain Socket?
+##### **Socket:**
 
 In Linux, a unit socket refers to a systemd unit that provide interprocess communication (IPC) between processes on the same machine. It allows processes to exchange data through network sockets or Unix domain sockets. Here's an explanation of unit sockets in Linux:
 
@@ -633,64 +645,64 @@ In Linux, a unit socket refers to a systemd unit that provide interprocess commu
 
 -   `Example Use Cases`: Socket units can be used in various scenarios, such as:
 
-        -   Starting a service only when a client connects to a specific network port.
-        -   Managing a pool of worker processes that handle incoming network connections.
-        -   Delaying the start of services until their dependent sockets become available.
+    -   Starting a service only when a client connects to a specific network port.
+    -   Managing a pool of worker processes that handle incoming network connections.
+    -   Delaying the start of services until their dependent sockets become available.
 
     By leveraging socket units in systemd, you can efficiently manage inter-process communication and control the activation of services based on socket connections. This provides flexibility, scalability, and optimized resource utilization in a Linux system.
 
--   **Configure a software as a service**:
-
-![ConfigurationServices](../assets/shell/service1.png)
-![ConfigurationServices](../assets/shell/service2.png)
-![ConfigurationServices](../assets/shell/service3.png)
-
 </details>
 
-**systemctl/service**:
+-   **systemctl/service**:
 
--   [How to Use Systemctl Utility in Linux](https://linuxhint.com/systemctl-utility-linux/)
+    -   [How to Use Systemctl Utility in Linux](https://linuxhint.com/systemctl-utility-linux/)
 
--   `$ sudo hostnamectl set-hostname t2Medium && /bin/bash`
--   `$ sudo systemctl list-units`
--   `$ sudo systemctl list-units --type=service`
--   `$ sudo systemctl list-units –state=inactive`
--   `$ sudo systemctl cat docker` → show the contents of the Docker unit
--   `$ sudo systemctl edit docker` → The command will launch the nano text editor, allowing you to edit the unit file specified.
--   `$ `
--   `$ `
--   `$ sudo systemctl status sshd`
+    -   `$ sudo hostnamectl set-hostname t2Medium && /bin/bash`
+    -   `$ sudo systemctl list-units`
+    -   `$ sudo systemctl list-units --type=service`
+    -   `$ sudo systemctl list-units –state=inactive`
+    -   `$ sudo systemctl cat docker` → show the contents of the Docker unit
+    -   `$ sudo systemctl edit docker` → The command will launch the nano text editor, allowing you to edit the unit file specified.
+    -   `$ `
+    -   `$ `
+    -   `$ sudo systemctl status sshd`
 
--   `$ sudo systemctl start nginx`
--   `$ sudo systemctl stop nginx`
--   `$ sudo systemctl reload nginx` → Reloading a service works by stopping the worker processes, apply configuration changes and restart the worker processes. That does not shut down the actual service itself.
--   `$ sudo systemctl restart nginx` → restarting will shut down the service and the worker processes and restart them.
--   `$ sudo systemctl enable nginx`
--   `$ sudo systemctl enable nginx --now`
--   `$ sudo systemctl disable sshd`
--   `$ `
+    -   `$ sudo systemctl start nginx`
+    -   `$ sudo systemctl stop nginx`
+    -   `$ sudo systemctl reload nginx` → Reloading a service works by stopping the worker processes, apply configuration changes and restart the worker processes. That does not shut down the actual service itself.
+    -   `$ sudo systemctl restart nginx` → restarting will shut down the service and the worker processes and restart them.
+    -   `$ sudo systemctl enable nginx`
+    -   `$ sudo systemctl enable nginx --now`
+    -   `$ sudo systemctl disable sshd`
+    -   `$ `
 
--   `$ service sshd status`
--   `$ service sshd start`
+    -   `$ service sshd status`
+    -   `$ service sshd start`
 
-**journalctl:**
+-   **journalctl:**
 
--   [Using journalctl](https://www.loggly.com/ultimate-guide/using-journalctl/)
+    -   [Using journalctl](https://www.loggly.com/ultimate-guide/using-journalctl/)
 
--   `$ `
--   `$ journalctl --since "1 hour ago"`
--   `$ journalctl --since "2015-06-26 23:15:00" --until "2015-06-26 23:20:00"`
--   `$ journalctl -u nginx.service`
--   `$ journalctl -u mysql.service -f` → “follows” the mysql service log.
--   `$ journalctl -u apache2.service -r -o json-pretty` → The `-o` parameter enables us to format the output of journalctl query.
--   `$ `
--   `$ `
+    -   `$ `
+    -   `$ journalctl --since "1 hour ago"`
+    -   `$ journalctl --since "2015-06-26 23:15:00" --until "2015-06-26 23:20:00"`
+    -   `$ journalctl -u nginx.service`
+    -   `$ journalctl -u mysql.service -f` → “follows” the mysql service log.
+    -   `$ journalctl -u apache2.service -r -o json-pretty` → The `-o` parameter enables us to format the output of journalctl query.
+    -   `$ `
+    -   `$ `
+
+#### **Configure a software as a service**:
+
+-   ![ConfigurationServices](../assets/shell/service1.png)
+-   ![ConfigurationServices](../assets/shell/service2.png)
+-   ![ConfigurationServices](../assets/shell/service3.png)
 
 </details>
 
 ---
 
-<details><summary style="font-size:18px;color:Orange;text-align:left">Make & Makefile</summary>
+<details><summary style="font-size:25px;color:Orange">Make & Makefile</summary>
 
 -   `make` is a command-line utility in Linux and other Unix-like operating systems that is used to build and manage software projects. It automates the process of compiling source code, linking object files, and creating executables and libraries. The basic idea behind make is that it reads a set of instructions, called a `Makefile`, that describe how to build the project. The `Makefile` specifies a set of targets, dependencies, and commands that make can use to build the project.
 -   A `Makefile` is a text file that contains a set of rules that tell make how to build a software project. Each rule defines a target, which is the name of the file that make should create, and a set of dependencies, which are the files that the target depends on. The rule also specifies a set of commands that make should execute to build the target.

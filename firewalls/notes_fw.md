@@ -1,3 +1,0 @@
--   [25 Useful IPtable Firewall Rules Every Linux Administrator Should Know](https://www.tecmint.com/linux-iptables-firewall-rules-examples-commands/)
--   [How to Set Up a Firewall Using Iptables](https://www.youtube.com/watch?v=qPEA6J9pjG8&t=608s)
--   [iptables Complete Guide](https://www.youtube.com/watch?v=6Ra17Qpj68c&t=410s)

@@ -1,8 +1,10 @@
 # ============================================================================
 # Define a CRITICAL environment variable. 
-export NTHUB="$HOME/mydocs/Software_Development/notes_hub"
+export NTHUB="$HOME/mydocs/Software_Development/noteshub"
 # set horizontal-scroll-mode on # to disable word wrap in terminal; not Working !!
 
+# This will add the code command to your system's PATH, allowing you to open Visual Studio Code from the terminal.
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 # ============================================================================
 
 # It is specific to Git and used by the Git prompt (PS1) script to determine whether to show the dirty state of the working directory.
@@ -109,13 +111,16 @@ eval "$(pyenv virtualenv-init -)"
 # ============================================================================
 # Setting PATH for Python 3.9
 export PYTHONNOUSERSITE=True # Enable/Disable Python site module ('ENABLE_USER_SITE').
-
+export PYTHONPATH="$HOME/mydocs/Software_Development/Web_Development/aws/boto_scripts:${PYTHONPATH}"
+export PYTHONPATH="$HOME/mydocs/Software_Development/noteshub/utils:${PYTHONPATH}"
 # ============================================================================
 
 # Add mysql into the PATH variable.
 export PATH="/usr/local/mysql/bin:$PATH"
 export PATH="/usr/local/Cellar/sqlite/3.45.3/bin:$PATH"
 
+# ============================================================================
+######################## PySpark Configurations ##############################
 # ============================================================================
 
 # add java into the path variable

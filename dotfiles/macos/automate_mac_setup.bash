@@ -86,7 +86,7 @@ mac_download_dotfiles(){
     NOTES: Download secrets.bash file manually since it's not in Github.
     "
 
-    dot_files="https://raw.githubusercontent.com/Aminul-Momin/notes_hub/master/dotfiles/macos"
+    dot_files="https://raw.githubusercontent.com/A-Momin/noteshub/main/dotfiles/macos"
 
     host=$(hostname)
     touch $HOME/.bash_profile
@@ -298,6 +298,28 @@ mac_install_conda(){
     export PATH="/usr/local/anaconda3/bin:$PATH"
 }
 
+uninstall_anaconda(){
+    rm -rf /opt/anaconda3
+
+    # Remove Conda Environment Files
+    rm -rf ~/.condarc ~/.conda ~/.continuum
+
+    rm -rf ~/.jupyter
+
+    # Remove Any Remaining Anaconda Files
+    find ~ -name "*anaconda*" -exec rm -rf {} +
+    find ~ -name "*conda*" -exec rm -rf {} +
+
+    # REMOVE CONDA CONFIGURATION FROM SHELL SCRIPTS
+
+    # Restart Your Shell
+    source ~/.bash_profile
+    source ~/.zshrc
+
+    # # Verify Removal
+    # conda --version
+}
+
 ###############################################################################
 #################################     JAVA    #################################
 mac_install_java_brew(){
@@ -360,28 +382,6 @@ install_spark(){
 
     source $SD/Big_Data/elements_of_spark/.venv/bin/activate
     pip install numpy pandas pyspark scikit-learn matplotlib
-}
-
-uninstall_anaconda(){
-    rm -rf /opt/anaconda3
-
-    # Remove Conda Environment Files
-    rm -rf ~/.condarc ~/.conda ~/.continuum
-
-    rm -rf ~/.jupyter
-
-    # Remove Any Remaining Anaconda Files
-    find ~ -name "*anaconda*" -exec rm -rf {} +
-    find ~ -name "*conda*" -exec rm -rf {} +
-
-    # REMOVE CONDA CONFIGURATION FROM SHELL SCRIPTS
-
-    # Restart Your Shell
-    source ~/.bash_profile
-    source ~/.zshrc
-
-    # # Verify Removal
-    # conda --version
 }
 
     

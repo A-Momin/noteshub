@@ -1,11 +1,62 @@
+<details><summary style="font-size:25px;color:Orange;text-align:left">Docker: Configuration</summary>
+
+-   ![Expose Docker REST API](../assets/docker/enable_docker_restapi.png)
+-   **Docker Daemon**:
+-   **Docker Socket**(`/var/run/docker.sock`):
+-   **Docker CLI**:
+
+-   `$ ps -ef | grep docker`
+
+-   **Expose/Enable Docker REST API at port `4243`**:
+
+    -   Open docker service file (`/lib/systemd/system/docker.service`). Search for `ExecStart` and replace that line as following.
+
+        -   `$ sudo vim /lib/systemd/system/docker.service`
+
+            -   Replace `ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock` line by `ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock`
+                -   `-H tcp://0.0.0.0:4243`:
+                    -   `-H`: Defines a host or socket on which the Docker daemon listens for API requests.
+                    -   `tcp://0.0.0.0:4243`:
+                        -   Protocol: `tcp` means the Docker daemon will listen on the TCP protocol.
+                        -   `0.0.0.0`: Indicates that the daemon will accept connections from all IP addresses on the server (not restricted to localhost).
+                        -   Port `4243`: The port on which the Docker API will be exposed.
+                    -   Purpose:
+                        -   Enables remote management of the Docker daemon via the Docker Remote API.
+                        -   This can be used for Docker CLI commands, custom applications, or orchestration tools like Kubernetes or Docker Swarm.
+
+    -   `$ sudo systemctl daemon-reload`
+    -   `$ sudo service docker restart`
+
+    -   `$ curl http://localhost:4243/version` -> Varify that you'r able to access Docker Host at Port#4243 from Docker Host Machine.
+    -   `$ curl ec2-3-224-245-94.compute-1.amazonaws.com:4243/version` -> Varify that you'r able to access Docker Host at Port#4243 from a remote machine.
+
+</details>
+
+---
+
 <details><summary style="font-size:25px;color:Orange;text-align:left">MISC</summary>
 
--   How to start Docke App from terminal on `MacOS` ONLY?
-    -   `$ open -a Docker`
--   How to stop Docke App from terminal on `MacOS` ONLY?
+### Tutorials:
 
-    1.  `$ ps aus | grep Docker`
-    2.  `$ kil PIP`
+-   [Complete Docker Course](https://www.youtube.com/watch?v=RqTEHSBrYFw)
+-   [Nana: Docker Tutorial for Beginners [FULL COURSE in 3 Hours]](https://www.youtube.com/watch?v=3c-iBn73dDE&t=21s)
+-   [Learn Docker - DevOps with Node.js & Express](https://www.youtube.com/watch?v=9zUHg7xjIqQ&list=PLWKjhJtqVAbkzvvpY12KkfiIGso9A_Ixs&index=8)
+-   [Docker and Kubernetes Complete Tutorial](https://www.youtube.com/playlist?list=PL0hSJrxggIQoKLETBSmgbbvE4FO_eEgoB)
+-   [Dockerfile Components](https://github.com/wsargent/docker-cheat-sheet#dockerfile)
+-   [Docker Commands Cheat Sheet](https://buddy.works/tutorials/docker-commands-cheat-sheet#docker-container-commands)
+-   [Docker Cheat Sheet](https://intellipaat.com/blog/tutorial/devops-tutorial/docker-cheat-sheet/)
+-   [The Docker Handbook – 2021 Edition](https://www.freecodecamp.org/news/the-docker-handbook/)
+
+    -   [the-docker-handbook](https://github.com/fhsinchy/the-docker-handbook)
+
+-   [unix:///var/run/docker.sock](https://www.youtube.com/watch?v=FcZ1Dh3X5JQ)
+
+-   [Linux: Install Docker Engine](https://docs.docker.com/engine/install/ubuntu/)
+
+    -   [How to use Docker on CentOS 7](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-centos-7)
+    -   [Install using the repository](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
+    -   [Install using the convenience script](https://docs.docker.com/engine/install/ubuntu/#install-using-the-convenience-script)
+    -   [Container Dev: Develop from anywhere with Visual Studio Code](https://www.youtube.com/watch?v=CYObXaSjj78)
 
 -   The Docker daemon is located at `unix:///var/run/docker.sock` on Linux server
 -   `$ sudo systemctl status docker` → Check whether Docker is running or not on Linux machine.
@@ -25,51 +76,23 @@
 -   `$ sudo systemclt daemon-reload`
 -   `$ sudo service docker restart`
 
+### Docker on Mac OS
+
+-   How to start Docke App from terminal on `MacOS` ONLY?
+    -   `$ open -a Docker`
+-   How to stop Docke App from terminal on `MacOS` ONLY?
+
+    1.  `$ ps aux | grep Docker`
+    2.  `$ kil PIP`
+
 -   `~/Library/Containers/com.docker.docker/`: This is the base directory for Docker Desktop data on macOS. It contains configurations and other data for Docker Desktop.
 -   `Data/vms/0/`: Within the Data/vms/0/ directory, Docker stores the data for the virtual machine that runs the Docker engine, including containers, images, volumes, and other data.
 
--   **Configure a Docker Host With Remote API so that The Jenkins server can communicate with the Docker**:
+-   [Linux: Install Docker Engine]()
 
-    -   Edit the `/lib/systemd/system/docker.service` file
-        -   `$ sudo vim /lib/systemd/system/docker.service`
-        -   assign `/usr/bin/dockerd -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock` to `ExecStart` as follows
-            -   `ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock`
-    -   `$ sudo systemctl daemon-reload`
-    -   `$ sudo service docker restart`
-    -   Now Test:
-        -   `$ curl http://localhost:4243/version`
-        -   `$ curl http://<EC2PrivateIP>:4243/version`
-
-### Refferances:
-
--   [Complete Docker Course](https://www.youtube.com/watch?v=RqTEHSBrYFw)
--   [Nana: Docker Tutorial for Beginners [FULL COURSE in 3 Hours]](https://www.youtube.com/watch?v=3c-iBn73dDE&t=21s)
--   [Learn Docker - DevOps with Node.js & Express](https://www.youtube.com/watch?v=9zUHg7xjIqQ&list=PLWKjhJtqVAbkzvvpY12KkfiIGso9A_Ixs&index=8)
--   [Docker and Kubernetes Complete Tutorial](https://www.youtube.com/playlist?list=PL0hSJrxggIQoKLETBSmgbbvE4FO_eEgoB)
--   [Dockerfile Components](https://github.com/wsargent/docker-cheat-sheet#dockerfile)
--   [Docker Commands Cheat Sheet](https://buddy.works/tutorials/docker-commands-cheat-sheet#docker-container-commands)
--   [Docker Cheat Sheet](https://intellipaat.com/blog/tutorial/devops-tutorial/docker-cheat-sheet/)
--   [The Docker Handbook – 2021 Edition](https://www.freecodecamp.org/news/the-docker-handbook/)
-    -   [the-docker-handbook](https://github.com/fhsinchy/the-docker-handbook)
-
-### Troubleshooting:
-
--   [unix:///var/run/docker.sock](https://www.youtube.com/watch?v=FcZ1Dh3X5JQ)
-
-### [Linux: Install Docker Engine]()
-
--   `/home/airflow/.local/lib/python3.7/site-packages/airflow/example_dags/`
-    -   Location of example dags in container
--   Docker Desktop for macOS uses a lightweight Linux VM to run the Docker engine, so the actual location of Docker volumes on your Mac is within this VM. However, you can access the files stored in Docker volumes from the host machine using a specific mount path.
-
-### [Linux: Install Docker Engine](https://docs.docker.com/engine/install/ubuntu/)
-
--   [How to use Docker on CentOS 7](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-centos-7)
--   [Install using the repository](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
--   [Install using the convenience script](https://docs.docker.com/engine/install/ubuntu/#install-using-the-convenience-script)
--   [Container Dev: Develop from anywhere with Visual Studio Code](https://www.youtube.com/watch?v=CYObXaSjj78)
-
-### how to get rid of Docker on Mac OS completely?
+    -   `/home/airflow/.local/lib/python3.7/site-packages/airflow/example_dags/`
+        -   Location of example dags in container
+    -   Docker Desktop for macOS uses a lightweight Linux VM to run the Docker engine, so the actual location of Docker volumes on your Mac is within this VM. However, you can access the files stored in Docker volumes from the host machine using a specific mount path.
 
 -   Uninstall Docker Desktop:
 
@@ -216,9 +239,11 @@ uninstall_docker_on_mac(){
 
 -   `Exposing`/`Publishing` Port:
 
-    -   Exposing a port in Docker means that the port is made available for use within the Docker network, but it is not accessible from outside the network or from the host machine. This is done using the EXPOSE instruction in a Dockerfile or the `--expose` flag when running a container. For example, `EXPOSE 8080` would make port 8080 available within the Docker network.
-    -   On the other hand, publishing a port in Docker means that the port is made accessible from outside the Docker network, allowing traffic to flow between the container and the host machine or other external networks. This is done using the `--publish` or `-p` flag when running a container. For example, `docker run -p 8080:80` would publish port 80 from the container to port 8080 on the host machine, allowing traffic to be routed to the container from the host machine.
-    -   It's important to note that exposing a port does not automatically publish it, and publishing a port does not require it to be exposed. Exposing a port is simply a way of documenting which ports a container is using and making them available for use within the Docker network. Publishing a port is necessary if you want to access the container from outside the Docker network or the host machine.
+    -   Exposing a port in Docker means that the port is made available for use within the Docker network, but it is not accessible from outside the network or from the host machine. This is done using the `EXPOSE` instruction in a `Dockerfile` or the `--expose` flag when running a container.
+        -   Example: `EXPOSE 8080` would make port 8080 available within the Docker network.
+    -   Publishing a port in Docker means that the port is made accessible from outside the Docker network, allowing traffic to flow between the container and the host machine or other external networks. This is done using the `--publish` or `-p` flag when running a container.
+        -   Example: `docker run -p 8080:80` would publish/map port 8080 on the host machine to the port 80 on the container, allowing traffic to be routed to the container from the host machine.
+    -   `Note`: Exposing a port does not automatically publish it, and publishing a port does not require it to be exposed. Exposing a port is simply a way of documenting which ports a container is using and making them available for use within the Docker network. Publishing a port is necessary if you want to access the container from outside the Docker network or the host machine.
 
 -   `Storage Drivers`: Docker storage drivers are responsible for managing the storage backend of Docker containers. They define how the filesystem data for containers is stored and managed. Different storage drivers have different characteristics, performance profiles, and support for various features. Here are some commonly used Docker storage drivers:
 
@@ -271,7 +296,7 @@ uninstall_docker_on_mac(){
 
 ---
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left">docker</summary>
+<details><summary style="font-size:25px;color:Orange">docker</summary>
 
 -   [docker](https://docs.docker.com/engine/reference/commandline/docker/) | [Use the Docker command line](https://docs.docker.com/engine/reference/commandline/cli/)
 
@@ -420,13 +445,13 @@ uninstall_docker_on_mac(){
     -   `$ docker push <DockerHubUsername>/<ImageName>:<VersionTag>`
     -   `$ docker push bbcredcap3/django-bookstore:v1`
 
--   [$ docker cp]():
-    -   `$ docker cp ./<my_new_dag.py> dagvaol_host:/dags` → Copy my_new_dag.py from CWD to allocated dag volume in the docker container.
-    -   `$ docker cp . volume_name:folder_name`
+-   [$ docker cp](): The `docker cp` command allows you to copy files or directories between your host machine and a running container.
+    -   `$ docker cp <source_path> <container_name>:<destination_path>` → Copy my_new_dag.py from CWD to allocated dag volume in the docker container.
+    -   `$ docker cp ./my_new_dag.py dagvaol_host:/dags` → Copy my_new_dag.py from CWD to allocated dag volume in the docker container.
         -   Copy content of current directory in the `folder_name` of `volume_name`.
     -   `$ docker cp source <container_name | container_id>:folder_path`
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left">docker network</summary>
+<details><summary style="font-size:25px;color:Orange">docker network</summary>
 
 -   [docker network](https://docs.docker.com/engine/reference/commandline/network/)
 -   `$ docker network --help`
@@ -442,7 +467,7 @@ uninstall_docker_on_mac(){
 
 ---
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left">docker volume</summary>
+<details><summary style="font-size:25px;color:Orange">docker volume</summary>
 -   [Add bind mounts, volumes or memory filesystems](https://docs.docker.com/engine/reference/commandline/service_create/#add-bind-mounts-volumes-or-memory-filesystems)
 
 -   `$ docker volume --help`
@@ -461,7 +486,7 @@ uninstall_docker_on_mac(){
 
 ---
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left">docker container</summary>
+<details><summary style="font-size:25px;color:Orange">docker container</summary>
 
 -   `$ docker container --help`
 -   `$ docker container <COMMAND> --help`
@@ -497,7 +522,7 @@ uninstall_docker_on_mac(){
 
 ---
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left">docker-compose</summary>
+<details><summary style="font-size:25px;color:Orange">docker-compose</summary>
 
 -   [Using Volume in Docker Compose](https://devopsheaven.com/docker/docker-compose/volumes/2018/01/16/volumes-in-docker-compose.html)
 -   [docker-compose](https://docs.docker.com/compose/reference/):
@@ -552,7 +577,7 @@ Docker Compose is a powerful tool for managing containerized applications, allow
 
 ---
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left">Miscellaneous</summary>
+<details><summary style="font-size:25px;color:Orange">Miscellaneous</summary>
 
 ### Rough:
 
@@ -652,7 +677,7 @@ Docker Compose is a powerful tool for managing containerized applications, allow
 
 ---
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left"> Dockerfile </summary>
+<details><summary style="font-size:25px;color:Orange"> Dockerfile </summary>
 
 -   [Dockerfile sample for Jupyter notebook images](https://www.ibm.com/docs/en/cloud-paks/cp-data/4.5.x?topic=image-dockerfile-sample-jupyter-notebook-images)
 -   [Dockerfile Components](https://github.com/wsargent/docker-cheat-sheet#dockerfile)

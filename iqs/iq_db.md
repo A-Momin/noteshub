@@ -1,5 +1,40 @@
 -   [Top 5 SQL Interview Questions for Data Engineers](https://bittersweet-mall-f00.notion.site/Top-5-SQL-Interview-Questions-for-Data-Engineers-10a1d38a67c44775878e2ee4c8ec5d45)
 
+<details><summary style="font-size:18px;color:#C71585">Some Complex query examples on Employee Table</summary>
+
+```sql
+SELECT department, COUNT(*) AS num_employees, AVG(salary) AS avg_salary
+FROM Employee
+WHERE hire_date BETWEEN '2023-01-01' AND '2023-12-31'
+AND department IN ('Sales', 'Marketing', 'Finance')
+GROUP BY department
+HAVING AVG(salary) > 60000
+ORDER BY avg_salary DESC
+LIMIT 5;
+```
+
+```sql
+SELECT department, AVG(salary) AS avg_salary
+FROM Employee
+WHERE department IN ('Sales', 'Marketing', 'Finance')
+GROUP BY department
+HAVING AVG(salary) > 60000
+ORDER BY avg_salary DESC
+LIMIT 5;
+```
+
+```sql
+SELECT department, COUNT(*) AS num_employees
+FROM Employee
+WHERE salary > 50000
+GROUP BY department
+HAVING COUNT(*) > 5
+ORDER BY num_employees DESC
+LIMIT 10;
+```
+
+</details>
+
 <details><summary style="font-size:18px;color:#C71585">What is a Common Table Expression (CTE) in MySQL?</summary>
 
 A Common Table Expression (CTE) in MySQL is a named temporary result set that you can reference within a SELECT, INSERT, UPDATE, or DELETE statement. CTEs make complex queries easier to write and understand by breaking them down into simpler, more manageable parts. They are defined using the WITH keyword.
@@ -83,6 +118,73 @@ SELECT * FROM EmployeeHierarchy;
 
 </details>
 
+<details><summary style="font-size:18px;color:#C71585">What is the difference between <b>CTEs</b> and <b>Views</b> in context of SQL?</summary>
+
+In relational databases, **Common Table Expressions (CTEs)** and **Views** both allow you to structure and organize complex queries, but they serve different purposes and have distinct characteristics:
+
+1. **Definition and Purpose**
+
+    - **CTE (Common Table Expression)**: A CTE is a temporary, named result set defined within a single SQL statement, usually for readability and reusability within a complex query. It's created with a `WITH` clause at the beginning of the query and is only available for that specific execution.
+    - **View**: A view is a stored query that behaves like a virtual table. It’s a saved SQL query within the database, which can be queried like a regular table. Views are often used to simplify access to complex data structures, enforce security, and maintain query consistency.
+
+2. **Lifetime and Scope**
+
+    - **CTE**: Exists only during the execution of the query. It’s temporary and only accessible within the query where it’s defined.
+    - **View**: Persistent in the database until explicitly dropped. Once created, it can be used by any user with the appropriate permissions in multiple queries over time.
+
+3. **Use Cases**
+
+    - **CTE**: Best used for breaking down complex queries, recursive queries, or when temporary results are needed within a single query.
+    - **View**: Useful for creating simplified representations of complex data that can be reused across multiple queries and users. It can encapsulate business logic or complex joins and can serve as an abstraction layer over the underlying tables.
+
+4. **Performance Considerations**
+
+    - **CTE**: Evaluated each time the query runs. CTEs are generally optimized as part of the query execution plan, but they may be slower for repeated use cases within different queries since they are not stored persistently.
+    - **View**: Non-materialized views (default in most databases) are recalculated each time they’re accessed, which could impact performance for complex queries. Materialized views (if supported) store the results, offering faster access at the cost of needing periodic refreshes to reflect updated data.
+
+5. **Recursive Operations**
+
+    - **CTE**: Supports recursive operations in many RDBMSs, making it useful for querying hierarchical or tree-like data structures.
+    - **View**: Does not inherently support recursion. To achieve recursion with views, a CTE or other recursive query would be required within the view definition, if allowed.
+
+6. **Example**:
+
+    ```sql
+    -- CTE Example:
+    WITH SalesCTE AS (
+        SELECT customer_id, SUM(amount) AS total_sales
+        FROM sales
+        GROUP BY customer_id
+    )
+    SELECT *
+    FROM SalesCTE
+    WHERE total_sales > 1000;
+    ```
+
+    ```sql
+    -- View Example:
+    CREATE VIEW HighValueCustomers AS
+    SELECT customer_id, SUM(amount) AS total_sales
+    FROM sales
+    GROUP BY customer_id
+    HAVING total_sales > 1000;
+
+    -- Later, you can query the view:
+    SELECT * FROM HighValueCustomers;
+    ```
+
+7. **Summary Table**:
+
+    | Feature         | CTE                      | View                                 |
+    | --------------- | ------------------------ | ------------------------------------ |
+    | **Lifetime**    | Temporary                | Persistent                           |
+    | **Scope**       | Single query             | Database-wide                        |
+    | **Usage**       | Complex query breakdown  | Data abstraction                     |
+    | **Recursion**   | Supported in some RDBMSs | Not directly supported               |
+    | **Performance** | Recomputed every query   | May use caching (materialized views) |
+
+</details>
+
 <details><summary style="font-size:18px;color:#C71585">What is the difference between <b>WHERE</b> and <b>HAVING</b> in context of SQL?</summary>
 
 In MySQL, both the `WHERE` and `HAVING` clauses are used to filter rows returned by a query, but they operate at different stages of query execution and have different purposes:
@@ -128,7 +230,7 @@ Also, keep in mind that `TRUNCATE` does not fire any triggers that might be asso
 
 </details>
 
-<details><summary style="font-size:18px;color:#C71585">What is the difference between `JOIN` and `UNION` Operations?</summary>
+<details><summary style="font-size:18px;color:#C71585">What is the difference between <b>JOIN</b> and <b>UNION</b> Operations?</summary>
 
 The JOIN and UNION operations in SQL serve different purposes and have distinct functionalities:
 
@@ -154,6 +256,20 @@ The JOIN and UNION operations in SQL serve different purposes and have distinct 
     -   JOIN operates horizontally, combining columns, while `UNION` operates vertically, stacking rows.
 
 In summary, JOIN is used to horizontally combine columns from different tables based on related data, while `UNION` is used to vertically combine rows from different SELECT statements or tables with similar structures.
+
+</details>
+
+<details><summary style="font-size:18px;color:#C71585"> Distinguish between <b>BETWEEN</b> and <b>IN</b> conditional operators.</summary>
+
+-   BETWEEN- Displays the rows based on range of values
+
+    -   IN- Checks for values contained in a specific set of values.
+    -   Example:
+
+        ```sql
+        SELECT * FROM Students where ROLL_NO BETWEEN 10 AND 50;
+        SELECT * FROM students where ROLL_NO IN (8,15,25);
+        ```
 
 </details>
 
@@ -305,64 +421,58 @@ The most commonly used indexing algorithms in RDBMSs are B-trees (and variations
 
 </details>
 
-<details><summary style="font-size:18px;color:#C71585"> Can we use TRUNCATE with a WHERE clause?</summary>
-
--   No, we cannot use TRUNCATE with the WHERE clause.
-
-</details>
-
-<details><summary style="font-size:18px;color:#C71585"> Distinguish between BETWEEN and IN conditional operators.</summary>
-
--   BETWEEN- Displays the rows based on range of values
-
-    -   IN- Checks for values contained in a specific set of values.
-    -   Example:
-
-        ```sql
-        SELECT * FROM Students where ROLL_NO BETWEEN 10 AND 50;
-        SELECT * FROM students where ROLL_NO IN (8,15,25);
-        ```
-
-</details>
-
-<details><summary style="font-size:18px;color:#C71585">Some Complex query on Employee Table</summary>
-
-    ```sql
-    SELECT department, COUNT(*) AS num_employees, AVG(salary) AS avg_salary
-    FROM Employee
-    WHERE hire_date BETWEEN '2023-01-01' AND '2023-12-31'
-    AND department IN ('Sales', 'Marketing', 'Finance')
-    GROUP BY department
-    HAVING AVG(salary) > 60000
-    ORDER BY avg_salary DESC
-    LIMIT 5;
-    ```
-
-    ```sql
-    SELECT department, AVG(salary) AS avg_salary
-    FROM Employee
-    WHERE department IN ('Sales', 'Marketing', 'Finance')
-    GROUP BY department
-    HAVING AVG(salary) > 60000
-    ORDER BY avg_salary DESC
-    LIMIT 5;
-    ```
-
-    ```sql
-    SELECT department, COUNT(*) AS num_employees
-    FROM Employee
-    WHERE salary > 50000
-    GROUP BY department
-    HAVING COUNT(*) > 5
-    ORDER BY num_employees DESC
-    LIMIT 10;
-    ```
-
-</details>
-
 <details><summary style="font-size:18px;color:#C71585"> What is the MERGE statement?</summary>
 
 -   The statement enables conditional updates or inserts into the table. It updates the row if it exists or inserts the row if it does not exist.
+
+</details>
+
+<details><summary style="font-size:18px;color:#C71585">How does an index improve query performance? </summary>
+
+In a relational database management system (RDBMS), an index is a data structure that improves the speed of data retrieval operations on a table. It works by providing a quick lookup mechanism for locating rows based on the values of one or more columns. Here's how an index improves query performance:
+
+-   `Faster Data Retrieval`: When a query specifies conditions in the WHERE clause that match the indexed columns, the database engine can use the index to quickly locate the relevant rows without scanning the entire table. This leads to faster data retrieval, especially for tables with a large number of rows.
+-   `Reduced Disk I/O`: Without an index, the database may need to perform a full table scan to find matching rows, which requires reading every row from disk. With an index, the database can perform an index seek or scan, which involves reading only the index pages containing the relevant data. This reduces disk I/O operations and improves overall query performance.
+-   `Optimized Sorting and Join Operations`: Indexes can also benefit sorting and join operations. For example, if a query involves an ORDER BY clause on an indexed column, the database can use the index to retrieve rows in the desired order without the need for additional sorting. Similarly, indexes can facilitate efficient join operations by providing quick access to related rows in joined tables.
+-   `Covering Indexes`: In some cases, an index may cover all the columns required by a query, eliminating the need to access the actual table data. This is known as a covering index and can further improve query performance by reducing the amount of data that needs to be read from disk.
+-   `Query Plan Optimization`: The presence of indexes allows the database optimizer to consider different query execution plans and choose the most efficient one based on factors such as index selectivity, cardinality, and cost estimates. This can lead to better query performance by selecting optimal access paths.
+-   `Concurrency Control`: In addition to improving read operations, indexes can also enhance the performance of certain types of write operations, such as updates and deletes. By allowing the database to quickly locate rows to modify, indexes can reduce contention and improve concurrency control.
+
+</details>
+
+<details><summary style="font-size:18px;color:#C71585">Explain the concept of database sharding.</summary>
+
+-   Database sharding is the practice of breaking up a large database into smaller, more manageable parts called shards, each of which is hosted on a separate database server.
+
+</details>
+
+<details><summary style="font-size:18px;color:#C71585">Explain the concept of data integrity in a database.</summary>
+
+-   Data integrity ensures the accuracy, consistency, and reliability of data in a database. It is maintained through constraints, relationships, and rules.
+
+</details>
+
+<details><summary style="font-size:18px;color:#C71585">Explain the ACID properties of a transaction.</summary>
+
+-   ACID stands for Atomicity, Consistency, Isolation, and Durability. These properties ensure the reliability of database transactions.
+
+</details>
+
+<details><summary style="font-size:18px;color:#C71585">Explain the concept of database normalization and its types.</summary>
+
+-   Database normalization is the process of organizing data to reduce redundancy and dependency. Types include 1NF (First Normal Form), 2NF, 3NF, and BCNF (Boyce-Codd Normal Form).
+
+</details>
+
+<details><summary style="font-size:18px;color:#C71585">Explain the term 'Normalization' in the context of databases.</summary>
+
+-   Normalization is the process of organizing data in a database to reduce redundancy and improve data integrity. It involves dividing large tables into smaller, related tables.
+
+</details>
+
+<details><summary style="font-size:18px;color:#C71585"> Can we use TRUNCATE with a WHERE clause?</summary>
+
+-   No, we cannot use TRUNCATE with the WHERE clause.
 
 </details>
 
@@ -497,19 +607,6 @@ Before performing any deletion operation, make sure to take appropriate backups 
 
 </details>
 
-<details><summary style="font-size:18px;color:#C71585">How does an index improve query performance? </summary>
-
-In a relational database management system (RDBMS), an index is a data structure that improves the speed of data retrieval operations on a table. It works by providing a quick lookup mechanism for locating rows based on the values of one or more columns. Here's how an index improves query performance:
-
--   `Faster Data Retrieval`: When a query specifies conditions in the WHERE clause that match the indexed columns, the database engine can use the index to quickly locate the relevant rows without scanning the entire table. This leads to faster data retrieval, especially for tables with a large number of rows.
--   `Reduced Disk I/O`: Without an index, the database may need to perform a full table scan to find matching rows, which requires reading every row from disk. With an index, the database can perform an index seek or scan, which involves reading only the index pages containing the relevant data. This reduces disk I/O operations and improves overall query performance.
--   `Optimized Sorting and Join Operations`: Indexes can also benefit sorting and join operations. For example, if a query involves an ORDER BY clause on an indexed column, the database can use the index to retrieve rows in the desired order without the need for additional sorting. Similarly, indexes can facilitate efficient join operations by providing quick access to related rows in joined tables.
--   `Covering Indexes`: In some cases, an index may cover all the columns required by a query, eliminating the need to access the actual table data. This is known as a covering index and can further improve query performance by reducing the amount of data that needs to be read from disk.
--   `Query Plan Optimization`: The presence of indexes allows the database optimizer to consider different query execution plans and choose the most efficient one based on factors such as index selectivity, cardinality, and cost estimates. This can lead to better query performance by selecting optimal access paths.
--   `Concurrency Control`: In addition to improving read operations, indexes can also enhance the performance of certain types of write operations, such as updates and deletes. By allowing the database to quickly locate rows to modify, indexes can reduce contention and improve concurrency control.
-
-</details>
-
 <details><summary style="font-size:18px;color:#C71585">Explain the concept of a stored procedure.</summary>
 
 -   A stored procedure is a set of SQL statements that can be stored in the database and executed by calling the procedure rather than sending the SQL statements from the application.
@@ -534,33 +631,9 @@ In a relational database management system (RDBMS), an index is a data structure
 
 </details>
 
-<details><summary style="font-size:18px;color:#C71585">Explain the concept of database sharding.</summary>
-
--   Database sharding is the practice of breaking up a large database into smaller, more manageable parts called shards, each of which is hosted on a separate database server.
-
-</details>
-
-<details><summary style="font-size:18px;color:#C71585">Explain the ACID properties of a transaction.</summary>
-
--   ACID stands for Atomicity, Consistency, Isolation, and Durability. These properties ensure the reliability of database transactions.
-
-</details>
-
 <details><summary style="font-size:18px;color:#C71585">Explain the concept of a trigger in a database.</summary>
 
 -   A trigger is a set of instructions that are automatically executed ("triggered") in response to certain events, such as an INSERT, UPDATE, or DELETE operation.
-
-</details>
-
-<details><summary style="font-size:18px;color:#C71585">Explain the concept of database normalization and its types.</summary>
-
--   Database normalization is the process of organizing data to reduce redundancy and dependency. Types include 1NF (First Normal Form), 2NF, 3NF, and BCNF (Boyce-Codd Normal Form).
-
-</details>
-
-<details><summary style="font-size:18px;color:#C71585">Explain the term 'Normalization' in the context of databases.</summary>
-
--   Normalization is the process of organizing data in a database to reduce redundancy and improve data integrity. It involves dividing large tables into smaller, related tables.
 
 </details>
 
@@ -641,12 +714,6 @@ In a relational database management system (RDBMS), an index is a data structure
 <details><summary style="font-size:18px;color:#C71585">What is the purpose of the CHECK constraint in SQL?</summary>
 
 -   The CHECK constraint is used to limit the range of values that can be placed in a column.
-
-</details>
-
-<details><summary style="font-size:18px;color:#C71585">Explain the concept of data integrity in a database.</summary>
-
--   Data integrity ensures the accuracy, consistency, and reliability of data in a database. It is maintained through constraints, relationships, and rules.
 
 </details>
 

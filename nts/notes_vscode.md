@@ -2,10 +2,10 @@
 -   𝐔𝐬𝐞𝐟𝐮𝐥𝐥 𝑺𝒚𝒎𝒃𝒐𝒍𝒔: ⇧ ⮐ ⎇ ⌘ ⌥ + ⌃ + ⤶  ⤶ ⬋ ↩︎ ↲ ↵ ↫ ⭿ ♥ ★ → ➡️ ⬅️ ⬆︎ ⬇️
     -   `^ + ⌘ + Spaces` → get Emoji from MacOS
 
-<details>
-<summary style="font-size:25px;color:Orange;text-align:left">Notes Link</summary>
+<details><summary style="font-size:25px;color:Orange;text-align:left">Notes Link</summary>
 
 -   [RemoteDev: Develop from anywhere with Visual Studio Code](https://www.youtube.com/watch?v=CYObXaSjj78)
+
 </details>
 
 ### TWEAK SETTINGS:
@@ -13,7 +13,7 @@
 -   `~/Library/Application\ Support/Code/User/settings.json` → Path for VSC `settings.json` file
 
 -   `⌘ + ⇧ + P`
-    -   🔥search: `setting`; Select: `Open Workspace Setting (JSON)` → to create local workspace Settings? - python.terminal.activateEnvironment": true
+    -   🔥search: `setting`; Select: `Open Workspace Setting (JSON)` → to create local workspace Settings? - `python.terminal.activateEnvironment": true`
     -   search: `key mapping`; Select: `Inspect key mapping` → to inspect key-mapping file.
     -   search: `keyboard shortcut`; Select: `Open Default keyboard shortcut (JSON)` → to inspect shortcut file.
     -   search: `user snippet`; Select: `configure user snippet` → to configure user snippets.
@@ -25,10 +25,7 @@
 -   ~/Library/Application\ Support/Code/User/keybindings.json
 -   ~/Library/Application\ Support/Code/User/snippets
 
-<details>
-<summary style="font-size:25px;color:Orange;text-align:left">USEFULL SHORTCUTS</summary>
-
-#### How to find differences between two files?
+<details><summary style="font-size:25px;color:Orange;text-align:left">USEFULL SHORTCUTS</summary>
 
 #### Shortcuts
 
@@ -70,8 +67,7 @@
 -   Transform indentation to Tab. - `⌘+⇧+P` type 'indentationToTabs' ↦ ⮐
 </details>
 
-<details>
-<summary style="font-size:25px;color:Orange;text-align:left">Windows OS</summary>
+<details><summary style="font-size:25px;color:Orange;text-align:left">Windows OS</summary>
     
 - Keyboard Shortcut (`^ + k + s`):
     - Search: `View: Open Next/Previous Editor`; Set: `⌃ + ⎇ + ➡️` / `⌃ + ⎇ + ⬅️`.
@@ -96,7 +92,13 @@
 
 ### MISC:
 
--   How to search a kewword across multiple files?
-    -   clicking select the folder of the files you want to serch of
-    -   `⌘+⬆︎+f`
-    -   put the kew word into the search box to search
+-   <b style="color:magenta;text-align:left">How to search a kewword across multiple files?</b>
+
+    1.  select the folder/files (by clicking it) you want to serch of.
+    2.  `⌘+⬆︎+f`
+    3.  put the kew word into the search box to search
+
+-   <b style="color:magenta;text-align:left">How to find differences between two files?</b>
+
+    1.  `RightClick` on one file and `select: Select for Compare`
+    2.  `RightClick` on the second file and `select: Compare with Selected`

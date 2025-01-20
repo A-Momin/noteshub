@@ -57,26 +57,26 @@
 
 -   `Commit`:
 
-        -   A commit is a snapshot of the project's state at a particular point in time.
-        -   Each commit has a unique identifier (a hash) and includes changes made to files since the last commit.
-        -   Commits create a chronological history of your project.
+    -   A commit is a snapshot of the project's state at a particular point in time.
+    -   Each commit has a unique identifier (a hash) and includes changes made to files since the last commit.
+    -   Commits create a chronological history of your project.
 
 -   `Branch`:
 
-        -   A branch is a separate line of development within a Git repository.
-        -   Branches allow multiple users to work on different features or fixes simultaneously without affecting each other's work.
-        -   The default branch is usually called master or main.
+    -   A branch is a separate line of development within a Git repository.
+    -   Branches allow multiple users to work on different features or fixes simultaneously without affecting each other's work.
+    -   The default branch is usually called master or main.
 
 -   `HEAD`:
 
     -   HEAD is a reference to the latest commit in the currently checked-out branch.
     -   It represents the snapshot of your project that is currently being worked on.
 
--   ``Remote` Repository`:
+-   `Remote Repository`:
 
-        -   A `remote` repository is a copy of your project hosted on a server or another machine.
-        -   It allows multiple developers to collaborate on the same project.
-        -   Common `remote` repository hosting services include GitHub, GitLab, and Bitbucket.
+    -   A `remote` repository is a copy of your project hosted on a server or another machine.
+    -   It allows multiple developers to collaborate on the same project.
+    -   Common `remote` repository hosting services include GitHub, GitLab, and Bitbucket.
 
 -   `Clone`:
 
@@ -163,7 +163,7 @@
 -   `$ git config --global user.email A.Momin.NYC@gmail.com`
 -   `$ git config --global init.defaultBranch <master_branch>` → setup the initial branch name to create in all new repositories.
 -   `$ 🔥 alias sshadd='eval $(ssh-agent) && ssh-add'` → If any unexpected issue arise, mske sure ssh-agent is running.
--   `$ 🔥 git remote set-url origin git@github.com:Aminul-Momin/<repository_name>.git` → Change your remote's URL from `HTTPS to SSH`. (SSH based Authentication)
+-   `$ 🔥 git remote set-url origin git@github.com:Aminul-Momin/<repository_name>.git` → Updates the URL of the existing origin remote to a new repository address.
 -   `$ git remote set-url origin git@gh2:Aminul-Momin/project_name.git`
 -   `$ git remote` → List out all the remote this git repo has been added to
 -   `$ git remote -v` → Listout all the remote’s URL this git repo has been added to
@@ -477,5 +477,262 @@ add_gh_wh(){
     gh webhook forward --repo=/A-Momin/bookstore --events=push --url=https://54.210.9.192/webhooks/
 }
 ```
+
+-   <details><summary style="font-size:18px;color:#C71585">How to create Github Token for personal Use</summary>
+
+    -   --> `https://github.com/A-Momin/bookstore` --> `Root Level Settings` --> `Developer Settings` --> `Personnel Access Token` --> `Token (classic)`
+
+    </details>
+
+-   <details><summary style="font-size:18px;color:#C71585">How to configure the GitHub CLI (gh) tool with multiple GitHub accounts</summary>
+
+    -   `NOT TESTED`
+
+    To configure the GitHub CLI (`gh`) tool with multiple GitHub accounts, you can set up different authentication contexts for each account. Here's how to achieve this:
+
+    ##### Log in to Each GitHub Account
+
+    You need to authenticate each account with `gh` and create separate profiles.
+
+    1. **Switch to Account 1 (Personal):**
+
+        - `$ gh auth login`
+
+        - Choose GitHub.com.
+        - Select your preferred authentication method (browser or token).
+        - Authenticate with your **personal** account.
+
+    2. **Create a Profile for Account 1:**
+
+        - `$ gh config set -h github.com profile personal` - After logging in, name the profile (e.g., `personal`)
+
+    3. **Switch to Account 2 (Work):**
+
+        - `$ gh auth login`
+        - Repeat the authentication steps for your **work** account.
+
+    4. **Create a Profile for Account 2:**
+
+        - `$ gh config set -h github.com profile work` -> Name the profile (e.g., `work`)
+
+    ##### Switch Between Profiles
+
+    -   Use the **personal account**:
+
+        -   `gh auth status --profile personal`
+
+    -   Use the **work account**:
+
+        -   `$ gh auth status --profile work`
+
+    ##### Use Profiles with Commands
+
+    When using `gh`, specify the profile explicitly if needed:
+
+    ```bash
+    gh repo clone username/repo-name --profile personal
+    gh issue create --repo username/repo-name --profile work
+    ```
+
+    ##### Set Environment Variables for Automation
+
+    To avoid specifying profiles manually, you can automate this by using environment variables for scripts or specific directories.
+
+    In `.bashrc` or `.zshrc`:
+
+    ```bash
+    alias gh-personal='gh --profile personal'
+    alias gh-work='gh --profile work'
+    ```
+
+    Use these aliases when working with `gh`.
+
+    </details>
+
+-   <details><summary style="font-size:18px;color:#C71585">Github Webhook</summary>
+
+    A **GitHub webhook** is a mechanism that allows external services to be notified of events happening in a GitHub repository. When a specific event occurs in a repository (e.g., a push, pull request, or issue creation), GitHub sends an HTTP POST request to a pre-configured URL (the webhook URL) with details about the event.
+
+    Webhooks enable automation by triggering actions in external systems whenever changes occur in a repository.
+
+    -   **Key Components of a GitHub Webhook**
+
+        1. **Webhook URL**:
+
+        -   The endpoint where GitHub will send the event payload.
+        -   Typically, this is an API endpoint or a server that processes the webhook.
+
+        1. **Events**:
+
+        -   You can specify which events will trigger the webhook. Examples include:
+            -   `push`: Triggered when commits are pushed to the repository.
+            -   `pull_request`: Triggered when a pull request is opened, updated, or merged.
+            -   `issues`: Triggered when an issue is created or updated.
+
+        1. **Payload**:
+
+        -   GitHub sends a JSON payload containing details about the event.
+        -   For example, a `push` event payload includes commit details, branch information, and the repository URL.
+
+        1. **Secret** (Optional but Recommended):
+
+        -   A secret key that GitHub includes in the payload as a header (e.g., `X-Hub-Signature-256`).
+        -   Helps validate that the request is genuinely from GitHub.
+
+    -   **How Webhooks Work**
+
+    1. **Configure a Webhook**:
+
+        - Add a webhook to a repository via the GitHub UI or API.
+        - Specify the webhook URL, secret, and event types.
+
+    2. **Trigger an Event**:
+
+        - Perform an action in the repository, like pushing a commit.
+
+    3. **GitHub Sends a POST Request**:
+
+        - GitHub sends a payload to the configured webhook URL.
+
+    4. **Process the Payload**:
+        - Your server receives the payload and processes the data, performing any necessary actions (e.g., updating a CI/CD pipeline, notifying a Slack channel).
+
+    -   **Use Cases for GitHub Webhooks**
+
+        1. **Continuous Integration/Continuous Deployment (CI/CD)**:
+
+        -   Trigger build pipelines when code is pushed to specific branches.
+
+        1. **Notification Systems**:
+
+        -   Send notifications to Slack, Microsoft Teams, or other platforms when issues or pull requests are created.
+
+        1. **Automated Testing**:
+
+        -   Run tests automatically after a pull request is opened or updated.
+
+        1. **Custom Workflows**:
+
+        -   Automate tasks like syncing repositories, updating databases, or triggering serverless functions.
+
+    -   **How to Set Up a Webhook**
+
+        -   Using the GitHub UI:
+
+        1. Navigate to the repository’s **Settings** > **Webhooks**.
+        2. Click **Add webhook**.
+        3. Fill in:
+            - **Payload URL**: Your server's URL.
+            - **Content type**: Choose `application/json` (recommended).
+            - **Secret**: A string for validating requests.
+            - **Events**: Select specific events or "Let me select individual events."
+        4. Save the webhook.
+
+    -   **Validating Webhook Payloads**
+
+        1. GitHub sends the `X-Hub-Signature-256` header with a hashed signature of the payload.
+        2. Use the secret to verify the request:
+
+        -   Compare the hash in the header with one you compute using HMAC SHA-256.
+
+        Example (Python):
+
+        ```python
+        import hmac
+        import hashlib
+
+        def verify_signature(payload, secret, signature):
+            computed_hash = hmac.new(secret.encode(), payload, hashlib.sha256).hexdigest()
+            return hmac.compare_digest(f"sha256={computed_hash}", signature)
+        ```
+
+    </details>
+
+-   <details><summary style="font-size:18px;color:#C71585">How to create Web Hook on a Github repository using `gh` cli</summary>
+
+    You can create a webhook on a GitHub repository using the `gh` CLI tool by using the `gh api` command to interact with the GitHub REST API. Here’s a step-by-step guide:
+
+    1. **Understand the API Endpoint for Webhooks**
+
+        - The GitHub REST API for creating a webhook is:
+
+            ```
+            POST /repos/{owner}/{repo}/hooks
+            ```
+
+        - The request requires a JSON payload with the webhook configuration.
+
+    2. **Prepare the Webhook Data**
+
+        - Before running the `gh api` command, decide on:
+        - The webhook's **URL** (e.g., your server URL).
+        - The type of events the webhook should listen to (e.g., `push`, `pull_request`).
+        - Any additional configuration, such as a secret for security.
+
+        - Example JSON payload:
+            ```json
+            {
+                "name": "web",
+                "active": true,
+                "events": ["push", "pull_request"],
+                "config": {
+                    "url": "https://example.com/webhook",
+                    "content_type": "json",
+                    "insecure_ssl": "0",
+                    "secret": "your-secret-key"
+                }
+            }
+            ```
+
+    3. **Use the `gh` CLI to Create the Webhook**
+
+        - Run the following command, replacing placeholders with your repository details:
+
+        ```bash
+        gh api --method POST \
+        -H "Accept: application/vnd.github+json" \
+        /repos/{owner}/{repo}/hooks \
+        -f name="web" \
+        -F active=true \
+        -F events='["push", "pull_request"]' \
+        -F config='{"url":"https://example.com/webhook","content_type":"json","insecure_ssl":"0","secret":"your-secret-key"}'
+        ```
+
+        - Replace:
+            - `{owner}`: Your GitHub username or organization name.
+            - `{repo}`: The name of the repository.
+            - `https://example.com/webhook`: The actual URL of your webhook.
+            - `your-secret-key`: A secret string for securing the webhook.
+
+    -   4. **Verify the Webhook**
+        -   After creating the webhook, list all webhooks for the repository to verify it:
+        -   `$ gh api /repos/{owner}/{repo}/hooks`
+        -   Look for your webhook in the output and confirm the configuration.
+
+    1. **Example Walkthrough**
+
+        - Assume you have a repository called `my-repo` owned by `my-user`, and your webhook URL is `https://my-webhook-url.com`. Use the following commands:
+
+        - Create the Webhook:
+
+            ```bash
+            gh api --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/my-user/my-repo/hooks \
+            -f name="web" \
+            -F active=true \
+            -F events='["push"]' \
+            -F config='{"url":"https://my-webhook-url.com","content_type":"json","insecure_ssl":"0","secret":"super-secret"}'
+            ```
+
+        - List and Verify Webhooks:
+
+            ```bash
+            gh api /repos/my-user/my-repo/hooks
+            ```
+
+        - This will successfully create and verify a webhook on your GitHub repository. Let me know if you encounter any issues!
+
+    </details>
 
 </details>

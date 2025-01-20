@@ -227,7 +227,27 @@ Django is a high-level web framework written in Python that encourages rapid dev
 
 -   [Field types](https://docs.djangoproject.com/en/4.1/ref/models/fields/#field-types):
 
-    -   [SlugField](https://docs.djangoproject.com/en/4.1/ref/models/fields/#slugfield)
+    -   [SlugField](https://docs.djangoproject.com/en/4.1/ref/models/fields/#slugfield): a SlugField is a specialized field used in models to store short labels or slugs. A slug is a URL-friendly, human-readable string that typically contains letters, numbers, underscores, or hyphens. It’s often used for creating SEO-friendly URLs.
+
+        -   Slugs are often generated from other fields like a title (e.g., turning "My First Blog Post" into "my-first-blog-post").
+        -   Django ensures the slug is valid for URL use by validating its format (e.g., no spaces or special characters).
+        -   Example:
+
+        ```python
+        from django.db import models
+        from django.utils.text import slugify
+
+        class BlogPost(models.Model):
+            title = models.CharField(max_length=200)
+            slug = models.SlugField(max_length=200, unique=True, blank=True)
+
+            def save(self, *args, **kwargs):
+                # Automatically generate the slug from the title if it's not provided
+                if not self.slug:
+                    self.slug = slugify(self.title)
+                super().save(*args, **kwargs)
+        ```
+
     -   [TextField](https://docs.djangoproject.com/en/4.1/ref/models/fields/#textfield)
     -   [CharField](https://docs.djangoproject.com/en/4.1/ref/models/fields/#charfield)
     -   `EmailField`
@@ -245,10 +265,21 @@ Django is a high-level web framework written in Python that encourages rapid dev
 
 -   [Relationship Fields](https://docs.djangoproject.com/en/4.1/ref/models/fields/#module-django.db.models.fields.related):
 
+    ```python
+    from django.db import models
+
+    class Author(models.Model):
+        name = models.CharField(max_length=100)
+
+    class Book(models.Model):
+        title = models.CharField(max_length=200)
+        author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="books")
+    ```
+
     -   `ForeignKey(to, on_delete, **options)` | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#foreignkey)
 
-        -   A `ForeignKey` is used to create a one-to-many relationship. It's used to associate one object with another, where one object (the "source" or "parent") can have multiple related objects (the "targets" or "children").
-        -   Example: A Book (Child) model with a ForeignKey to an Author (Parent) model establishes a relationship where each book is associated with one author, but an author can have multiple books.
+        -   A `ForeignKey` is used to create a many-to-noe relationship. It's used to associate one object with another, where one object (the "source" or "parent") can have multiple related objects (the "targets" or "children"). In this relationship, multiple instances of the related model (child) can reference the same instance of parent model. In other words, one model can be associated with many instances of another model (child).
+        -   Example: A `Book` (Child) model with a `ForeignKey` to an `Author` (Parent) model establishes a relationship where each book is associated with one author, but an author can have multiple books.
         -   Behind the scenes, Django appends `_id` to the field name to create its database column name.
         -   `ForeignKey` accepts other arguments that define the details of how the relation works.
             -   `on_delete`: When an object referenced by a `ForeignKey` is deleted, Django will emulate the behavior of the SQL constraint specified by the `on_delete` argument.
@@ -257,36 +288,55 @@ Django is a high-level web framework written in Python that encourages rapid dev
                     -   The `ON DELETE CASCADE` constraint ensures that if a record in the parent table is deleted, all corresponding records in the child table with the same parent_id will also be deleted.
             -   `related_name`: The name to use for the relation from the related object back to this one. It’s also the default value for `related_query_name`
 
-    -   `ManyToManyField(to, **options)` | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#manytomanyfield)
-
-        -   A ManyToManyField is used to create a many-to-many relationship between objects. This means that multiple objects from one model can be related to multiple objects from another model.
-        -   Example: A Student model with a ManyToManyField to a Course model establishes a many-to-many relationship, where each student can enroll in multiple courses, and each course can have multiple students.
-        -   `related_name`
-        -   `related_query_name`
-        -   `limit_choices_to`
-        -   `symmetrical`
-        -   `through`
-        -   `through_fields`
-        -   `db_table`
-        -   `db_constraint`
-        -   `swappable`
-
     -   `OneToOneField(to, on_delete, parent_link=False, **options)` | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#onetoonefield)
 
         -   A `OneToOneField` is a type of `ForeignKey` with a unique constraint. It creates a one-to-one relationship, ensuring that each source object is associated with only one target object, and vice versa.
-        -   Example: A Profile model with a `OneToOneField` to a User model creates a one-to-one relationship, where each user has a single profile, and each profile belongs to only one user.
+        -   Example: A `Profile` model with a `OneToOneField` to a `User` model creates a one-to-one relationship, where each user has a single profile, and each profile belongs to only one user.
         -   `on_delete`: When an object referenced by a `ForeignKey` is deleted, Django will emulate the behavior of the SQL constraint specified by the `on_delete` argument.
         -   `parent_link`: When True and used in a model which inherits from another concrete model, indicates that this field should be used as the link back to the parent class, rather than the extra `OneToOneField` which would normally be implicitly created by subclassing.
+
+    -   `ManyToManyField(to, **options)` | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#manytomanyfield)
+
+        -   A `ManyToManyField` is used to create a many-to-many relationship between objects. This means that multiple objects from one model can be related to multiple objects from another model.
+        -   Example: A `Student` model with a `ManyToManyField` to a `Course` model establishes a many-to-many relationship, where each student can enroll in multiple courses, and each course can have multiple students.
 
     -   `GenericForeignKey` and `GenericRelation`:
 
         -   These fields are used when you need to create a generic relationship that can link a model to any other model. It's typically used for scenarios where a model can be related to different types of objects.
         -   Example: A Comment model can have a `GenericForeignKey` to allow it to be associated with various other models like BlogPost, Video, and Image.
 
-    -   `Reverse Relations`:
-        -   if you have a `ForeignKey` field named `author` in a `Book` model that relates to an `Author` model, Django automatically creates a reverse relation in the `Author` model. The default name of this reverse relation is derived from the lowercase name of the related model followed by `_set`. So, in this case, the default name of the reverse relation in the Author model would be `book_set`.
-        -   By defining a related name in a `ForeignKey` or a `ManyToManyField`, you can create reverse relations. These allow you to access objects related to a particular instance from the other end of the relationship.
-        -   Example: If an Book model has a `ForeignKey` to a Author model with `related_name='books'`, you can access the books written by an author using `author.books.all()`.
+    -   **Relation and Reverse Relations**:
+
+        -   if no `related_name` is specified, the default name of the reverse relation is derived from the lowercase name of the related model followed by `_set`. So, in this case, the default name of the reverse relation in the `Author` model would be `book_set`.
+        -   By defining a related name in a `ForeignKey` or a `ManyToManyField`, you can create reverse relations. If an `Book` model has a `ForeignKey` to a `Author` model with `related_name='books'`, you can access the books written by an author using `author.books.all()`.
+        -   Accessing Related Objects (Forward Relationship):
+
+            ```python
+            book = Book.objects.get(id=1)
+            print(book.author.name)  # Access the related Author object
+            ```
+
+        -   Accessing Reverse Relationship: Django automatically creates a reverse relationship using the `related_name` attribute or the default name (`modelname_set`).
+
+            ```python
+            author = Author.objects.get(id=1)
+            books = author.books.all()  # Access all Book objects related to the Author
+            ```
+
+            -   Without `related_name`, it would default to `author.book_set.all()`.
+
+    -   **Options** of Relationship Fields:
+
+        -   `related_name`:
+        -   `ForeignKey.related_query_name`: The name to use for the reverse filter name from the target model. It defaults to the value of related_name or default_related_name if set, otherwise it defaults to the name of the model.
+        -   `limit_choices_to`:
+        -   `ForeignKey.to_field`: The field on the related object that the relation is to. By default, Django uses the primary key of the related object. If you reference a different field, that field must have `unique=True`.
+        -   `symmetrical`:
+        -   `through`:
+        -   `through_fields`:
+        -   `db_table`:
+        -   `db_constraint`:
+        -   `swappable`:
 
 -   `Field Options` (Arguments of Field Types): In Django, a Model represents a table in a database and its fields represent columns. Each field in a Django Model can have various options (parameters) to customize its behavior. Here are some commonly used Django model field options:
 
@@ -918,7 +968,7 @@ These default context variables are available in Django templates and provide es
     -   `Create a Python Module for Template Tags`:
 
         -   Start by creating a Python module to store your custom template tags. This module can be named anything, but conventionally it's named `templatetags` and placed within one of your Django apps.
-        -   Inside the `templatetags` module, create a new Python file to define your custom template tags. This file should have a .py extension.
+        -   Inside the `templatetags` directory, create a new Python file `__init__.py` and `my_tags.py` to define your custom template tags.
 
     -   `Define Template Tag Functions`:
 
@@ -953,8 +1003,41 @@ These default context variables are available in Django templates and provide es
         -   In this example, we load the `my_tags` module containing the `current_time` template tag, and then call the `current_time` tag with a format string argument to display the current time in the specified format.
 
     -   `Registering More Complex Template Tags`:
+
         -   If you need to define more complex template tags that include block tags, you can use the` @register.tag` decorator instead of `@register.simple_tag`.
         -   With block tags, you can define tags that enclose content and manipulate it in various ways.
+        -   If your tag needs to render HTML rather than return plain data, use an **inclusion tag**.
+
+            1. Define the tag in `templatetags/custom_tags.py`:
+
+                ```python
+                @register.inclusion_tag('partials/item_list.html')
+                def render_items(items):
+                    """
+                    Renders a list of items as an HTML list.
+                    Usage: {% render_items items %}
+                    """
+                    return {'items': items}
+                ```
+
+            2. Create a partial template: `templates/partials/item_list.html`:
+
+                ```html
+                <ul>
+                    {% for item in items %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+                ```
+
+            3. Use the tag in your main template:
+
+                ```html
+                {% load custom_tags %}
+
+                <h1>Item List</h1>
+                {% render_items items %}
+                ```
 
 -   **Built-in Template Tag**: Django comes with a set of built-in template tags that cover common use cases, such as looping over lists, conditionally displaying content, formatting dates, and more. Additionally, you can create your own custom template tags to encapsulate reusable functionality specific to your project. Followings are some examples of using a built-in template tags:
 
@@ -1107,72 +1190,72 @@ from django.forms.fields import *
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 ```
 
--   `Form Class`:
+-   **Form Class**:
 
     -   Django provides a `django.forms.Form` class to create HTML forms.
     -   Forms are used to handle user input, validate data, and generate HTML for rendering.
 
--   `Field Types`:
+-   **Field Types**:
 
     -   Django forms include various built-in field types (e.g., `CharField`, `IntegerField`, `EmailField`, etc.) to represent different types of input.
 
--   `Validation`:
+-   **Validation**:
 
     -   Forms perform validation on submitted data based on field types and additional validation methods.
     -   Errors are generated for invalid input, and error messages can be displayed in the template.
 
--   `Widgets`:
+-   **Widgets**:
 
     -   Form fields use widgets to define how the input should be displayed in HTML.
     -   Examples of widgets include TextInput, PasswordInput, and CheckboxInput.
 
--   `Form Rendering`:
+-   **Form Rendering**:
 
     -   Django provides template tags and filters for rendering form fields in HTML templates.
     -   The `{{ form }}` variable in a template renders all fields of the form.
 
--   `Handling Submissions`:
+-   **Handling Submissions**:
 
     -   Forms handle both initial form rendering and form submission.
     -   When a form is submitted, the data is validated, and if valid, it can be processed in the view.
 
--   `CSRF Protection`:
+-   **CSRF Protection**:
 
     -   Django forms include built-in CSRF protection to prevent Cross-Site Request Forgery attacks.
     -   `{% csrf_token %}` is used in the form template to include a hidden input with a CSRF token.
 
--   `Model Forms`:
+-   **Model Forms**:
 
     -   Django provides ModelForm which is a specialized form for working with Django models.
     -   It automatically generates form fields based on the model's fields.
 
--   `Formsets`:
+-   **Formsets**:
 
     -   Django allows the creation of formsets, which are a way to manage multiple forms on the same page.
 
--   `Customization`:
+-   **Customization**:
 
     -   Forms can be customized by defining a form class and overriding methods like `__init__` and `clean`.
     -   Custom validation methods can be added to perform additional validation logic.
 
--   `Rendering without a Model`:
+-   **Rendering without a Model**:
 
     -   Forms can be used without a corresponding model. They can handle arbitrary data.
     -   This is useful for scenarios where data doesn't need to be stored in a database.
 
--   `Dynamic Forms`:
+-   **Dynamic Forms**:
 
     -   Form classes can be dynamically created or modified based on conditions or user input in the view.
 
--   `Internationalization (i18n)`:
+-   **Internationalization (i18n)**:
 
     -   Forms support internationalization by allowing translation of error messages and labels.
 
--   `AJAX Support`:
+-   **AJAX Support**:
 
     -   Forms can be used in combination with AJAX to submit and validate data without reloading the entire page.
 
--   `Form Fields` and `Field Arguments`:
+-   **Form Fields** and **Field Arguments**:
 
     -   Available Fields Arguments :
 
@@ -1217,7 +1300,7 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 
     -   `clean_<fieldname>_unique(self)`: This method is called for fields that have the `unique=True` option set. It can be used to check if the value of the field is unique among all other objects in the database. For example, if you have a User model with a unique email field, you can use clean_email_unique() to check if the email address is already in use.
 
-    -   `clean_<fieldname>choices(self)`: This method is called for fields that have `choices` defined. It can be used to validate that the value of the field is one of the allowed choices. For example, if you have a ChoiceField with the choices "Yes" and "No", you can use `clean<fieldname>_choices()` to ensure that the value is one of those two options.
+    -   `clean_<fieldname>_choices(self)`: This method is called for fields that have `choices` defined. It can be used to validate that the value of the field is one of the allowed choices. For example, if you have a ChoiceField with the choices "Yes" and "No", you can use `clean<fieldname>_choices()` to ensure that the value is one of those two options.
 
     -   Each form field has a corresponding Widget class, which in turn corresponds to an HTML form widget such as `<input type="text">`. In most cases, the field will have a sensible `default widget`. For example, by default, a CharField will have a TextInput widget, that produces an `<input type="text">` in the HTML. If you needed `<textarea>` instead, you’d specify the appropriate widget when defining your form field,
 
@@ -1418,21 +1501,122 @@ def my_view(request):
 
 <details><summary style="font-size:25px;color:Orange">Some Built-in Apps in Django</summary>
 
--   **django.contrib.contenttypes**: The `django.contrib.contenttypes` is a built-in application that provides a framework for creating, storing, and managing generic relationships between Django models. It allows you to create relationships between any two models without having to modify the models themselves. This is particularly useful when you have models that need to be related to multiple other models in a generic way, such as a tagging system, a commenting system, or a user-generated content system.
+#### django.contrib.contenttypes:
 
-    -   `ContentType Model`:
-        -   The ContentType model provided by `django.contrib.contenttypes` represents a content type - essentially, a Django model.
-        -   This model is used to track the models (or content types) available in your Django project.
-        -   It stores information such as the app label and model name for each registered model.
-        -   You can access the ContentType model via `django.contrib.contenttypes.models.ContentType`.
+The `django.contrib.contenttypes` is a built-in application that provides a framework for creating, storing, and managing generic relationships between Django models. It allows you to create relationships between any two models without having to modify the models themselves. This is particularly useful when you have models that need to be related to multiple other models in a generic way, such as a tagging system, a commenting system, or a user-generated content system.
 
--   **django.contrib.admin**:
+-   **ContentType Model**:
+    -   The ContentType model provided by `django.contrib.contenttypes` represents a content type - essentially, a Django model.
+    -   This model is used to track the models (or content types) available in your Django project.
+    -   It stores information such as the app label and model name for each registered model.
+    -   You can access the ContentType model via `django.contrib.contenttypes.models.ContentType`.
 
--   **django.contrib.auth**:
+#### django.contrib.admin:
 
--   **django.contrib.sessions**:
+-   [django-admin and manage.py](https://docs.djangoproject.com/en/4.0/ref/django-admin/#django-admin-createsuperuser)
 
--   **django.contrib.staticfiles**:
+The Django Admin panel (madularized into `django.contrib.admin`) is a built-in feature of the Django web framework that provides a user-friendly interface for managing the administrative tasks of a Django project. It is a powerful tool that allows developers, administrators, and authorized users to perform various administrative operations without having to write custom views or templates.
+
+`django.contrib.admin` is included in the Django core and is available by default in every Django project. It is designed to simplify the process of creating and managing database content for non-technical users, allowing them to focus on managing content rather than dealing with the underlying database and code.
+
+The Django Admin panel offers the following features:
+
+-   `User Authentication`: The Admin panel provides a secure authentication system for administrators. It supports user registration, login, and password management.
+-   `CRUD Operations`: It allows administrators to perform Create, Read, Update, and Delete (CRUD) operations on the database records. Administrators can add, edit, and delete records directly from the Admin interface.
+-   `Automatic Interface Generation`: The Admin panel automatically generates the user interface based on the registered models in your Django project. It creates a customizable interface for each model, displaying fields, relationships, and actions associated with the model.
+-   `Filtering and Searching`: Administrators can filter and search records based on specific criteria. The Admin panel provides filter options for each field in a model, allowing administrators to narrow down the displayed records.
+-   `Permission Management`: Django Admin allows fine-grained control over user permissions and access rights. Administrators can define different user roles and assign specific permissions to each role, determining what operations users can perform in the Admin panel.
+-   `Customization`: The admin application is highly configurable and can be customized using Python code or templates to change the look and feel of the interface or to add custom functionality. Developers can define custom views, templates, forms, and widgets to extend the admin application's functionality.
+
+The Django Admin panel is automatically enabled when you create a Django project. By registering your models with the Admin panel, you can easily manage and interact with your project's data through a user-friendly interface. It is particularly useful for managing content, performing administrative tasks, and quickly prototyping functionality during the development process.
+
+#### django.contrib.auth:
+
+#### django.contrib.sessions:
+
+#### django.contrib.messages:
+
+In the context of the Django framework, the term "message" typically refers to the messages framework, which is a part of Django's contrib packages. The messages framework allows you to store simple messages in one request and retrieve them for display in a subsequent request. This is particularly useful for displaying notifications or feedback to users after they perform certain actions on a website. Here are the key components and concepts related to the Django messages framework:
+
+-   `Usage Scenario`: The messages framework is commonly used to display feedback messages to users after they submit forms, perform actions, or encounter errors on a website.
+
+-   `Adding Messages`:
+
+    -   You can add messages to the message framework using the messages module provided by Django.
+    -   Typically, you add messages in your views after certain actions are performed, such as form submissions, login attempts, or when errors occur.
+    -   Messages are added to the user's session and are only displayed once on the next page load.
+
+-   `Message Levels`: Messages are classified into different levels based on their importance or nature. The available message levels in Django are: **DEBUG**, **INFO**, **SUCCESS**, **WARNING**, **ERROR**.
+
+-   `Message Storage Backend`:
+
+    -   By default, Django stores messages in the user's session using the session framework.
+    -   You can customize the message storage backend by implementing your own message storage backend class if you need to store messages differently, such as in a database or cache.
+
+-   `Message Middleware`:
+
+    -   Django includes built-in middleware (django.contrib.messages.middleware.MessageMiddleware) that automatically adds a messages attribute to each request, containing the user's messages.
+    -   This middleware is responsible for fetching messages from the session and making them available to your views and templates.
+
+-   `Displaying Messages`:
+
+    -   Messages added to the message framework are typically displayed in templates using template tags provided by Django.
+    -   The most common way to display messages is by iterating over them in your template and rendering them as HTML elements, such as divs or alerts.
+    -   Django provides template tags like `{% if messages %}` and `{% for message in messages %}` to help you display messages in your templates.
+
+    ```py
+    # views.py
+    from django.contrib import messages
+    from django.shortcuts import render, redirect
+
+    def my_view(request):
+        if request.method == 'POST':
+            # Process form data
+            # Add success message
+            messages.success(request, 'Form submitted successfully!')
+            return redirect('success_page')
+        return render(request, 'my_template.html')
+    ```
+
+    ```html
+    <!-- my_template.html  -->
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    ```
+
+    -   When the form is successfully submitted, a success message is added to the message framework using messages.success(). Then, in the template, messages are iterated over and displayed using HTML elements. The specific CSS classes applied to each message will depend on its level (success, warning, error, etc.).
+
+-   `Clearing Messages`: Messages can be automatically cleared from the storage after being displayed. This prevents messages from persisting across multiple requests. The default behavior is to clear messages after rendering them in the template. Here's a basic example of how messages are used in a Django view:
+
+#### django.contrib.staticfiles:
+
+`django.contrib.staticfiles` is a built-in Django app that simplifies the management of static files (such as CSS, JavaScript, images, etc.) in a web project.
+
+1. **Static Files**: These are non-Python files, like CSS, JS, and images, that do not change dynamically and are typically served directly to clients (e.g., web browsers).
+
+    - **Centralized Management**: It allows developers to gather all static files from different parts of the project (apps, third-party libraries) into a single location for easier deployment and management.
+    - **Development vs. Production**: During development, static files can be served easily using the Django development server. In production, Django provides tools to collect these files into a single directory, which can then be served by a web server like Nginx or Apache.
+
+2. **Configuration**: In the `settings.py` file, you typically define a few settings related to static files:
+
+    - `STATIC_URL`: The URL endpoint for static files (e.g., `/static/`).
+    - `STATICFILES_DIRS`: A list of directories where Django will search for additional static files (besides the default app directories).
+    - `STATIC_ROOT`: The directory where Django will collect all static files when you run the `collectstatic` command (used in production).
+
+3. **How It Works**:
+
+    - **In Development**: When using Django’s development server (`python manage.py runserver`), static files are served automatically as long as `django.contrib.staticfiles` is enabled in `INSTALLED_APPS`.
+    - **In Production**: You can run `python manage.py collectstatic`, which collects all the static files from your app directories and any directories specified in `STATICFILES_DIRS` into the `STATIC_ROOT` directory. From there, a web server can serve them.
+
+4. **Static Files Tag**: In Django templates, you can reference static files using the `{% static %}` template tag. For example:
+    ```html
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    ```
 
 </details>
 
@@ -1453,14 +1637,14 @@ The main components of Django ORM (Object-Relational Mapping) include:
 
 -   **Models**: Models are Python classes that represent database tables. Each model class corresponds to a table in the database, and each attribute of the model class represents a column in the table. Models define the structure of the data and provide methods for interacting with the database.
 -   **Fields**: Fields are the attributes of a model class that define the type and characteristics of the data stored in the corresponding database columns. Django provides a variety of built-in field types (e.g., CharField, IntegerField, DateField) for different data types and validation requirements.
--   **QuerySet**: QuerySet is a collection of database query results. It represents a list of objects retrieved from the database based on a specific query. QuerySet allows you to filter, update, delete, and perform other operations on database records.
+-   **QuerySet**: a QuerySet object is essentially a container that holds the results of a database query. It represents a list of objects retrieved from the database based on a specific query. It provides intuitive APIs to filter, update, delete, and perform other operations on database records.
 -   **Manager**: Manager is an interface through which you interact with the database using QuerySets. Each model class has a default manager that provides methods for performing database operations. You can also define custom managers to encapsulate common query logic or filter methods.
 -   **Database Migration**: Database migration is the process of synchronizing changes in model definitions (e.g., adding new fields, renaming tables) with the underlying database schema. Django provides a built-in migration system (using manage.py commands) to automate the generation and execution of database migration scripts.
 -   **Database Backend**: Database backend is the component responsible for communicating with the database. Django supports multiple database backends (e.g., PostgreSQL, MySQL, SQLite) and provides an abstraction layer that allows you to write database-agnostic code.
 
 These components work together to provide a high-level interface for interacting with the database in Django applications. They abstract away the complexities of database management and provide developers with powerful tools for building data-driven web applications.
 
-#### Manager() vs QuerySet():
+#### **Manager()** vs **QuerySet()**:
 
 In Django, both Manager and QuerySet are integral parts of the Object-Relational Mapping (ORM) system, which allows you to interact with your database using Python objects instead of writing raw SQL queries. However, they serve different purposes within the Django ORM.
 
@@ -1500,7 +1684,9 @@ In Django, both Manager and QuerySet are integral parts of the Object-Relational
     -   In the above example, `get_published()` returns a QuerySet of published posts, and then the `filter()` method is chained to further narrow down the selection to posts with titles containing "Django".
     -   In summary, Manager is responsible for defining query methods on a model, while QuerySet is the representation of the actual query and allows you to chain methods to build and refine queries. They work together to provide a powerful way to interact with your database using Python code.
 
-#### model.Manager.create() and model.Model.save()
+#### **model.Manager.create()** and **model.Model.save()**
+
+-   [Django ORM - Difference between save() and create()](https://www.youtube.com/watch?v=Q7HlaH3a_zc&list=PLOLrQ9Pn6cayYycbeBdxHUFrzTqrNE7Pe&index=24)
 
 -   `model.Manager.create(**kwargs)`:
 
@@ -1534,6 +1720,17 @@ In Django, both Manager and QuerySet are integral parts of the Object-Relational
     ```
 
 <details><summary style="font-size:20px;color:Red">Demonstrate ORM Methods</summary>
+
+-   `Check what sql query gets generated after each ORM query`
+
+    -   `$ python manage.py shell`
+        ```python
+        >>> from django.db import connection, reset_queries
+        >>> from book.models import Book
+        >>> reset_queries()
+        >>> Book.objects.create(title="DSA", author="Walter Marks")
+        >>> connection.queries
+        ```
 
 -   `Complex Query`:
 
@@ -1693,7 +1890,7 @@ In Django, both Manager and QuerySet are integral parts of the Object-Relational
 <details><summary style="font-size:20px;color:Red"> How to perform `JOIN` query ?</summary>
 
 -   In Django's Object-Relational Mapping (ORM), you can perform JOIN operations to retrieve data from multiple database tables using various methods. Below are some common ways to perform a JOIN query in Django ORM.
--   Assuming you have two Django models: Author and Book, and you want to join them based on a common field, such as author_id, here's a demonstration of multiple ways to perform a JOIN query:
+-   Assuming you have two Django models: `Author` and `Book`, and you want to join them based on a common field, such as author_id, here's a demonstration of multiple ways to perform a JOIN query:
 
 #### Using `.select_related()` for `ForeignKey` Relationships:
 
@@ -1784,6 +1981,7 @@ In Django, both Manager and QuerySet are integral parts of the Object-Relational
 
 -   [Using the Django authentication system](https://docs.djangoproject.com/en/4.1/topics/auth/default/)
 -   [Customizing authentication in Django](https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#customizing-authentication-in-django)
+-   [Session Vs JWT: The Differences You May Not Know!](https://www.youtube.com/watch?v=fyTxwIa-1U0)
 
 Django provides a robust authentication and authorization system. These two components are essential for securing web applications by verifying the identity of users and determining their access rights. Let's delve into the details of the authentication and authorization system in Django:
 
@@ -2009,13 +2207,13 @@ Authorization refers to the process of determining whether a user has permission
         - Token-based authentication is suitable for scenarios where the client and server may reside on different domains.
         - CORS (Cross-Origin Resource Sharing) headers can be configured to allow requests with the authentication token to be made from different origins.
 
--   4. Code Example:
+3. Example:
 
-    -   Install the djangorestframework-simplejwt package:
+    - Install the djangorestframework-simplejwt package:
 
-        -   `$ pip install djangorestframework-simplejwt`
+        - `$ pip install djangorestframework-simplejwt`
 
-    -   `Configure settings`:
+    - `Configure settings`:
 
         ```python
         # settings.py
@@ -2027,7 +2225,7 @@ Authorization refers to the process of determining whether a user has permission
         }
         ```
 
-    -   `Usage in views`:
+    - `Usage in views`:
 
         ```python
         # django_app/views.py
@@ -2051,7 +2249,7 @@ Authorization refers to the process of determining whether a user has permission
         ]
         ```
 
-    -   `Invoke from Python Client`:
+    - `Invoke from Python Client`:
 
         ```python
         import requests
@@ -2080,29 +2278,27 @@ Authorization refers to the process of determining whether a user has permission
             print(results)
         ```
 
--   **rest_framework.authtoken.views** vs **rest_framework_simplejwt.views**: rest_framework.authtoken.views and rest_framework_simplejwt.views are two different modules in Django REST Framework (DRF) that provide views for token-based authentication, but they offer different functionalities and use different token generation mechanisms.
+4. **rest_framework.authtoken.views** vs **rest_framework_simplejwt.views**: `rest_framework.authtoken.views` and `rest_framework_simplejwt.views` are two different modules in Django REST Framework (DRF) that provide views for token-based authentication, but they offer different functionalities and use different token generation mechanisms.
 
-    -   `rest_framework.authtoken.views:`
+    - `rest_framework.authtoken.views:`
 
-        -   This module provides views for token-based authentication using Django's built-in token authentication system.
-        -   The main view provided by rest_framework.authtoken.views is ObtainAuthToken, which is used for obtaining authentication tokens.
-        -   When a user logs in with their username and password, ObtainAuthToken generates a random token associated with the user and returns it as a response.
-        -   The token is typically stored in the database associated with the user model, and subsequent requests include the token in the request headers for authentication.
-        -   This module is suitable for basic token-based authentication needs and integrates seamlessly with Django's authentication system.
+        - This module provides views for token-based authentication using Django's built-in token authentication system.
+        - The main view provided by rest_framework.authtoken.views is ObtainAuthToken, which is used for obtaining authentication tokens.
+        - When a user logs in with their username and password, ObtainAuthToken generates a random token associated with the user and returns it as a response.
+        - The token is typically stored in the database associated with the user model, and subsequent requests include the token in the request headers for authentication.
+        - This module is suitable for basic token-based authentication needs and integrates seamlessly with Django's authentication system.
 
-    -   `rest_framework_simplejwt.views:`
+    - `rest_framework_simplejwt.views:`
 
-        -   This module provides views for token-based authentication using JSON Web Tokens (JWTs) with the djangorestframework-simplejwt package.
-        -   The main view provided by rest_framework_simplejwt.views is TokenObtainPairView, which is used for obtaining JWT authentication tokens.
-        -   When a user logs in with their username and password, TokenObtainPairView generates a JWT containing user information and additional data (e.g., expiration time) and returns it as a response.
-        -   JWTs are signed using cryptographic algorithms (e.g., HMAC or RSA), ensuring their authenticity and integrity.
-        -   The djangorestframework-simplejwt package offers advanced features such as token expiration, token refreshing, and custom claims, making it suitable for more complex authentication requirements.
+        - This module provides views for token-based authentication using JSON Web Tokens (JWTs) with the djangorestframework-simplejwt package.
+        - The main view provided by rest_framework_simplejwt.views is TokenObtainPairView, which is used for obtaining JWT authentication tokens.
+        - When a user logs in with their username and password, TokenObtainPairView generates a JWT containing user information and additional data (e.g., expiration time) and returns it as a response.
+        - JWTs are signed using cryptographic algorithms (e.g., HMAC or RSA), ensuring their authenticity and integrity.
+        - The djangorestframework-simplejwt package offers advanced features such as token expiration, token refreshing, and custom claims, making it suitable for more complex authentication requirements.
 
--   **DRF Token vs JSON Web Token (JWT) Authentication**
+-   **DRF Token** vs **JSON Web Token (JWT)** Authentication: Both Token Authentication systems are popular methods for securing APIs in Django Rest Framework (DRF). Each method has its own characteristics, and the choice between them depends on factors such as ease of use, flexibility, and specific project requirements.
 
-    Both Token Authentication (using `rest_framework.authtoken`) and JSON Web Token (JWT) Authentication (using `djangorestframework-simplejwt`) are popular methods for securing APIs in Django Rest Framework (DRF). Each method has its own characteristics, and the choice between them depends on factors such as ease of use, flexibility, and specific project requirements.
-
-    -   ##### DRF Token Authentication (`rest_framework.authtoken`):
+    -   DRF Token Authentication (`rest_framework.authtoken`):
 
         -   Uses a simple token system where a unique token is generated for each user.
         -   Tokens are stored in a database table associated with the user.
@@ -2111,7 +2307,7 @@ Authorization refers to the process of determining whether a user has permission
         -   Tokens are random strings, providing a level of security.
         -   Tokens can be manually invalidated by removing them from the database.
 
-    -   ##### JSON Web Token (JWT) Authentication (`djangorestframework-simplejwt`):
+    -   JSON Web Token (JWT) Authentication (`djangorestframework-simplejwt`):
         -   Uses JSON Web Tokens, which are self-contained and can include user information and expiration.
         -   Tokens are not stored on the server; the server validates and decodes the token on each request.
         -   Tokens are created based on user credentials during authentication and can include claims (e.g., user ID, expiration).
@@ -2291,7 +2487,7 @@ sessions are a mechanism for persisting user data across HTTP requests. They all
 
 -   **Accessing Session Data**:
 
-    -   Within your Django views or other parts of your application, you can access the session data using the request.session attribute, which provides a dictionary-like interface to interact with the session.
+    -   Within your Django views or other parts of your application, you can access the session data using the `request.session` attribute, which provides a dictionary-like interface to interact with the session.
     -   For example, you can set session variables using `request.session['key'] = value`, retrieve session variables using `value = request.session.get('key', default)`, or delete session variables using `del request.session['key']`.
 
     -   Example usage in a view:
@@ -2316,6 +2512,199 @@ sessions are a mechanism for persisting user data across HTTP requests. They all
 
 -   **Session Cleanup**:
     -   Django provides management commands (`clearsessions`) to clean up expired sessions from the session store. This helps prevent the session store from growing too large over time.
+
+</details>
+
+---
+
+<details><summary style="font-size:25px;color:Orange">Caching</summary>
+
+Caching in Django is a powerful mechanism to improve the performance and scalability of your web applications by reducing the amount of dynamic content generation required for each request. By storing and reusing previously generated responses, you can significantly reduce the load on your database and other backend components, leading to faster response times and a better user experience.
+
+### Types of Caching in Django
+
+1. **Database Caching**: Stores query results in the cache, reducing the number of database hits.
+2. **File System Caching**: Stores cache entries as files on the filesystem.
+3. **Memory-Based Caching**: Stores cache entries in memory using backends like Memcached or Redis.
+4. **In-Memory Caching**: Simple caching that stores data in the memory of the Python process itself (suitable for small-scale applications).
+
+### Django Caching Framework
+
+Django provides a flexible caching framework that supports various cache backends. The framework can be configured to use one or more cache backends and allows you to control the caching behavior at different levels: per-site, per-view, template fragment, or low-level API.
+
+### Configuring Cache Backends
+
+You can configure the cache backend in your `settings.py` file. Here are some examples:
+
+-   **In-Memory Caching (Local Memory Cache)**:
+
+    ```python
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'unique-snowflake',
+        }
+    }
+    ```
+
+-   **Memcached**:
+
+    ```python
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': '127.0.0.1:11211',
+        }
+    }
+    ```
+
+-   **Redis**:
+
+    ```python
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': 'redis://127.0.0.1:6379/1',
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            }
+        }
+    }
+    ```
+
+### Types of Caching in Django
+
+1. **Per-Site Caching**:
+
+    - Caches the entire site. All views will use the same cache.
+
+    ```python
+    MIDDLEWARE = [
+        'django.middleware.cache.UpdateCacheMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.cache.FetchFromCacheMiddleware',
+        # other middleware
+    ]
+
+    CACHE_MIDDLEWARE_SECONDS = 600  # Cache duration in seconds
+    CACHE_MIDDLEWARE_KEY_PREFIX = ''  # Prefix for cache keys
+    ```
+
+2. **Per-View Caching**:
+
+    - Caches individual views. You can control which views are cached and for how long.
+
+    ```python
+    from django.views.decorators.cache import cache_page
+
+    @cache_page(60 * 15)
+    def my_view(request):
+        # view code
+    ```
+
+3. **Template Fragment Caching**:
+
+    - Caches specific parts of a template. Useful for caching expensive template snippets.
+
+    ```html
+    {% load cache %} {% cache 500 sidebar %}
+    <div class="sidebar">... expensive sidebar content ...</div>
+    {% endcache %}
+    ```
+
+4. **Low-Level Caching API**:
+
+    - Provides a way to cache arbitrary data in your views or models.
+
+    ```python
+    from django.core.cache import cache
+
+    def my_view(request):
+        data = cache.get('my_key')
+        if not data:
+            data = expensive_calculation()
+            cache.set('my_key', data, timeout=60*15)
+        return HttpResponse(data)
+    ```
+
+### Advanced Caching Techniques
+
+1. **Cache Versioning**:
+
+    - Allows you to version your cache keys to invalidate old cache entries without changing the cache key names.
+
+    ```python
+    cache.set('my_key', data, timeout=60*15, version=2)
+    cache.get('my_key', version=2)
+    ```
+
+2. **Cache Key Prefixing**:
+
+    - Use prefixes to avoid key collisions when using the same cache for multiple applications.
+
+    ```python
+    CACHE_MIDDLEWARE_KEY_PREFIX = 'myapp'
+    ```
+
+3. **Custom Cache Backends**:
+
+    - You can implement your custom cache backend by subclassing Django's `BaseCache` class.
+
+4. **Distributed Caching**:
+    - Use distributed caching solutions like Redis or Memcached for scaling out across multiple servers.
+
+### Cache Invalidation:
+
+Proper cache invalidation is crucial to ensure that your users see the most up-to-date content. Django provides several ways to handle cache invalidation:
+
+1. **Time-based Invalidation**:Specify a timeout when setting cache entries.
+2. **Manual Invalidation**:Manually delete or update cache entries as needed.
+    ```python
+    cache.delete('my_key')
+    ```
+3. **Signal-based Invalidation**:Use Django's signals to automatically invalidate cache entries when certain events occur (e.g., model save or delete).
+
+### Best Practices
+
+1. **Choose the Right Cache Backend**: Select a cache backend that fits your application's needs and deployment environment.
+2. **Use Cache Wisely**: Cache data that is expensive to generate and does not change frequently.
+3. **Monitor Cache Performance**: Use monitoring tools to keep an eye on cache hit/miss rates and performance metrics.
+4. **Handle Cache Failures Gracefully**: Ensure your application can handle cache backend failures without crashing.
+
+-   **Example**: Combining Different Caching Strategies
+
+Here's an example combining per-view and template fragment caching:
+
+```python
+from django.views.decorators.cache import cache_page
+from django.shortcuts import render
+
+@cache_page(60 * 15)
+def my_view(request):
+    data = fetch_data()
+    return render(request, 'my_template.html', {'data': data})
+
+# my_template.html
+{% load cache %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+</head>
+<body>
+    <h1>My Data</h1>
+    {% cache 500 data_fragment %}
+        <div>
+            {{ data }}
+        </div>
+    {% endcache %}
+</body>
+</html>
+```
+
+In this example, the entire view is cached for 15 minutes, and a specific part of the template (data fragment) is cached for 500 seconds. This setup can significantly improve the performance of your application by reducing the load on your backend systems.
+
+By understanding and leveraging Django's caching framework, you can optimize your web application's performance, ensuring a better user experience and more efficient resource usage.
 
 </details>
 
@@ -2451,141 +2840,148 @@ By implementing these middleware hooks, you can extend the functionality of midd
 -   [Django ORM - Receiving Signals](https://www.youtube.com/watch?v=c4NEn7H5czA&list=PLOLrQ9Pn6cayYycbeBdxHUFrzTqrNE7Pe&index=36)
 -   [Django ORM - Receiving Signals Specifying a Model](https://www.youtube.com/watch?v=BZ0vJDclU74&list=PLOLrQ9Pn6cayYycbeBdxHUFrzTqrNE7Pe&index=37)
 
-Django Signals is a implementation of the observer design pattern in Django framework, which allows objects (observers) to subscribe to and receive notifications from a subject (publisher) about changes in its state.
+---
 
-Signaling refers to the process of sending and receiving signals, which are notifications or messages that are sent when certain events occur within the Django framework or your application. Signals allow you to decouple different parts of your application and perform actions in response to specific events without tightly coupling the code.
-
-Django Signals are a built-in feature of the Django framework specifically designed to allow decoupled components within a Django application to communicate and respond to events.
-
-Signals are used to enable the "sender" of a signal to notify a group of "receivers" that something has happened. Here are some key concepts related to signals in Django:
-
-Signals in Django provide a way to establish event driven connection between two decoupled application.. They allow different parts of an application to communicate with each other without tight coupling, enabling modularity and extensibility. Signals are commonly used for tasks like updating related models, sending notifications, triggering background tasks, and more.
-
-Signals are typically used within the Django framework for various purposes such as model lifecycle events (e.g., post_save, pre_delete), request/response cycle events (e.g., request_started, request_finished), or custom events within an application.
+-   Django Signals is a implementation of the **Observer Design Pattern** in Django framework, which allows objects (observers) to subscribe to and receive notifications from a subject (publisher) about changes in its state.
+-   Signaling refers to the process of sending and receiving signals, which are notifications or messages that are sent when certain events occur within the Django framework or your application. Signals allow you to decouple different parts of your application and perform actions in response to specific events without tightly coupling the code.
+-   Django Signals are a built-in feature of the Django framework specifically designed to allow decoupled components within a Django application to communicate and respond to events.
+-   Signals are used to enable the "sender" of a signal to notify a group of "receivers" that something has happened. Here are some key concepts related to signals in Django:
+-   Signals in Django provide a way to establish event driven connection between two decoupled application.. They allow different parts of an application to communicate with each other without tight coupling, enabling modularity and extensibility. Signals are commonly used for tasks like updating related models, sending notifications, triggering background tasks, and more.
+-   Signals are typically used within the Django framework for various purposes such as model lifecycle events (e.g., post_save, pre_delete), request/response cycle events (e.g., request_started, request_finished), or custom events within an application.
 
 To use signals in your Django project, you'll need to import the necessary signals, write signal handlers, and register the handlers with the corresponding signals.
 
--   **Signals Terminology**:
+#### Signals Terminology
 
-    -   `Signals`: Signals are objects representing specific actions or events that occur within a Django application. Django provides built-in signals, such as pre_save, post_save, pre_delete, post_delete, etc., which are triggered at different points during the lifecycle of a model.
-    -   `Senders`: A sender is the entity that sends a signal. In Django, senders are typically Django model classes, but they can be any Python object.
-    -   `Signal Handlers/Receivers`: A receiver is a callable that gets executed in response to a signal being sent. Receivers define the actions to be performed when a specific signal is received. Receivers are registered to signals using connected to a signal using the `@receiver` decorator (`django.dispatch.receiver`) or the `Signal.connect(receiver, sender=None, weak=True, dispatch_uid=None)` method and can be located anywhere in the codebase.
-    -   `Signal Registration`: Signal receivers need to be registered with the appropriate signal to establish the connection between the sender and the receiver. A signal handler can be registered with a signal using either the `@receiver` decorator (`django.dispatch.receiver`) or the `Signal.connect(receiver, sender=None, weak=True, dispatch_uid=None)` method.
+-   **Signals**: Signals are objects representing specific actions or events that occur within a Django application. Django provides built-in signals, such as `pre_save`, `post_save`, `pre_delete`, `post_delete`, etc., which are triggered at different points during the lifecycle of a model.
+-   **Senders**: A sender is the entity that sends a signal. In Django, senders are typically Django model classes, but they can be any Python object.
+-   **Signal Handlers/Receivers**: A receiver is a callable that gets executed in response to a signal being sent. Receivers define the actions to be performed when a specific signal is received. Receivers are registered to signals using connected to a signal using the `@receiver` decorator (`django.dispatch.receiver`) or the `Signal.connect(receiver, sender=None, weak=True, dispatch_uid=None)` method and can be located anywhere in the codebase.
+-   **Signal Registration**: Signal receivers need to be registered with the appropriate signal to establish the connection between the sender and the receiver. A signal handler can be registered with a signal using either the `@receiver` decorator (`django.dispatch.receiver`) or the `Signal.connect(receiver, sender=None, weak=True, dispatch_uid=None)` method.
 
--   **Defining Signals**: To define a custom signal, you can create an instance of the Signal class from django.dispatch. You typically define signals as module-level variables in a `signals.py` file within your Django app. Each signal represents a specific event that you want to notify other parts of your application about.
+#### Defining Signals
 
-    ```python
-    from django.dispatch import Signal
+To define a custom signal, you can create an instance of the Signal class from django.dispatch. You typically define signals as module-level variables in a `signals.py` file within your Django app. Each signal represents a specific event that you want to notify other parts of your application about.
 
-    # Define a custom signal
-    user_registered = Signal()
-    ```
+```python
+from django.dispatch import Signal
 
--   **Signal Receiving / Registering Handler**: Once you've defined a signal, you can connect one or more signal handlers to it.
+# Define a custom signal
+user_registered = Signal()
+```
 
-    -   Receiving a signal involves defining a receiver function or method and connecting it to the signal.
-    -   The `@receiver` decorator and `django.dispatch.Signal.connect(receiver, sender=None, weak=True, dispatch_uid=None)` are commonly used to connect a function or method to a signal.
+#### Signal Receiving / Registering Handler
 
-        ```python
-        from django.dispatch import receiver
-        from myapp.signals import user_registered, my_signal
+Once you've defined a signal, you can connect one or more signal handlers to it.
 
-        # Define a signal handler
-        @receiver(user_registered)
-        def handle_user_registered(sender, **kwargs):
-            # Perform actions in response to the signal
-            print("User registered:", sender)
-        ```
-
-    -   The order in which receivers are connected to a signal can be controlled to determine the execution order.
-    -   The `dispatch_uid` parameter or the `@receiver` decorator's `order` attribute is used for this purpose.
-
-        ```python
-        @receiver(my_signal, dispatch_uid='my_unique_identifier', , order=1)
-        def first_handler(sender, **kwargs):
-            pass
-
-        def second_handler(sender, **kwargs):
-            pass
-
-        # alternative approch to register a handler to a signal
-        my_signal.connect(second_handler, sender=None, weak=True, dispatch_uid=None)
-
-        ```
-
--   **Sending Signals**: In various parts of your application, you can send signals using the `send()` method of the signal object. When you send a signal, all connected signal handlers are executed in the order they were connected.
+-   Receiving a signal involves defining a receiver function or method and connecting it to the signal.
+-   The `@receiver` decorator and `django.dispatch.Signal.connect(receiver, sender=None, weak=True, dispatch_uid=None)` are commonly used to connect a function or method to a signal.
 
     ```python
-    from myapp.signals import user_registered
+    from django.dispatch import receiver
+    from myapp.signals import user_registered, my_signal
 
-
-    def account_register(request):
-
-        if request.method == 'POST':
-            registerForm = RegistrationForm(request.POST)
-            if registerForm.is_valid():
-                user = registerForm.save(commit=False)
-
-                # Send a signal
-                user_registered.send(sender=account_register.__name__, user=user)
-
-                return HttpResponse('registered succesfully and activation sent')
-        else: registerForm = RegistrationForm()
-        return render(request, 'account/registration/register.html', {'form': registerForm})
+    # Define a signal handler
+    @receiver(user_registered)
+    def handle_user_registered(sender, **kwargs):
+        # Perform actions in response to the signal
+        print("User registered:", sender)
     ```
 
-    -   Sending a signal involves using the `django.dispatch.Signal` class to create a signal instance.
-    -   The `send()` method of the signal instance is then called to dispatch the signal along with any necessary data.
-
--   **Built-in Signals**: Django provides several built-in signals that are sent at different points during the lifecycle of a Django application or when certain events occur, such as when a model is saved, deleted, or a request is processed. You can connect signal handlers to these built-in signals to perform custom actions in response to these events.
+-   The order in which receivers are connected to a signal can be controlled to determine the execution order.
+-   The `dispatch_uid` parameter or the `@receiver` decorator's `order` attribute is used for this purpose.
 
     ```python
-    from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin)
-    from django.db.models.signals import post_save
+    @receiver(my_signal, dispatch_uid='my_unique_identifier', , order=1)
+    def first_handler(sender, **kwargs):
+        pass
 
-    class UserBase(AbstractBaseUser, PermissionsMixin):
+    def second_handler(sender, **kwargs):
+        pass
 
-        email = models.EmailField(_('email address'), unique=True)
-        user_name = models.CharField(max_length=150, unique=True)
-        first_name = models.CharField(max_length=150, blank=True)
+    # alternative approch to register a handler to a signal
+    my_signal.connect(second_handler, sender=None, weak=True, dispatch_uid=None)
 
-    def on_user_create_handler(sender, instance, **kwargs):
-        print(f"The user with username- '{instance.user_name}' has just been created")
-
-    post_save.connect(on_user_create_handler, sender=UserBase)
     ```
 
-    -   `Model Signals`:
-        -   `django.db.models.signals.pre_init`: Sent just before an instance's `__init__()` method is called.
-        -   `django.db.models.signals.post_init`: Sent just after an instance's `__init__()` method has been called.
-        -   `django.db.models.signals.pre_save`: Sent just before a model's `save()` method is called.
-        -   `django.db.models.signals.post_save`: Sent just after a model's `save()` method has been called.
-        -   `django.db.models.signals.pre_delete`: Sent just before a model's `delete()` method is called.
-        -   `django.db.models.signals.post_delete`: Sent just after a model's `delete()` method has been called.
-        -   `django.db.models.signals.m2m_changed`: Sent when a ManyToManyField on a model is changed.
-    -   `Management Signals`:
-        -   `django.db.models.signals.request_started`: Sent when Django starts processing an HTTP request.
-        -   `django.db.models.signals.request_finished`: Sent when Django finishes processing an HTTP request.
-        -   `django.db.models.signals.got_request_exception`: Sent when an exception is raised during the processing of an HTTP request.
-    -   `Database Signals`:
-        -   `django.db.backends.signals.connection_created`: Sent when a database connection is created.
-    -   `Request/response signals`:
-        -   `django.core.signals.request_finished`
-        -   `django.core.signals.got_request_exception`
+#### Sending Signals
 
--   **Disconnecting Signal Handlers**: If you no longer want a signal handler to be executed when a signal is sent, you can disconnect it using the `disconnect()` method of the signal object.
+In various parts of your application, you can send signals using the `send()` method of the signal object. When you send a signal, all connected signal handlers are executed in the order they were connected.
 
-    ```python
-    from django.db.models.signals import post_save
-    post_save.disconnect(on_user_create_handler, sender=UserBase)
-    ```
+```python
+from myapp.signals import user_registered
 
--   `Decoupled Communication`:
+
+def account_register(request):
+
+    if request.method == 'POST':
+        registerForm = RegistrationForm(request.POST)
+        if registerForm.is_valid():
+            user = registerForm.save(commit=False)
+
+            # Send a signal
+            user_registered.send(sender=account_register.__name__, user=user)
+
+            return HttpResponse('registered succesfully and activation sent')
+    else: registerForm = RegistrationForm()
+    return render(request, 'account/registration/register.html', {'form': registerForm})
+```
+
+-   Sending a signal involves using the `django.dispatch.Signal` class to create a signal instance.
+-   The `send()` method of the signal instance is then called to dispatch the signal along with any necessary data.
+
+#### Built-in Signals
+
+Django provides several built-in signals that are sent at different points during the lifecycle of a Django application or when certain events occur, such as when a model is saved, deleted, or a request is processed. You can connect signal handlers to these built-in signals to perform custom actions in response to these events.
+
+```python
+from django.contrib.auth.models import (AbstractBaseUser, PermissionsMixin)
+from django.db.models.signals import post_save
+
+class UserBase(AbstractBaseUser, PermissionsMixin):
+
+    email = models.EmailField(_('email address'), unique=True)
+    user_name = models.CharField(max_length=150, unique=True)
+    first_name = models.CharField(max_length=150, blank=True)
+
+def on_user_create_handler(sender, instance, **kwargs):
+    print(f"The user with username- '{instance.user_name}' has just been created")
+
+post_save.connect(on_user_create_handler, sender=UserBase)
+```
+
+-   **Model Signals**:
+    -   `django.db.models.signals.pre_init`: Sent just before an instance's `__init__()` method is called.
+    -   `django.db.models.signals.post_init`: Sent just after an instance's `__init__()` method has been called.
+    -   `django.db.models.signals.pre_save`: Sent just before a model's `save()` method is called.
+    -   `django.db.models.signals.post_save`: Sent just after a model's `save()` method has been called.
+    -   `django.db.models.signals.pre_delete`: Sent just before a model's `delete()` method is called.
+    -   `django.db.models.signals.post_delete`: Sent just after a model's `delete()` method has been called.
+    -   `django.db.models.signals.m2m_changed`: Sent when a ManyToManyField on a model is changed.
+-   **Management Signals**:
+    -   `django.db.models.signals.request_started`: Sent when Django starts processing an HTTP request.
+    -   `django.db.models.signals.request_finished`: Sent when Django finishes processing an HTTP request.
+    -   `django.db.models.signals.got_request_exception`: Sent when an exception is raised during the processing of an HTTP request.
+-   **Database Signals**:
+    -   `django.db.backends.signals.connection_created`: Sent when a database connection is created.
+-   **Request/response signals**:
+    -   `django.core.signals.request_finished`
+    -   `django.core.signals.got_request_exception`
+
+#### Disconnecting Signal Handlers
+
+If you no longer want a signal handler to be executed when a signal is sent, you can disconnect it using the `disconnect()` method of the signal object.
+
+```python
+from django.db.models.signals import post_save
+post_save.disconnect(on_user_create_handler, sender=UserBase)
+```
+
+-   **Decoupled Communication**:
 
     -   Signals enable a decoupled communication mechanism between different parts of a Django application.
     -   One part of the application can send a signal, and another part can listen for that signal without directly importing or depending on each other.
 
--   `Publisher-Subscriber Pattern`:
+-   **Publisher-Subscriber Pattern**:
 
     -   Django signals follow the publisher-subscriber pattern.
     -   The part of the code that sends (publishes) a signal is known as the sender, and the part that listens (subscribes) to the signal is known as the receiver.
@@ -2594,74 +2990,9 @@ To use signals in your Django project, you'll need to import the necessary signa
 
 ---
 
-<details><summary style="font-size:25px;color:Orange">Message Framework</summary>
-
-In the context of the Django framework, the term "message" typically refers to the messages framework, which is a part of Django's contrib packages. The messages framework allows you to store simple messages in one request and retrieve them for display in a subsequent request. This is particularly useful for displaying notifications or feedback to users after they perform certain actions on a website.
-
-Here are the key components and concepts related to the Django messages framework:
-
--   `Usage Scenario`: The messages framework is commonly used to display feedback messages to users after they submit forms, perform actions, or encounter errors on a website.
-
--   `Adding Messages`:
-
-    -   You can add messages to the message framework using the messages module provided by Django.
-    -   Typically, you add messages in your views after certain actions are performed, such as form submissions, login attempts, or when errors occur.
-    -   Messages are added to the user's session and are only displayed once on the next page load.
-
--   `Message Levels`: Messages are classified into different levels based on their importance or nature. The available message levels in Django are: **DEBUG**, **INFO**, **SUCCESS**, **WARNING**, **ERROR**.
-
--   `Message Storage Backend`:
-
-    -   By default, Django stores messages in the user's session using the session framework.
-    -   You can customize the message storage backend by implementing your own message storage backend class if you need to store messages differently, such as in a database or cache.
-
--   `Message Middleware`:
-
-    -   Django includes built-in middleware (django.contrib.messages.middleware.MessageMiddleware) that automatically adds a messages attribute to each request, containing the user's messages.
-    -   This middleware is responsible for fetching messages from the session and making them available to your views and templates.
-
--   `Displaying Messages`:
-
-    -   Messages added to the message framework are typically displayed in templates using template tags provided by Django.
-    -   The most common way to display messages is by iterating over them in your template and rendering them as HTML elements, such as divs or alerts.
-    -   Django provides template tags like `{% if messages %}` and `{% for message in messages %}` to help you display messages in your templates.
-
-    ```py
-    # views.py
-    from django.contrib import messages
-    from django.shortcuts import render, redirect
-
-    def my_view(request):
-        if request.method == 'POST':
-            # Process form data
-            # Add success message
-            messages.success(request, 'Form submitted successfully!')
-            return redirect('success_page')
-        return render(request, 'my_template.html')
-    ```
-
-    ```html
-    <!-- my_template.html  -->
-    {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    ```
-
-    -   When the form is successfully submitted, a success message is added to the message framework using messages.success(). Then, in the template, messages are iterated over and displayed using HTML elements. The specific CSS classes applied to each message will depend on its level (success, warning, error, etc.).
-
--   `Clearing Messages`: Messages can be automatically cleared from the storage after being displayed. This prevents messages from persisting across multiple requests. The default behavior is to clear messages after rendering them in the template. Here's a basic example of how messages are used in a Django view:
-
-</details>
-
----
-
 <details><summary style="font-size:25px;color:Orange">Django Managements</summary>
 
-jango Managements or Management Commands refers to a set of commands and utilities provided by the Django framework for performing various administrative tasks, such as creating database tables, running development servers, managing migrations, and more. These management commands are primarily accessed through the command-line interface (CLI) using the manage.py script located in your Django project's root directory.
+Django Managements or Management Commands refers to a set of commands and utilities provided by the Django framework for performing various administrative tasks, such as creating database tables, running development servers, managing migrations, and more. These management commands are primarily accessed through the command-line interface (CLI) using the manage.py script located in your Django project's root directory.
 
 Here are some key aspects of Django management:
 
@@ -2689,14 +3020,41 @@ Here are some key aspects of Django management:
     -   Example:
 
     ```python
-    # your_app/management/commands/hello.py
+    from django.contrib.auth.models import User
     from django.core.management.base import BaseCommand
+    from django.utils.crypto import get_random_string
+
 
     class Command(BaseCommand):
-        help = 'Prints "Hello, Django!"'
+        """
+        Examples: How to invoke the comands
+            1.  $ python manage.py create_users 5
+            2.  $ python manage.py create_users 5 -p manager --superuser
+        """
+        help = 'Generate random users'
 
-        def handle(self, *args, **options):
-            self.stdout.write("Hello, Django!")
+        def add_arguments(self, parser):
+            parser.add_argument('count', type=int, help='Indicates the number of users to be created')
+
+            # Optional argument
+            parser.add_argument('-p', '--prefix', type=str, help='Define a username prefix')
+            parser.add_argument('-s', '--superuser', action='store_true', help='Create a superuser account')
+
+        def handle(self, *args, **kwargs):
+            count = kwargs['count']
+            prefix = kwargs['prefix']
+            superuser = kwargs['superuser']
+
+            for i in range(count):
+                if prefix:
+                    username = f'{prefix}_{get_random_string()}'
+                else:
+                    username = get_random_string()
+
+                if superuser:
+                    User.objects.create_superuser(username=username, email='hello@hi.com', password='123')
+                else:
+                    User.objects.create_user(username=username, email='hello@hi.com', password='123')
     ```
 
     ```txt
@@ -2712,33 +3070,14 @@ Here are some key aspects of Django management:
 
 -   **Running Management Commands Programmatically**:
 
-    -   You can also run management commands programmatically from within your Django code using the `call_command()` function provided by Django's django.core.management module.
+    -   You can also run management commands programmatically from within your Django code using the `call_command()` function provided in Django's `django.core.management` module.
+        ```python
+        from django.core.management import call_command
+        call_command("loaddata", "db_user_fixture.json")
+        ```
     -   This allows you to integrate management commands into your application logic or scripts.
 
 Overall, Django's management system provides a convenient and powerful way to perform administrative tasks and automate common development workflows, helping developers streamline their Django projects' management and maintenance.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange">Django Admin Panel</summary>
-
--   [django-admin and manage.py](https://docs.djangoproject.com/en/4.0/ref/django-admin/#django-admin-createsuperuser)
-
-The Django Admin panel (madularized into `django.contrib.admin`) is a built-in feature of the Django web framework that provides a user-friendly interface for managing the administrative tasks of a Django project. It is a powerful tool that allows developers, administrators, and authorized users to perform various administrative operations without having to write custom views or templates.
-
-`django.contrib.admin` is included in the Django core and is available by default in every Django project. It is designed to simplify the process of creating and managing database content for non-technical users, allowing them to focus on managing content rather than dealing with the underlying database and code.
-
-The Django Admin panel offers the following features:
-
--   `User Authentication`: The Admin panel provides a secure authentication system for administrators. It supports user registration, login, and password management.
--   `CRUD Operations`: It allows administrators to perform Create, Read, Update, and Delete (CRUD) operations on the database records. Administrators can add, edit, and delete records directly from the Admin interface.
--   `Automatic Interface Generation`: The Admin panel automatically generates the user interface based on the registered models in your Django project. It creates a customizable interface for each model, displaying fields, relationships, and actions associated with the model.
--   `Filtering and Searching`: Administrators can filter and search records based on specific criteria. The Admin panel provides filter options for each field in a model, allowing administrators to narrow down the displayed records.
--   `Permission Management`: Django Admin allows fine-grained control over user permissions and access rights. Administrators can define different user roles and assign specific permissions to each role, determining what operations users can perform in the Admin panel.
--   `Customization`: The admin application is highly configurable and can be customized using Python code or templates to change the look and feel of the interface or to add custom functionality. Developers can define custom views, templates, forms, and widgets to extend the admin application's functionality.
-
-The Django Admin panel is automatically enabled when you create a Django project. By registering your models with the Admin panel, you can easily manage and interact with your project's data through a user-friendly interface. It is particularly useful for managing content, performing administrative tasks, and quickly prototyping functionality during the development process.
 
 </details>
 
@@ -2752,11 +3091,19 @@ The Django Admin panel is automatically enabled when you create a Django project
 -   [How to use Django’s CSRF protection](https://docs.djangoproject.com/en/4.2/howto/csrf/#using-csrf)
 -   [Security tips for web developers](https://www.squarefree.com/securitytips/web-developers.html#CSRF)
 
--   `What is CSRF`?
+**Cross-Site Request Forgery** (CSRF) is a type of web vulnerability where an attacker tricks a user into performing actions on a website without their knowledge or consent. Django, being a security-focused web framework, provides robust CSRF protection by default. Let's dive into the details of how CSRF protection works in Django:
+CSRF protection is a mechanism of guarding against a particular type of attack, which can occur when a user has not logged out of a web site, and continues to have a valid session. In this circumstance a malicious site may be able to perform actions against the target site, within the context of the logged-in session.
 
-    -   Cross-Site Request Forgery (CSRF) is a type of web vulnerability where an attacker tricks a user into performing actions on a website without their knowledge or consent. Django, being a security-focused web framework, provides robust CSRF protection by default. Let's dive into the details of how CSRF protection works in Django:
+-   To guard against these type of attacks, you need to do two things:
 
--   `Django's CSRF Protection Mechanism`: Django's CSRF protection is designed to prevent unauthorized requests from being processed. Here's how it works:
+    -   Ensure that the 'safe' HTTP operations, such as `GET`, `HEAD` and `OPTIONS` cannot be used to alter any server-side state.
+    -   Ensure that any 'unsafe' HTTP operations, such as `POST`, `PUT`, `PATCH` and `DELETE`, always require a valid CSRF token.
+
+-   If you're using `SessionAuthentication` you'll need to include valid CSRF tokens for any `POST`, `PUT`, `PATCH` or `DELETE` operations.
+
+-   In order to make AJAX requests, you need to include CSRF token in the HTTP header, as described in the Django documentation.
+
+-   **Django's CSRF Protection Mechanism**: Django's CSRF protection is designed to prevent unauthorized requests from being processed. Here's how it works:
 
     -   `Middleware`:
 
@@ -2786,7 +3133,7 @@ The Django Admin panel is automatically enabled when you create a Django project
 
         -   When the user submits the form, the token value from the hidden field is included in the POST data.
 
-        -   Upon receiving the POST request, Django's CsrfViewMiddleware checks the submitted token against the token stored in the user's session.
+        -   Upon receiving the POST request, Django's `CsrfViewMiddleware` checks the submitted token against the token stored in the user's session.
 
         -   If the tokens match, the request is considered legitimate, and the action (e.g., form submission) is allowed to proceed.
 
@@ -2798,15 +3145,15 @@ The Django Admin panel is automatically enabled when you create a Django project
 
         -   This means that even if an attacker manages to obtain a valid token, it becomes useless once the user logs out or their session expires.
 
--   `CSRF Protection in Practice`:
+-   **CSRF Protection in Practice**:
 
     -   Django's CSRF protection is transparent to developers and is automatically applied to all forms generated using Django's form system.
     -   Developers don't need to manually verify CSRF tokens; Django does this automatically. Here's what developers need to do:
 
-        -   Use Django's built-in form system to render forms ({% csrf_token %} is automatically included).
+        -   Use Django's built-in form system to render forms (`{% csrf_token %}` is automatically included).
         -   Ensure that all POST requests (form submissions) are protected by CSRF tokens.
 
--   `Limitations`: While Django's CSRF protection is effective, there are a few considerations
+-   **Limitations**: While Django's CSRF protection is effective, there are a few considerations
 
     -   `It relies on cookies`: CSRF protection depends on the browser storing and sending the CSRF cookie, which may not work in some situations (e.g., when using an API with a client that doesn't support cookies).
 
@@ -2815,6 +3162,90 @@ The Django Admin panel is automatically enabled when you create a Django project
     -   `Same-origin policy`: CSRF protection assumes that the attacker can't make cross-origin requests with the user's credentials. If there are weaknesses in the same-origin policy (e.g., CORS misconfigurations), CSRF attacks may still be possible.
 
 In summary, Django's CSRF protection is a robust defense against CSRF attacks, and it's seamlessly integrated into the framework. Developers should ensure that they use Django's form system correctly and be aware of the limitations when dealing with non-standard scenarios.
+
+##### CORS (Cross Origin Resource Sharing): [Django CORS Guide](https://www.stackhawk.com/blog/django-cors-guide/)
+
+Cross-Origin Resource Sharing (CORS) is a security feature implemented by web browsers to prevent unauthorized cross-origin requests. It allows servers to specify who can access their resources and under what conditions. This is particularly important in the context of web applications where resources from different origins (domains, protocols, or ports) might need to interact.
+
+-   **Same-Origin**: When a request is made to a resource on the same origin as the requesting application, it is considered a **same-origin request**.
+
+    -   **Definition of Origin**: An origin is defined as a combination of:
+
+        1. **Protocol** (e.g., `http` or `https`)
+        2. **Domain** (e.g., `example.com`)
+        3. **Port** (e.g., `80`, `443`, or custom)
+
+    -   **Examples of Same-Origin**: A request is **same-origin** if all three components are identical between the client and the server.
+
+        -   Client: `http://example.com/page.html`
+        -   Server: `http://example.com/api/resource`
+
+            -   **Same Protocol**: `http`
+            -   **Same Domain**: `example.com`
+            -   **Same Port**: Implicit `80` (default for HTTP)
+
+        -   These requests do not trigger CORS because browsers consider them secure by default.
+
+-   **Cross-Origin**: When a request is made to a resource on a different origin than the requesting application, it is considered a **cross-origin request**.
+
+    -   **When is a Request Cross-Origin?**: A request becomes cross-origin if any of the following differ between the client and server:
+
+        1. **Protocol**: e.g., `http://example.com` vs. `https://example.com`
+        2. **Domain**: e.g., `http://example.com` vs. `http://api.example.com`
+        3. **Port**: e.g., `http://example.com:80` vs. `http://example.com:8080`
+
+    -   **Examples of Cross-Origin**
+
+        1. **Different Domain**:
+            - Client: `http://example.com`
+            - Server: `http://api.example.com`
+        2. **Different Protocol**:
+            - Client: `http://example.com`
+            - Server: `https://example.com`
+        3. **Different Port**:
+
+            - Client: `http://example.com:80`
+            - Server: `http://example.com:8080`
+
+        4. These requests are blocked by browsers by default unless the server explicitly allows them via CORS.
+
+In the context of Django Framework, CORS comes into play when you have a web application running on one domain (origin) and it needs to make requests to a server on another domain (different origin). By default, web browsers restrict such requests due to security reasons, but CORS allows servers to specify which origins are allowed to access their resources. Here's how CORS works in Django:
+
+-   **Middleware**: Django doesn't provide built-in CORS support out of the box, but you can implement it using middleware. You can write custom middleware to intercept incoming requests and modify responses to include CORS headers. Alternatively you can install Django package like `django-cors-headers` for handling CORS.
+
+    -   `$  pip install django-cors-headers`
+    -   After installation, you need to add it to your INSTALLED_APPS and MIDDLEWARE in your Django settings:
+
+        ```python
+        # settings.py
+        INSTALLED_APPS = [
+            'corsheaders',
+        ]
+
+        MIDDLEWARE = [
+            'corsheaders.middleware.CorsMiddleware',
+        ]
+        ```
+
+-   **CORS headers**: When a browser makes a cross-origin request, it sends an **Origin** header indicating the origin of the requesting page. The server can then determine whether to allow the request based on this header. If the server allows the request, it responds with appropriate CORS headers, such as **Access-Control-Allow-Origin**, **Access-Control-Allow-Methods**, **Access-Control-Allow-Headers**, etc.
+
+-   **Configuration**: In Django, you can configure CORS middleware to allow requests from specific origins, methods, headers, and other criteria. This configuration can be done in your Django settings file.
+
+    -   With django-cors-headers installed and configured, you can control CORS behavior in your Django project's settings. For example, you might allow all origins (not recommended for production) or specify specific origins that are allowed to access your API:
+
+    ```python
+    # settings.py
+    CORS_ALLOWED_ORIGINS = [
+        "http://localhost:3000",  # Example: Allow requests from a specific frontend
+        "https://yourfrontenddomain.com",
+    ]
+    ```
+
+-   **Handling Preflight Requests**: For certain types of cross-origin requests, such as those using HTTP methods other than GET, POST, or HEAD, the browser sends a preflight request (HTTP OPTIONS) to determine if the actual request is safe to send. The server must respond to these preflight requests with appropriate CORS headers indicating whether the actual request is allowed. Django-cors-headers takes care of handling preflight requests by default.
+
+-   **Security Considerations**: While CORS allows controlled access to resources from different origins, it's important to configure it securely to prevent unauthorized access. You should carefully consider which origins, methods, and headers are allowed to ensure the security of your application.
+
+It's important to configure CORS thoughtfully to strike a balance between security and the functional requirements of your web application. Always consider the security implications, especially if you are allowing cross-origin requests from multiple domains.
 
 ##### Cross-Site Scripting (XSS)
 
@@ -2852,48 +3283,6 @@ In this example, if the user_input variable contains malicious JavaScript, it wi
 
 By following best practices, using Django's built-in security features, and being cautious about user-generated content, you can significantly reduce the risk of XSS vulnerabilities in your Django applications. Security should always be a top priority when developing web applications to protect both your application and your users.
 
-##### CORS (Cross Origin Resource Sharing): [Django CORS Guide](https://www.stackhawk.com/blog/django-cors-guide/)
-
-Cross-Origin Resource Sharing (CORS) is a security feature implemented by web browsers to prevent unauthorized cross-origin requests. It allows servers to specify who can access their resources and under what conditions. This is particularly important in the context of web applications where resources from different origins (domains, protocols, or ports) might need to interact.
-
-In the context of Django Framework, CORS comes into play when you have a web application running on one domain (origin) and it needs to make requests to a server on another domain (different origin). By default, web browsers restrict such requests due to security reasons, but CORS allows servers to specify which origins are allowed to access their resources. Here's how CORS works in Django:
-
--   **Middleware**: Django doesn't provide built-in CORS support out of the box, but you can implement it using middleware. You can write custom middleware to intercept incoming requests and modify responses to include CORS headers. Alternatively you can install Django package like `django-cors-headers` for handling CORS.
-
-    -   `$  pip install django-cors-headers`
-    -   After installation, you need to add it to your INSTALLED_APPS and MIDDLEWARE in your Django settings:
-
-        ```python
-        # settings.py
-        INSTALLED_APPS = [
-            'corsheaders',
-        ]
-
-        MIDDLEWARE = [
-            'corsheaders.middleware.CorsMiddleware',
-        ]
-        ```
-
--   **CORS headers**: When a browser makes a cross-origin request, it sends an "Origin" header indicating the origin of the requesting page. The server can then determine whether to allow the request based on this header. If the server allows the request, it responds with appropriate CORS headers, such as "Access-Control-Allow-Origin", "Access-Control-Allow-Methods", "Access-Control-Allow-Headers", etc.
-
--   **Configuration**: In Django, you can configure CORS middleware to allow requests from specific origins, methods, headers, and other criteria. This configuration can be done in your Django settings file.
-
-    -   With django-cors-headers installed and configured, you can control CORS behavior in your Django project's settings. For example, you might allow all origins (not recommended for production) or specify specific origins that are allowed to access your API:
-
-    ```python
-    # settings.py
-    CORS_ALLOWED_ORIGINS = [
-        "http://localhost:3000",  # Example: Allow requests from a specific frontend
-        "https://yourfrontenddomain.com",
-    ]
-    ```
-
--   **Handling Preflight Requests**: For certain types of cross-origin requests, such as those using HTTP methods other than GET, POST, or HEAD, the browser sends a preflight request (HTTP OPTIONS) to determine if the actual request is safe to send. The server must respond to these preflight requests with appropriate CORS headers indicating whether the actual request is allowed. Django-cors-headers takes care of handling preflight requests by default.
-
--   **Security Considerations**: While CORS allows controlled access to resources from different origins, it's important to configure it securely to prevent unauthorized access. You should carefully consider which origins, methods, and headers are allowed to ensure the security of your application.
-
-It's important to configure CORS thoughtfully to strike a balance between security and the functional requirements of your web application. Always consider the security implications, especially if you are allowing cross-origin requests from multiple domains.
-
 </details>
 
 ---
@@ -2922,10 +3311,8 @@ It's important to configure CORS thoughtfully to strike a balance between securi
 
 ```python
 ========================================================================================
-from django.db import models
 
 from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager, Group, Permission, PermissionsMixin
-from django.contrib.auth.models import
 from django.contrib.auth import login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
@@ -2940,7 +3327,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
 
-from django.urls import include, path
+from django.urls import include, path, reverse
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -2949,6 +3336,9 @@ from django.utils import reverse, timezone
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.shortcuts import render, redirect, get_object_or_404
+
+from django.db import models
+from django.db.models.functions import Coalesce
 
 from django.template.loader import render_to_string
 from decimal import Decimal

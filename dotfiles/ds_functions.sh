@@ -22,7 +22,7 @@ install_data(){
 }
 
 get_gcp_external_ip(){
-    :' NOT COMPLETE !!
+    : ' NOT COMPLETE !!
     It is intended to be run on Google Cloud Platform Only
 
     Reference: https://cloud.google.com/compute/docs/instances/view-ip-address#gcloud

@@ -162,8 +162,6 @@ alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
 
 
 alias sshadd='eval $(ssh-agent) && ssh-add'
-alias mvntpdf="mv $NTHUB/{nts,iqs}/*.pdf $GD/NOTES_PDF/notes/"
-alias resume="code $NTHUB/iqs/AminulMomin-pydev.md"
 
 #=============================================================================
 #=============================================================================
@@ -215,7 +213,7 @@ alias startmysql="sudo /usr/local/mysql/support-files/mysql.server start"
 alias stopmysql="sudo /usr/local/mysql/support-files/mysql.server stop"
 alias statusmysql="sudo /usr/local/mysql/support-files/mysql.server status"
 alias logmysql="sudo tail -f /usr/local/mysql/data/$(hostname).err"
-
+alias mvpdf="mv $NTHUB/{nts,cmds}/*.pdf $GD/NOTES_PDF/notes/"
 
 # NOTES & BOOKS of various Development Tools.
 
@@ -226,6 +224,7 @@ alias ntbash="code $NTHUB/nts/notes_bash.md"
 alias ntdb="code $NTHUB/nts/notes_db.md"
 alias ntwdev="code $NTHUB/nts/notes_web_developement.md"
 alias ntshell="code $NTHUB/nts/notes_shell.md"
+alias ntde="code $NTHUB/nts/notes_data_engineering.md"
 alias ntlnx="code $NTHUB/nts/notes_linux.md"
 alias ntgcp="code $NTHUB/nts/notes_gcp.md"
 alias ntfw="code $NTHUB/nts/notes_fw.md"
@@ -236,7 +235,7 @@ alias ntre="code $NTHUB/nts/notes_re.md"
 alias ntml="code $NTHUB/nts/notes_ml.md"
 alias rgh="code $HOME/notes_rough.md"
 alias ntnsql="code $NTHUB/nts/notes_nosql.md"
-alias sqlq="code $NTHUB/nts/query_questions_answers.md"
+alias ntkafka="code $NTHUB/nts/notes_kafka.md"
 alias ntyml="code $NTHUB/nts/notes_yml.md"
 alias ntrmp="code $NTHUB/nts/notes_rmp.md"
 alias ntgit="code $NTHUB/nts/notes_git.md"
@@ -258,32 +257,27 @@ alias ntjnb="code $NTHUB/nts/notes_jnb.md"
 alias ntfintech="code $NTHUB/nts/notes_fintech.md"
 alias ntcicd="code $NTHUB/nts/notes_cicd.md"
 alias ntnw="code $NTHUB/nts/notes_networking.md"
-alias ntstat="code $NTHUB/nts/notes_statistics.md"
+alias nttableau="code $NTHUB/nts/notes_tableau.md"
 alias ntstat="code $NTHUB/nts/notes_statistics.md"
 alias ntspark="code $NTHUB/nts/notes_spark.md"
+alias ntsysdgn="code $NTHUB/nts/notes_system_designs.md"
 alias ntopenai="code $NTHUB/nts/notes_openai.md"
 alias ntoop="code $NTHUB/nts/notes_oop.md"
-alias nteng="code $NTHUB/nts/notes_english.md"
 alias ntdrf="code $NTHUB/nts/notes_drf.md"
+alias ntwaf="code $NTHUB/nts/notes_waf.md"
 alias ntds="code $NTHUB/nts/notes_ds.md"
 alias nttf="code $NTHUB/nts/notes_terraform.md"
 alias ntansible="code $NTHUB/nts/notes_ansible.md"
 alias ntmicroservice="code $NTHUB/nts/notes_microservice.md"
 
+alias ntislam="code $NTHUB/nts/notes_islam.md"
+alias nteng="code $NTHUB/nts/notes_english.md"
 
-alias passdb="open $HOME/mydocs/gd/passdb.gsheet"
-alias jobdb="open $HOME/mydocs/gd/jobs/Jobs_DB.gsheet"
+
+
 alias cmdnpm="code $NTHUB/nts/cmd_npm.txt"
 alias cmdreact="code $NTHUB/nts/cmd_react.txt"
 alias cmdcpp="code $NTHUB/nts/cmd_cpp.txt"
-
-alias nbstat="jupyter notebook $NTHUB/nbs/statistics.ipynb"
-alias nbepp="jupyter notebook $NTHUB/nbs/nt_epp.ipynb"
-alias nbml="jupyter notebook $NTHUB/nbs/nt_ml.ipynb"
-alias nbpd="jupyter notebook $NTHUB/nbs/nt_pd.ipynb"
-alias nbplt="jupyter notebook $NTHUB/nbs/nt_plt.ipynb"
-alias nbnp="jupyter notebook $NTHUB/nbs/nt_np.ipynb"
-alias nbtorch="jupyter notebook $NTHUB/nbs/nt_torch.ipynb"
 
 
 alias bigdata="cd $HOME/mydocs/Software_Development/Big_Data"
@@ -308,12 +302,45 @@ alias nttax="open $GD/TaxReturn/notes_tax.md"
 
 
 # =============================================================================
+## INTERVIEW QUESTIONS
+alias ivsupport="code $NTHUB/interviewprep/interview_support.md"
 alias iqs="code $NTHUB/iqs"
+alias iqaws="code $NTHUB/iqs/iq_aws.md"
 alias iqmicroservice="code $NTHUB/iqs/iq_microservice.md"
 alias iq="code $NTHUB/iqs/iq_questions.md"
+alias iqspark="code $NTHUB/iqs/iq_spark.md"
+alias iqpython="code $NTHUB/iqs/iq_python.md"
 alias iqdjango="code $NTHUB/iqs/iq_django.md"
+alias iqdrf="code $NTHUB/iqs/iq_drf.md"
 alias iqdb="code $NTHUB/iqs/iq_db.md"
+alias iqsql="code $NTHUB/iqs/iq_sql.md"
+alias cmdspark="code $NTHUB/cmds/cmd_spark.md"
+alias cmdawsglue="code $NTHUB/cmds/cmd_awsglue.md"
 # =============================================================================
 
+## OPEN JUPYTER NOTEBOOK
+alias nbsql="code $NTHUB/nbs/nt_sql.ipynb"
+alias nbsqliq="code $SD/Databases/RDBMS/sql/notebooks/sql_queries_questions.ipynb"
+alias nbepp="code $NTHUB/nbs/nt_epp.ipynb"
+alias nbpd="code $NTHUB/nbs/nt_pd.ipynb"
+alias nbspark="code $NTHUB/nbs/nt_spark.ipynb"
+alias nbsparksql="code $NTHUB/nbs/nt_spark_sql.ipynb"
+alias nbnp="code $NTHUB/nbs/nt_np.ipynb"
+alias nbplt="code $NTHUB/nbs/nt_plt.ipynb"
+alias nbml="code $NTHUB/nbs/nt_ml.ipynb"
+alias nbtorch="code $NTHUB/nbs/nt_torch.ipynb"
+alias nbstat="code $NTHUB/nbs/statistics.ipynb"
+# =============================================================================
 
-alias cmdspark="code $NTHUB/cmds/cmd_spark.md"
+alias mdstyle="code $HOME/.local/state/crossnote/style.less"
+alias resumes="open $GD/jobs/resumes"
+alias resumede="open $GD/jobs/resumes/AM-DE.gdoc"
+alias resumetx="open $GD/jobs/resumes/AMominTX-pyeng.gdoc"
+alias mvntpdf="mv $NTHUB/{nts,iqs}/*.pdf $GD/NOTES_PDF/notes/"
+
+## NON-TECHNICAL
+alias passdb="open $HOME/mydocs/gd/passdb.gsheet"
+alias jobdb="open $HOME/mydocs/gd/jobs/Jobs_DB.gsheet"
+alias apartments="code $GD/MISC/apartments.md"
+alias ntrgh="code $HOME/notes_rough.md"
+alias ntht="code $HOME/mydocs/gd/Harness-Tech/notes_ht.md"

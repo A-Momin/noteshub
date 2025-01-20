@@ -399,3 +399,191 @@ configure_terminal_from_file terminal_defaults.txt
 -   `CTRL+SHIFT+ESC` → Open Task Manager
 -   `NUMBER KEYS` → Launch From Quick Launch
 -   `MSKey +D` OR `MSKey+M` → Maximization & Minimization
+
+<details><summary style="font-size:20px;color:Orange">get all the current settings and configurations of your Mac</summary>
+
+##### 1. **General System Information**
+
+-   **System Overview**:
+    ```bash
+    system_profiler SPSoftwareDataType
+    ```
+-   **Full Hardware and Software Overview**:
+    ```bash
+    system_profiler
+    ```
+
+---
+
+##### 2. **macOS Version and Build**
+
+-   **OS Version**:
+    ```bash
+    sw_vers
+    ```
+
+---
+
+##### 3. **Hardware Information**
+
+-   **CPU Details**:
+    ```bash
+    sysctl -n machdep.cpu.brand_string
+    ```
+-   **Memory (RAM) Details**:
+    ```bash
+    system_profiler SPMemoryDataType
+    ```
+-   **Storage Information**:
+    ```bash
+    diskutil list
+    ```
+    or
+    ```bash
+    system_profiler SPStorageDataType
+    ```
+-   **Graphics Card**:
+    ```bash
+    system_profiler SPDisplaysDataType
+    ```
+
+---
+
+##### 4. **Network Configuration**
+
+-   **Active Network Interfaces**:
+    ```bash
+    ifconfig
+    ```
+-   **Wi-Fi Details**:
+    ```bash
+    networksetup -getinfo Wi-Fi
+    ```
+-   **Public IP Address**:
+    ```bash
+    curl ifconfig.me
+    ```
+-   **DNS Configuration**:
+    ```bash
+    scutil --dns
+    ```
+-   **Routing Table**:
+    ```bash
+    netstat -rn
+    ```
+
+---
+
+##### 5. **System Preferences**
+
+-   **Defaults Read (For macOS User Preferences)**:
+    ```bash
+    defaults read
+    ```
+    _(This outputs all macOS user defaults. It's quite verbose, so pipe it into a file if needed)_:
+    ```bash
+    defaults read > mac_defaults.txt
+    ```
+-   **Dock Settings**:
+    ```bash
+    defaults read com.apple.dock
+    ```
+-   **Finder Preferences**:
+    ```bash
+    defaults read com.apple.finder
+    ```
+
+---
+
+##### 6. **Power and Battery Settings**
+
+-   **Power Management Settings**:
+    ```bash
+    pmset -g
+    ```
+-   **Battery Status**:
+    ```bash
+    system_profiler SPPowerDataType
+    ```
+
+---
+
+##### 7. **Installed Applications**
+
+-   **List Installed Applications**:
+    ```bash
+    system_profiler SPApplicationsDataType
+    ```
+
+---
+
+##### 8. **Security Settings**
+
+-   **Firewall Status**:
+    ```bash
+    /usr/libexec/ApplicationFirewall/socketfilterfw --getglobalstate
+    ```
+-   **Gatekeeper Status**:
+    ```bash
+    spctl --status
+    ```
+
+---
+
+##### 9. **Users and Groups**
+
+-   **List All Users**:
+    ```bash
+    dscl . list /Users
+    ```
+-   **Current User Details**:
+    ```bash
+    id
+    ```
+
+---
+
+##### 10. **Startup Items**
+
+-   **List Startup Items**:
+    ```bash
+    system_profiler SPStartupItemDataType
+    ```
+
+---
+
+##### 11. **Environment Variables**
+
+-   **Print All Environment Variables**:
+    ```bash
+    printenv
+    ```
+
+---
+
+##### 12. **System Logs and Diagnostics**
+
+-   **View System Logs**:
+    ```bash
+    log show --info
+    ```
+-   **Kernel Logs**:
+    ```bash
+    dmesg
+    ```
+
+---
+
+##### Pro Tip: Save All Outputs to a File
+
+To save all outputs for future reference, you can redirect the command output to a file. For example:
+
+```bash
+system_profiler > system_report.txt
+```
+
+This will create a `system_report.txt` file with all the details. Use similar redirection for any other command you want to document.
+
+Let me know if you need additional help with specific settings or commands!
+
+</details>

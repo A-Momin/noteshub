@@ -1,3 +1,92 @@
+<details><summary style="font-size:25px;color:Orange">I/O</summary>
+
+```python
+## Read CSV Files
+df = spark.read.csv("path/to/file.csv", header=True, inferSchema=True)
+
+## Read JSON Files
+df = spark.read.json("path/to/file.json")
+
+## Read Parquet Files
+df = spark.read.parquet("path/to/file.parquet")
+
+## Read ORC Files
+df = spark.read.orc("path/to/file.orc")
+
+## Read Text Files
+df = spark.read.text("path/to/file.txt")
+
+df = spark.read.jdbc(url=jdbc_url+'/interview_questions', table="Bonus", properties=connection_properties)
+
+## Read JDBC/ODBC
+df = spark.read.format("jdbc").option("url", jdbc_url+"/IQ").option("dbtable", "Employee").option("user", "Shah").option("password", "11112222").load()
+
+## Read JDBC/ODBC
+df = spark.read.format("jdbc").options(**options).load()
+
+## Read Avro Files
+df = spark.read.format("avro").load("path/to/file.avro")
+
+## Read Delta Lake
+df = spark.read.format("delta").load("path/to/delta/table")
+
+
+## Read Other Formats
+df = spark.read.format("custom_format").load("path/to/source")
+```
+
+---
+
+```python
+df.write.save(out_path, format="csv", header=True)
+
+## Write CSV Files
+df.write.csv("path/to/output.csv", header=True)
+
+## Write JSON Files
+df.write.json("path/to/output.json")
+
+## Write Parquet Files
+df.write.parquet("path/to/output.parquet")
+
+## Write ORC Files
+df.write.orc("path/to/output.orc")
+
+## Write Text Files
+df.write.text("path/to/output.txt")
+
+## Write Avro Files
+df.write.format("avro").save("path/to/output.avro")
+
+## Write Delta Lake
+df.write.format("delta").save("path/to/delta/output")
+
+## Write JDBC/ODBC
+df.write.jdbc(url=jdbc_url, table="Employees", mode="overwrite", properties=connection_properties)
+
+## Write JDBC/ODBC
+emp_df.write.format("jdbc").options(**jdbc_options).mode("append").save()
+
+## Write JDBC/ODBC
+df.write.format("jdbc").option("url", "jdbc:mysql://localhost:3306/db").option("dbtable", "table_name").option("user", "username").option("password", "password").save()
+
+## Write Hive Tables
+df.write.saveAsTable("hive_table")
+
+df.write.format("parquet").saveAsTable("non_bucketed_table")
+
+## Write Partitioned Data
+df.write.partitionBy("column").parquet("path/to/output")
+
+df_transactions.coalesce(1).write.mode('overwrite').option("header", "true").csv("TNX_test.csv")
+
+df_transactions.repartition(5).write.mode("overwrite").option("header", "true").csv("/TNX_test.csv")
+```
+
+</details>
+
+---
+
 <details><summary style="font-size:25px;color:Orange">Basics</summary>
 
 ```python
@@ -129,6 +218,175 @@ df.withColumn("row_number", row_number().over(window))
     ```python
     df.describe().show()
     ```
+
+</details>
+
+---
+
+<details><summary style="font-size:25px;color:Orange">Operations Triggering Shuffling</summary>
+
+Shuffling in PySpark refers to redistributing data across different nodes in a cluster, often required for certain operations like joins, groupings, and aggregations. Shuffling can be a costly operation as it involves moving data between nodes over the network, so it’s important to be aware of which operations trigger a shuffle.
+
+Here’s a list of the main operations in PySpark that involve shuffling, along with examples:
+
+1. **`repartition()`**: Redistributes the data into a specified number of partitions.
+
+    - It involves a full shuffle of the data.
+
+    ```python
+    from pyspark.sql import SparkSession
+
+    spark = SparkSession.builder.appName("ShuffleDemo").getOrCreate()
+
+    data = [("Alice", 34), ("Bob", 45), ("Charlie", 23), ("David", 54)]
+    df = spark.createDataFrame(data, ["Name", "Age"])
+
+    # Repartition to 3 partitions (causes a shuffle)
+    df_repartitioned = df.repartition(3)
+    print(f"Number of partitions: {df_repartitioned.rdd.getNumPartitions()}")
+    ```
+
+2. **`coalesce()`**: Reduces the number of partitions. It tries to avoid full shuffling by minimizing the movement of data.
+
+    - Shuffling is not carried out unless increasing number of partitions.
+
+    ```python
+    # Coalesce to 2 partitions (no shuffle, unless you're increasing partitions)
+    df_coalesced = df.repartition(4).coalesce(2)
+    print(f"Number of partitions: {df_coalesced.rdd.getNumPartitions()}")
+    ```
+
+3. **`partitionBy()`**:
+
+    ```python
+    df.write.partitionBy("column").parquet("path/to/output")
+    ```
+
+4. **`distinct()`**: Returns distinct rows by removing duplicates.
+
+    - It shuffles data to ensure unique rows across partitions.
+
+    ```python
+    # Distinct operation (causes shuffle)
+    df_distinct = df.distinct()
+    df_distinct.show()
+    ```
+
+5. **`groupBy()`**: Groups the data based on column(s), followed by an aggregation.
+
+    - Data with the same group key is sent to the same partition.
+
+    ```python
+    # Group by Age and count the occurrences (causes shuffle)
+    df_grouped = df.groupBy("Age").count()
+    df_grouped.show()
+    ```
+
+6. **`reduceByKey()` (RDD API)**: Groups by key and reduces values for each key.
+
+    - Similar to `groupByKey()`, but with an additional `reduce` step.
+
+    ```python
+    rdd = spark.sparkContext.parallelize([("a", 1), ("b", 1), ("a", 1)])
+    # Reduces values by key (causes shuffle)
+    rdd_reduce = rdd.reduceByKey(lambda x, y: x + y)
+    rdd_reduce.collect()
+    ```
+
+7. **`groupByKey()` (RDD API)**: Groups values by key.
+
+    - All values for a key are sent to the same partition.
+
+    ```python
+    # Group by key (causes shuffle)
+    rdd_group = rdd.groupByKey()
+    rdd_group.collect()
+    ```
+
+8. **`join()`**: Joins two DataFrames based on keys.
+
+    - Data from both DataFrames is shuffled to align rows based on the join key.
+
+    ```python
+    data2 = [("Alice", "HR"), ("Bob", "IT"), ("Charlie", "Finance")]
+    df2 = spark.createDataFrame(data2, ["Name", "Department"])
+
+    # Inner join (causes shuffle)
+    df_join = df.join(df2, on="Name", how="inner")
+    df_join.show()
+    ```
+
+9. **`cogroup()` (RDD API)**: Groups data from two RDDs based on a key.
+
+    - Similar to a join operation.
+
+    ```python
+    rdd1 = spark.sparkContext.parallelize([("a", 1), ("b", 2)])
+    rdd2 = spark.sparkContext.parallelize([("a", 3), ("b", 4)])
+
+    # Cogroup operation (causes shuffle)
+    rdd_cogroup = rdd1.cogroup(rdd2)
+    rdd_cogroup.collect()
+    ```
+
+10. **`union()`**: Combines the rows of two DataFrames.
+
+    - Data is shuffled to combine the partitions.
+
+    ```python
+    # Union two DataFrames (causes shuffle)
+    df_union = df.union(df2.selectExpr("Name", "Age as Age"))
+    df_union.show()
+    ```
+
+11. **`sort()` / `orderBy()`**: Sorts rows of the DataFrame by columns.
+
+    - It shuffles the data across partitions to perform the global sort.
+
+    ```python
+    # Sort by Age (causes shuffle)
+    df_sorted = df.orderBy("Age")
+    df_sorted.show()
+    ```
+
+12. **`cartesian()` (RDD API)**: Returns the Cartesian product of two RDDs.
+
+    - This is an expensive operation as it creates `n * m` output elements, where `n` and `m` are the sizes of the two RDDs.
+
+    ```python
+    rdd1 = spark.sparkContext.parallelize([1, 2, 3])
+    rdd2 = spark.sparkContext.parallelize([4, 5, 6])
+
+    # Cartesian product (causes shuffle)
+    rdd_cartesian = rdd1.cartesian(rdd2)
+    rdd_cartesian.collect()
+    ```
+
+13. **`aggregateByKey()` (RDD API)**: Aggregates values for each key, using different functions for merging within partitions and across partitions.
+
+    - Data is shuffled to combine values across partitions.
+
+    ```python
+    rdd = spark.sparkContext.parallelize([("a", 1), ("b", 2), ("a", 2)])
+    # Aggregate by key (causes shuffle)
+    rdd_agg = rdd.aggregateByKey(
+        (0, 0),
+        lambda acc, value: (acc[0] + value, acc[1] + 1),
+        lambda acc1, acc2: (acc1[0] + acc2[0], acc1[1] + acc2[1])
+    )
+    rdd_agg.collect()
+    ```
+
+14. **`byKey()` Operations (groupByKey, reduceByKey, combineByKey, etc.)**: These operations group or reduce values based on a key.
+
+    - as they require moving data across partitions.
+
+15. **Key Points to Remember**:
+
+    - **Repartitioning**: `repartition()` triggers a shuffle to distribute data across partitions, while `coalesce()` does not unless you increase the number of partitions.
+    - **Aggregation and Grouping**: Operations like `groupBy()`, `reduceByKey()`, and `groupByKey()` trigger shuffles because they require data to be redistributed so that all values with the same key are grouped together.
+    - **Joins and Sorting**: `join()` and `orderBy()` cause a shuffle to align data across partitions.
+    - **Avoiding Unnecessary Shuffles**: Shuffles are expensive. To avoid unnecessary shuffles, minimize the use of `groupByKey()` in favor of more efficient operations like `reduceByKey()` and carefully manage partitioning.
 
 </details>
 
@@ -459,6 +717,8 @@ spark.stop()
 
 <details><summary style="font-size:25px;color:Orange">Useful Builtin Functions</summary>
 
+-   [Functions](https://spark.apache.org/docs/latest/api/python/reference/pyspark.sql/functions.html)
+
 ## String Operations
 
 #### String Filters
@@ -620,6 +880,204 @@ df = df.withColumn('my_struct', F.struct(F.col('col_a'), F.col('col_b')))
 
 # Get item from struct by key – col.getField(str)
 df = df.withColumn('col_a', F.col('my_struct').getField('col_a'))
+```
+
+</details>
+
+---
+
+<details><summary style="font-size:25px;color:Orange">Window Functions</summary>
+
+Window functions in Apache PySpark are incredibly useful for performing operations across partitions of your data without reshuffling or recomputing the entire dataset. These functions allow you to calculate cumulative sums, rankings, averages, etc., over a specified window or "frame" of rows.
+
+Here’s a list of some key window functions, along with brief demos:
+
+1. **`rank()`** and **`dense_rank()`**: Both of these functions assign ranks to rows in a partition. The difference is that `dense_rank()` doesn’t skip ranks when there are ties, while `rank()` does.
+
+```python
+from pyspark.sql import SparkSession, Window
+from pyspark.sql.functions import rank, dense_rank
+
+# Initialize Spark session
+spark = SparkSession.builder.master("local").appName("WindowFunctionsDemo").getOrCreate()
+
+# Sample Data
+data = [("A", 1000), ("B", 900), ("C", 900), ("D", 800)]
+df = spark.createDataFrame(data, ["Employee", "Salary"])
+
+# Define a window specification (partition by nothing and order by Salary)
+window_spec = Window.orderBy(df['Salary'].desc())
+
+# Apply rank and dense_rank functions
+df.withColumn("rank", rank().over(window_spec)) \
+  .withColumn("dense_rank", dense_rank().over(window_spec)) \
+  .show()
+```
+
+**Output:**
+
+```
++--------+------+----+----------+
+|Employee|Salary|rank|dense_rank|
++--------+------+----+----------+
+|       A|  1000|   1|         1|
+|       B|   900|   2|         2|
+|       C|   900|   2|         2|
+|       D|   800|   4|         3|
++--------+------+----+----------+
+```
+
+2. **`row_number()`**: This function assigns a unique sequential number to rows within a partition.
+
+```python
+from pyspark.sql.functions import row_number
+
+df.withColumn("row_number", row_number().over(window_spec)).show()
+```
+
+**Output:**
+
+```
++--------+------+----------+
+|Employee|Salary|row_number|
++--------+------+----------+
+|       A|  1000|         1|
+|       B|   900|         2|
+|       C|   900|         3|
+|       D|   800|         4|
++--------+------+----------+
+```
+
+3. **`lag()`** and **`lead()`**: These functions are used to access previous (`lag()`) or next (`lead()`) rows within the partition.
+
+```python
+from pyspark.sql.functions import lag, lead
+
+df.withColumn("lag", lag("Salary", 1).over(window_spec)) \
+  .withColumn("lead", lead("Salary", 1).over(window_spec)) \
+  .show()
+```
+
+**Output:**
+
+```
++--------+------+----+----+
+|Employee|Salary| lag|lead|
++--------+------+----+----+
+|       A|  1000|null| 900|
+|       B|   900|1000| 900|
+|       C|   900| 900| 800|
+|       D|   800| 900|null|
++--------+------+----+----+
+```
+
+4. **`cume_dist()`** (Cumulative Distribution): This calculates the cumulative distribution of a value within a partition.
+
+```python
+from pyspark.sql.functions import cume_dist
+
+df.withColumn("cume_dist", cume_dist().over(window_spec)).show()
+```
+
+**Output:**
+
+```
++--------+------+------------------+
+|Employee|Salary|         cume_dist|
++--------+------+------------------+
+|       A|  1000|               0.25|
+|       B|   900|               0.75|
+|       C|   900|               0.75|
+|       D|   800|               1.0|
++--------+------+------------------+
+```
+
+5. **`percent_rank()`**: This calculates the percentile rank of rows within a partition.
+
+```python
+from pyspark.sql.functions import percent_rank
+
+df.withColumn("percent_rank", percent_rank().over(window_spec)).show()
+```
+
+**Output:**
+
+```
++--------+------+------------+
+|Employee|Salary|percent_rank|
++--------+------+------------+
+|       A|  1000|         0.0|
+|       B|   900|         0.5|
+|       C|   900|         0.5|
+|       D|   800|         1.0|
++--------+------+------------+
+```
+
+6. **`ntile()`**: This function divides rows within a partition into a specified number of buckets and assigns a bucket number to each row.
+
+```python
+from pyspark.sql.functions import ntile
+
+df.withColumn("ntile", ntile(3).over(window_spec)).show()
+```
+
+**Output:**
+
+```
++--------+------+-----+
+|Employee|Salary|ntile|
++--------+------+-----+
+|       A|  1000|    1|
+|       B|   900|    2|
+|       C|   900|    2|
+|       D|   800|    3|
++--------+------+-----+
+```
+
+7. **`sum()` and **`avg()`\*\* (Aggregates over a window): You can calculate aggregates like `sum()`, `avg()`, `min()`, and `max()` over a window of rows.
+
+```python
+from pyspark.sql.functions import sum, avg
+
+df.withColumn("sum_salary", sum("Salary").over(window_spec)) \
+  .withColumn("avg_salary", avg("Salary").over(window_spec)) \
+  .show()
+```
+
+**Output:**
+
+```
++--------+------+----------+----------+
+|Employee|Salary|sum_salary|avg_salary|
++--------+------+----------+----------+
+|       A|  1000|      3700|      925.0|
+|       B|   900|      2700|      900.0|
+|       C|   900|      1800|      900.0|
+|       D|   800|       800|      800.0|
++--------+------+----------+----------+
+```
+
+8. **`first()` and `last()`**: These functions return the first or last value within a window frame.
+
+```python
+from pyspark.sql.functions import first, last
+
+df.withColumn("first_salary", first("Salary").over(window_spec)) \
+  .withColumn("last_salary", last("Salary").over(window_spec)) \
+  .show()
+```
+
+**Output:**
+
+```
++--------+------+------------+-----------+
+|Employee|Salary|first_salary|last_salary|
++--------+------+------------+-----------+
+|       A|  1000|        1000|        800|
+|       B|   900|        1000|        800|
+|       C|   900|        1000|        800|
+|       D|   800|        1000|        800|
++--------+------+------------+-----------+
 ```
 
 </details>

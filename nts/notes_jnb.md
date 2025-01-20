@@ -19,7 +19,7 @@ create_old_jnb_pyenv(){
 }
 ```
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left">Magic Commands</summary>
+<details><summary style="font-size:25px;color:Orange">Magic Commands</summary>
 
 In Jupyter Notebooks, **magic commands** are special commands that are not a part of the Python language but provide additional functionality for interacting with the notebook environment. Magic commands start with either a single % (line magic) or %% (cell magic) and are used to perform various tasks.
 
@@ -127,7 +127,7 @@ These are just a few examples, and there are many more magic commands available.
 
 ---
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left">Installation & Configurations:</summary>
+<details><summary style="font-size:25px;color:Orange">Installation & Configurations:</summary>
 
 #### Installation and Configurations of Jupyter Lab
 
@@ -200,37 +200,6 @@ These are just a few examples, and there are many more magic commands available.
 -   `$ jupyter kernelspec list`
 -   `$ jupyter kernelspec remove kernel_name`
 
-#### How add custome style sheet (css) to Jupyter Notebook
-
--   `$ jupyter notebook --generate-config`
-
--   `Specify CSS Rules`: Add CSS rules to your `custom.css` file. For example, to increase the font size for code cells and Markdown cells, you can use CSS rules like the following:
-
-    ```css
-    /* Increase font size for code cells */
-    .CodeMirror pre {
-        font-size: 14px; /* Adjust the font size as needed */
-    }
-
-    /* Increase font size for Markdown cells */
-    .text_cell_render p {
-        font-size: 16px; /* Adjust the font size as needed */
-    }
-    ```
-
--   `Specify Custom CSS File in Jupyter Notebook`:
-
-    -   To apply these CSS rules, you need to specify your custom CSS file in your Jupyter Notebook configuration. You can do this by editing the Jupyter configuration file.
-    -   Open a terminal and run the following command to generate a Jupyter Notebook configuration file if you haven't already:
-        -   `$ jupyter notebook --generate-config`
-        -   This will create a configuration file, typically named jupyter_notebook_config.py, in your Jupyter configuration directory.
-
--   `Edit the Configuration File`: Open the generated configuration file (e.g., jupyter_notebook_config.py) in a text editor. Search for the c.NotebookApp.css_files line and uncomment it if necessary. Add the path to your custom CSS file:
-
-    ```python
-    c.NotebookApp.css_files = ["path/custom.css"]
-    ```
-
 #### ENABLE JUPYTER NOTEBOOK EXTENSION & THEMES:
 
 -   [Installing jupyter_contrib_nbextensions](https://jupyter-contrib-nbextensions.readthedocs.io/en/latest/install.html)
@@ -263,8 +232,223 @@ These are just a few examples, and there are many more magic commands available.
 
 </details>
 
-<details open>
-<summary style="font-size:25px;color:Orange;text-align:left">Usefull JNB Shortcuts:</summary>
+<details><summary style="font-size:25px;color:Orange">How to add custome style sheet (css) to Jupyter Notebook on VSCode</summary>
+
+To add custom CSS styling to a Jupyter Notebook in Visual Studio Code, you can inject the CSS code directly into the notebook or create a custom CSS file and load it. Here are a few ways to do this:
+
+### Method 1: Inject CSS Directly into a Notebook Cell
+
+You can add CSS styling directly in a cell using HTML `<style>` tags within a Markdown cell.
+
+1. Create a new Markdown cell in your Jupyter Notebook.
+2. Add your CSS code between `<style>` tags like this:
+
+    ```markdown
+    <style>
+    /* Custom CSS styles */
+    .output_area {
+        font-size: 16px;
+        color: #333333;
+    }
+    .rendered_html table {
+        font-size: 14px;
+        border-collapse: collapse;
+    }
+    .rendered_html th, .rendered_html td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    </style>
+    ```
+
+3. Run the Markdown cell to apply the styles to your notebook.
+
+### Method 2: Load CSS from an External File
+
+If you have more extensive styling, it can be easier to manage it in a separate CSS file and load it into your notebook.
+
+1. Create a `custom.css` file with your desired styles. For example:
+
+    ```css
+    /* custom.css */
+    .output_area {
+        font-size: 16px;
+        color: #333333;
+    }
+    .rendered_html table {
+        font-size: 14px;
+        border-collapse: collapse;
+    }
+    .rendered_html th,
+    .rendered_html td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    ```
+
+2. Place the `custom.css` file in the same directory as your notebook (or a known path).
+3. Add a Markdown cell in your notebook to load the CSS file:
+
+    ```markdown
+    <link rel="stylesheet" type="text/css" href="custom.css">
+    ```
+
+4. Run the cell to apply the external CSS file to your notebook.
+
+### Method 3: Use IPython Display with Custom CSS
+
+The `IPython.display` module allows you to apply CSS programmatically.
+
+1. In a new code cell, import `display` from `IPython` and add your custom CSS as a string:
+
+    ```python
+    from IPython.core.display import HTML
+
+    display(HTML("""
+    <style>
+    .output_area {
+        font-size: 16px;
+        color: #333333;
+    }
+    .rendered_html table {
+        font-size: 14px;
+        border-collapse: collapse;
+    }
+    .rendered_html th, .rendered_html td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    </style>
+    """))
+    ```
+
+2. Run this cell, and the styles should apply to your notebook.
+
+These methods allow you to customize the look of your notebook when working within Visual Studio Code.
+
+</details>
+
+<details><summary style="font-size:25px;color:Orange">How add custome style sheet (css) to Jupyter Notebook</summary>
+
+-   `$ jupyter notebook --generate-config`
+
+-   `Specify CSS Rules`: Add CSS rules to your `custom.css` file. For example, to increase the font size for code cells and Markdown cells, you can use CSS rules like the following:
+
+    ```css
+    /* Increase font size for code cells */
+    .CodeMirror pre {
+        font-size: 14px; /* Adjust the font size as needed */
+    }
+
+    /* Increase font size for Markdown cells */
+    .text_cell_render p {
+        font-size: 16px; /* Adjust the font size as needed */
+    }
+    ```
+
+-   `Specify Custom CSS File in Jupyter Notebook`:
+
+    -   To apply these CSS rules, you need to specify your custom CSS file in your Jupyter Notebook configuration. You can do this by editing the Jupyter configuration file.
+    -   Open a terminal and run the following command to generate a Jupyter Notebook configuration file if you haven't already:
+        -   `$ jupyter notebook --generate-config`
+        -   This will create a configuration file, typically named `jupyter_notebook_config.py`, in your Jupyter configuration directory.
+
+-   `Edit the Configuration File`: Open the generated configuration file (e.g., jupyter_notebook_config.py) in a text editor. Search for the c.NotebookApp.css_files line and uncomment it if necessary. Add the path to your custom CSS file:
+
+        ```python
+        c.NotebookApp.css_files = ["path/custom.css"]
+        ```
+
+---
+
+Adding a custom CSS file to style JupyterLab can be done by modifying the custom CSS for JupyterLab's user interface. Here’s a step-by-step guide on how to achieve this:
+
+### Step 1: Locate the JupyterLab Configuration Directory
+
+First, locate the JupyterLab configuration directory. By default, this should be in the following location:
+
+-   **Linux/MacOS:** `~/.jupyter/lab/user-settings/`
+-   **Windows:** `C:\Users\<YourUsername>\.jupyter\lab\user-settings\`
+
+### Step 2: Create a Custom CSS File
+
+Create a custom CSS file that you want to use for styling JupyterLab. For example, you can name it `custom.css` and place it in a directory of your choice.
+
+```css
+/* custom.css */
+body {
+    background-color: #f0f0f0;
+}
+
+.jp-Notebook {
+    font-family: "Arial", sans-serif;
+}
+
+.jp-Notebook-cell {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+```
+
+### Step 3: Install the JupyterLab Custom CSS Extension
+
+You will need to install the JupyterLab Custom CSS extension. You can do this by running the following commands:
+
+```bash
+pip install jupyterlab
+jupyter labextension install @jupyterlab/theme-cookiecutter
+```
+
+### Step 4: Edit the JupyterLab CSS File
+
+Navigate to the JupyterLab settings directory and create or edit the `overrides.json` file in the `@jupyterlab` directory. The path should look like this:
+
+-   **Linux/MacOS:** `~/.jupyter/lab/user-settings/@jupyterlab/`
+-   **Windows:** `C:\Users\<YourUsername>\.jupyter\lab\user-settings\@jupyterlab\`
+
+Create the `overrides.json` file if it does not exist and add the path to your custom CSS file:
+
+```json
+{
+    "theme": {
+        "overrides": {
+            "custom.css": {
+                "path": "/path/to/your/custom.css"
+            }
+        }
+    }
+}
+```
+
+Replace `/path/to/your/custom.css` with the actual path to your custom CSS file.
+
+### Step 5: Apply the Custom CSS
+
+To apply the custom CSS, you need to restart JupyterLab. You can do this by closing the current JupyterLab instance and reopening it. The custom CSS should now be applied to the JupyterLab interface.
+
+### Example Directory Structure
+
+Here’s an example directory structure for clarity:
+
+```
+~/.jupyter/
+    └── lab/
+        └── user-settings/
+            └── @jupyterlab/
+                └── overrides.json
+/path/to/your/custom.css
+```
+
+### Verifying the Custom CSS
+
+Once JupyterLab is restarted, you should see the changes applied as per the custom CSS file.
+
+By following these steps, you can add and apply a custom CSS file to style your JupyterLab interface to match your preferences.
+
+</details>
+
+<details open><summary style="font-size:25px;color:Orange;text-align:left">Usefull JNB Shortcuts:</summary>
 
 #### USEFULL JUPYTER TRICKS:
 
@@ -319,7 +503,7 @@ These are just a few examples, and there are many more magic commands available.
 
 ---
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left">Jupyter lab</summary>
+<details><summary style="font-size:25px;color:Orange">Jupyter lab</summary>
 
 -   `$ pip install jupyterlab_materialdarker_theme`
 -   `$ jupyter labextension list`
@@ -331,7 +515,7 @@ These are just a few examples, and there are many more magic commands available.
 
 ---
 
-<details open><summary style="font-size:25px;color:Orange;text-align:left">MISC</summary>
+<details><summary style="font-size:25px;color:Orange">MISC</summary>
 
 <!-- #  Running Jupyter Notebook on an EC2 Server  -->
 

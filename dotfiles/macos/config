@@ -1,9 +1,9 @@
+# `UseKeychain yes` stores the passphrase in the macOS Keychain.
+
 Host farzana
 HostName MOS02.lan
 User Farzana
-StrictHostKeyChecking no
-
-# IdentityFile ~/.ssh/mos01_to_mos02.pub
+StrictHostKeyChecking no # IdentityFile ~/.ssh/mos01_to_mos02.pub
 
 Host amomin
 HostName MOS02.local
@@ -12,17 +12,23 @@ StrictHostKeyChecking no
 
 # ============================================================================
 
-Host jenkins_master
-HostName 100.26.49.120
+Host jmaster
+HostName 34.235.39.82
 StrictHostKeyChecking no
 User ubuntu
 IdentityFile ~/.ssh/AMominNJ.pem
 
-Host jenkins_agent1
-HostName 3.235.22.191
+Host jagent
+HostName 3.224.245.94
 StrictHostKeyChecking no
 User ubuntu
-IdentityFile ~/.ssh/aws-ht.pem
+IdentityFile ~/.ssh/AMominNJ.pem
+
+Host jagent1
+HostName 3.224.245.94
+StrictHostKeyChecking no
+User ubuntu
+IdentityFile ~/.ssh/AMominNJ.pem
 
 Host spark
 HostName 34.239.253.210
@@ -31,9 +37,15 @@ User ubuntu
 IdentityFile ~/.ssh/AMominNJ.pem
 
 Host ubun
-HostName 34.239.248.170
+HostName 54.197.179.12
 StrictHostKeyChecking no
 User ubuntu
+IdentityFile ~/.ssh/AMominNJ.pem
+
+Host amazon_linux
+HostName 54.90.206.152
+StrictHostKeyChecking no
+User ec2-user
 IdentityFile ~/.ssh/AMominNJ.pem
 
 Host ds_tmp
@@ -45,7 +57,7 @@ IdentityFile ~/.ssh/gcp
 
 ### GitHub: Account 1
 
-### `$ git remote set-url origin git@gh1:A-Momin/project_name.git`
+### `$ git remote set-url origin git@gh1:A-Momin/noteshub.git`
 
 Host gh1
 HostName github.com
@@ -56,7 +68,7 @@ IdentityFile ~/.ssh/ghub_bbcredcap3
 
 ### GitHub: Account 2
 
-### `$ git remote set-url origin git@gh2:Aminul-Momin/project_name.git`
+# `$ git remote set-url origin git@gh2:Aminul-Momin/Algorithms_and_Data_Structures.git`
 
 Host gh2
 HostName github.com

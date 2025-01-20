@@ -142,5 +142,13 @@
     "explorer.confirmDragAndDrop": false,
     "liveServer.settings.AdvanceCustomBrowserCmdLine": "",
     "diffEditor.hideUnchangedRegions.enabled": true,
+    "notebook.editorOptionsCustomizations": {
+        "editor.tabSize": 4,
+        "editor.indentSize": 4,
+        "editor.insertSpaces": true
+    },
+    "python.defaultInterpreterPath": "/Users/am/.pyenv/versions/3.9.6/envs/dsnb",
+    "notebook.output.textLineLimit": 50,
+    "markdown-preview-enhanced.enablePreviewZenMode": false
 
 }

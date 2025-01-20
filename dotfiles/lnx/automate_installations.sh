@@ -145,7 +145,7 @@ install_docker_ubuntu_main(){
     sudo usermod -aG docker $(whoami)
     
     ## Add user 'Jenkins' to the Docker group to be able to run Docker commands without 'sudo'.
-    sudo usermod -aG docker jenkins
+    # sudo usermod -aG docker jenkins
 
     sudo systemctl restart docker
 
@@ -161,35 +161,9 @@ install_docker_ubuntu_main(){
     sudo docker run hello-world
 
     echo "Docker Verion: $(docker --version)"
+
+    sudo apt  install docker-compose -y
 }
-
-
-install_docker_ubuntu(){
-    ## Install From: https://medium.com/@srijaanaparthy/step-by-step-guide-to-install-docker-on-ubuntu-in-aws-a39746e5a63d
-
-    sudo apt-get update
-
-    ## To install Docker on Ubuntu, you can use the following command
-    sudo apt-get install docker.io -y
-
-    ## After installing Docker, you will need to start the Docker service
-    sudo systemctl start docker
-
-    ## Verifying the installation. Once you have started the Docker service, you can verify that it is running by running the following command in your terminal
-    sudo docker run hello-world
-
-    ## To start the Docker service automatically when the instance starts, you can use the following command
-    sudo systemctl enable docker
-    
-    docker --version
-    
-    ## Add your user to the Docker group to run Docker commands without 'sudo'
-    sudo usermod -a -G docker $(whoami)
-    
-    # You can log out and log back in to apply the changes or use the following command to activate the changes without logging out:
-    newgrp docker
-}
-
 
 ## ChatGPT: how to install and configure Jupyter Notebook in a remote AWS EC2 of Ubuntu Machine?
 install_jupyter_notebook(){

@@ -11,13 +11,12 @@ export PATH="$HOME/mydocs/Software_Development/Web_Development/qa_automation/rob
 export PATH="$HOME/mydocs/Software_Development/Web_Development/qa_automation/robot_framework/geckodriver:$PATH"
 
 
-export PYTHONPATH=$HOME/mydocs/Software_Development/notes_hub/utils:$PYTHONPATH
 export ADS="$HOME/mydocs/Software_Development/Algorithms_and_Data_Structures"
 export SD="$HOME/mydocs/Software_Development"
 export GD="$HOME/mydocs/gd"
 export ML="$HOME/mydocs/Software_Development/Machine_Learning/ml_courses"
 export NLTK_DATA='$HOME/nltk_data'
-export UTILS="$HOME/mydocs/Software_Development/notes_hub/utils"
+export UTILS="$HOME/mydocs/Software_Development/noteshub/utils"
 export DATA="$HOME/DATA"
 
 # Flask Environment Variables
@@ -47,42 +46,46 @@ establish_symlinks(){
         $HOME/.aws/credentials
     ln -sf $NTHUB/nts/notes_cicd.md \
         $SD/Web_Development/cicd/notes_cicd.md
-    ln -sf $SD/Databases/RDBMS/sql/query_questions_answers.sql \
-        $NTHUB/iqs/query_questions_answers.sql
+    ln -sf $NTHUB/iqs/query_questions_answers.sql \
+        $SD/Databases/RDBMS/sql/query_questions_answers.sql
+        
     ln -sf $NTHUB/nts/notes_django.md \
-        /Users/am/mydocs/Software_Development/Web_Development/django-courses/notes_django.md
+        $HOME/mydocs/Software_Development/Web_Development/django-courses/notes_django.md
     ln -sf $NTHUB/nts/notes_aws.md \
-        /Users/am/mydocs/Software_Development/Web_Development/aws/notes_aws.md
+        $HOME/mydocs/Software_Development/Web_Development/aws/notes_aws.md
     ln -sf $NTHUB/nts/notes_docker.md \
-        /Users/am/mydocs/Software_Development/Web_Development/cicd/dockers/notes_docker.md
+        $HOME/mydocs/Software_Development/Web_Development/cicd/dockers/notes_docker.md
     ln -sf $NTHUB/nts/notes_fastapi.md \
-        /Users/am/mydocs/Software_Development/Web_Development/fast_API/notes_fastapi.md
+        $HOME/mydocs/Software_Development/Web_Development/fast_API/notes_fastapi.md
     ln -sf $NTHUB/nts/notes_flask.md \
-        /Users/am/mydocs/Software_Development/Web_Development/flask-course/notes_flask.md
+        $HOME/mydocs/Software_Development/Web_Development/flask-course/notes_flask.md
     ln -sf $NTHUB/nts/notes_terraform.md \
-        /Users/am/mydocs/Software_Development/Web_Development/cicd/terraforms/notes_terraform.md
+        $HOME/mydocs/Software_Development/Web_Development/cicd/terraforms/notes_terraform.md
     ln -sf $NTHUB/nts/notes_ansible.md \
-        /Users/am/mydocs/Software_Development/Web_Development/cicd/ansible/notes_ansible.md
+        $HOME/mydocs/Software_Development/Web_Development/cicd/ansible/notes_ansible.md
     ln -sf $NTHUB/nts/notes_networking.md \
-        /Users/am/mydocs/Software_Development/networking/notes_networking.md
+        $HOME/mydocs/Software_Development/networking/notes_networking.md
+    
     # VSCode User Settings.json
     ln -sf $NTHUB/dotfiles/vscode/settings.json \
         ~/Library/Application\ Support/Code/User/settings.json
     ln -sf $NTHUB/dotfiles/vscode/style.less \
         $HOME/.local/state/crossnote/style.less
     
-    ln -sf /Users/am/mydocs/Software_Development/Databases/RDBMS/sql/notes_db.md \
-        $NTHUB/nts/notes_db.md
-    ln -sf /Users/am/mydocs/Software_Development/Databases/RDBMS/sql/query_questions_answers.md \
-        $NTHUB/nts/query_questions_answers.md
+    ln -sf $NTHUB/dotfiles/macos/config \
+        $HOME/.ssh/config
+
+    ln -sf $NTHUB/nts/notes_db.md \
+        $HOME/mydocs/Software_Development/Databases/RDBMS/sql/notes_db.md
+        
+    ln -sf $NTHUB/nts/query_questions_answers.md \
+        $HOME/mydocs/Software_Development/Databases/RDBMS/sql/query_questions_answers.md
+        
 
     if [ ! -f $HOME/notes_rough.md ]; then
         touch $HOME/notes_rough.md;
     fi
 
-    alias ntrgh="code $HOME/notes_rough.md"
-    alias mdstyle="code $HOME/.local/state/crossnote/style.less"
-    alias ntht="code $HOME/mydocs/gd/Harness-Tech/notes_ht.md"
 }
 establish_symlinks
 
@@ -105,6 +108,9 @@ sync_to_volume() {
     : '
     Args:
         $1 (mendatory): the name of the volume attached to the mac.
+    
+    Example:
+        `$ sync_to_volume mypassport`
     '
 
     # local target="$1"
@@ -288,7 +294,7 @@ capturescreen() {
     # local screencapture_cmd="/usr/sbin/screencapture"
     
     # Set the target folder
-    local folder_name="/Users/am/mydocs/Software_Development/networking/NetworkingFundamentals/sshot"
+    local folder_name="$HOME/mydocs/Software_Development/networking/NetworkingFundamentals/sshot"
     
     # Ensure the target folder exists
     mkdir -p "$folder_name"

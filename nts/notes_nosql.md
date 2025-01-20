@@ -1,8 +1,12 @@
 <details><summary style="font-size:25px;color:Orange;text-align:left"> Theory: RDBMS </summary>
 
 -   𝑳𝒊𝒔𝒕 𝒐𝒇 𝐔𝐬𝐞𝐟𝐮𝐥𝐥 𝑺𝒚𝒎𝒃𝒐𝒍𝒔: ⌘ ⌥ + ⌃ + ⤶ ⇧  ⤶ ⬋ ↩︎ ↲ ↵ ↫ ♥ ★ 🎾 &
+-   [Intermediate MySQL Tutorial Series](https://www.youtube.com/playlist?list=PLUaB-1hjhk8G5zci4HA8E21x2BJS3jzNm)
+-   [Advanced MySQL Tutorial Series](https://www.youtube.com/playlist?list=PLUaB-1hjhk8GjfgvWlreA6BvTvazz8RHG)
+-   [Learn Complete SQL (Beginner to Advance)](https://www.youtube.com/playlist?list=PLavw5C92dz9Ef4E-1Zi9KfCTXS_IN8gXZ)
 -   [Learn PostgreSQL Tutorial - Full Course for Beginners](https://www.youtube.com/watch?v=qw--VYLpxG4&t=1615s)
--   [SQL Tutorial - Full Database Course for Beginners](https://www.youtube.com/watch?v=HXV3zeQKqGY&t=4269s)
+-   [Full Database Course for Beginners](https://www.youtube.com/watch?v=HXV3zeQKqGY&t=4269s)
+
 -   🔥 MOS01:
     -   `ROOT` USER PASSWORD : `S...s.....`
     -   `Shah` USER PASSWORD : `s........9`
@@ -28,32 +32,21 @@
 
 ##### LOGIN & LOGOUT
 
--   `$ mysql -u root -p`
+-   `$ mysql -u root -p` -> to connect to mysql server as 'root' user using password.
 
-    -   to connect to mysql server as 'root' user using password.
-
--   `$ mysql -u Farzana -p`
-
-    -   login with username - 'Farzana'
+-   `$ mysql -u Farzana -p` -> login with username - 'Farzana'
 
 -   `$ mysql -h host -u user -p`
 
     -   If the server runs on a machine other than the one where you log in, you must also specify a host name along username
 
--   `mysql> QUIT;`
+-   `mysql> QUIT;` -> to quit mysql server
 
-    -   to quit mysql server
+-   `mysql> mysql.server start;` -> Turn the mysql server on
 
--   `mysql> mysql.server start;`
+-   `mysql> mysql.server stop;` -> Turn the mysql server off.
 
-    -   Turn the mysql server on
-
--   `mysql> mysql.server stop;`
-
-    -   Turn the mysql server off.
-
--   `mysql> source file_name.sql;`
-    -   to execute a sql file named file_name.sql
+-   `mysql> source file_name.sql;` -> to execute a sql file named file_name.sql
 
 ##### PRIMARYLY USEFULL MYSQL COMMAND
 
@@ -68,6 +61,8 @@
 -   `mysql> SHOW [FULL] TABLES;`
 
     -   Shows the tables in the database once a database has been selected with the use-command (`USE Databasename`).
+
+-   `mysql> DESCRIBE Employee;`
 
 -   `mysql> SHOW COLUMNS FROM tablename;`
 
@@ -96,7 +91,11 @@
 
 ##### ADMINISTRATIVE OPERATIONS
 
--   `mysqldump -u shah -p shah711409 interview_questions Employee > path/backup_file.sql` -> Backup a table.
+-   **Usefull Shell Commands**:
+
+    -   `$ mysqldump -u shah -p shah711409 interview_questions Employee > path/backup_file.sql` -> Backup a table.
+    -   `$ mysql -h localhost -P 3306 -u Shah -p'shah711409' IQ < /Users/am/mydocs/Software_Development/Databases/RDBMS/sql/schemas/students.sql`
+
 -   `mysql> CREATE user 'Shah'@'localhost' IDENTIFIED BY 'shah711409';`
 -   `mysql> GRANT ALL PRIVILEGES ON *.* TO 'Shah'@'localhost' WITH GRANT OPTION;`
 -   `mysql> FLUSH PRIVILEGES;`
@@ -610,6 +609,7 @@ Cassandra's architecture and concepts can be complex due to its distributed natu
 
 <details><summary style="font-size:20px;color:Red;text-align:left"> MongoDB</summary>
 
+-   [neetcode: MongoDB Crash Course 2023](https://www.youtube.com/watch?v=QPFlGswpyJY&list=PLQpVsaqBj4RI5JlYgN5Pi9AfLhGJbkskW)
 -   [MongoDB with Python Crash Course - Tutorial for Beginners](https://www.youtube.com/watch?v=E-1xI85Zog8&t=11s)
 -   [Udacity Data Wrangling with MongoDB](https://learn.udacity.com/courses/ud032)
 -   [YT: Udacity Data Wrangling with MongoDB](https://www.youtube.com/playlist?list=PLAwxTw4SYaPnq2iMkfPxmXwBFjwc_AXK_)
