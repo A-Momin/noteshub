@@ -64,7 +64,7 @@ HostName github.com
 User git
 AddKeysToAgent yes
 UseKeychain no
-IdentityFile ~/.ssh/ghub_bbcredcap3
+IdentityFile ~/.ssh/github_bbcredcap3
 
 ### GitHub: Account 2
 

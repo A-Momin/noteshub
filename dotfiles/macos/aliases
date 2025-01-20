@@ -161,7 +161,7 @@ alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
 # alias cleanvenvdir="find . -type d -name '*.venv' -exec rm -rf {} +"
 
 
-alias sshadd='eval $(ssh-agent) && ssh-add'
+alias runsshagent='eval $(ssh-agent)'
 
 #=============================================================================
 #=============================================================================

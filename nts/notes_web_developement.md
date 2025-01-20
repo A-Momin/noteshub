@@ -1725,11 +1725,11 @@ Atlassian Jira is one of the most popular tools for project management, issue tr
         2. "Develop a single sign-on system."
         3. "Migrate existing customer data to the new portal."
 
-5. **Sprints**: A **sprint** is a time-boxed iteration of work in Scrum projects, typically lasting 1-4 weeks.
+5. **Sprints**: A sprint is a time-boxed iteration of work in Scrum projects, typically lasting 1-4 weeks.
 
     - Teams plan, execute, and deliver work during a sprint.
 
-6. **Workflows**: A **workflow** represents the lifecycle of an issue, from creation to completion.
+6. **Workflows**: A workflow represents the lifecycle of an issue, from creation to completion.
 
     - It defines statuses (e.g., Open, In Progress, Done) and transitions (e.g., Move from Open to In Progress).
     - Workflows can be customized for different projects or issue types.
@@ -1740,7 +1740,7 @@ Atlassian Jira is one of the most popular tools for project management, issue tr
     - `Kanban Board`: Focused on continuous work, used to manage workflows without fixed iterations.
     - Boards are associated with projects and reflect the issues based on filters.
 
-    - **Backlog**:
+    - **Backlog/To Do**: A backlog is a list of issues or tasks that need to be completed. It is commonly used in Scrum projects to prioritize work for upcoming sprints.
 
         - Represents all the work that could potentially be done in future sprints.
         - Tasks in this column are not yet ready for immediate execution.
@@ -1749,6 +1749,8 @@ Atlassian Jira is one of the most popular tools for project management, issue tr
 
         - Tasks selected during the Sprint Planning session for the current sprint.
         - Represents work that the team commits to completing in the sprint.
+
+    - **Ready**: The 'Ready' column on a Scrum Sprint board is typically used to indicate work items (e.g., user stories, tasks, or bugs) that are fully prepared and ready to be picked up by the team for development or the next phase of the sprint. It serves as a staging area for items that meet all necessary criteria for the team to start working on them.
 
     - **In Progress**:
 
@@ -1765,7 +1767,7 @@ Atlassian Jira is one of the most popular tools for project management, issue tr
         - Completed tasks that meet the **Definition of Done (DoD)** established by the team.
         - Work items here are ready to be delivered to the end-user or customer.
 
-    - Work Items (Cards):
+    - **Work Items** (Cards):
 
         - Each card represents a work item such as a **Story**, **Task**, **Bug**, or **Sub-task**.
         - Cards usually display:
@@ -1773,6 +1775,8 @@ Atlassian Jira is one of the most popular tools for project management, issue tr
             - Assignee (who is working on it).
             - Status (current stage in the workflow).
             - Details like priority, due date, or story points.
+
+    - **Color Coding of Cards**: The color coding of cards on a Scrum Sprint board is a visual tool to provide quick insights into the status, priority, type, or ownership of tasks. The specific meaning of the colors can vary depending on the team, project, or Scrum tool being used (e.g., Jira, Trello).
 
     - **How the Scrum Board Supports the Scrum Process**
 
@@ -1805,10 +1809,48 @@ Atlassian Jira is one of the most popular tools for project management, issue tr
                 - Were there bottlenecks or tasks that got stuck in a particular column?
                 - Did the team over-commit or under-commit?
 
-8. **Backlog**: A backlog is a list of issues or tasks that need to be completed. It is commonly used in Scrum projects to prioritize work for upcoming sprints.
-9. **Components**: Components are sub-sections of a project used to group issues. For example, in a software project, components could be Frontend, Backend, or API.
-10. **Labels**: Labels are tags that can be added to issues to categorize or identify them easily.
-11. **Custom Fields**: Jira allows administrators to create custom fields to capture additional information specific to their projects.
+8. **Components**: Components are sub-sections of a project used to group issues. For example, in a software project, components could be Frontend, Backend, or API.
+9. **Labels**: Labels are tags that can be added to issues to categorize or identify them easily.
+10. **Custom Fields**: Jira allows administrators to create custom fields to capture additional information specific to their projects.
+
+### Story Points
+
+A Story Point in a Scrum board is a unit of measurement used to estimate the effort, complexity, and time required to complete a user story or task. It is a fundamental concept in Agile project management, enabling teams to quantify and prioritize work during backlog refinement or sprint planning.
+Story Points help teams assess work relatively, rather than in absolute terms like hours or days, allowing for better planning and improved focus on delivering value.
+
+-   1. **What Are Story Points?**: Story Points are a numerical representation of the **effort** required to complete a task or user story. They are not tied to time (hours or days); instead, they measure **relative size** compared to other tasks. They take into account:
+
+    -   `Complexity`: How difficult the task is.
+    -   `Effort`: How much work is required.
+    -   `Uncertainty`: How much is unknown or unclear about the task.
+
+-   2. **Why Use Story Points?**:
+
+    -   `Encourages Team Collaboration`: The team collectively estimates the effort during sprint planning.
+    -   `Accounts for Variability`: Considers more than just time, such as complexity and risks.
+    -   `Improves Predictability`: Helps forecast the team’s capacity (velocity) for future sprints.
+    -   `Avoids Overcommitment`: Focuses on what the team can realistically achieve in a sprint.
+
+-   3. **How Story Points Are Assigned**: Story Points are typically assigned during **backlog refinement** or **sprint planning** using methods like **Planning Poker** or team discussions. Common scales for Story Points include:
+
+    -   `Fibonacci Sequence (1, 2, 3, 5, 8, 13, etc.)`: Widely used because the gaps between numbers encourage discussions about differences in effort.
+    -   `T-shirt Sizes (XS, S, M, L, XL)`: Translated into numerical points later.
+    -   `Custom Scales`: Teams may create their own scales if needed.
+
+-   4. **What Each Point Represents**: Each team defines what Story Points mean for them, but here’s an example:
+
+    -   `1 Point`: A very simple task with minimal effort (e.g., a minor UI text change).
+    -   `2 Points`: A straightforward task with no complexity (e.g., adding a new button).
+    -   `3 Points`: A medium-sized task with some complexity (e.g., developing a simple API endpoint).
+    -   `5 Points`: A larger task with noticeable complexity or dependencies.
+    -   `8 Points or Higher`: A very complex task, often broken down into smaller stories.
+
+-   **Using Story Points on the Scrum Board**:
+
+    1. `Displayed on Cards`: Story Points are usually displayed on user story or task cards on the Scrum board, providing a quick view of the effort.
+    2. `Tracking Velocity`: The team’s **velocity** is the total number of Story Points completed during a sprint. For example, if the team completes 30 Story Points in one sprint, they know their approximate capacity for the next sprint.
+    3. `Sprint Burndown Chart`: Story Points contribute to the **burndown chart**, tracking the team's progress as tasks are completed during the sprint.
+    4. `Distribution of Work`: The Product Owner and Scrum Master ensure that the total Story Points planned for the sprint align with the team’s capacity.
 
 #### Relationship Between Story, Epic, and Issue
 

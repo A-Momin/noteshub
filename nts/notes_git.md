@@ -162,7 +162,6 @@
 -   `$ git config --global user.name 'Aminul Momin'`
 -   `$ git config --global user.email A.Momin.NYC@gmail.com`
 -   `$ git config --global init.defaultBranch <master_branch>` → setup the initial branch name to create in all new repositories.
--   `$ 🔥 alias sshadd='eval $(ssh-agent) && ssh-add'` → If any unexpected issue arise, mske sure ssh-agent is running.
 -   `$ 🔥 git remote set-url origin git@github.com:Aminul-Momin/<repository_name>.git` → Updates the URL of the existing origin remote to a new repository address.
 -   `$ git remote set-url origin git@gh2:Aminul-Momin/project_name.git`
 -   `$ git remote` → List out all the remote this git repo has been added to
@@ -195,6 +194,12 @@
 
 <details open><summary style="font-size:20px;color:red;text-align:left">Troubleshoot Github Authenticatios</summary>
 
+-   `$ eval $(ssh-agent)` → Make sure 'ssh-agent' is running
+-   `$ 🔥 alias runsshagent='eval $(ssh-agent)'` → mske sure ssh-agent is running.
+-   `$ ssh-add -l` → list out all the keys added to the ssh agent.
+-   `$ ssh-add -d ~/.ssh/github_bbcredcap3` → Delete a key from SSH Agent
+-   `$ ssh-add ~/.ssh/github_bbcredcap3` → Add a key to SSH Agent
+
 -   `$ git remote show origin` → get the remote origin URL
 -   `$ git config --get remote.origin.url` → get the remote origin URL
 -   `$ ssh -T git@github.com` → Test your Authentication/Connection into remote.
@@ -203,8 +208,8 @@
 -   `$ ssh-add ~/.ssh/your_private_key` → Add your private key to ssh agent.
 -   `$ git clone git@gh1:A-Momin/project_name.git` → Clone from perticular github account
 -   `$ git remote set-url origin git@gh1:A-Momin/drf.git`
--   `$ git remote set-url origin git@gh2:Aminul-Momin/notes_hub.git`
--   `$ git remote set-url origin git@github.com:Aminul-Momin/notes_hub.git`
+-   `$ git remote set-url origin git@gh2:Aminul-Momin/noteshub.git`
+-   `$ git remote set-url origin git@github.com:Aminul-Momin/noteshub.git`
 
 </details>
 
