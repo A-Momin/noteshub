@@ -5,50 +5,18 @@ Maintaining multiple AWS accounts from a local machine involves managing credent
 1. **AWS CLI Configuration**:
 
     - `Install AWS CLI`: Ensure that you have the AWS Command Line Interface (CLI) installed on your local machine.
+
+        - `$ brew install awscli`
+
     - `Configure AWS CLI Profiles`:
+
         - Use the aws configure command to set up AWS CLI profiles for each AWS account.
         - Run the command and follow the prompts to provide Access Key ID, Secret Access Key, default region, and output format for each profile.
         - Specify a unique profile name for each account (e.g., personal, work, testing, etc.).
+
     - `Verify Profiles`: Use the `aws configure list` command to verify that the profiles have been configured correctly.
 
-2. **Managing Credentials**:
-
-    - `Access Key Management`:
-        - Ensure that you have the Access Key ID and Secret Access Key for each AWS account.
-        - Store these credentials securely. Avoid hardcoding them in scripts or configuration files.
-    - `AWS Credentials File`:
-        - Alternatively, you can manually edit the `~/.aws/credentials` file to add or modify profiles.
-    - `The format is as follows`:
-        ```ini
-        [profile_name]
-        aws_access_key_id = YOUR_ACCESS_KEY_ID
-        aws_secret_access_key = YOUR_SECRET_ACCESS_KEY
-        ```
-
-3. **AWS CLI Profile Selection**:
-
-    - `Specify Profile in Commands`: When running AWS CLI commands, specify the desired profile using the `--profile` option.
-        - `Example`: `aws s3 ls --profile personal`
-    - `Default Profile`: You can set a default profile using the AWS_PROFILE environment variable.
-        - `Example`: `export AWS_PROFILE=personal`
-
-4. **AWS Config File (Optional)**:
-
-    - `Configuration File`: You can also configure additional settings such as the default region, output format, etc., for each profile in the `~/.aws/config` file.
-    - `Example`:
-        ```ini
-        [profile profile_name]
-        region = us-west-2
-        output = json
-        ```
-
-5. **IAM Role Assumption (Optional)**:
-
-    - `Cross-Account Access`:
-        - If you need to access resources in one AWS account from another account, you can set up IAM roles and use role assumption.
-        - Configure role assumption in the AWS CLI configuration or use temporary credentials obtained via the aws sts assume-role command.
-
-6. **~/.aws/config**:
+2. **~/.aws/config**:
 
     - `Purpose`: The `~/.aws/config` file is used to specify AWS CLI configurations, such as the default region, output format, and additional named profiles.
     - `Format`: It is formatted as an INI file with sections for each named profile and configuration options within each section.
@@ -60,12 +28,12 @@ Maintaining multiple AWS accounts from a local machine involves managing credent
         region = us-west-2
         output = json
 
-        [profile personal]
+        [profile personal] # Add a profile by the name of 'personal'
         region = us-east-1
         output = json
         ```
 
-7. **~/.aws/credentials**:
+3. **~/.aws/credentials**:
 
     - `Purpose`: The `~/.aws/credentials` file is used to store AWS access keys and secret access keys for named profiles.
     - `Format`: It is also formatted as an INI file with sections for each named profile and credential options within each section.
@@ -82,15 +50,22 @@ Maintaining multiple AWS accounts from a local machine involves managing credent
         aws_secret_access_key = PERSONAL_SECRET_ACCESS_KEY
         ```
 
-8. **config vs credentials**:
-    - The `config` file stores configuration settings like the default region and output format, while the `credentials` file stores access keys and secret access keys.
+4. **config vs credentials**:
+
+    - The `config` file stores configuration settings like the default region and output format, while the `credentials` file stores access keys and secret access keys for each profile.
     - The `config` file contains configuration options, whereas the `credentials` file contains sensitive authentication credentials.
-    - The AWS CLI uses both files together to manage AWS configurations and credentials.
+    - The `~/.aws/config` and `~/.aws/credentials` files are both used by the AWS Command Line Interface (CLI) to manage AWS configurations and credentials, but they serve different purposes:
+
+5. **IAM Role Assumption (Optional)**:
+
+    - `Cross-Account Access`:
+        - If you need to access resources in one AWS account from another account, you can set up IAM roles and use role assumption.
+        - Configure role assumption in the AWS CLI configuration or use temporary credentials obtained via the aws sts assume-role command.
 
 #### AWS CLI
 
--   The `~/.aws/config` and `~/.aws/credentials` files are both used by the AWS Command Line Interface (CLI) to manage AWS configurations and credentials, but they serve different purposes:
 -   `$ aws configure list`
+-   `$ aws configure set output json` -> Set the output format: `json`, `text`, or `table`
 -   `$ aws configure get property_name [--profile profile_name]`
 -   `$ aws configure get aws_access_key_id`
 -   `$ aws configure get region --profile ht`
@@ -101,6 +76,24 @@ Maintaining multiple AWS accounts from a local machine involves managing credent
 -   `$ aws iam list-users` -> If you've just one profile set locally
 -   `$ aws iam list-users --profile <profile-name>` -> If you've multiple profiles set locally
 -   `$ `
+-   `$ aws s3 ls --profile personal` -> specify the desired profile using the `--profile` option.
+-   `$ export AWS_PROFILE=personal` -> Change the default profile by setting the `AWS_PROFILE` environment variable
+
+-   `$ aws configure set <option-name> "" --profile <profile-name>` -> Remove a specific configuration key
+
+1. **Configure MFA (Multi-Factor Authentication)**:  
+   Use the `--serial-number` flag to configure MFA for a session:
+
+    ```bash
+    aws sts get-session-token --serial-number arn:aws:iam::<account-id>:mfa/<user-name> --token-code <mfa-code>
+    ```
+
+2. **Rotate Access Keys**:  
+   If your keys are compromised or need rotation, delete the old ones and add new ones:
+    ```bash
+    aws iam delete-access-key --access-key-id <old-key-id>
+    aws iam create-access-key
+    ```
 
 </details>
 
@@ -2985,7 +2978,7 @@ AWS Athena is a powerful tool for data analysis, especially for organizations th
 
 In the context of **AWS (Amazon Web Services)**, a **Load Balancer** is a managed service provided by **Elastic Load Balancing (ELB)** that automatically distributes incoming application traffic across multiple targets, such as EC2 instances, containers, IP addresses, and Lambda functions, in one or more Availability Zones. This ensures high availability, fault tolerance, and scalability for your applications.
 
-#### Types of AWS Load Balancers
+### Types of AWS Load Balancers
 
 AWS provides the following types of load balancers, each suited to different use cases:
 
@@ -3025,47 +3018,149 @@ AWS provides the following types of load balancers, each suited to different use
         - Basic routing and health checks.
         - Supports legacy applications.
 
-#### Key Components of an AWS Load Balancer
+### Key Components of an AWS Load Balancer
 
-1. **Listeners**
+#### Listeners
 
-    - A **listener** is a process that checks for connection requests on a specific port and protocol (e.g., HTTP:80 or HTTPS:443).
-    - Each listener is configured with a **default target group** and optional rules for advanced routing.
+A listener is a process configured on the load balancer to check for incoming client connection requests. It listens for connections using a specified protocol and port and forwards these requests to the appropriate targets based on the rules configured.
 
-2. **Target Groups**
+-   **Protocols Supported**:
+    -   HTTP/HTTPS (Application Load Balancer)
+    -   TCP/TLS/UDP (Network Load Balancer)
+-   **Ports**:
+    -   Common ports include **80** (HTTP) and **443** (HTTPS).
+    -   You can define custom ports if needed.
+-   **Rules**: Define how the load balancer routes traffic to different target groups.
 
-    - A **target group** is a logical grouping of resources (e.g., EC2 instances, IP addresses, or Lambda functions) that the load balancer routes traffic to.
-    - Components:
-        - **Target Types**:
-            - EC2 instances.
-            - Lambda functions.
-            - IP addresses (within and outside VPCs).
-        - **Health Checks**:
-            - Periodic checks to monitor the health of targets.
-            - Protocols: HTTP, HTTPS, TCP, etc.
-            - Configure thresholds for healthy and unhealthy states.
-        - **Attributes**:
-            - Stickiness: Allows session persistence by sending requests from the same client to the same target.
+    -   Criteria: Rules can be based on various criteria.
+        -   Path: Route traffic based on the path of the incoming request (e.g., /api, /images).
+        -   Host Header: Route traffic based on the host header in the request (e.g., www.example.com).
+        -   HTTP Headers: Route traffic based on specific HTTP headers in the request.
+        -   Query Parameters: Route traffic based on query parameters in the request URL.
+    -   Example: In ALB, rules can include host-based routing (e.g., `www.example.com`) or path-based routing (e.g., `/api`).
 
-3. **Load Balancer Nodes**
+-   **Use Cases**:
+    -   For ALB: You can configure a listener to route traffic for multiple services running on different paths or domains.
+    -   For NLB: Use listeners to route traffic at a network level for high-throughput applications.
 
-    - When you create a load balancer, AWS provisions **load balancer nodes** in each Availability Zone (AZ) you enable.
-    - These nodes distribute traffic evenly to the targets in their respective AZs.
+#### Target Groups
 
-4. **Security Groups**
+A target group is a logical grouping of the targets that the load balancer routes traffic to. Targets can be **EC2 instances**, **IP addresses**, **containers (ECS tasks)**, or **AWS Lambda functions**.
 
-    - Security groups define the inbound and outbound traffic rules for the load balancer.
+-   **Types of Targets**:
+    -   **Instances**: Routes traffic to specific EC2 instances.
+    -   **IP Addresses**: Targets specific IP addresses. Useful for hybrid architectures.
+    -   **Lambda Functions**: ALB supports invoking Lambda functions for serverless applications.
+-   **Health Checks**:
+    -   Automatically perform health checks on the targets to ensure only healthy ones receive traffic.
+    -   Parameters include the protocol, ping path, interval, and thresholds.
+-   **Routing**:
 
-5. **Availability Zones**
+    -   You can associate multiple target groups with different listeners and rules to route traffic intelligently.
 
-    - You can enable multiple AZs for your load balancer to ensure **high availability**.
-    - Traffic is distributed across targets in these AZs to achieve fault tolerance.
+-   **Example**:
+    -   A web app running on multiple EC2 instances can have a target group configured with all those instances.
+    -   A microservices architecture could have separate target groups for APIs, user interfaces, and static content.
 
-6. **Access Logs**
-    - Logs all requests made to the load balancer for auditing and troubleshooting purposes.
-    - Stored in Amazon S3.
+#### Load Balancer Nodes
 
-#### Core Features and Concepts
+Load balancer nodes are the actual physical or virtual machines that handle the traffic within AWS. They are managed by AWS and operate behind the scenes to distribute traffic effectively.
+
+-   **Distributed Across AZs**:
+    -   ELB automatically deploys load balancer nodes in multiple Availability Zones (AZs) for high availability and fault tolerance.
+-   **Scaling**:
+    -   Load balancer nodes automatically scale to handle increases in traffic.
+    -   When traffic reduces, nodes are scaled down.
+-   **Connection Handling**:
+
+    -   These nodes terminate client connections and forward requests to the target.
+
+-   **How It Works**:
+    -   A DNS name (e.g., `my-load-balancer-12345.elb.amazonaws.com`) is provided by AWS.
+    -   This name resolves to the IP addresses of the load balancer nodes.
+    -   Clients connect to these nodes, which distribute the traffic to healthy targets.
+
+#### Health Checks
+
+Health checks are critical for ensuring that traffic is only sent to healthy targets. ELB continuously monitors the health of targets in a target group and routes traffic to only those that are healthy.
+
+-   **Health Check Configuration**:
+    -   **Protocol**: HTTP, HTTPS, TCP, or UDP.
+    -   **Port**: The port on which the health check is performed.
+    -   **Path**: The specific path for HTTP/HTTPS checks (e.g., `/healthcheck`).
+-   **Interval and Timeout**:
+    -   The interval defines how often the health check is performed.
+    -   The timeout specifies the time allowed for the target to respond.
+-   **Thresholds**:
+
+    -   Healthy threshold: Number of consecutive successful responses required to mark the target as healthy.
+    -   Unhealthy threshold: Number of consecutive failures required to mark the target as unhealthy.
+
+-   **Example**:
+    -   A target is considered healthy if it returns a `200 OK` HTTP response for 3 consecutive health check requests within the interval.
+
+#### Security Groups
+
+Security groups act as virtual firewalls that control inbound and outbound traffic for the load balancer.
+
+-   **Inbound Rules**:
+    -   Specify the type of traffic allowed to reach the load balancer (e.g., allow HTTP traffic on port 80 or HTTPS on port 443).
+-   **Outbound Rules**:
+    -   Define the type of traffic that the load balancer can send to targets.
+-   **Granular Control**:
+
+    -   You can restrict access to specific IP ranges, CIDR blocks, or other AWS resources.
+
+-   **Example**:
+    -   For an internet-facing ALB, configure a security group to allow public traffic on ports 80 and 443.
+    -   For an internal-only NLB, restrict traffic to your VPC CIDR range.
+
+#### Access Logs
+
+Access logs provide detailed information about requests processed by the load balancer. These logs are invaluable for debugging, analyzing traffic patterns, and monitoring security.
+
+-   **Stored in S3**:
+    -   Logs are automatically saved in an S3 bucket that you specify.
+-   **Log Contents**:
+    -   Includes information like the request time, client IP, target details, response status, latency, and more.
+-   **Analysis**:
+
+    -   Can be analyzed using tools like Amazon Athena, AWS Glue, or third-party log analysis tools.
+
+-   **Use Cases**:
+    -   Troubleshoot issues with specific clients or requests.
+    -   Monitor and analyze application performance.
+
+#### Elastic IPs (NLB Only)
+
+Elastic IPs (EIPs) are static IP addresses that can be assigned to the Network Load Balancer for predictable and consistent access.
+
+-   **Static IPs**:
+    -   NLB can assign Elastic IPs to its nodes in each AZ.
+-   **Use Cases**:
+    -   Simplifies DNS management when clients require fixed IPs.
+    -   Useful for firewall configurations and hybrid environments.
+
+#### DNS Name
+
+AWS ELB provides a DNS name for each load balancer, which clients use to send requests. The DNS name is associated with the IPs of the load balancer nodes.
+
+-   **Dynamic Resolution**:
+    -   The DNS name resolves to the IP addresses of the load balancer nodes.
+    -   AWS handles changes in the underlying infrastructure automatically.
+-   **Example**:
+    -   `my-load-balancer-12345.us-west-2.elb.amazonaws.com`.
+
+#### Sticky Sessions (Session Affinity)
+
+Sticky sessions ensure that requests from the same client are routed to the same target for the duration of the session.
+
+-   **Session Duration**:
+    -   Controlled by cookies (either AWS-generated or custom).
+-   **Use Cases**:
+    -   Applications that maintain session state (e.g., user login or shopping cart).
+
+### Core Features and Concepts
 
 1. **Health Checks**
 

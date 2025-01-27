@@ -1,4 +1,4 @@
-<details><summary style="font-size:25px;color:Orange">CICD</summary>
+<details><summary style="font-size:25px;color:Orange">CICD in General</summary>
 
 CI/CD, which stands for Continuous Integration and Continuous Delivery (or Continuous Deployment), is a set of practices and principles that aim to automate and streamline the software development and delivery processes. CI/CD helps improve code quality, reduce development cycle times, and enable faster and more reliable releases. Here are key terms and concepts related to CI/CD:
 
@@ -47,7 +47,7 @@ CI/CD, which stands for Continuous Integration and Continuous Delivery (or Conti
 
 -   **Deployment Strategies**: Approaches for releasing and updating applications, minimizing downtime and impact on users.
 
-    -   `Strategies`: Blue-Green Deployment, Canary Deployment, Rolling Deployment.
+    -   `Strategies`: **Blue-Green Deployment**, **Canary Deployment**, **Rolling Deployment**.
 
 -   **Configuration Management**: The process of managing and maintaining consistent configurations across various environments.
 
@@ -63,7 +63,7 @@ CI/CD, which stands for Continuous Integration and Continuous Delivery (or Conti
 
 -   **Artifacts vs Assets**:
 
-    -   `rtifacts`:
+    -   `Artifacts`:
 
         -   Artifacts typically refer to the outputs generated during the build, test, and packaging phases of the CI/CD pipeline.
         -   These outputs are the result of compiling, assembling, and packaging the source code into a deployable format, ready for deployment to various environments.
@@ -76,6 +76,62 @@ CI/CD, which stands for Continuous Integration and Continuous Delivery (or Conti
         -   Assets include not only the output artifacts but also the source code, configuration files, dependencies, test data, documentation, and other resources needed to support the software development lifecycle.
         -   Unlike artifacts, assets are not necessarily generated during the pipeline; they may already exist as part of the project's source code or external dependencies.
         -   Assets are managed and processed at different stages of the CI/CD pipeline to facilitate the automated build, testing, and deployment of the application.
+
+-   <b style="color:maroon">What is CI/CD?</b>
+
+    -   CI/CD stands for Continuous Integration and Continuous Deployment. It is a set of practices and tools that enable developers to automate the process of integrating code changes into a shared repository (Continuous Integration) and automatically deploying those changes to production (Continuous Deployment).
+
+-   <b style="color:maroon">Explain the benefits of implementing CI/CD.</b>
+
+    -   CI/CD provides benefits such as faster and more frequent releases, reduced manual errors, improved collaboration among development and operations teams, and faster feedback on code quality.
+
+-   <b style="color:maroon">What is the difference between Continuous Integration and Continuous Deployment?</b>
+
+    -   Continuous Integration (CI) is the practice of automatically integrating code changes into a shared repository several times a day. Continuous Deployment (CD) is the practice of automatically deploying every code change that passes automated testing to production.
+
+-   <b style="color:maroon">Name some popular CI/CD tools.</b>
+
+    -   Jenkins, Travis CI, GitLab CI/CD, CircleCI, and GitHub Actions are popular CI/CD tools.
+
+-   <b style="color:maroon">What is the role of version control in CI/CD?</b>
+
+    -   Version control systems, like Git, provide a way to manage and track changes to code. In CI/CD, version control helps ensure that the correct code is used in each stage of the pipeline, and it facilitates collaboration among team members.
+
+-   <b style="color:maroon">Explain Blue-Green Deployment.</b>
+
+    -   Blue-Green Deployment is a CI/CD strategy where two identical production environments, labeled "Blue" and "Green," are maintained. Only one environment serves live production traffic at a time, allowing for seamless deployment and rollback.
+
+-   <b style="color:maroon">What is Canary Deployment in CI/CD?</b>
+
+    -   Canary Deployment is a deployment strategy where a new version of an application is gradually rolled out to a small subset of users or servers before being deployed to the entire infrastructure.
+
+-   <b style="color:maroon">Explain the concept of Continuous Monitoring in CI/CD.</b>
+
+    -   Continuous Monitoring involves tracking and analyzing metrics, logs, and other data from applications and infrastructure to identify issues, ensure performance, and support rapid feedback.
+
+-   <b style="color:maroon">What is Git branching strategy, and why is it important in CI/CD?</b>
+
+    -   A Git branching strategy defines how code changes are managed and merged in version control. It is crucial in CI/CD to ensure that branches align with stages in the pipeline and support parallel development without conflicts.
+
+-   <b style="color:maroon">How do you handle secrets and sensitive information in CI/CD pipelines?</b>
+
+    -   Secrets and sensitive information should be stored securely in a credential manager or secret store. CI/CD tools often provide integrations with these stores, allowing secure retrieval during the build and deployment process.
+
+-   <b style="color:maroon">What is the purpose of the "Rollback" in CI/CD?</b>
+
+    -   Rollback is the process of reverting to a previous version or state in case of a failed deployment or critical issues in the latest release. It ensures quick recovery from deployment failures.
+
+-   <b style="color:maroon">Explain the concept of Automated Testing in CI/CD.</b>
+
+    -   Automated Testing involves writing and executing test cases automatically during the CI/CD process to validate code changes. It ensures that new features or changes do not introduce defects.
+
+-   <b style="color:maroon">What is the role of a CI/CD pipeline in Microservices architecture?</b>
+
+    -   In a Microservices architecture, CI/CD pipelines automate the testing and deployment of individual microservices, enabling rapid and independent releases.
+
+-   <b style="color:maroon">Explain the concept of "Shift-Left" in CI/CD.</b>
+
+    -   "Shift-Left" refers to the practice of moving testing and quality assurance processes earlier in the development lifecycle, catching issues at an earlier stage and reducing the
 
 </details>
 
@@ -94,6 +150,8 @@ CI/CD, which stands for Continuous Integration and Continuous Delivery (or Conti
     Environment="JENKINS_PORT=8081"
     ```
 -   `$ sudo systemctl edit jenkins`
+
+<details><summary style="font-size:20px;color:Magenta">MISC</summary>
 
 #### Environment Variables
 
@@ -131,6 +189,48 @@ CI/CD, which stands for Continuous Integration and Continuous Delivery (or Conti
 -   **Docker**:
 -   **AWS Secrets Manager Credentials Provider**:
 
+#### Jenkins Webhook
+
+A **Jenkins webhook** is a mechanism used to automatically trigger a Jenkins job or pipeline when an event (`push`/`pull-request`) occurs in an external system, such as a code repository like GitHub, GitLab, or Bitbucket.
+
+-   **How it works**:
+
+    1. `Webhook Setup`:
+
+        - A webhook is configured in the external system (e.g., GitHub, GitLab, or Bitbucket).
+        - It specifies the URL of the Jenkins server to notify when a specific event occurs (e.g., a new code push, pull request creation, or merge).
+
+    2. `Trigger Mechanism`:
+
+        - When the configured event happens in the external system (GitHub, GitLab, or Bitbucket), it sends an HTTP POST request with details about the event to the webhook URL.
+
+    3. `Jenkins Response`:
+        - Jenkins receives the webhook payload and triggers the corresponding job or pipeline.
+        - The payload often includes information like branch name, commit ID, author, and other details, which Jenkins can use to customize the build process.
+
+-   **Example Use Case**:
+
+    1. `In GitHub`:
+
+        - Go to your repository: `settings` → `Webhooks` → `Add webhook`.
+        - Specify the Jenkins webhook URL: `http://<jenkins-server>/github-webhook/`.
+        - Select events like **push** or **pull request** to trigger the webhook.
+
+    2. `In Jenkins`:
+
+        - Create or configure a Jenkins job.
+        - Under the `Build Triggers` section, select `GitHub hook trigger for GITScm polling` (for freestyle jobs) or configure it for a pipeline.
+
+    3. `Workflow`: Triggering a Jenkins Build on GitHub Push
+        - When a developer pushes code to GitHub, GitHub sends a webhook payload to Jenkins.
+        - Jenkins receives the payload and starts the build process based on the updated code.
+
+-   **Notes**:
+    -   Ensure the Jenkins server is accessible from the external system (e.g., via public IP or DNS).
+    -   For security, use authentication mechanisms like **shared secrets** in the webhook configuration to verify requests.
+
+</details>
+
 <details><summary style="font-size:20px;color:Magenta">Jenkins Architecture, Terms and Concepts</summary>
 
 Jenkins is an open-source automation server that is used to automate the building, testing, and deployment of software projects. It provides a platform-agnostic way to continuously build and test software projects, allowing developers to integrate changes more frequently and detect errors earlier in the development process.
@@ -142,7 +242,7 @@ In short, Jenkins is an open-source powerful CI automation server that is used f
 
 -   **Master-Slave Architecture**: Jenkins follows a master-slave architecture, where there is a central Jenkins server (master) that manages and distributes tasks to multiple agents (slaves). This architecture allows distributing the workload and provides scalability.
 
--   **Jenkins Master**: In Jenkins, the term "Jenkins master" refers to the central component that manages the overall Jenkins automation server. The Jenkins master, also known as the "Jenkins controller" or "Jenkins server," is responsible for orchestrating and coordinating the execution of jobs and workflows.
+-   **Jenkins Master**: The term **Jenkins Master** refers to the central component that manages the overall Jenkins automation server. The Jenkins master, also known as the **Jenkins controller** or **Jenkins server** is responsible for orchestrating and coordinating the execution of jobs and workflows.
 
     -   The central server responsible for managing jobs, scheduling builds, and monitoring the overall system.
     -   Hosts the web-based user interface for configuring and monitoring Jenkins.
@@ -154,8 +254,8 @@ In short, Jenkins is an open-source powerful CI automation server that is used f
     -   Executes builds, tests, and other tasks on behalf of the master.
     -   Agents can be configured on different machines to distribute workloads.
 
-    -   `Permanant Agent`: In Jenkins, a "permanent agent" refers to a long-running worker node or build agent that is permanently connected to the Jenkins master. Unlike ephemeral agents that are dynamically provisioned for each build and then terminated, permanent agents remain connected to the Jenkins master even when idle, ready to accept build tasks whenever assigned.
-    -   `Cloud Agent`: In Jenkins, a "cloud agent" refers to a dynamic or ephemeral build agent that is provisioned on-demand in a cloud environment. Cloud agents are created as needed to execute build jobs and are terminated once the job is completed, allowing for efficient resource utilization and scalability. Docker is one of the most popular cloud agent of Jenkins besides Kubertetis and AWS Fleet Manager.
+    -   `Permanant Agent`: A **permanent agent** refers to a long-running worker node or build agent that is permanently connected to the Jenkins master. Unlike ephemeral agents that are dynamically provisioned for each build and then terminated, permanent agents remain connected to the Jenkins master even when idle, ready to accept build tasks whenever assigned.
+    -   `Cloud Agent`: A **cloud agent** refers to a dynamic or ephemeral build agent that is provisioned on-demand in a cloud environment. Cloud agents are created as needed to execute build jobs and are terminated once the job is completed, allowing for efficient resource utilization and scalability. Docker is one of the most popular cloud agent of Jenkins besides Kubertetis and AWS Fleet Manager.
 
 -   **Nodes**: Nodes are synonymous with agents or slaves in the Jenkins ecosystem. They can be physical machines, virtual machines, containers, or remote SSH connections. Nodes in Jenkins serve as execution environments for build jobs, providing the necessary resources and capabilities to run the jobs. The Jenkins master schedules and assigns build jobs to available nodes based on criteria such as workload, node availability, or specific job requirements.
 
@@ -273,14 +373,10 @@ In short, Jenkins is an open-source powerful CI automation server that is used f
 
 -   **Jenkins Best Practices**: There are a few best practices that you should follow when using Jenkins. These best practices can help you to get the most out of Jenkins and to avoid common problems.
 
-    -   `Use a consistent naming convention for your jobs`:
-        -   Using a consistent naming convention for your jobs will make it easier to find and manage your jobs. A good naming convention would include the name of the project, the build number, and the date.
-    -   `Use a build tool`:
-        -   Using a build tool can help you to automate the build process and to make it more reliable. A good build tool will allow you to define the steps that need to be performed when the project is built.
-    -   `Configure notifications`:
-        -   Configuring notifications will help you to stay informed of the status of your builds. You can configure Jenkins to send notifications when builds succeed or fail.
-    -   `Use plugins`:
-        -   Jenkins has a large number of plugins that can be used to extend its functionality. These plugins can be used to add new features to Jenkins or to improve the performance of Jenkins.
+    -   `Use a consistent naming convention for your jobs`: Using a consistent naming convention for your jobs will make it easier to find and manage your jobs. A good naming convention would include the name of the project, the build number, and the date.
+    -   `Use a build tool`: Using a build tool can help you to automate the build process and to make it more reliable. A good build tool will allow you to define the steps that need to be performed when the project is built.
+    -   `Configure notifications`: Configuring notifications will help you to stay informed of the status of your builds. You can configure Jenkins to send notifications when builds succeed or fail.
+    -   `Use plugins`: Jenkins has a large number of plugins that can be used to extend its functionality. These plugins can be used to add new features to Jenkins or to improve the performance of Jenkins.
 
 -   **withCredentials**: The withCredentials wrapper in Jenkins is a powerful method used in Pipeline scripts to securely handle sensitive information, such as passwords, tokens, SSH keys, or other credentials stored in Jenkins' credential store. It ensures that secrets are exposed only within the scope of the specified block and are automatically masked in logs.
 
@@ -379,9 +475,9 @@ In short, Jenkins is an open-source powerful CI automation server that is used f
 
 ##### Credential Scopes
 
-In Jenkins, credential scopes refer to the contexts or domains in which credentials are valid and can be used. Jenkins uses credentials to securely store sensitive information such as usernames, passwords, API tokens, or private keys. The concept of credential scopes helps manage where these credentials can be utilized within the Jenkins environment. Different plugins and features within Jenkins may define their own credential scopes to control access to specific resources or functionalities.Here are some common credential scopes in Jenkins:
+Credential scopes refer to the contexts or domains in which credentials are valid and can be used. Jenkins uses credentials to securely store sensitive information such as usernames, passwords, API tokens, or private keys. The concept of credential scopes helps manage where these credentials can be utilized within the Jenkins environment. Different plugins and features within Jenkins may define their own credential scopes to control access to specific resources or functionalities.Here are some common credential scopes in Jenkins:
 
--   **System (Jenkins)**: Credentials with the "Jenkins" scope are generally available and applicable across the entire Jenkins instance. They can be used by various parts of Jenkins, including job configurations, pipeline scripts, and system configurations.
+-   **System (Jenkins)**: Credentials with the **Jenkins** scope are generally available and applicable across the entire Jenkins instance. They can be used by various parts of Jenkins, including job configurations, pipeline scripts, and system configurations.
 
     -   `Restricted Usage`:
 
@@ -397,7 +493,7 @@ In Jenkins, credential scopes refer to the contexts or domains in which credenti
         -   Master-Agent Communication: Secure communication between Jenkins master (controller) and its agents might require these credentials.
         -   System Services: Used for integrating Jenkins with internal or system-level services.
 
--   **Global (Jenkins)**: Similar to the "Jenkins" scope, credentials with the "Global (Jenkins)" scope are accessible globally. They can be used in various configurations, but they may have a more limited scope than system-wide credentials.
+-   **Global (Jenkins)**: Similar to the "Jenkins" scope, credentials with the **Global (Jenkins)** scope are accessible globally. They can be used in various configurations, but they may have a more limited scope than system-wide credentials.
 
     -   `Usage Scope`:
 
@@ -412,11 +508,11 @@ In Jenkins, credential scopes refer to the contexts or domains in which credenti
         -   Plugins: Providing credentials to plugins such as Git, Docker, or Cloud integrations.
         -   Automation: Centralizing sensitive data for automation tasks that span multiple jobs.
 
--   **System (Nodes)**: Credentials with the "Node (agent)" scope are specific to Jenkins agent nodes. They can be used in configurations related to distributed builds or specific tasks that run on agent nodes.
+-   **System (Nodes)**: Credentials with the **Node (agent)** scope are specific to Jenkins agent nodes. They can be used in configurations related to distributed builds or specific tasks that run on agent nodes.
 
 -   **User**: User-scoped credentials are associated with a specific Jenkins user. These credentials are typically used within user-specific configurations, such as in pipeline scripts owned by that user.
 
--   **Item (Job)**: Credentials with the "Item" scope are specific to a particular Jenkins job or project. They are often used in job configurations or pipeline scripts associated with that job.
+-   **Item (Job)**: Credentials with the **Item** scope are specific to a particular Jenkins job or project. They are often used in job configurations or pipeline scripts associated with that job.
 
 -   **Folder**: Folder-scoped credentials are specific to a Jenkins folder. They can be used within jobs or configurations contained within that folder.
 
@@ -489,7 +585,7 @@ Jenkins supports various types of credentials, allowing users to securely store 
 
 These credential types can be configured and managed through the Jenkins web interface. Users can associate credentials with Jenkins jobs, build pipelines, and other configurations to facilitate secure interactions with external systems and services. The choice of credential type depends on the authentication method required by the external system or service being accessed.
 
-#### Secret management options in Jankins
+##### Secret management options in Jankins
 
 In Jenkins, secret management is a crucial aspect of ensuring secure and reliable CI/CD processes. Secrets typically include sensitive information such as API keys, passwords, access tokens, and other credentials required by jobs or pipelines. Jenkins provides several options for secret management to secure and handle these sensitive pieces of information.
 
@@ -527,7 +623,7 @@ In Jenkins, secret management is a crucial aspect of ensuring secure and reliabl
 
 </details>
 
-<details><summary style="font-size:20px;color:Magenta">Step by Step Jankins Pipeline</summary>
+<details><summary style="font-size:20px;color:Magenta">End to End Jankins Pipeline</summary>
 
 Setting up a Jenkins pipeline for a Django project hosted on GitHub involves several steps. Below is a step-by-step procedure to guide you through the process. This assumes that you already have Jenkins installed and running.
 
@@ -601,13 +697,13 @@ Setting up a Jenkins pipeline for a Django project hosted on GitHub involves sev
         }
         ```
 
--   **Step 4: Configure Your Jenkins Pipeline**
+-   **Step 4: Create and Configure Your Jenkins Pipeline**
 
     -   In Jenkins, create a new pipeline job.
     -   In the job configuration, select `Pipeline script from SCM` for the Definition.
     -   Choose Git as the SCM, and provide your GitHub repository URL.
     -   Add your GitHub credentials.
-    -   Specify the branch to build (e.g., `/main` or `/master`).
+    -   Specify the branch to build (e.g., `/master`, `/regular`, `/feature`).
     -   Save the configuration.
 
 -   **Step 5: Run Your Jenkins Pipeline**
@@ -935,102 +1031,6 @@ jobs:
 -   `with_items`: A loop that allows you to iterate over a list of items.
 -   `become`: Used to elevate privileges on the target hosts.
 -   `become_user`: Specifies the user account that should be used when elevating privileges.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange">Jira & Software Development Approch</summary>
-
-Atlassian Jira is a popular issue and project tracking tool widely used for software development, project management, and various other types of projects. It helps teams plan, track, and manage work efficiently. Here are some key terms and concepts in Atlassian Jira:
-
--   `Project`: A project is a collection of related issues. It serves as a container for organizing and managing work. Each project can have its own settings, workflows, and permissions.
--   `Workflow`: A workflow represents the lifecycle of an issue, including its different states and the transitions between those states. Workflows can be customized to match the specific processes of your team or organization.
--   `Scrum`: Scrum is an Agile methodology that follows a defined process with time-boxed iterations called sprints.
--   `Sprint`: A sprint is a time-bound period during which a team works on a set of issues. It's part of Agile methodologies like Scrum.
--   `Issue`: An issue is a unit of work or a task that needs to be completed within a project. It represents a work item, bug, task, user story, or any other item that needs to be managed and tracked.
--   `Issue Type`: An issue type categorizes issues based on their purpose or nature. Common issue types include Story, Bug, Task, Epic, Sub-task, etc.
--   `Epic`: An Epic is a larger body of work that can be broken down into smaller issues. It provides a way to manage and track big feature implementations.
--   `Field`: Fields are pieces of information associated with an issue. They can be standard system fields (like summary, description, assignee) or custom fields that you define to capture specific information.
--   `Custom Field`: Custom fields are user-defined fields that allow you to capture additional information beyond the default fields provided by Jira. They can be text fields, dropdowns, checkboxes, etc.
--   `Priority and Severity`: Priority indicates the urgency of an issue, while severity indicates the impact of the issue. These help teams prioritize their work.
--   `Assignee`: The person responsible for working on an issue is the assignee. It helps track who is responsible for completing the task.
--   `Reporter`: The person who raises the issue is the reporter. They provide information about the issue and its details.
--   `Dashboard`: Dashboards are customizable pages that display important information and statistics about projects and teams, including charts, filters, and gadgets.
--   `Gadget`: Gadgets are small modules that display information on dashboards. They can show things like issue statistics, burndown charts, project progress, etc.
--   `Board`: A board is a visual representation of work, often used in Agile methodologies. It can be a Scrum board, Kanban board, or a combination of both.
--   `Kanban`: Kanban is an Agile methodology that emphasizes continuous delivery and visualizing work as it progresses through different stages.
--   `Permission Scheme`: Permission schemes define who can perform actions on issues within a project. They control access and visibility.
--   `Notification Scheme`: Notification schemes determine when and how users are notified about changes to issues. They manage email notifications and other alerts.
--   `Workflow Scheme`: Workflow schemes associate workflows with issue types within a project. They define the workflow that an issue type follows.
--   `Issue Link`: Issue links establish relationships between issues, like "blocks," "relates to," "is part of," etc.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange">CICD Tools & Pipeline</summary>
-<details open><summary style="font-size:20px;color:Magenta;text-align:left">General CICD</summary>
-
--   <b style="color:magenta">What is CI/CD?</b>
-
-    -   CI/CD stands for Continuous Integration and Continuous Deployment. It is a set of practices and tools that enable developers to automate the process of integrating code changes into a shared repository (Continuous Integration) and automatically deploying those changes to production (Continuous Deployment).
-
--   <b style="color:magenta">Explain the benefits of implementing CI/CD.</b>
-
-    -   CI/CD provides benefits such as faster and more frequent releases, reduced manual errors, improved collaboration among development and operations teams, and faster feedback on code quality.
-
--   <b style="color:magenta">What is the difference between Continuous Integration and Continuous Deployment?</b>
-
-    -   Continuous Integration (CI) is the practice of automatically integrating code changes into a shared repository several times a day. Continuous Deployment (CD) is the practice of automatically deploying every code change that passes automated testing to production.
-
--   <b style="color:magenta">Name some popular CI/CD tools.</b>
-
-    -   Jenkins, Travis CI, GitLab CI/CD, CircleCI, and GitHub Actions are popular CI/CD tools.
-
--   <b style="color:magenta">What is the role of version control in CI/CD?</b>
-
-    -   Version control systems, like Git, provide a way to manage and track changes to code. In CI/CD, version control helps ensure that the correct code is used in each stage of the pipeline, and it facilitates collaboration among team members.
-
--   <b style="color:magenta">Explain Blue-Green Deployment.</b>
-
-    -   Blue-Green Deployment is a CI/CD strategy where two identical production environments, labeled "Blue" and "Green," are maintained. Only one environment serves live production traffic at a time, allowing for seamless deployment and rollback.
-
--   <b style="color:magenta">What is Canary Deployment in CI/CD?</b>
-
-    -   Canary Deployment is a deployment strategy where a new version of an application is gradually rolled out to a small subset of users or servers before being deployed to the entire infrastructure.
-
--   <b style="color:magenta">Explain the concept of Continuous Monitoring in CI/CD.</b>
-
-    -   Continuous Monitoring involves tracking and analyzing metrics, logs, and other data from applications and infrastructure to identify issues, ensure performance, and support rapid feedback.
-
--   <b style="color:magenta">What is Git branching strategy, and why is it important in CI/CD?</b>
-
-    -   A Git branching strategy defines how code changes are managed and merged in version control. It is crucial in CI/CD to ensure that branches align with stages in the pipeline and support parallel development without conflicts.
-
--   <b style="color:magenta">How do you handle secrets and sensitive information in CI/CD pipelines?</b>
-
-    -   Secrets and sensitive information should be stored securely in a credential manager or secret store. CI/CD tools often provide integrations with these stores, allowing secure retrieval during the build and deployment process.
-
--   <b style="color:magenta">What is the purpose of the "Rollback" in CI/CD?</b>
-
-    -   Rollback is the process of reverting to a previous version or state in case of a failed deployment or critical issues in the latest release. It ensures quick recovery from deployment failures.
-
--   <b style="color:magenta">Explain the concept of Automated Testing in CI/CD.</b>
-
-    -   Automated Testing involves writing and executing test cases automatically during the CI/CD process to validate code changes. It ensures that new features or changes do not introduce defects.
-
--   <b style="color:magenta">What is the role of a CI/CD pipeline in Microservices architecture?</b>
-
-    -   In a Microservices architecture, CI/CD pipelines automate the testing and deployment of individual microservices, enabling rapid and independent releases.
-
--   <b style="color:magenta">Explain the concept of "Shift-Left" in CI/CD.</b>
-
-    -   "Shift-Left" refers to the practice of moving testing and quality assurance processes earlier in the development lifecycle, catching issues at an earlier stage and reducing the
-
-</details>
-
----
 
 </details>
 

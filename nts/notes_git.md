@@ -1,5 +1,7 @@
 <details><summary style="font-size:25px;color:Orange;text-align:left">Git Terminology</summary>
 
+-   `$ brew install git-lfs`
+
 🔥 GIT TUTORIALS:
 
 -   [Git MERGE vs REBASE: Everything You Need to Know](https://www.youtube.com/watch?v=0chZFIZLR_0)
@@ -182,7 +184,7 @@
     -   → Set globaly VisualStudioCode (`code`) as your code editor.
 -   `$ git config --global color.ui auto`
 -   `$ git config --local user.name 'Aminul Momin'` → Set localy user name configuration parameter. (`--local` can only be used inside a git repository)
--   `$ git config --local user.email "A.Momin.NYC@gmail.com"`
+-   `$ git config --local user.email "bbcredcap3@gmail.com"`
 -   [Git and Vimdiff](https://medium.com/usevim/git-and-vimdiff-a762d72ced86)
     <!-- To tell Git to always use Vimdiff, issue the following commands: -->
 
@@ -195,17 +197,18 @@
 <details open><summary style="font-size:20px;color:red;text-align:left">Troubleshoot Github Authenticatios</summary>
 
 -   `$ eval $(ssh-agent)` → Make sure 'ssh-agent' is running
--   `$ 🔥 alias runsshagent='eval $(ssh-agent)'` → mske sure ssh-agent is running.
+-   `$ 🔥 alias runsshagent='eval $(ssh-agent)'` → Make sure 'ssh-agent' is running
+-   `$ code .git/config` → Git Repo's local configuration file.
+
 -   `$ ssh-add -l` → list out all the keys added to the ssh agent.
 -   `$ ssh-add -d ~/.ssh/github_bbcredcap3` → Delete a key from SSH Agent
 -   `$ ssh-add ~/.ssh/github_bbcredcap3` → Add a key to SSH Agent
 
--   `$ git remote show origin` → get the remote origin URL
--   `$ git config --get remote.origin.url` → get the remote origin URL
 -   `$ ssh -T git@github.com` → Test your Authentication/Connection into remote.
 -   `$ ssh -T git@gh1` → Test your Authentication/Connection into remote.
 -   `$ ssh -T git@gh2` → Test your Authentication/Connection into remote.
--   `$ ssh-add ~/.ssh/your_private_key` → Add your private key to ssh agent.
+-   `$ git remote show origin` → get the remote origin URL
+-   `$ git config --get remote.origin.url` → get the remote origin URL
 -   `$ git clone git@gh1:A-Momin/project_name.git` → Clone from perticular github account
 -   `$ git remote set-url origin git@gh1:A-Momin/drf.git`
 -   `$ git remote set-url origin git@gh2:Aminul-Momin/noteshub.git`

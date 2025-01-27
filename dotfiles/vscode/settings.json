@@ -29,8 +29,7 @@
     "workbench.statusBar.visible": true,
     "workbench.startupEditor": "none",
     "workbench.colorTheme": "Gruvbox Dark Hard",
-    "workbench.sideBar.location": "right",
-
+    "workbench.sideBar.location": "right", // `Workbench -> Settings Editor -> ui`
 
     "editor.multiCursorModifier": "ctrlCmd",
     "editor.foldingStrategy": "indentation",
@@ -66,7 +65,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[yaml]": {
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": true
     },
     "[typescript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
@@ -118,7 +117,6 @@
     "emmet.includeLanguages": {
         "jinja-html": "html",
         "django-html": "html"
-
     },
 
     "prettier.tabWidth": 4,
@@ -150,5 +148,4 @@
     "python.defaultInterpreterPath": "/Users/am/.pyenv/versions/3.9.6/envs/dsnb",
     "notebook.output.textLineLimit": 50,
     "markdown-preview-enhanced.enablePreviewZenMode": false
-
 }

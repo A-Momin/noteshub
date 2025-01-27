@@ -328,7 +328,12 @@
     -   `sed 's/^\.\///g'` : remove the prepended `./` from the result list
 
 -   `$ find . -type f -name *node_modules -ls -delete`
-    -   Delete all folder/file by the pattern '\*node_modules' recursively.
+
+    -   Delete all FILE by the pattern '\*node_modules' recursively.
+
+-   `$ find . -type d -name ${1:-*.venv} -exec rm -rf {} +`
+
+    -   Delete all FOLDER by the pattern '.venv' recursively.
 
 ---
 

@@ -1,6 +1,8 @@
 -   [How to make your own VS Code theme!](https://www.youtube.com/watch?v=pGzssFNtWXw)
 -   𝐔𝐬𝐞𝐟𝐮𝐥𝐥 𝑺𝒚𝒎𝒃𝒐𝒍𝒔: ⇧ ⮐ ⎇ ⌘ ⌥ + ⌃ + ⤶  ⤶ ⬋ ↩︎ ↲ ↵ ↫ ⭿ ♥ ★ → ➡️ ⬅️ ⬆︎ ⬇️
-    -   `^ + ⌘ + Spaces` → get Emoji from MacOS
+
+-   `^ + ⌘ + Spaces` → To get Emoji (🏠)
+-   `⌘ + ⇧ + O` → Allow open various symbol
 
 <details><summary style="font-size:25px;color:Orange;text-align:left">Notes Link</summary>
 
@@ -42,29 +44,31 @@
 -   `←` → Collapse the folder in the file explorer
 -   `^ + Enter` → Open focused file from file explorer.
 -   `fn + ^ + f5` → Run script
--   `⌘ + ,` → Setting
--   `⌘ + ⇧ + P` → Open command palette
--   `⌘ + ⇧ + P <file util>` → Open command palette
 -   `⌘ + b` → Toggle side bar
 -   `⌘ + ⇧ + e` → Jump between Editor and Explorer
--   `⌘ + ⇧ + x` → Search for Extentions
--   `⌘ + ,` → Open the default settings json-file for VSCode.
 -   `⌘ + j` → Togle between integrated terminal and Editor.
--   `⌘ + k + r` → OPEN KEYBOARD SHORTCUTS Reference.
--   `⌘ + k + s` → Open shortcuts-binding.
--   `⌘ + k + t` → Toggle between themes.
+-   `⌘ + ⇧ + x` → Search for Extentions
 -   `⌘ + k + m` → Options to choose among various keymaps.
--   `⌘ + ⇧ + O` → Allow open various symbol
--   To get Emoji (🏠)
-    -   `⌘ + ⇧ + P` → Search: 'insert unicode'; Select: Desired Emoji: Press `⮐`
-    -   `^ + ⌘ + Spaces` → Open Emoji
--   Open Default Keybinding (JSON) file:
-    -   `⌘ + ⇧ + P` -> type 'Default Keybinding' ↦ ⮐
--   Transform to lowercase, UPPERCASE and titlecase selected text.
-    -   `⌘ + ⇧ + P`; Select: 'transform to UPPERCASE/lowercase/titlecase' ↦ ⮐
--   Transform indentation to Spaces.
-    -   `⌘ + ⇧ + P` ↦ type 'ndentationToSpaces' ↦ ⮐
--   Transform indentation to Tab. - `⌘+⇧+P` type 'indentationToTabs' ↦ ⮐
+
+#### Command Palette Search
+
+-   `⌘ + ⇧ + P` -> Open the Command Palette
+    -   Search:
+        -   `filename` ↦ ⮐
+        -   `insert unicode` ↦ ⮐ -> To get Unicode Characters
+        -   `transform to UPPERCASE/lowercase/titlecase` ↦ ⮐
+        -   `ndentationToSpaces` ↦ ⮐
+        -   `indentationToTabs` ↦ ⮐
+        -   `Profiles: Switch Profile` -> to Switch Between Profiles
+
+#### Configuration Shortcuts
+
+-   `⌘ + k + t` → Toggle between themes.
+-   `⌘ + ,` → Open the default `settings.json`-file for VSCode.
+-   `⌘ + ⇧ + P` -> type 'Default Keyboard Shortcuts (JSON)' ↦ ⮐
+-   `⌘ + k + r` → OPEN KEYBOARD SHORTCUTS Reference.
+-   `⌘ + k + s` → Open Keyboard Shortcuts.
+
 </details>
 
 <details><summary style="font-size:25px;color:Orange;text-align:left">Windows OS</summary>
@@ -102,3 +106,73 @@
 
     1.  `RightClick` on one file and `select: Select for Compare`
     2.  `RightClick` on the second file and `select: Compare with Selected`
+
+<details><summary style="font-size:25px;color:Orange;text-align:left">what is a profile in Visual Studio Code?</summary>
+
+A **profile** in **Visual Studio Code (VS Code)** is a feature that allows you to create and manage separate, customized configurations for your development environment. Profiles can include different settings, extensions, themes, keybindings, and UI layouts, making it easier to switch between different setups tailored for specific projects, workflows, or development needs.
+
+---
+
+#### **Key Features of Profiles in VS Code**
+
+1. **Custom Settings**: Each profile can have its own unique configuration settings (e.g., font size, editor behavior, etc.).
+2. **Extensions**: Profiles can have different sets of installed extensions, enabling you to install only what you need for a particular project or workflow.
+3. **Keybindings**: Profiles allow customized keybinding configurations for different tasks or workflows.
+4. **UI Customization**: You can adjust themes, icons, and layouts for each profile.
+5. **Workspace-Specific Profiles**: Profiles can be linked to specific workspaces, making them automatically load when you open that workspace.
+
+---
+
+#### **Why Use Profiles?**
+
+1. **Project-Specific Needs**: Different projects may require unique configurations or extensions (e.g., Python vs. JavaScript projects).
+2. **Role-Specific Workflows**: Developers who switch between roles (e.g., frontend development, backend development, or DevOps) can maintain separate setups for each.
+3. **Focus and Organization**: Minimize clutter by loading only the extensions and settings relevant to your current task or project.
+4. **Personal and Team Use**: Share profiles with team members to maintain a consistent development environment across a team.
+
+---
+
+#### **How to Use Profiles in VS Code**
+
+1. **Access Profiles**:
+
+    - Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on macOS).
+    - Search for **"Profiles: Create Profile"**, **"Profiles: Switch Profile"**, or **"Profiles: Manage Profiles"**.
+
+2. **Create a Profile**:
+
+    - Choose "Create Profile" from the Command Palette.
+    - Name your new profile and decide whether to start from scratch or use an existing configuration as a base.
+
+3. **Switch Profiles**:
+
+    - Use the **"Profiles: Switch Profile"** command to toggle between profiles.
+    - Profiles are instantly loaded, updating your settings, extensions, and layout.
+
+4. **Export/Import Profiles**:
+    - You can export a profile to a JSON file and share it with others or import a shared profile into your own VS Code setup.
+
+---
+
+#### **Example Use Cases**
+
+1. **Frontend Development Profile**:
+
+    - Extensions: Prettier, ESLint, Tailwind CSS IntelliSense.
+    - Settings: Auto-format on save, dark theme.
+    - Keybindings: Shortcuts for web preview.
+
+2. **Backend Development Profile**:
+
+    - Extensions: Python, PostgreSQL, Docker.
+    - Settings: Enable linting and debugging configurations.
+
+3. **Writing or Documentation Profile**:
+    - Extensions: Markdown Preview Enhanced, Spell Checker.
+    - Settings: Increased font size for readability.
+
+---
+
+Profiles help make **VS Code** flexible and adaptable for a variety of workflows, letting you work efficiently across different projects and tasks.
+
+</details>

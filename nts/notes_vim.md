@@ -6,14 +6,14 @@
 
 -   **Buffer**: A buffer is the in-memory representation of a file being edited. Multiple buffers can exist simultaneously, and you can switch between them.
 -   **Window**: A window is a viewport onto a buffer. Neovim can split the editing area into multiple windows, allowing you to view and edit different parts of the same or different buffers.
+-   **Registers**: Registers are storage spaces that hold text. They can be used to yank (copy) and put (paste) text.
 -   **Tab Page**: A tab page is a collection of windows. You can have multiple tab pages, and each tab page can contain a different arrangement of windows.
--   **Mode**: Neovim has different modes, including Normal mode (for navigating and manipulating text), Insert mode (for inserting and editing text), Visual mode (for selecting text), and more.
+-   **Mode**: Neovim has different modes, including **Normal Mode** (for navigating and manipulating text), **Insert Mode** (for inserting and editing text), **Visual Mode** (for selecting text), and more.
 -   **Command-line mode**: Neovim has a command-line mode where you can execute various commands, such as saving files, searching, and running external commands.
 -   **Operator-Pending mode**: This mode follows an operator command and awaits a motion or text object to operate on. For example, d (delete) in Normal mode followed by w (word) operates on a word.
 -   **Mappings**: Mappings allow you to define custom keybindings for various actions. They are defined in the configuration file (usually init.vim or init.lua).
 -   **Plugins**: Neovim supports plugins to extend its functionality. Plugins can be managed using package managers like vim-plug or dein.vim.
 -   **Configuration file**: Neovim's configuration is typically stored in a file named init.vim for Vimscript or init.lua for Lua. This file contains settings, mappings, and plugin configurations.
--   **Registers**: Registers are storage spaces that hold text. They can be used to yank (copy) and put (paste) text.
 -   **Autocommands**: Autocommands are events triggered automatically by Neovim. You can attach commands or scripts to these events, such as running commands on file read or write.
 -   **Syntax highlighting**: Neovim provides syntax highlighting for various file types. Syntax files define how different elements of the code are highlighted.
 -   **LSP (Language Server Protocol)**: Neovim supports the LSP for enhanced language-aware features such as autocompletion, linting, and code navigation.
@@ -332,8 +332,306 @@
 
 ---
 
-<details>
-<summary style="font-size:25px;color:Orange;text-align:left">Tmux</summary>
+<details><summary style="font-size:25px;color:Orange;text-align:left">Register in Vim</summary>
+
+In **Vim**, a **register** is a location in memory where text can be temporarily stored for operations like copying, cutting, pasting, or executing commands. Registers act like named "containers" for storing text and commands. Understanding registers is crucial for efficient editing in Vim, especially for managing multiple pieces of text or macros.
+
+#### Types of Registers in Vim
+
+Vim provides several types of registers, each serving a specific purpose:
+
+1. **Unnamed Register (`"`):**
+
+    - The default register used for most operations.
+    - Stores the last yanked (copied), deleted, or changed text.
+    - You can paste from this register using the `p` or `P` commands.
+
+2. **Named Registers (`a` to `z` and `A` to `Z`):**
+
+    - Store specific pieces of text, accessible by name.
+    - Lowercase (`a` to `z`): Overwrite content when used.
+    - Uppercase (`A` to `Z`): Append to the existing content in the corresponding lowercase register.
+    - Example:
+        - Yank text to register `a`:
+            ```vim
+            "ay
+            ```
+        - Paste from register `a`:
+            ```vim
+            "ap
+            ```
+
+3. **Numbered Registers (`0` to `9`):**
+
+    - **Register `0`**: Stores the most recently yanked text (not deleted).
+    - **Registers `1` to `9`**: Store deleted or changed text in chronological order.
+    - Example:
+        - Paste from register `1`:
+            ```vim
+            "1p
+            ```
+
+4. **Read-Only Registers:**
+
+    - **`%`**: Stores the current file name.
+    - **`#`**: Stores the alternate file name.
+    - **`:`**: Stores the last executed Ex command.
+    - **`/`**: Stores the last search pattern.
+    - Example:
+        - Paste the current file name:
+            ```vim
+            :e <C-r>%
+            ```
+
+5. **Expression Register (`=`):**
+
+    - Allows you to evaluate and paste the result of a Vim expression.
+    - Example:
+        - Paste the result of `3 + 5`:
+            ```vim
+            <C-r>=3+5<CR>
+            ```
+
+6. **Black Hole Register (`_`):**
+
+    - Deletes text without saving it anywhere.
+    - Example:
+        - Delete a line without storing it in any register:
+            ```vim
+            "_dd
+            ```
+
+7. **System Clipboard Registers (`+` and `*`):**
+
+    - **`+`**: Represents the system clipboard.
+    - **`*`**: Represents the primary selection (on Linux, primarily).
+    - Example:
+        - Yank to the system clipboard:
+            ```vim
+            "+y
+            ```
+
+8. **Small Delete Register (`-`):**
+    - Stores small deletes (fewer than one line).
+    - Automatically used for commands like `x` or `dl`.
+
+#### How to Use Registers
+
+1. **Yanking into a Register:**
+   Use `"[register]y` to copy text into a specific register.  
+   Example:
+
+    ```vim
+    "ay
+    ```
+
+    Copies text into register `a`.
+
+2. **Pasting from a Register:**
+   Use `"[register]p` to paste text from a specific register.  
+   Example:
+
+    ```vim
+    "ap
+    ```
+
+    Pastes text from register `a`.
+
+3. **Deleting into a Register:**
+   Use `"[register]d` to delete text into a specific register.  
+   Example:
+
+    ```vim
+    "ad
+    ```
+
+    Deletes text into register `a`.
+
+4. **Viewing All Registers:**
+   To see the content of all registers, use the command:
+
+    ```vim
+    :registers
+    ```
+
+5. **Appending Text to a Register:**
+   Use an uppercase register to append text to its lowercase counterpart.  
+   Example:
+    ```vim
+    "Ay
+    ```
+    Appends yanked text to register `a`.
+
+#### Why Registers Are Useful
+
+-   **Multi-text Management**: Store and reuse multiple pieces of text simultaneously.
+-   **Macro Execution**: Store and execute sequences of commands.
+-   **Clipboard Integration**: Easily interact with the system clipboard.
+-   **Non-destructive Deletions**: Avoid overwriting important text by specifying a register.
+
+By mastering Vim registers, you can significantly improve your text editing efficiency and take full advantage of Vim's powerful features!
+
+</details>
+
+---
+
+<details><summary style="font-size:25px;color:Orange;text-align:left">Macro in Vim</summary>
+
+A **macro** in Vim is a recorded sequence of commands that can be played back to automate repetitive tasks. By recording a macro, you can save a series of keystrokes and then replay them as many times as needed, which is especially useful for repetitive text editing or formatting tasks.
+
+### How Macros Work in Vim
+
+1. **Recording**: The macro captures the sequence of commands you type.
+2. **Storing**: The recorded macro is stored in a specific register.
+3. **Replaying**: You can replay the macro on demand, either once or multiple times.
+
+### How to Use Macros
+
+#### 1. **Recording a Macro**
+
+-   Use the `q` command to start recording:
+
+    ```vim
+    q<register>
+    ```
+
+    -   Replace `<register>` with a letter (e.g., `a`, `b`, etc.) to specify the register where the macro will be saved.
+    -   While recording, all your keystrokes are stored in the specified register.
+
+-   Example:
+    ```vim
+    qa
+    ```
+    -   Starts recording into register `a`.
+
+#### 2. **Stop Recording**
+
+-   Press `q` again to stop recording:
+    ```vim
+    q
+    ```
+
+#### 3. **Play Back a Macro**
+
+-   Use the `@` command to play the macro:
+
+    ```vim
+    @<register>
+    ```
+
+    -   Replace `<register>` with the register where the macro was saved.
+
+-   Example:
+    ```vim
+    @a
+    ```
+    -   Plays back the macro stored in register `a`.
+
+#### 4. **Repeat the Last Macro**
+
+-   Use `@@` to repeat the last played macro:
+    ```vim
+    @@
+    ```
+
+### Practical Example
+
+#### Scenario:
+
+You have the following text:
+
+```
+apple
+banana
+cherry
+```
+
+You want to add `-fruit` to the end of each line.
+
+#### Steps:
+
+1. **Start Recording**:
+
+    - Move to the first line.
+    - Press:
+        ```vim
+        qa
+        ```
+        (Starts recording into register `a`.)
+
+2. **Perform the Actions**:
+
+    - Move to the end of the line (`$`).
+    - Insert `-fruit` (`A-fruit`).
+    - Move to the next line (`j`).
+
+3. **Stop Recording**:
+
+    - Press:
+        ```vim
+        q
+        ```
+
+4. **Replay the Macro**:
+
+    - Go to the next line and press:
+        ```vim
+        @a
+        ```
+        (Plays the macro on the second line.)
+
+5. **Repeat the Macro**:
+    - Use:
+        ```vim
+        @@
+        ```
+        (Repeats the macro on the third line.)
+
+### Advanced Usage
+
+1. **Execute Macro Multiple Times**:
+
+    - Use a number before `@` to execute the macro multiple times:
+        ```vim
+        5@a
+        ```
+        (Executes the macro stored in `a` five times.)
+
+2. **Edit or Modify a Macro**:
+
+    - View the macro by checking the content of its register:
+        ```vim
+        :register a
+        ```
+    - Modify the content by overwriting or appending to the register.
+
+3. **Nested Macros**:
+
+    - A macro can call another macro using the `@` command inside it. Be careful to avoid infinite loops.
+
+4. **Save Macros Across Sessions**:
+    - Macros are temporary and stored in registers, so they are lost when Vim is closed. To save them:
+        - Write the macro content to your `.vimrc` file or a script file.
+
+### Best Practices
+
+-   **Use Descriptive Registers**: Use meaningful register names (e.g., `qf` for a macro related to formatting).
+-   **Plan Your Commands**: Before recording, think through the sequence of commands to avoid mistakes.
+-   **Test on a Small Sample**: Test the macro on one line or a small section before applying it to the entire file.
+
+### Benefits of Using Macros
+
+-   **Save Time**: Automates repetitive tasks.
+-   **Reduce Errors**: Ensures consistency in repetitive edits.
+-   **Easy to Use**: No need to write a custom script; just record and replay.
+
+Mastering macros in Vim can significantly enhance your productivity and efficiency, making repetitive tasks quick and painless! Let me know if you'd like examples of more complex macro use cases.
+
+</details>
+
+---
+
+<details><summary style="font-size:25px;color:Orange;text-align:left">Tmux</summary>
 
 <b style="font-size:25px;color:Red"> NOTE: Currently it's unknown how to copy text from tmux window</b>
 

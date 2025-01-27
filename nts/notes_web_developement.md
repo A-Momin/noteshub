@@ -1526,6 +1526,150 @@ ASGI servers are the web servers that implement the ASGI specification. These se
 
 ---
 
+<details><summary style="font-size:30px;color:Orange">Load Balancer</summary>
+
+-   [Load Balancers for System Design Interviews](https://www.youtube.com/watch?v=chyZRNT7eEo)
+
+A **Load Balancer** is a critical component in modern IT infrastructure that distributes incoming network traffic across multiple servers to ensure optimal resource utilization, high availability, and reliability of applications. It acts as a single point of contact for clients, improving the overall performance of an application by efficiently managing traffic loads.
+
+#### Key Functions of a Load Balancer
+
+1. `Traffic Distribution`:
+
+    - Distributes incoming requests to multiple backend servers (also called targets or instances).
+    - Prevents any single server from becoming overwhelmed with too much traffic.
+
+2. `Failover and High Availability`:
+
+    - Monitors the health of servers in the backend pool.
+    - Automatically reroutes traffic to healthy servers if one or more servers fail, ensuring uninterrupted service.
+
+3. `Scalability`:
+
+    - Supports scaling applications by adding or removing servers without downtime.
+    - Handles sudden traffic spikes effectively by spreading the load.
+
+4. `Performance Optimization`:
+
+    - Balances traffic based on specific algorithms (e.g., round-robin, least connections, etc.).
+    - Ensures efficient use of resources by distributing workloads evenly.
+
+5. `Security`:
+    - Protects backend servers by hiding their IP addresses and acting as a proxy.
+    - Integrates with firewalls, SSL/TLS encryption, and other security mechanisms to secure data transmission.
+
+#### Types of Load Balancers
+
+1.  **Based on Layer of Operation:**
+
+    a. `Layer 4 Load Balancer (Transport Layer)`:
+
+    -   Operates at the OSI model's Layer 4 (TCP/UDP protocols).
+    -   Balances traffic based on IP address, TCP port, or UDP port.
+    -   Lightweight and fast but lacks application-level insight.
+    -   Example: AWS Network Load Balancer (NLB).
+
+    b. `Layer 7 Load Balancer (Application Layer)`:
+
+    -   Operates at the OSI model's Layer 7 (HTTP/HTTPS protocols).
+    -   Balances traffic based on application-specific data such as URL, cookies, headers, or HTTP methods.
+    -   Supports advanced routing features and content-based routing.
+    -   Example: AWS Application Load Balancer (ALB).
+
+2.  **Based on Deployment:**
+    a. `Hardware Load Balancers`:
+
+    -   Physical devices used in on-premises data centers.
+    -   High performance but expensive and less flexible.
+    -   Examples: F5 Networks, Citrix ADC.
+
+    b. `Software Load Balancers`:
+
+    -   Software applications installed on virtual machines or servers.
+    -   Cost-effective and highly configurable.
+    -   Examples: HAProxy, NGINX.
+
+    c. `Cloud Load Balancers`:
+
+    -   Fully managed services provided by cloud providers.
+    -   Scalable, reliable, and easy to integrate with cloud environments.
+    -   Examples: AWS Elastic Load Balancer (ELB), Google Cloud Load Balancer, Azure Load Balancer.
+
+#### Load Balancing Algorithms
+
+Load Balancers use algorithms to determine how traffic is distributed across servers. Common algorithms include:
+
+1. `Round Robin`
+
+    - Distributes requests sequentially across servers in a circular order.
+    - Simple and effective for equally capable servers.
+
+2. `Least Connections`
+
+    - Sends traffic to the server with the fewest active connections.
+    - Ideal for servers with varying capacities or workloads.
+
+3. `Weighted Round Robin`
+
+    - Assigns a weight to each server based on its capacity, distributing traffic proportionally.
+
+4. `IP Hashing`
+
+    - Routes traffic based on a hash of the client’s IP address.
+    - Ensures that a client is consistently directed to the same server.
+
+5. `Random`
+
+    - Randomly assigns traffic to servers.
+    - Suitable for simple and low-traffic environments.
+
+6. `Content-Based Routing`
+    - Routes traffic based on content type, such as URL paths, headers, or cookies.
+    - Commonly used in Layer 7 load balancers.
+
+#### Health Checks
+
+Load Balancers periodically perform health checks to ensure backend servers are available and capable of handling traffic. Types of health checks:
+
+-   `Ping Check`: Verifies if the server is reachable.
+-   `TCP Check`: Ensures that the server can establish a TCP connection.
+-   `HTTP/HTTPS Check`: Confirms that the server responds with a valid HTTP status code.
+
+#### Benefits of Load Balancers
+
+1. `Improved Application Availability`: Prevents downtime by redistributing traffic when servers fail.
+2. `Enhanced Performance`: Ensures even workload distribution, reducing latency and improving response times.
+3. `Scalability`: Supports scaling horizontally by adding more servers as traffic increases.
+4. `Fault Tolerance`: Automatically reroutes traffic to healthy servers during outages.
+5. `Better Resource Utilization`: Ensures optimal use of server resources, avoiding under- or over-utilization.
+6. `Simplified Maintenance`: Allows individual servers to go offline for updates without disrupting services.
+
+#### Common Use Cases
+
+1. `Web Applications`: Balances traffic among web servers for high availability and performance.
+2. `API Gateways`: Distributes API requests to backend microservices.
+3. `E-Commerce`: Handles sudden spikes during sales or promotions.
+4. `Video Streaming`: Balances video content delivery among multiple media servers.
+
+#### Load Balancer in Cloud Environments
+
+Cloud providers offer managed load balancers with advanced features:
+
+-   `AWS Elastic Load Balancer (ELB)`: Includes Application Load Balancer, Network Load Balancer, and Gateway Load Balancer.
+-   `Azure Load Balancer`: Includes Standard Load Balancer and Application Gateway.
+-   `Google Cloud Load Balancer`: Offers global HTTP(S) and TCP/UDP load balancing.
+
+#### Load Balancer vs Reverse Proxy
+
+While both distribute traffic to backend servers:
+
+-   `Load Balancer`: Primarily focuses on distributing traffic for scalability and reliability.
+-   `Reverse Proxy`: Acts as an intermediary for security, caching, and traffic optimization, often working with a load balancer.
+
+</details>
+
+---
+
 <details><summary style="font-size:30px;color:Orange">SDLC (Software Development Life Cycle)</summary>
 
 The Software Development Life Cycle (SDLC) is a structured framework that outlines the phases and processes involved in the development of software applications or systems. It provides a systematic approach to software development, from the initial concept to maintenance and eventual retirement of the software. Let's explore the SDLC in detail:
@@ -1535,46 +1679,46 @@ The Software Development Life Cycle (SDLC) is a structured framework that outlin
     - `Project Initiation`: This phase begins with the identification of a need or an opportunity for a software solution. It involves creating a project proposal, defining goals, and determining the project's feasibility.
     - `Requirements Gathering`: During this stage, project stakeholders, including end-users and clients, collaborate with the development team to collect and document detailed requirements for the software.
 
-1. `Feasibility Study`:
+2. `Feasibility Study`:
 
     - An evaluation is performed to determine the technical, operational, and economic feasibility of the project. This assessment helps in deciding whether to proceed with the project.
 
-1. `Design Phase`:
+3. `Design Phase`:
 
     - `System Design`: This involves creating a high-level design of the system, including architecture, data structures, and the overall system structure.
     - `Detailed Design`: In this stage, the high-level design is further refined, specifying data formats, algorithms, and interfaces in greater detail.
 
-1. `Implementation (Coding) Phase`:
+4. `Implementation (Coding) Phase`:
 
     - Developers write the code according to the detailed design specifications. They follow coding standards and best practices to ensure the code is maintainable and efficient.
     - Unit testing is conducted during this phase to ensure individual components work correctly.
 
-1. `Testing Phase`:
+5. `Testing Phase`:
 
     - `Unit Testing`: Developers test individual modules or components to verify their correctness.
     - `Integration Testing`: The different modules or components are integrated, and testing is performed to identify any issues in their interactions.
     - `System Testing`: The entire system is tested to ensure it meets the specified requirements.
     - `User Acceptance Testing (UAT)`: End-users or clients perform testing to validate that the software meets their expectations.
 
-1. `Deployment Phase`:
+6. `Deployment Phase`:
 
     - The software is deployed to the production environment, making it accessible to end-users.
     - This may involve data migration, configuration, and setting up the necessary infrastructure.
 
-1. `Maintenance and Support Phase`:
+7. `Maintenance and Support Phase`:
 
     - After deployment, ongoing maintenance, support, and updates are provided to address issues, enhance functionality, and ensure the software remains reliable and secure.
 
-1. `Evaluation Phase`:
+8. `Evaluation Phase`:
 
     - At various points in the SDLC, the project is evaluated to ensure it aligns with its initial goals, meets quality standards, and remains on schedule and within budget.
     - Any necessary adjustments or corrective actions are taken based on these evaluations.
 
-1. `Documentation`:
+9. `Documentation`:
 
     - Throughout the SDLC, documentation is crucial. It includes design documents, user manuals, technical guides, and other documentation that aids in software understanding, maintenance, and training.
 
-1. `Communication and Collaboration`:
+10. `Communication and Collaboration`:
 
     - Effective communication and collaboration among stakeholders, including developers, testers, project managers, and end-users, are critical throughout the SDLC to ensure that everyone is aligned with project goals and progress.
     - SDLC models, such as Waterfall, Agile, and DevOps, provide different approaches to the software development process, each with its own set of principles and practices. The choice of SDLC model depends on the project's specific requirements, scope, and constraints.
@@ -1642,8 +1786,6 @@ Scrum and Agile are often discussed together as they are related concepts, but i
 -   `Agile`: Agile is a mindset or philosophy that emphasizes flexibility, collaboration, and iterative development. It focuses on delivering value to customers through frequent iterations and continuous feedback. The core principles of Agile, as outlined in the Agile Manifesto, include valuing individuals and interactions, working software, customer collaboration, and responding to change. Agile methodologies prioritize adaptability, customer satisfaction, and embracing change throughout the development process.
 -   `Scrum`: Scrum is a specific Agile framework for managing and delivering complex projects. It provides a structured approach to software development that follows Agile principles. Scrum is characterized by its iterative and incremental development cycles called "sprints," which are time-boxed periods (typically 1-4 weeks). Scrum teams collaborate in short daily meetings called "Daily Scrums," plan and review work in "Sprint Planning" and "Sprint Review" meetings, and reflect on process improvements in "Sprint Retrospectives."
 
-**Key Differences**:
-
 -   Scope and Focus:
 
     -   Agile is a broader philosophy and mindset that can be applied to various domains beyond software development. It encompasses multiple methodologies and approaches.
@@ -1684,30 +1826,21 @@ Atlassian Jira is one of the most popular tools for project management, issue tr
         - **Team-managed projects**: Managed by individual teams with simple configurations.
         - **Company-managed projects**: Centrally managed by Jira administrators with advanced configurations.
 
-2. **Issue**: An Issue is the fundamental unit of work in Jira. It represents any task, bug, feature, or piece of work that needs to be completed. Issues are highly flexible and can be customized based on the workflow of your team. Several types of issues are listed below:
+2. **Sprints**: A sprint is a time-boxed iteration of work in Scrum projects, typically lasting 1-4 weeks.
 
-    - `Bug`: A problem that needs fixing (e.g., "Fix login button not working").
+    - Teams plan, execute, and deliver work during a sprint.
+
+3. **Issue**: An Issue is the fundamental unit of work in Jira. It represents any task, bug, feature, or piece of work that needs to be completed. Issues are highly flexible and can be customized based on the workflow of your team. Several types of issues are listed below:
+
+    - `Epic`: An Epic represents a large body of work that can be broken down into smaller, manageable pieces, such as Stories, Tasks, or Bugs.
+    - `Story`: A user-centric piece of work.
     - `Task`: A standalone piece of work (e.g., "Update user manual for new release").
-    - `Story`: A user-centric piece of work (see below).
     - `Sub-task`: A smaller task that is part of a parent issue.
-
-    - **Custom Fields:** Jira allows customization to define additional data fields for issues, such as priority, due date, assignee, or custom labels.
-    - **Workflow:** Issues move through a defined workflow (e.g., _To Do → In Progress → Done_).
-    - **Example**: An issue could be as specific as: "Create an API endpoint to fetch user data."
-
-3. **Story**: A Story in Jira represents a piece of work that delivers value to the end user. It focuses on functionality or a feature that the user needs and is often written from the user's perspective. Stories are typically small enough to be completed within a sprint (in Scrum) or a short time frame.
-
-    - **User-Focused:** Stories are written in a format like: _"As a [user role], I want to [action/feature] so that [benefit]."_
-
-        - `Example`: "As a customer, I want to reset my password so that I can regain access to my account."
-
-    - **Estimable:** Stories are broken down into manageable tasks that can be estimated in terms of effort (e.g., using story points, hours, or days).
-    - **Child of an Epic:** A Story is often part of a larger body of work (Epic).
-    - **Acceptance Criteria:** Stories should have clear criteria to define when they are considered complete.
-    - **Story Title:** "Implement two-factor authentication"
-    - **Acceptance Criteria:**
-        1. Users must enter a code sent to their email or phone.
-        2. The system should log the attempt in the audit trail.
+    - `Bug`: A problem that needs fixing (e.g., "Fix login button not working").
+    - `Field`: Fields are pieces of information associated with an issue. They can be standard system fields (like summary, description, assignee) or custom fields that you define to capture specific information.
+        - Custom Fields: Jira allows customization to define additional data fields for issues, such as priority, due date, assignee, or custom labels.
+    - `Workflow`: Issues move through a defined workflow (e.g., _To Do → In Progress → Done_).
+    - `Example`: An issue could be as specific as: "Create an API endpoint to fetch user data."
 
 4. **Epic**: An Epic is a larger body of work that encompasses multiple Stories, Tasks, and Bugs. It represents a major initiative or objective, often spanning multiple sprints, and provides a higher-level view of the project.
 
@@ -1725,16 +1858,21 @@ Atlassian Jira is one of the most popular tools for project management, issue tr
         2. "Develop a single sign-on system."
         3. "Migrate existing customer data to the new portal."
 
-5. **Sprints**: A sprint is a time-boxed iteration of work in Scrum projects, typically lasting 1-4 weeks.
+5. **Story**: A Story in Jira represents a piece of work that delivers value to the end user. It focuses on functionality or a feature that the user needs and is often written from the user's perspective. Stories are typically small enough to be completed within a sprint (in Scrum) or a short time frame.
 
-    - Teams plan, execute, and deliver work during a sprint.
+    - **User-Focused:** Stories are written in a format like: _"As a [user role], I want to [action/feature] so that [benefit]."_
 
-6. **Workflows**: A workflow represents the lifecycle of an issue, from creation to completion.
+        - `Example`: "As a customer, I want to reset my password so that I can regain access to my account."
 
-    - It defines statuses (e.g., Open, In Progress, Done) and transitions (e.g., Move from Open to In Progress).
-    - Workflows can be customized for different projects or issue types.
+    - **Estimable:** Stories are broken down into manageable tasks that can be estimated in terms of effort (e.g., using story points, hours, or days).
+    - **Child of an Epic:** A Story is often part of a larger body of work (Epic).
+    - **Acceptance Criteria:** Stories should have clear criteria to define when they are considered complete.
+    - **Story Title:** "Implement two-factor authentication"
+    - **Acceptance Criteria:**
+        1. Users must enter a code sent to their email or phone.
+        2. The system should log the attempt in the audit trail.
 
-7. **Boards**: Board typically includes columns that represent different stages of the workflow, from when work is planned to when it is completed. Each work item (e.g., Story, Task, or Bug) is represented by a card that moves across the board as work progresses.
+6. **Boards**: Board typically includes columns that represent different stages of the workflow, from when work is planned to when it is completed. Each work item (e.g., Story, Task, or Bug) is represented by a card that moves across the board as work progresses.
 
     - `Scrum Board`: Focused on iterative work, used in sprints.
     - `Kanban Board`: Focused on continuous work, used to manage workflows without fixed iterations.
@@ -1809,9 +1947,32 @@ Atlassian Jira is one of the most popular tools for project management, issue tr
                 - Were there bottlenecks or tasks that got stuck in a particular column?
                 - Did the team over-commit or under-commit?
 
-8. **Components**: Components are sub-sections of a project used to group issues. For example, in a software project, components could be Frontend, Backend, or API.
-9. **Labels**: Labels are tags that can be added to issues to categorize or identify them easily.
-10. **Custom Fields**: Jira allows administrators to create custom fields to capture additional information specific to their projects.
+7. **Workflows**: A workflow represents the lifecycle of an issue, from creation to completion.
+
+    - It defines statuses (e.g., Open, In Progress, Done) and transitions (e.g., Move from Open to In Progress).
+    - Workflows can be customized for different projects or issue types.
+    - Example:
+        - **Epic:** "Implement e-commerce payment integration."
+            - **Story 1:** "Develop API for payment gateway."
+                - **Sub-task 1.1:** "Write API documentation."
+                - **Sub-task 1.2:** "Test API with sandbox environment."
+            - **Story 2:** "Create front-end UI for payment form."
+                - **Sub-task 2.1:** "Design payment form layout."
+                - **Sub-task 2.2:** "Add JavaScript for form validation."
+
+8. `Components`: Components are sub-sections of a project used to group issues. For example, in a software project, components could be Frontend, Backend, or API.
+9. `Labels`: Labels are tags that can be added to issues to categorize or identify them easily.
+10. `Priority and Severity`: Priority indicates the urgency of an issue, while severity indicates the impact of the issue. These help teams prioritize their work.
+11. `Assignee`: The person responsible for working on an issue is the assignee. It helps track who is responsible for completing the task.
+12. `Reporter`: The person who raises the issue is the reporter. They provide information about the issue and its details.
+13. `Dashboard`: Dashboards are customizable pages that display important information and statistics about projects and teams, including charts, filters, and gadgets.
+14. `Gadget`: Gadgets are small modules that display information on dashboards. They can show things like issue statistics, burndown charts, project progress, etc.
+15. `Scrum`: Scrum is an Agile methodology that follows a defined process with time-boxed iterations called sprints.
+16. `Kanban`: Kanban is an Agile methodology that emphasizes continuous delivery and visualizing work as it progresses through different stages.
+17. `Permission Scheme`: Permission schemes define who can perform actions on issues within a project. They control access and visibility.
+18. `Notification Scheme`: Notification schemes determine when and how users are notified about changes to issues. They manage email notifications and other alerts.
+19. `Workflow Scheme`: Workflow schemes associate workflows with issue types within a project. They define the workflow that an issue type follows.
+20. `Issue Link`: Issue links establish relationships between issues, like "blocks," "relates to," "is part of," etc.
 
 ### Story Points
 
@@ -1851,27 +2012,6 @@ Story Points help teams assess work relatively, rather than in absolute terms li
     2. `Tracking Velocity`: The team’s **velocity** is the total number of Story Points completed during a sprint. For example, if the team completes 30 Story Points in one sprint, they know their approximate capacity for the next sprint.
     3. `Sprint Burndown Chart`: Story Points contribute to the **burndown chart**, tracking the team's progress as tasks are completed during the sprint.
     4. `Distribution of Work`: The Product Owner and Scrum Master ensure that the total Story Points planned for the sprint align with the team’s capacity.
-
-#### Relationship Between Story, Epic, and Issue
-
--   **Epic → Story → Sub-task:**
-
-    -   An Epic is the overarching theme.
-    -   Stories break down Epics into smaller, manageable units.
-    -   Sub-tasks divide Stories into even smaller, actionable pieces.
-
--   **Issue as a Broad Term:**
-    -   In Jira, every Epic, Story, Task, Bug, or Sub-task is technically an Issue. The term "Issue" is the generic container for all work items.
-
-#### Example Workflow:
-
--   **Epic:** "Implement e-commerce payment integration."
-    -   **Story 1:** "Develop API for payment gateway."
-        -   **Sub-task 1.1:** "Write API documentation."
-        -   **Sub-task 1.2:** "Test API with sandbox environment."
-    -   **Story 2:** "Create front-end UI for payment form."
-        -   **Sub-task 2.1:** "Design payment form layout."
-        -   **Sub-task 2.2:** "Add JavaScript for form validation."
 
 #### Jira Agile Terminology
 

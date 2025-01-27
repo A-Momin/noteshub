@@ -83,6 +83,12 @@
 -   [Different ways to implement flags in bash](https://jonalmeida.com/posts/2013/05/26/different-ways-to-implement-flags-in-bash/)
 -
 
+| **Term**     | **Preceded By**                         | **Takes a Value**                              | **Purpose**                                   |
+| ------------ | --------------------------------------- | ---------------------------------------------- | --------------------------------------------- |
+| **Flag**     | Single dash (`-`)                       | Rarely                                         | Toggles a feature on or off.                  |
+| **Option**   | Single dash (`-`) or double dash (`--`) | Sometimes (e.g., `-o value`, `--option=value`) | Modifies command behavior.                    |
+| **Argument** | No dash                                 | Yes (e.g., filename, string)                   | Specifies the input or target of the command. |
+
 ### Special Variables in Bash:
 
 -   [Shell Parameters](https://tiswww.case.edu/php/chet/bash/bashref.html#Shell-Parameters)

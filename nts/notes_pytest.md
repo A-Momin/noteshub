@@ -47,6 +47,7 @@ Each type of testing is chosen based on the specific phase of development, goals
 -   **System Testing**: System Testing evaluates the complete and fully integrated system to ensure it meets the specified requirements. It validates both functional and non-functional aspects of the system.
 
     -   `Purpose`:
+
         -   To test the entire application as a unified system.
         -   To verify that the system functions correctly in all intended environments.
 
@@ -561,8 +562,6 @@ pytest --cov=src_directory
 -   You can customize Pytest behavior and settings by creating a `pytest.ini` or `pytest.cfg` configuration file in your project directory.
 
 </details>
-
----
 
 ---
 
