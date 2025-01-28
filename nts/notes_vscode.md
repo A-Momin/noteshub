@@ -2,6 +2,7 @@
 -   𝐔𝐬𝐞𝐟𝐮𝐥𝐥 𝑺𝒚𝒎𝒃𝒐𝒍𝒔: ⇧ ⮐ ⎇ ⌘ ⌥ + ⌃ + ⤶  ⤶ ⬋ ↩︎ ↲ ↵ ↫ ⭿ ♥ ★ → ➡️ ⬅️ ⬆︎ ⬇️
 
 -   `^ + ⌘ + Spaces` → To get Emoji (🏠)
+-   `^ + Spaces` → To get markdown snippet autocomplete.
 -   `⌘ + ⇧ + O` → Allow open various symbol
 
 <details><summary style="font-size:25px;color:Orange;text-align:left">Notes Link</summary>

@@ -166,7 +166,7 @@ alias runsshagent='eval $(ssh-agent)'
 #=============================================================================
 #=============================================================================
 
-source ~/.git-aliases.bash;
+# source ~/.git-aliases.bash;
 
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd ..&& ls -1"
@@ -291,7 +291,7 @@ alias ml="cd $HOME/mydocs/Software_Development/Machine_Learning && ls -1"       
 alias ads="cd $HOME/mydocs/Software_Development/Algorithms_and_Data_Structures"
 alias epi="cd $HOME/mydocs/Software_Development/Python_Program/Python3/elements-of-programming-interview && deactivate &> /dev/null; source .venv/bin/activate"
 alias pp="cd $HOME/mydocs/Software_Development/Python_Program && ls -1"                   # pp ==> Python Program
-alias bp="cd $HOME/mydocs/Software_Development/Bash_Programs && ls -1"                    # bp ==> Bash Program
+alias bp="cd $HOME/.bash_profile"                    # bp ==> Bash Profile
 alias pp2="cd $HOME/mydocs/Software_Development/Python_Program/Python2 && ls -1"          # pp2 ==> Python2 Program
 alias pp3="cd $HOME/mydocs/Software_Development/Python_Program/Python3 && ls -1"          # pp3 ==> Python3 Program
 alias jp="cd $HOME/mydocs/Software_Development/JavaPragrams && ls -1"                     # cpp ==> C++ Programs

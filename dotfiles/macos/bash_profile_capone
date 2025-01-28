@@ -1,11 +1,12 @@
 # ============================================================================
 # Define a CRITICAL environment variable. 
-export NTHUB="$HOME/mydocs/Software_Development/noteshub"
+export NTHUB="$HOME/caponenoteshub"
 export DOTFILES="$NTHUB/dotfiles/macos"
 # set horizontal-scroll-mode on # to disable word wrap in terminal; not Working !!
 
 # This will add the code command to your system's PATH, allowing you to open Visual Studio Code from the terminal.
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+
 # ============================================================================
 
 # It is specific to Git and used by the Git prompt (PS1) script to determine whether to show the dirty state of the working directory.
@@ -14,8 +15,10 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 # Add `~/bin` to the `$PATH`
 export PATH="$HOME/bin:$PATH";
 
-# Order of the list is crical. second script might depend on the first script.
-for file in $DOTFILES/{git-completion.bash,git-prompt.sh,git-aliases.bash,aliases,secrets.bash,bash_utils.bash}; do
+# Load the shell dotfiles, and then some:
+# * ~/.path can be used to extend `$PATH`.
+# * ~/.extra can be used for other settings you don’t want to commit.
+for file in ~/.{bash_utils.bash,aliases,git-completion.bash,git-prompt.sh,git-aliases.bash,secrets.bash}; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
 unset file;
@@ -66,23 +69,20 @@ establish_symlinks
 
 # =============================================================================
 # =============================================================================
-# Add pyenv to PATH
-export PATH="$HOME/.pyenv/bin:$PATH"
-# Initialize pyenv
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
-##  pyenv-virtualenv is a plugin for pyenv that facilitates the creation and management of Python virtual environments.
-eval "$(pyenv virtualenv-init -)"
+# # Add pyenv to PATH
+# export PATH="$HOME/.pyenv/bin:$PATH"
+# # Initialize pyenv
+# eval "$(pyenv init --path)"
+# eval "$(pyenv init -)"
+# ##  pyenv-virtualenv is a plugin for pyenv that facilitates the creation and management of Python virtual environments.
+# eval "$(pyenv virtualenv-init -)"
 # ============================================================================
 # Setting PATH for Python 3.9
 export PYTHONNOUSERSITE=True # Enable/Disable Python site module ('ENABLE_USER_SITE').
 export PYTHONPATH="$HOME/mydocs/Software_Development/Web_Development/aws/boto_scripts:${PYTHONPATH}"
-export PYTHONPATH="$HOME/mydocs/Software_Development/noteshub/utils:${PYTHONPATH}"
+export PYTHONPATH="$NTHUB/utils:${PYTHONPATH}"
 # ============================================================================
 
-# Add mysql into the PATH variable.
-export PATH="/usr/local/mysql/bin:$PATH"
-export PATH="/usr/local/Cellar/sqlite/3.45.3/bin:$PATH"
 
 # ============================================================================
 ######################## PySpark Configurations ##############################
@@ -112,4 +112,3 @@ export PYSPARK_PYTHON="/usr/bin/python3"
 # It is used specifically for configuring options related to the Python environment, such as the IP address, port number, Python version, or any other Python-specific configurations.
 # export PYSPARK_DRIVER_PYTHON_OPTIONS="--ip 127.0.0.1 --port 8888"
 # ============================================================================
-
