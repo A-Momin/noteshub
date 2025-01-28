@@ -27,7 +27,15 @@ export FLASK_ENV=dev
 
 
 
-# eval "$(pyenv virtualenv-init -)"
+
+base_dotfile_symlinks(){
+    ln -sf $NTHUB/dotfiles/macos/bash_profile_mos01 $HOME/.bash_profile
+    ln -sf $NTHUB/dotfiles/macos/git-aliases.bash $HOME/.git-aliases.bash
+    ln -sf $NTHUB/dotfiles/macos/git-completion.bash $HOME/.git-completion.bash
+    ln -sf $NTHUB/dotfiles/macos/git-prompt.sh $HOME/.git-prompt.sh
+    ln -sf $NTHUB/dotfiles/macos/aliases $HOME/.aliases
+    ln -sf $NTHUB/dotfiles/macos/bash_utils.bash $HOME/.bash_utils.bash
+}
 
 
 create_alias(){
