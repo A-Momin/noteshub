@@ -656,6 +656,10 @@ add_gh_wh(){
 
     </details>
 
+-   <details><summary style="font-size:18px;color:#C71585">how to generate a github.com token with 'gh' cli tool?</summary>
+
+    </details>
+
 -   <details><summary style="font-size:18px;color:#C71585">How to create Web Hook on a Github repository using `gh` cli</summary>
 
     You can create a webhook on a GitHub repository using the `gh` CLI tool by using the `gh api` command to interact with the GitHub REST API. Here’s a step-by-step guide:

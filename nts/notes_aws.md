@@ -3199,3 +3199,110 @@ Sticky sessions ensure that requests from the same client are routed to the same
     - ALB supports **WebSocket** for real-time communication and **HTTP/2** for better performance.
 
 </details>
+
+---
+
+<details><summary style="font-size:25px;color:Orange">AWS WAF</summary>
+
+AWS WAF (Web Application Firewall) is a security service that helps protect web applications from common web exploits, unauthorized access, and malicious traffic by filtering and monitoring HTTP/HTTPS requests based on defined rules.
+
+It integrates with **Amazon CloudFront**, **Application Load Balancer (ALB)**, and **API Gateway**, allowing businesses to apply security protections at the edge, before requests reach the application.
+
+#### Key Components of AWS WAF
+
+-   **Web ACL (Web Access Control List)**: A **Web ACL** is the core component of AWS WAF. It acts as a **firewall policy** and consists of **rules** that define how AWS WAF should handle incoming web requests.
+
+    -   **Attach to:** CloudFront, ALB, or API Gateway.
+    -   **Each Web ACL consists of:** - **Rules** → Define specific security conditions.
+    -   **Rule Groups** → Collections of related rules.
+    -   **Default Action** → Allow or Block requests that don’t match any rule.
+
+-   **Rules**: Rules define conditions that filter traffic based on various attributes. You can create custom rules or use **AWS Managed Rules**.
+
+    -   `Rate-Based Rule`: Blocks IPs sending excessive requests (prevents DDoS).
+    -   `IP Set Rule`: Allows or blocks requests from a list of IPs.
+    -   `String Matching Rule`: Filters requests based on headers, body, or query parameters.
+    -   `Regex Match Rule`: Matches specific patterns in request data.
+    -   `Size Constraint Rule`: Blocks requests exceeding defined size limits.
+    -   `Geographical Match Rule`: Blocks requests from specific countries.
+    -   `Bot Control Rule`: Detects and blocks bot traffic.
+
+-   **Rule Groups**: Rule Groups are **collections of related rules** that can be shared across multiple Web ACLs.
+
+    -   `AWS Managed Rule Groups`:Pre-configured rules for common attacks (e.g., SQL Injection, XSS).
+    -   `Custom Rule Groups`:User-defined rules for specific security needs.
+
+-   **Conditions** : define **how AWS WAF evaluates a request**. Common conditions include:
+
+    -   **IP Match Condition** (specific IP addresses).
+    -   **String Match Condition** (specific query strings, URIs, or headers).
+    -   **SQL Injection Condition** (SQL attack patterns).
+    -   **Cross-Site Scripting (XSS) Condition** (malicious JavaScript).
+
+-   **Actions**: When a request matches a rule, AWS WAF takes one of the following actions:
+
+    -   `Allow`: Permits the request to pass through.
+    -   `Block`: Completely denies the request.
+    -   `Count`: Logs the request for monitoring but does not block it.
+    -   `CAPTCHA`: Challenges the user with a CAPTCHA test.
+
+#### AWS WAF Advanced Features
+
+-   **AWS Managed Rules**: AWS provides pre-configured rule sets to **protect against known vulnerabilities**:
+
+    -   `Core Rule Set (CRS)`:Protects against SQL Injection, XSS, and other common exploits.
+    -   `IP Reputation List`:Blocks traffic from known malicious IP addresses.
+    -   `Amazon Threat Intelligence Feeds`:Uses AWS security data to block suspicious traffic.
+
+-   **AWS WAF Logging & Metrics**
+
+    -   Logs traffic data to **Amazon S3**, **CloudWatch Logs**, or **Kinesis Data Firehose**.
+    -   Provides insights into attack patterns and blocked requests.
+
+-   **AWS WAF Rate Limiting (DDoS Protection)**
+
+    -   **Rate-Based Rules** help prevent **Distributed Denial-of-Service (DDoS) attacks** by blocking IPs sending too many requests.
+    -   Example: Block IPs that send **more than 2000 requests per 5 minutes**.
+
+-   **AWS WAF and Shield Integration**
+
+    -   **AWS Shield Standard:** Provides basic DDoS protection (included with AWS WAF).
+    -   **AWS Shield Advanced:** Offers enhanced DDoS protection with automated attack mitigation.
+
+#### AWS WAF Deployment Options
+
+-   **With Amazon CloudFront (Edge Protection)**
+
+    -   Best for **global applications** and content delivery.
+    -   **Pros:**  
+        ✅ Blocks threats before they reach your application.  
+        ✅ Reduces latency by filtering traffic at AWS edge locations.
+
+-   **With Application Load Balancer (ALB)**
+
+    -   Best for **internal AWS applications and microservices**.
+    -   **Pros:**  
+        ✅ Provides security at the load balancer level.  
+        ✅ Works with multiple EC2 instances and containers.
+
+-   **With API Gateway**
+
+    -   Best for **securing RESTful APIs**.
+    -   **Pros:**  
+        ✅ Protects APIs from attacks like **API scraping, bot abuse, and SQL Injection**.
+
+#### Summary Table
+
+| AWS WAF Component     | Description                                                      |
+| --------------------- | ---------------------------------------------------------------- |
+| **Web ACL**           | Defines firewall rules and actions (Allow, Block, Count)         |
+| **Rules**             | Defines specific security conditions                             |
+| **Rule Groups**       | Collections of rules (Managed or Custom)                         |
+| **Actions**           | What to do when a request matches a rule (Allow, Block, CAPTCHA) |
+| **Managed Rules**     | AWS-provided rule sets for common threats                        |
+| **Rate-Based Rules**  | Blocks excessive traffic from a single IP                        |
+| **Logging & Metrics** | Provides insights into blocked requests                          |
+| **Deployment**        | Works with CloudFront, ALB, and API Gateway                      |
+| **DDoS Protection**   | Works with AWS Shield to mitigate large-scale attacks            |
+
+</details>

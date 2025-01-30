@@ -37,14 +37,14 @@ beautify_prompt(){
     BOrange='\e[1;33m'
 
 
-    host=$(hostname)
+    host=$(whoami)
     # host=
-    if [ $host = "MOS01" ]; then
+    if [ $host = "am" ]; then
         host_color=$BRed
-    elif [ $host = "MOS02" ]; then
+    elif [ $host = "a.momin" ]; then
         host_color=$Orange
     else
-        host_color=$green
+        host_color=$BOrange
     fi
     arrow_color=$purple
 

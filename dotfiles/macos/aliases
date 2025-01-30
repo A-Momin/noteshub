@@ -181,8 +181,27 @@ alias mydocs="cd $HOME/mydocs && ls -1"
 alias gd="cd $HOME/mydocs/gd && ls -1"
 alias sd="cd $HOME/mydocs/Software_Development && ls -1"
 alias wd="cd $HOME/mydocs/Software_Development/Web_Development && ls -1"
-alias dl="cd ~/Downloads && ls -1"
-alias dt="cd ~/Desktop && ls -1"
+alias dl="cd $HOME/Downloads && ls -1"
+alias dt="cd $HOME/Desktop && ls -1"
+alias sshot="open $HOME/Desktop/Screenshots"
+
+alias chrome="open -na 'Google Chrome' --args --new-window"
+alias bu="code $DOTFILES/bash_utils.bash"
+alias secrets="code $DOTFILES/secrets.bash"
+alias aliases="code $DOTFILES/aliases"
+
+alias mdstyle="code $HOME/.local/state/crossnote/style.less"
+alias resumes="open $GD/jobs/resumes"
+alias resumede="open $GD/jobs/resumes/AM-DE.gdoc"
+alias resumetx="open $GD/jobs/resumes/AMominTX-pyeng.gdoc"
+alias mvntpdf="mv $NTHUB/{nts,iqs}/*.pdf $GD/NOTES_PDF/notes/"
+
+## NON-TECHNICAL
+alias passdb="open $HOME/mydocs/gd/passdb.gsheet"
+alias jobdb="open $HOME/mydocs/gd/jobs/Jobs_DB.gsheet"
+alias apartments="code $GD/MISC/apartments.md"
+alias ntrgh="code $HOME/notes_rough.md"
+alias ntht="code $HOME/mydocs/gd/Harness-Tech/notes_ht.md"
 
 #========== Docker Shortcuts =============
 dkr_aliases(){
@@ -197,10 +216,7 @@ dkr_aliases(){
 }
 #=========================================
 
-alias chrome="open -na 'Google Chrome' --args --new-window"
-alias bu="code $HOME/.bash_utils.bash"
-alias secrets="code $HOME/.secrets.bash"
-alias aliases="code $HOME/.aliases"
+
 
 alias ae="deactivate &> /dev/null; source .venv/bin/activate"
 alias de="deactivate"
@@ -228,6 +244,7 @@ alias ntshell="code $NTHUB/nts/notes_shell.md"
 alias ntde="code $NTHUB/nts/notes_data_engineering.md"
 alias ntlnx="code $NTHUB/nts/notes_linux.md"
 alias ntgcp="code $NTHUB/nts/notes_gcp.md"
+alias ntemail="code $NTHUB/interviewprep/email_analysis.md"
 alias ntfw="code $NTHUB/nts/notes_fw.md"
 alias ntmd="code $NTHUB/nts/notes_md.md"
 alias ntaws="code $NTHUB/nts/notes_aws.md"
@@ -333,15 +350,3 @@ alias nbtorch="code $NTHUB/nbs/nt_torch.ipynb"
 alias nbstat="code $NTHUB/nbs/statistics.ipynb"
 # =============================================================================
 
-alias mdstyle="code $HOME/.local/state/crossnote/style.less"
-alias resumes="open $GD/jobs/resumes"
-alias resumede="open $GD/jobs/resumes/AM-DE.gdoc"
-alias resumetx="open $GD/jobs/resumes/AMominTX-pyeng.gdoc"
-alias mvntpdf="mv $NTHUB/{nts,iqs}/*.pdf $GD/NOTES_PDF/notes/"
-
-## NON-TECHNICAL
-alias passdb="open $HOME/mydocs/gd/passdb.gsheet"
-alias jobdb="open $HOME/mydocs/gd/jobs/Jobs_DB.gsheet"
-alias apartments="code $GD/MISC/apartments.md"
-alias ntrgh="code $HOME/notes_rough.md"
-alias ntht="code $HOME/mydocs/gd/Harness-Tech/notes_ht.md"
