@@ -148,13 +148,7 @@ alias path='echo -e ${PATH//:/\\n}'
 # alias findsz="find . -maxdepth ${1:-1} -type d -exec du -sh {} + | sort -h"
 # alias findsz="find . -maxdepth 2 -type d -exec du -sh {} + | sort -h"
 
-function findsz(){
-    find ${1:-.} -maxdepth ${2:-1} -type d -exec du -sh {} + | sort -h
-}
 
-function cleandir(){
-    find . -type d -name ${1:-*.venv} -exec rm -rf {} +
-}
 
 # Recursively delete `.DS_Store` files
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
@@ -165,8 +159,6 @@ alias runsshagent='eval $(ssh-agent)'
 
 #=============================================================================
 #=============================================================================
-
-# source ~/.git-aliases.bash;
 
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd ..&& ls -1"
@@ -247,7 +239,8 @@ alias ntgcp="code $NTHUB/nts/notes_gcp.md"
 alias ntemail="code $NTHUB/interviewprep/email_analysis.md"
 alias ntfw="code $NTHUB/nts/notes_fw.md"
 alias ntmd="code $NTHUB/nts/notes_md.md"
-alias ntaws="code $NTHUB/nts/notes_aws.md"
+alias ntaws1="code $NTHUB/nts/notes_aws1.md"
+alias ntaws2="code $NTHUB/nts/notes_aws2.md"
 alias ntdjango="code $NTHUB/nts/notes_django.md"
 alias ntre="code $NTHUB/nts/notes_re.md"
 alias ntml="code $NTHUB/nts/notes_ml.md"
@@ -287,15 +280,16 @@ alias ntds="code $NTHUB/nts/notes_ds.md"
 alias nttf="code $NTHUB/nts/notes_terraform.md"
 alias ntansible="code $NTHUB/nts/notes_ansible.md"
 alias ntmicroservice="code $NTHUB/nts/notes_microservice.md"
+alias ntopenssl="code $NTHUB/nts/notes_openssl.md"
 
+###############################################################################
 alias ntislam="code $NTHUB/nts/notes_islam.md"
 alias nteng="code $NTHUB/nts/notes_english.md"
-
-
-
+###############################################################################
 alias cmdnpm="code $NTHUB/nts/cmd_npm.txt"
 alias cmdreact="code $NTHUB/nts/cmd_react.txt"
 alias cmdcpp="code $NTHUB/nts/cmd_cpp.txt"
+###############################################################################
 
 
 alias bigdata="cd $HOME/mydocs/Software_Development/Big_Data"
@@ -308,7 +302,7 @@ alias ml="cd $HOME/mydocs/Software_Development/Machine_Learning && ls -1"       
 alias ads="cd $HOME/mydocs/Software_Development/Algorithms_and_Data_Structures"
 alias epi="cd $HOME/mydocs/Software_Development/Python_Program/Python3/elements-of-programming-interview && deactivate &> /dev/null; source .venv/bin/activate"
 alias pp="cd $HOME/mydocs/Software_Development/Python_Program && ls -1"                   # pp ==> Python Program
-alias bp="cd $HOME/.bash_profile"                    # bp ==> Bash Profile
+alias bp="code $HOME/.bash_profile"                    # bp ==> Bash Profile
 alias pp2="cd $HOME/mydocs/Software_Development/Python_Program/Python2 && ls -1"          # pp2 ==> Python2 Program
 alias pp3="cd $HOME/mydocs/Software_Development/Python_Program/Python3 && ls -1"          # pp3 ==> Python3 Program
 alias jp="cd $HOME/mydocs/Software_Development/JavaPragrams && ls -1"                     # cpp ==> C++ Programs
@@ -316,7 +310,7 @@ alias jsp="cd $HOME/mydocs/Software_Development/Web_Development/Javascript_Progr
 alias cpp="cd $HOME/mydocs/Software_Development/C++_Programs && ls -1"                    # cpp ==> C++ Programs
 alias algs4="cd $HOME/mydocs/Software_Development/algs4/src/main/java/edu/princeton/cs/algs4"
 alias db="cd $HOME/mydocs/Software_Development/Databases && ls -1"                        # sql ==> MySQL Program
-alias nttax="open $GD/TaxReturn/notes_tax.md"
+alias nttax="code $GD/TaxReturn/notes_tax.md"
 
 
 # =============================================================================

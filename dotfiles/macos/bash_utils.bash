@@ -369,3 +369,38 @@ create_old_jnb_pyenv(){
     pip uninstall jinja2 nbconvert -y
     pip install jinja2 nbconvert
 }
+
+
+function findsz() {
+    : '
+    Finds and displays the sizes of directories in a given path.
+
+    Parameters:
+      $1 (optional) - Directory path to search (default: current directory).
+      $2 (optional) - Max depth level for search (default: 1).
+
+    Example Usage:
+      findsz /var/log 2
+      # Lists directory sizes in /var/log up to depth 2, sorted by size.
+    '
+
+    find ${1:-.} -maxdepth ${2:-1} -type d -exec du -sh {} + | sort -h
+}
+
+function cleandir() {
+    : '
+    Deletes directories matching a given name pattern within the current directory.
+
+    Parameters:
+      $1 (optional) - Directory name pattern to match (default: "*.venv").
+
+    Example Usage:
+      cleandir node_modules
+      # Removes all directories named "node_modules" in the current directory.
+
+      cleandir
+      # Removes all directories named "*.venv" in the current directory.
+    '
+
+    find . -type d -name "${1:-*.venv}" -exec rm -rf {} +
+}

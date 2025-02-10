@@ -23,9 +23,8 @@
 
 <details><summary style="font-size:22px;color:Orange;text-align:left">Shortcuuts</summary>
 
--   `⇧ + ⌘ + .` -> Make Dotfiles/Dotrepo in finders visible.
+-   `⇧ + ⌘ + .` -> Make Dotfiles/Dotrepos in finders visible/invisible.
 -   `⌘ + ␣` -> Make Spotlight Searchbar to apear for searching.
--   `⇧ + ⌘ + ⌦` -> Make Dotfiles/Dotrepo in finders visible.
 -   `$ `
 
 </details>

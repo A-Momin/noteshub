@@ -95,6 +95,43 @@ Each type of testing is chosen based on the specific phase of development, goals
 
     -   `Tools Used`: stRail, Jira, Trello.
 
+#### Control Testing
+
+-   **Control Testing** is the process of evaluating the effectiveness and efficiency of internal controls within an organization. It ensures that controls are properly designed, implemented, and operating as intended to mitigate risks, prevent fraud, and ensure compliance with regulations.
+-   **Control Testing** is widely used in **IT security**, **finance**, **auditing**, and **risk management** to maintain trust and operational integrity.
+
+-   **Types of Control Testing**:
+
+    1. `Design Effectiveness Testing`
+
+        - Assesses whether the control is **properly designed** to address specific risks.
+        - Example: Checking if an approval workflow exists for financial transactions.
+
+    2. `Operating Effectiveness Testing`
+
+        - Determines if the control is **working as intended** in real-world operations.
+        - Example: Reviewing audit logs to confirm that approvals are actually enforced.
+
+    3. `Preventive vs. Detective Control Testing`
+        - **Preventive Controls**: Designed to stop errors or fraud before they happen.
+            - Example: Enforcing multi-factor authentication (MFA) for system access.
+        - **Detective Controls**: Identify and report issues after they occur.
+            - Example: Reviewing financial reconciliation reports.
+
+-   **Methods of Control Testing**:
+
+    -   `Inquiry`: Interviewing employees to understand control processes.
+    -   `Observation`: Watching the control in action to ensure compliance.
+    -   `Inspection of Documentation`: Reviewing policies, logs, and records to verify adherence.
+    -   `Reperformance`: Executing the control process manually to validate its effectiveness.
+
+-   **Why is Control Testing Important?**:
+
+    -   Ensures compliance with regulatory requirements (e.g., SOX, HIPAA, GDPR).
+    -   Detects and mitigates operational risks before they cause harm.
+    -   Prevents financial loss due to fraud or human error.
+    -   Improves internal processes by identifying weaknesses.
+
 #### Non-Functional Testing
 
 -   **Performance Testing**: Examines the speed, responsiveness, and stability under a particular workload. Includes:

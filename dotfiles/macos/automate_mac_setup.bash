@@ -384,4 +384,27 @@ install_spark(){
     pip install numpy pandas pyspark scikit-learn matplotlib
 }
 
+mac_remove_docker(){
+    :'Remove Docker from your Mac'
+    brew uninstall docker
+    brew uninstall docker-compose
+    brew uninstall docker-machine
+    rm -rf ~/.docker
+    rm -rf /Applications/Docker.app
+    rm -rf /Applications/Docker
+    rm -rf /usr/local/bin/docker
+    rm -rf /usr/local/bin/docker-*
+    rm -rf ~/.docker ~/Library/Containers/com.docker.docker
+    rm -rf ~/Library/Application\ Support/Docker\ Desktop
+    rm -rf ~/Library/Caches/com.docker.docker
+    rm -rf ~/Library/Preferences/com.docker.docker.plist
+    rm -rf ~/Library/Logs/Docker\ Desktop
+    sudo rm -rf /var/run/docker.sock
+    sudo rm -rf /usr/local/bin/com.docker.cli
+    sudo rm -rf /Library/PrivilegedHelperTools/com.docker.vmnetd
+    sudo rm -rf /Library/LaunchDaemons/com.docker.vmnetd.plist
+    sudo rm -rf /Library/LaunchAgents/com.docker.helper
+
+}
+
     

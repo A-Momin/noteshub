@@ -1814,296 +1814,335 @@ Scrum and Agile are often discussed together as they are related concepts, but i
 
 ---
 
-<details><summary style="font-size:30px;color:Orange">Atlassian Jira</summary>
+-   <details><summary style="font-size:30px;color:Orange">Atlassian Jira</summary>
 
-Atlassian Jira is one of the most popular tools for project management, issue tracking, and agile software development. It is highly configurable and offers a wide range of features tailored for teams across industries. Below is a comprehensive explanation of all major **terms**, **concepts**, and **components** of Jira:
+    Atlassian Jira is one of the most popular tools for project management, issue tracking, and agile software development. It is highly configurable and offers a wide range of features tailored for teams across industries. Below is a comprehensive explanation of all major **terms**, **concepts**, and **components** of Jira:
 
-1. **Projects**
+    1. **Projects**
 
-    - A **project** is a collection of issues that are used to track work for a specific goal, product, or team.
-    - Projects can be configured independently, with their own workflows, boards, and settings.
-    - Types of projects:
-        - **Team-managed projects**: Managed by individual teams with simple configurations.
-        - **Company-managed projects**: Centrally managed by Jira administrators with advanced configurations.
+        - A **project** is a collection of issues that are used to track work for a specific goal, product, or team.
+        - Projects can be configured independently, with their own workflows, boards, and settings.
+        - Types of projects:
+            - **Team-managed projects**: Managed by individual teams with simple configurations.
+            - **Company-managed projects**: Centrally managed by Jira administrators with advanced configurations.
 
-2. **Sprints**: A sprint is a time-boxed iteration of work in Scrum projects, typically lasting 1-4 weeks.
+    2. **Sprints**: A sprint is a time-boxed iteration of work in Scrum projects, typically lasting 1-4 weeks.
 
-    - Teams plan, execute, and deliver work during a sprint.
+        - Teams plan, execute, and deliver work during a sprint.
 
-3. **Issue**: An Issue is the fundamental unit of work in Jira. It represents any task, bug, feature, or piece of work that needs to be completed. Issues are highly flexible and can be customized based on the workflow of your team. Several types of issues are listed below:
+    3. **Issue**: An Issue is the fundamental unit of work in Jira. It represents any task, bug, feature, or piece of work that needs to be completed. Issues are highly flexible and can be customized based on the workflow of your team. Several types of issues are listed below:
 
-    - `Epic`: An Epic represents a large body of work that can be broken down into smaller, manageable pieces, such as Stories, Tasks, or Bugs.
-    - `Story`: A user-centric piece of work.
-    - `Task`: A standalone piece of work (e.g., "Update user manual for new release").
-    - `Sub-task`: A smaller task that is part of a parent issue.
-    - `Bug`: A problem that needs fixing (e.g., "Fix login button not working").
-    - `Field`: Fields are pieces of information associated with an issue. They can be standard system fields (like summary, description, assignee) or custom fields that you define to capture specific information.
-        - Custom Fields: Jira allows customization to define additional data fields for issues, such as priority, due date, assignee, or custom labels.
-    - `Workflow`: Issues move through a defined workflow (e.g., _To Do → In Progress → Done_).
-    - `Example`: An issue could be as specific as: "Create an API endpoint to fetch user data."
+        - `Epic`: An Epic represents a large body of work that can be broken down into smaller, manageable pieces, such as Stories, Tasks, or Bugs.
+        - `Story`: A user-centric piece of work.
+        - `Task`: A standalone piece of work (e.g., "Update user manual for new release").
+        - `Sub-task`: A smaller task that is part of a parent issue.
+        - `Bug`: A problem that needs fixing (e.g., "Fix login button not working").
+        - `Field`: Fields are pieces of information associated with an issue. They can be standard system fields (like summary, description, assignee) or custom fields that you define to capture specific information.
+            - Custom Fields: Jira allows customization to define additional data fields for issues, such as priority, due date, assignee, or custom labels.
+        - `Workflow`: Issues move through a defined workflow (e.g., _To Do → In Progress → Done_).
+        - `Example`: An issue could be as specific as: "Create an API endpoint to fetch user data."
 
-4. **Epic**: An Epic is a larger body of work that encompasses multiple Stories, Tasks, and Bugs. It represents a major initiative or objective, often spanning multiple sprints, and provides a higher-level view of the project.
+    4. **Epic**: An Epic is a larger body of work that encompasses multiple Stories, Tasks, and Bugs. It represents a major initiative or objective, often spanning multiple sprints, and provides a higher-level view of the project.
 
-    - **High-Level Goal:** Epics focus on delivering a substantial feature or solving a major problem.
+        - **High-Level Goal:** Epics focus on delivering a substantial feature or solving a major problem.
 
-        - `Example`: "Improve user account security" could include Stories like "Implement two-factor authentication" and "Update password reset flow."
+            - `Example`: "Improve user account security" could include Stories like "Implement two-factor authentication" and "Update password reset flow."
 
-    - **Cross-Team or Multi-Sprint:** Epics often require collaboration across teams and time periods.
-    - **Flexible Scope:** Epics evolve over time as new Stories are added or removed based on feedback and changing priorities.
-    - **Tracking Progress:** Epics are tracked on their own, often using tools like roadmaps or burndown charts.
+        - **Cross-Team or Multi-Sprint:** Epics often require collaboration across teams and time periods.
+        - **Flexible Scope:** Epics evolve over time as new Stories are added or removed based on feedback and changing priorities.
+        - **Tracking Progress:** Epics are tracked on their own, often using tools like roadmaps or burndown charts.
 
-    - **Epic Title:** "Launch a new customer portal"
-    - **Related Stories:**
-        1. "Design the customer portal interface."
-        2. "Develop a single sign-on system."
-        3. "Migrate existing customer data to the new portal."
+        - **Epic Title:** "Launch a new customer portal"
+        - **Related Stories:**
+            1. "Design the customer portal interface."
+            2. "Develop a single sign-on system."
+            3. "Migrate existing customer data to the new portal."
 
-5. **Story**: A Story in Jira represents a piece of work that delivers value to the end user. It focuses on functionality or a feature that the user needs and is often written from the user's perspective. Stories are typically small enough to be completed within a sprint (in Scrum) or a short time frame.
+    5. **Story**: A Story in Jira represents a piece of work that delivers value to the end user. It focuses on functionality or a feature that the user needs and is often written from the user's perspective. Stories are typically small enough to be completed within a sprint (in Scrum) or a short time frame.
 
-    - **User-Focused:** Stories are written in a format like: _"As a [user role], I want to [action/feature] so that [benefit]."_
+        - **User-Focused:** Stories are written in a format like: _"As a [user role], I want to [action/feature] so that [benefit]."_
 
-        - `Example`: "As a customer, I want to reset my password so that I can regain access to my account."
+            - `Example`: "As a customer, I want to reset my password so that I can regain access to my account."
 
-    - **Estimable:** Stories are broken down into manageable tasks that can be estimated in terms of effort (e.g., using story points, hours, or days).
-    - **Child of an Epic:** A Story is often part of a larger body of work (Epic).
-    - **Acceptance Criteria:** Stories should have clear criteria to define when they are considered complete.
-    - **Story Title:** "Implement two-factor authentication"
-    - **Acceptance Criteria:**
-        1. Users must enter a code sent to their email or phone.
-        2. The system should log the attempt in the audit trail.
+        - **Estimable:** Stories are broken down into manageable tasks that can be estimated in terms of effort (e.g., using story points, hours, or days).
+        - **Child of an Epic:** A Story is often part of a larger body of work (Epic).
+        - **Acceptance Criteria:** Stories should have clear criteria to define when they are considered complete.
+        - **Story Title:** "Implement two-factor authentication"
+        - **Acceptance Criteria:**
+            1. Users must enter a code sent to their email or phone.
+            2. The system should log the attempt in the audit trail.
 
-6. **Boards**: Board typically includes columns that represent different stages of the workflow, from when work is planned to when it is completed. Each work item (e.g., Story, Task, or Bug) is represented by a card that moves across the board as work progresses.
+    6. **Boards**: Board typically includes columns that represent different stages of the workflow, from when work is planned to when it is completed. Each work item (e.g., Story, Task, or Bug) is represented by a card that moves across the board as work progresses.
 
-    - `Scrum Board`: Focused on iterative work, used in sprints.
-    - `Kanban Board`: Focused on continuous work, used to manage workflows without fixed iterations.
-    - Boards are associated with projects and reflect the issues based on filters.
+        - `Scrum Board`: Focused on iterative work, used in sprints.
+        - `Kanban Board`: Focused on continuous work, used to manage workflows without fixed iterations.
+        - Boards are associated with projects and reflect the issues based on filters.
 
-    - **Backlog/To Do**: A backlog is a list of issues or tasks that need to be completed. It is commonly used in Scrum projects to prioritize work for upcoming sprints.
+        - **Backlog/To Do**: A backlog is a list of issues or tasks that need to be completed. It is commonly used in Scrum projects to prioritize work for upcoming sprints.
 
-        - Represents all the work that could potentially be done in future sprints.
-        - Tasks in this column are not yet ready for immediate execution.
+            - Represents all the work that could potentially be done in future sprints.
+            - Tasks in this column are not yet ready for immediate execution.
 
-    - **To Do** (Sprint Backlog):
+        - **To Do** (Sprint Backlog):
 
-        - Tasks selected during the Sprint Planning session for the current sprint.
-        - Represents work that the team commits to completing in the sprint.
+            - Tasks selected during the Sprint Planning session for the current sprint.
+            - Represents work that the team commits to completing in the sprint.
 
-    - **Ready**: The 'Ready' column on a Scrum Sprint board is typically used to indicate work items (e.g., user stories, tasks, or bugs) that are fully prepared and ready to be picked up by the team for development or the next phase of the sprint. It serves as a staging area for items that meet all necessary criteria for the team to start working on them.
+        - **Ready**: The 'Ready' column on a Scrum Sprint board is typically used to indicate work items (e.g., user stories, tasks, or bugs) that are fully prepared and ready to be picked up by the team for development or the next phase of the sprint. It serves as a staging area for items that meet all necessary criteria for the team to start working on them.
 
-    - **In Progress**:
+        - **In Progress**:
 
-        - Tasks that are actively being worked on by team members.
-        - Reflects ongoing work during the sprint.
+            - Tasks that are actively being worked on by team members.
+            - Reflects ongoing work during the sprint.
 
-    - **Review/Testing** (Optional):
+        - **Review/Testing** (Optional):
 
-        - Tasks that are completed but require peer review, QA testing, or stakeholder approval.
-        - Ensures quality before moving tasks to the final stage.
+            - Tasks that are completed but require peer review, QA testing, or stakeholder approval.
+            - Ensures quality before moving tasks to the final stage.
 
-    - **Done**:
+        - **Done**:
 
-        - Completed tasks that meet the **Definition of Done (DoD)** established by the team.
-        - Work items here are ready to be delivered to the end-user or customer.
+            - Completed tasks that meet the **Definition of Done (DoD)** established by the team.
+            - Work items here are ready to be delivered to the end-user or customer.
 
-    - **Work Items** (Cards):
+        - **Work Items** (Cards):
 
-        - Each card represents a work item such as a **Story**, **Task**, **Bug**, or **Sub-task**.
-        - Cards usually display:
-            - Title (e.g., "Implement user login functionality").
-            - Assignee (who is working on it).
-            - Status (current stage in the workflow).
-            - Details like priority, due date, or story points.
+            - Each card represents a work item such as a **Story**, **Task**, **Bug**, or **Sub-task**.
+            - Cards usually display:
+                - Title (e.g., "Implement user login functionality").
+                - Assignee (who is working on it).
+                - Status (current stage in the workflow).
+                - Details like priority, due date, or story points.
 
-    - **Color Coding of Cards**: The color coding of cards on a Scrum Sprint board is a visual tool to provide quick insights into the status, priority, type, or ownership of tasks. The specific meaning of the colors can vary depending on the team, project, or Scrum tool being used (e.g., Jira, Trello).
+        - **Color Coding of Cards**: The color coding of cards on a Scrum Sprint board is a visual tool to provide quick insights into the status, priority, type, or ownership of tasks. The specific meaning of the colors can vary depending on the team, project, or Scrum tool being used (e.g., Jira, Trello).
 
-    - **How the Scrum Board Supports the Scrum Process**
+        - **How the Scrum Board Supports the Scrum Process**
 
-        1. **Sprint Planning:**
+            1. **Sprint Planning:**
 
-            - The Scrum Board begins with the **Sprint Backlog** column populated with the work items selected during the sprint planning session.
-            - These items represent the team’s commitment for the sprint.
+                - The Scrum Board begins with the **Sprint Backlog** column populated with the work items selected during the sprint planning session.
+                - These items represent the team’s commitment for the sprint.
 
-        2. **Daily Scrum (Stand-Up):**
+            2. **Daily Scrum (Stand-Up):**
 
-            - The Scrum Board acts as a reference point during the **Daily Scrum**. Team members use it to discuss:
-                - What they worked on yesterday.
-                - What they will work on today.
-                - Any blockers or challenges.
-            - Changes in task status are reflected immediately, ensuring everyone has up-to-date visibility.
+                - The Scrum Board acts as a reference point during the **Daily Scrum**. Team members use it to discuss:
+                    - What they worked on yesterday.
+                    - What they will work on today.
+                    - Any blockers or challenges.
+                - Changes in task status are reflected immediately, ensuring everyone has up-to-date visibility.
 
-        3. **Work in Progress (WIP) Limits:**
+            3. **Work in Progress (WIP) Limits:**
 
-            - Teams often set **WIP limits** on the "In Progress" or "Review" columns to avoid multitasking or overburdening team members.
-            - This ensures focus and smooth task flow.
+                - Teams often set **WIP limits** on the "In Progress" or "Review" columns to avoid multitasking or overburdening team members.
+                - This ensures focus and smooth task flow.
 
-        4. **Sprint Review:**
+            4. **Sprint Review:**
 
-            - At the end of the sprint, completed tasks in the "Done" column are reviewed during the **Sprint Review** meeting.
-            - Incomplete tasks are either returned to the backlog or carried over to the next sprint.
+                - At the end of the sprint, completed tasks in the "Done" column are reviewed during the **Sprint Review** meeting.
+                - Incomplete tasks are either returned to the backlog or carried over to the next sprint.
 
-        5. **Retrospective Feedback:**
-            - The Scrum Board provides insights for the **Sprint Retrospective**:
-                - Was the sprint goal achieved?
-                - Were there bottlenecks or tasks that got stuck in a particular column?
-                - Did the team over-commit or under-commit?
+            5. **Retrospective Feedback:**
+                - The Scrum Board provides insights for the **Sprint Retrospective**:
+                    - Was the sprint goal achieved?
+                    - Were there bottlenecks or tasks that got stuck in a particular column?
+                    - Did the team over-commit or under-commit?
 
-7. **Workflows**: A workflow represents the lifecycle of an issue, from creation to completion.
+    7. **Capacity**: **Capacity** refers to the **total available effort** a team has in a given sprint or time period. It helps in **sprint planning** by ensuring that the team doesn’t take on more work than they can handle.
 
-    - It defines statuses (e.g., Open, In Progress, Done) and transitions (e.g., Move from Open to In Progress).
-    - Workflows can be customized for different projects or issue types.
-    - Example:
-        - **Epic:** "Implement e-commerce payment integration."
-            - **Story 1:** "Develop API for payment gateway."
-                - **Sub-task 1.1:** "Write API documentation."
-                - **Sub-task 1.2:** "Test API with sandbox environment."
-            - **Story 2:** "Create front-end UI for payment form."
-                - **Sub-task 2.1:** "Design payment form layout."
-                - **Sub-task 2.2:** "Add JavaScript for form validation."
+        - **How Capacity is Measured?**
 
-8. `Components`: Components are sub-sections of a project used to group issues. For example, in a software project, components could be Frontend, Backend, or API.
-9. `Labels`: Labels are tags that can be added to issues to categorize or identify them easily.
-10. `Priority and Severity`: Priority indicates the urgency of an issue, while severity indicates the impact of the issue. These help teams prioritize their work.
-11. `Assignee`: The person responsible for working on an issue is the assignee. It helps track who is responsible for completing the task.
-12. `Reporter`: The person who raises the issue is the reporter. They provide information about the issue and its details.
-13. `Dashboard`: Dashboards are customizable pages that display important information and statistics about projects and teams, including charts, filters, and gadgets.
-14. `Gadget`: Gadgets are small modules that display information on dashboards. They can show things like issue statistics, burndown charts, project progress, etc.
-15. `Scrum`: Scrum is an Agile methodology that follows a defined process with time-boxed iterations called sprints.
-16. `Kanban`: Kanban is an Agile methodology that emphasizes continuous delivery and visualizing work as it progresses through different stages.
-17. `Permission Scheme`: Permission schemes define who can perform actions on issues within a project. They control access and visibility.
-18. `Notification Scheme`: Notification schemes determine when and how users are notified about changes to issues. They manage email notifications and other alerts.
-19. `Workflow Scheme`: Workflow schemes associate workflows with issue types within a project. They define the workflow that an issue type follows.
-20. `Issue Link`: Issue links establish relationships between issues, like "blocks," "relates to," "is part of," etc.
+            - **Time-based** – Available hours per team member (e.g., 40 hours per week per developer).
+            - **Story Points** – The total number of story points a team can work on during a sprint.
+            - **Number of Tasks** – The number of tickets or user stories a team can complete.
 
-### Story Points
+        - **Example of Capacity Calculation:** If a team of 5 developers has 40 hours each in a 2-week sprint:
 
-A Story Point in a Scrum board is a unit of measurement used to estimate the effort, complexity, and time required to complete a user story or task. It is a fundamental concept in Agile project management, enabling teams to quantify and prioritize work during backlog refinement or sprint planning.
-Story Points help teams assess work relatively, rather than in absolute terms like hours or days, allowing for better planning and improved focus on delivering value.
+            - **Total capacity = 5 × 40 × 2 = 400 hours**
+            - If each story point equals 5 hours, the team has a capacity of **80 story points** per sprint.
 
--   1. **What Are Story Points?**: Story Points are a numerical representation of the **effort** required to complete a task or user story. They are not tied to time (hours or days); instead, they measure **relative size** compared to other tasks. They take into account:
+        - **How Capacity is Used in Jira?**
+            - Helps in **sprint planning** to avoid overloading the team.
+            - Teams can **set workload limits** in Jira Advanced Roadmaps.
+            - Ensures a **realistic commitment** to work.
 
-    -   `Complexity`: How difficult the task is.
-    -   `Effort`: How much work is required.
-    -   `Uncertainty`: How much is unknown or unclear about the task.
+    8. **Velocity**: **Velocity** is a **historical measurement** of the **average work completed per sprint**. It helps teams **predict** how much work they can deliver in future sprints.
 
--   2. **Why Use Story Points?**:
+        - **How Velocity is Measured?**
 
-    -   `Encourages Team Collaboration`: The team collectively estimates the effort during sprint planning.
-    -   `Accounts for Variability`: Considers more than just time, such as complexity and risks.
-    -   `Improves Predictability`: Helps forecast the team’s capacity (velocity) for future sprints.
-    -   `Avoids Overcommitment`: Focuses on what the team can realistically achieve in a sprint.
+            - **Story Points** – The total number of completed story points per sprint.
+            - **Hours Logged** – Total hours spent on completed issues.
+            - **Completed Issues** – The count of fully resolved tasks.
 
--   3. **How Story Points Are Assigned**: Story Points are typically assigned during **backlog refinement** or **sprint planning** using methods like **Planning Poker** or team discussions. Common scales for Story Points include:
+        - **Example of Velocity Calculation:**
 
-    -   `Fibonacci Sequence (1, 2, 3, 5, 8, 13, etc.)`: Widely used because the gaps between numbers encourage discussions about differences in effort.
-    -   `T-shirt Sizes (XS, S, M, L, XL)`: Translated into numerical points later.
-    -   `Custom Scales`: Teams may create their own scales if needed.
+            - Sprint 1: 50 story points completed
+            - Sprint 2: 60 story points completed
+            - Sprint 3: 55 story points completed
+            - **Average velocity = (50 + 60 + 55) / 3 = 55 story points per sprint**
 
--   4. **What Each Point Represents**: Each team defines what Story Points mean for them, but here’s an example:
+        - **How Velocity is Used in Jira?**
+            - Helps in **predicting future sprint capacity**.
+            - Used in Jira **Velocity Charts** to track trends.
+            - Assists in **release planning** by estimating how many sprints are needed to complete a backlog.
 
-    -   `1 Point`: A very simple task with minimal effort (e.g., a minor UI text change).
-    -   `2 Points`: A straightforward task with no complexity (e.g., adding a new button).
-    -   `3 Points`: A medium-sized task with some complexity (e.g., developing a simple API endpoint).
-    -   `5 Points`: A larger task with noticeable complexity or dependencies.
-    -   `8 Points or Higher`: A very complex task, often broken down into smaller stories.
+    9. **Workflows**: A workflow represents the lifecycle of an issue, from creation to completion.
 
--   **Using Story Points on the Scrum Board**:
+        - It defines statuses (e.g., Open, In Progress, Done) and transitions (e.g., Move from Open to In Progress).
+        - Workflows can be customized for different projects or issue types.
+        - Example:
+            - **Epic:** "Implement e-commerce payment integration."
+                - **Story 1:** "Develop API for payment gateway."
+                    - **Sub-task 1.1:** "Write API documentation."
+                    - **Sub-task 1.2:** "Test API with sandbox environment."
+                - **Story 2:** "Create front-end UI for payment form."
+                    - **Sub-task 2.1:** "Design payment form layout."
+                    - **Sub-task 2.2:** "Add JavaScript for form validation."
 
-    1. `Displayed on Cards`: Story Points are usually displayed on user story or task cards on the Scrum board, providing a quick view of the effort.
-    2. `Tracking Velocity`: The team’s **velocity** is the total number of Story Points completed during a sprint. For example, if the team completes 30 Story Points in one sprint, they know their approximate capacity for the next sprint.
-    3. `Sprint Burndown Chart`: Story Points contribute to the **burndown chart**, tracking the team's progress as tasks are completed during the sprint.
-    4. `Distribution of Work`: The Product Owner and Scrum Master ensure that the total Story Points planned for the sprint align with the team’s capacity.
+    10. `Label`: A Label in Jira is a customizable tag that you can assign to issues (tasks, bugs, stories, etc.) to help categorize, organize, and filter them efficiently. Labels allow teams to add additional context without relying on predefined fields.
+    11. `Components`: Components are sub-sections of a project used to group issues. For example, in a software project, components could be Frontend, Backend, or API.
+    12. `Labels`: Labels are tags that can be added to issues to categorize or identify them easily.
+    13. `Priority and Severity`: Priority indicates the urgency of an issue, while severity indicates the impact of the issue. These help teams prioritize their work.
+    14. `Assignee`: The person responsible for working on an issue is the assignee. It helps track who is responsible for completing the task.
+    15. `Reporter`: The person who raises the issue is the reporter. They provide information about the issue and its details.
+    16. `Dashboard`: Dashboards are customizable pages that display important information and statistics about projects and teams, including charts, filters, and gadgets.
+    17. `Gadget`: Gadgets are small modules that display information on dashboards. They can show things like issue statistics, burndown charts, project progress, etc.
+    18. `Scrum`: Scrum is an Agile methodology that follows a defined process with time-boxed iterations called sprints.
+    19. `Kanban`: Kanban is an Agile methodology that emphasizes continuous delivery and visualizing work as it progresses through different stages.
+    20. `Permission Scheme`: Permission schemes define who can perform actions on issues within a project. They control access and visibility.
+    21. `Notification Scheme`: Notification schemes determine when and how users are notified about changes to issues. They manage email notifications and other alerts.
+    22. `Workflow Scheme`: Workflow schemes associate workflows with issue types within a project. They define the workflow that an issue type follows.
+    23. `Issue Link`: Issue links establish relationships between issues, like "blocks," "relates to," "is part of," etc.
 
-#### Jira Agile Terminology
+    #### Story Points
 
-1. **Scrum**: An agile methodology focused on delivering work in iterative sprints.
+    A Story Point in a Scrum board is a unit of measurement used to estimate the effort, complexity, and time required to complete a user story or task. It is a fundamental concept in Agile project management, enabling teams to quantify and prioritize work during backlog refinement or sprint planning.
+    Story Points help teams assess work relatively, rather than in absolute terms like hours or days, allowing for better planning and improved focus on delivering value.
 
-    - Sprint planning.
-    - Daily standups.
-    - Sprint review.
-    - Sprint retrospective.
+    -   1. **What Are Story Points?**: Story Points are a numerical representation of the **effort** required to complete a task or user story. They are not tied to time (hours or days); instead, they measure **relative size** compared to other tasks. They take into account:
 
-2. **Kanban**: A workflow management methodology focused on continuous delivery without time-boxed iterations.
+        -   `Complexity`: How difficult the task is.
+        -   `Effort`: How much work is required.
+        -   `Uncertainty`: How much is unknown or unclear about the task.
 
-    - WIP (Work In Progress) limits.
-    - Continuous wo
-    - rkflow optimization.
+    -   2. **Why Use Story Points?**:
 
-3. **Velocity**: A measure of how much work a team can complete in a sprint, typically measured in story points.
-4. **Burndown Chart**: A visual representation of work completed over time, used to track progress during a sprint.
-5. **Epic Burndown**: A chart showing progress toward completing an epic.
+        -   `Encourages Team Collaboration`: The team collectively estimates the effort during sprint planning.
+        -   `Accounts for Variability`: Considers more than just time, such as complexity and risks.
+        -   `Improves Predictability`: Helps forecast the team’s capacity (velocity) for future sprints.
+        -   `Avoids Overcommitment`: Focuses on what the team can realistically achieve in a sprint.
 
-#### Jira Components and Features
+    -   3. **How Story Points Are Assigned**: Story Points are typically assigned during **backlog refinement** or **sprint planning** using methods like **Planning Poker** or team discussions. Common scales for Story Points include:
 
-1. **Dashboards**
+        -   `Fibonacci Sequence (1, 2, 3, 5, 8, 13, etc.)`: Widely used because the gaps between numbers encourage discussions about differences in effort.
+        -   `T-shirt Sizes (XS, S, M, L, XL)`: Translated into numerical points later.
+        -   `Custom Scales`: Teams may create their own scales if needed.
 
-    - Dashboards provide a customizable overview of project progress and team activity.
-    - Widgets or gadgets can be added, such as issue statistics, sprint health, and burndown charts.
+    -   4. **What Each Point Represents**: Each team defines what Story Points mean for them, but here’s an example:
 
-2. **Filters**: : users to search for specific issues based on criteria using JQL (Jira Query Language).
+        -   `1 Point`: A very simple task with minimal effort (e.g., a minor UI text change).
+        -   `2 Points`: A straightforward task with no complexity (e.g., adding a new button).
+        -   `3 Points`: A medium-sized task with some complexity (e.g., developing a simple API endpoint).
+        -   `5 Points`: A larger task with noticeable complexity or dependencies.
+        -   `8 Points or Higher`: A very complex task, often broken down into smaller stories.
 
-    - Example: `status = "In Progress" AND assignee = currentUser()`.
+    -   **Using Story Points on the Scrum Board**:
 
-3. **Jira Query Language (JQL)**: A powerful search language for filtering issues in Jira.
+        1. `Displayed on Cards`: Story Points are usually displayed on user story or task cards on the Scrum board, providing a quick view of the effort.
+        2. `Tracking Velocity`: The team’s **velocity** is the total number of Story Points completed during a sprint. For example, if the team completes 30 Story Points in one sprint, they know their approximate capacity for the next sprint.
+        3. `Sprint Burndown Chart`: Story Points contribute to the **burndown chart**, tracking the team's progress as tasks are completed during the sprint.
+        4. `Distribution of Work`: The Product Owner and Scrum Master ensure that the total Story Points planned for the sprint align with the team’s capacity.
 
-    - Example queries:
-        - `project = "MyProject" AND status = "Open"`
-        - `assignee = "username" AND priority = "High"`
+    #### Jira Agile Terminology
 
-4. **Roles and Permissions**
+    1. **Scrum**: An agile methodology focused on delivering work in iterative sprints.
 
-    - **Roles**: Define the responsibilities of users within a project (e.g., Administrator, Developer, Viewer).
-    - **Permissions**: Control what users can do within a project (e.g., create issues, edit issues, or manage workflows).
+        - Sprint planning.
+        - Daily standups.
+        - Sprint review.
+        - Sprint retrospective.
 
-5. **Notifications**
+    2. **Kanban**: A workflow management methodology focused on continuous delivery without time-boxed iterations.
 
-    - Jira sends notifications for specific events, such as issue updates, comments, or status changes.
-    - Notifications can be customized.
+        - WIP (Work In Progress) limits.
+        - Continuous wo
+        - rkflow optimization.
 
-6. **Integrations**
+    3. **Velocity**: A measure of how much work a team can complete in a sprint, typically measured in story points.
+    4. **Burndown Chart**: A visual representation of work completed over time, used to track progress during a sprint.
+    5. **Epic Burndown**: A chart showing progress toward completing an epic.
 
-    - Jira integrates with numerous tools, including Confluence, Bitbucket, Slack, and GitHub, to streamline workflows.
-    - It also supports CI/CD tools and test management platforms.
+    #### Jira Components and Features
 
-7. **Marketplace Apps**: Jira offers a rich ecosystem of add-ons and plugins available through the Atlassian Marketplace. Examples:
+    1. **Dashboards**
 
-    - Tempo Timesheets: For time tracking.
-    - Zephyr: For test management.
-    - Automation for Jira: For workflow automation.
+        - Dashboards provide a customizable overview of project progress and team activity.
+        - Widgets or gadgets can be added, such as issue statistics, sprint health, and burndown charts.
 
-8. **Reports**: Jira provides built-in reports for tracking progress, identifying bottlenecks, and improving processes:
+    2. **Filters**: : users to search for specific issues based on criteria using JQL (Jira Query Language).
 
-    - Velocity Chart.
-    - Burndown/Burnup Charts.
-    - Cumulative Flow Diagram.
-    - Sprint Report.
+        - Example: `status = "In Progress" AND assignee = currentUser()`.
 
-#### Jira Administration
+    3. **Jira Query Language (JQL)**: A powerful search language for filtering issues in Jira.
 
-1. **Global Settings**
+        - Example queries:
+            - `project = "MyProject" AND status = "Open"`
+            - `assignee = "username" AND priority = "High"`
 
-    - Manage system-wide settings like user management, security, and email notifications.
+    4. **Roles and Permissions**
 
-2. **User Management**
+        - **Roles**: Define the responsibilities of users within a project (e.g., Administrator, Developer, Viewer).
+        - **Permissions**: Control what users can do within a project (e.g., create issues, edit issues, or manage workflows).
 
-    - Add, remove, or assign roles to users.
-    - Integrate with LDAP or Active Directory for centralized user management.
+    5. **Notifications**
 
-3. **Schemes**
+        - Jira sends notifications for specific events, such as issue updates, comments, or status changes.
+        - Notifications can be customized.
 
-    - Schemes in Jira allow admins to reuse settings across multiple projects:
-        - Permission Schemes.
-        - Notification Schemes.
-        - Issue Type Schemes.
-        - Workflow Schemes.
+    6. **Integrations**
 
-4. **Workflows**
+        - Jira integrates with numerous tools, including Confluence, Bitbucket, Slack, and GitHub, to streamline workflows.
+        - It also supports CI/CD tools and test management platforms.
 
-    - Admins can design and implement custom workflows to match team processes.
+    7. **Marketplace Apps**: Jira offers a rich ecosystem of add-ons and plugins available through the Atlassian Marketplace. Examples:
 
-5. **Automation**
-    - Jira Automation rules help automate repetitive tasks, such as updating issues based on status changes.
+        - Tempo Timesheets: For time tracking.
+        - Zephyr: For test management.
+        - Automation for Jira: For workflow automation.
 
-</details>
+    8. **Reports**: Jira provides built-in reports for tracking progress, identifying bottlenecks, and improving processes:
+
+        - Velocity Chart.
+        - Burndown/Burnup Charts.
+        - Cumulative Flow Diagram.
+        - Sprint Report.
+
+    #### Jira Administration
+
+    1. **Global Settings**
+
+        - Manage system-wide settings like user management, security, and email notifications.
+
+    2. **User Management**
+
+        - Add, remove, or assign roles to users.
+        - Integrate with LDAP or Active Directory for centralized user management.
+
+    3. **Schemes**
+
+        - Schemes in Jira allow admins to reuse settings across multiple projects:
+            - Permission Schemes.
+            - Notification Schemes.
+            - Issue Type Schemes.
+            - Workflow Schemes.
+
+    4. **Workflows**
+
+        - Admins can design and implement custom workflows to match team processes.
+
+    5. **Automation**
+        - Jira Automation rules help automate repetitive tasks, such as updating issues based on status changes.
+
+    </details>
 
 ---
 

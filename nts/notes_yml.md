@@ -24,7 +24,7 @@
 
 #### Node:
 
--   A "node" refers to a basic unit of data within a YAML document. Nodes represent values or data structures that can be scalar, mapping, or sequence types.
+-   A "node" refers to a basic unit of data within a YAML document. Nodes represent values or data structures that can be `scalar`, `mapping`, or `sequence` types.
 -   Nodes are the basic building blocks of a YAML document and can be nested to create more complex data structures. Each node in a YAML document is identified by its position within the document, which is determined by its level of indentation relative to other nodes.
 -   Nodes can also be tagged with a data type using a tag or a built-in YAML tag. This helps ensure that the data is correctly interpreted when read by different programming languages or applications.
 
@@ -129,7 +129,7 @@ there are different types of folding styles that can be used to control how mult
 
 -   `LITERAL FOLDING` (`|`):
 
-    -   Literal folding uses the | character to indicate that the following text should be rendered as-is, with any line breaks preserved.
+    -   Literal folding uses the `|` character to indicate that the following text should be rendered as-is, with any line breaks preserved.
 
     ```yml
     description: |

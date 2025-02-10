@@ -366,9 +366,9 @@ rsync -avz \                            # run in archival and vervose mode
 -   `$ curl –data “text=Hello” https://myDomain.com/firstPage.jsp` → Simple post request
 -   `$ curl -x  sampleproxy.com:8090 -U username:password -O http://testdomain.com/testfile.tar.gz`
 -   `$ curl --request POST --url http://localhost:8000/ --header 'content-type: image/jpeg' --data-binary @'/path/to/image.jpeg'`
--   `$ telnet www.google.com 80`
--   `$ curl`
+-   `$ curl -u username:password -O https://example.com/path/to/file.zip`
 -   `$ curl https://path/py_script.py > $NTHUB/dotfiles/blocking.py`
+-   `$ telnet www.google.com 80`
 
 ---
 
