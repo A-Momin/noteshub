@@ -5,6 +5,29 @@ from datetime import datetime, timedelta
 import yaml
 
 
+
+def rename_images(directory, old_prefix="screenshot ", new_prefix="screenshot "):
+    # Get all files in the directory
+    files = sorted(
+        [
+            f
+            for f in os.listdir(directory)
+            if f.startswith(old_prefix)
+            and f.lower().endswith((".jpg", ".jpeg", ".png", ".gif", ".bmp"))
+        ]
+    )
+
+    # Rename files sequentially
+    for index, filename in enumerate(files, start=0):
+        old_path = os.path.join(directory, filename)
+        extension = os.path.splitext(filename)[1]  # Get file extension
+        new_filename = f"{new_prefix}{index}{extension}"
+        new_path = os.path.join(directory, new_filename)
+
+        os.rename(old_path, new_path)
+        print(f"Renamed: {filename} → {new_filename}")
+
+
 def save_output_in_file(content, file_path=os.environ["DATA"]+"/rough/output.txt"):
 
     # Open the file in write mode

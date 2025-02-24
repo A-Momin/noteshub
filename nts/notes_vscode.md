@@ -72,6 +72,8 @@
 
 </details>
 
+---
+
 <details><summary style="font-size:25px;color:Orange;text-align:left">Windows OS</summary>
     
 - Keyboard Shortcut (`^ + k + s`):
@@ -177,3 +179,113 @@ A **profile** in **Visual Studio Code (VS Code)** is a feature that allows you t
 Profiles help make **VS Code** flexible and adaptable for a variety of workflows, letting you work efficiently across different projects and tasks.
 
 </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Types of Setting on VSCode</summary>
+
+    VSCode provides different types of settings that allow users to customize their development environment. These settings are categorized based on scope and application.
+
+    1. **User Settings**: User settings apply globally to the entire VSCode application and are stored in a JSON file. They affect all projects and workspaces unless overridden by workspace settings.
+
+        - **Location**:
+
+            - Windows: `%APPDATA%\Code\User\settings.json`
+            - macOS: `~/Library/Application Support/Code/User/settings.json`
+            - Linux: `~/.config/Code/User/settings.json`
+
+        - **Example Setting:**
+            ```json
+            {
+                "editor.fontSize": 14,
+                "editor.tabSize": 4,
+                "editor.wordWrap": "on"
+            }
+            ```
+
+    2. **Workspace Settings**: Workspace settings apply only to the specific project or workspace in which they are defined. These settings override user settings when a project is opened.
+
+        - **Location**:
+
+            - Inside `.vscode/settings.json` in the root of the workspace
+
+        - **Example Setting:**
+            ```json
+            {
+                "editor.formatOnSave": true,
+                "python.pythonPath": "/usr/bin/python3"
+            }
+            ```
+
+    3. **Folder Settings**: Folder settings are similar to workspace settings but apply only to a specific folder within a multi-root workspace.
+
+        - **Location**:
+
+            - Inside `.vscode/settings.json` within the respective folder
+
+        - **Example Setting:**
+            ```json
+            {
+                "files.exclude": {
+                    "**/node_modules": true,
+                    "**/.git": true
+                }
+            }
+            ```
+
+    4. **Language-Specific Settings**: These settings apply only when working with a particular programming language. They can be configured at the user, workspace, or folder level.
+
+        - **Example Setting:**
+            ```json
+            {
+                "[python]": {
+                    "editor.insertSpaces": true,
+                    "editor.tabSize": 4
+                },
+                "[javascript]": {
+                    "editor.tabSize": 2
+                }
+            }
+            ```
+
+    5. **Remote Settings**: When using VSCode’s Remote Development features (like SSH, WSL, or Containers), settings specific to the remote environment can be defined.
+
+        - **Location**:
+
+            - Inside `.vscode-remote/settings.json`
+
+        - **Example Setting:**
+            ```json
+            {
+                "remote.SSH.useLocalServer": false
+            }
+            ```
+
+    6. **Default Settings**: These are built-in settings that come with VSCode. They cannot be directly modified but can be overridden using user or workspace settings.
+
+        - **To view default settings:**
+            - Open **Command Palette** (`Ctrl+Shift+P` or `Cmd+Shift+P` on macOS)
+            - Search for **"Preferences: Open Default Settings (JSON)"**
+
+    7. **Machine Settings**: Machine settings apply only to the local machine and cannot be synced across different devices. These are mainly used for security-sensitive configurations.
+
+        - **Example Setting:**
+            ```json
+            {
+                "security.workspace.trust.enabled": false
+            }
+            ```
+
+    8. **How to Modify Settings?**: You can edit settings in multiple ways:
+
+        1. **GUI Method**
+
+            - Open VSCode
+            - Go to **File > Preferences > Settings** (`Ctrl+,` or `Cmd+,` on macOS)
+            - Search for the setting and modify it
+
+        2. **JSON Method**
+            - Click **Open Settings (JSON)** in the settings UI
+            - Manually edit the `settings.json` file
+
+    </details>

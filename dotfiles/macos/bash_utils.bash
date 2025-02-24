@@ -404,3 +404,94 @@ function cleandir() {
 
     find . -type d -name "${1:-*.venv}" -exec rm -rf {} +
 }
+
+
+# PASSED
+run_python_func() {
+    : '
+    Runs a specified function from a given Python script with mandatory arguments.
+
+    Usage:
+        run_python_func </path/to/script.py> <function_name> <arg1> <arg2> <arg3> [...]
+
+    Parameters:
+        script_path   - The full or relative path to the Python script (with .py extension).
+        function_name - The name of the function inside the Python script.
+        args          - Optional arguments to pass to the function (at least 1 required).
+
+    Example:
+        run_python_func /Users/am/mydocs/Software_Development/noteshub/utils/misc.py rename_images /Users/am/Desktop/ss screenshot sshot
+    '
+
+    # Ensure at least three arguments (script, function, and one function argument)
+    if [ $# -lt 3 ]; then
+        echo "Usage: run_python_func </path/to/script.py> <function_name> <arg1> <arg2> <arg3> [...]"
+        return 1
+    fi
+
+    local script_path=$1
+    local function_name=$2
+    shift 2  # Remove script path and function name, leaving only function arguments
+
+    # Extract directory and script name
+    local script_dir
+    script_dir=$(dirname "$script_path")
+    local script_name
+    script_name=$(basename "$script_path" .py)
+
+    # Convert remaining arguments to a Python function call format
+    local args=""
+    for arg in "$@"; do
+        args+="\"$arg\", "
+    done
+    args=${args%, }  # Remove trailing comma and space
+
+    # Change to the script directory and execute the function with arguments
+    (cd "$script_dir" && python3 -c "from ${script_name} import ${function_name}; ${function_name}(${args})")
+}
+
+# NOT PASSED
+rename_images() {
+    # Check if the correct number of arguments is provided
+    if [ $# -lt 1 ]; then
+        echo "Usage: rename_images <directory> [old_prefix] [new_prefix]"
+        return 1
+    fi
+
+    # Assign arguments to variables
+    local directory=$1
+    local old_prefix="${2:-screenshot }"  # Default to "screenshot " if not provided
+    local new_prefix="${3:-screenshot }"  # Default to "screenshot " if not provided
+
+    # Ensure the directory exists
+    if [ ! -d "$directory" ]; then
+        echo "Directory does not exist: $directory"
+        return 1
+    fi
+
+    # Find all files matching the old prefix and with valid image extensions
+    local files=($(find "$directory" -maxdepth 1 -type f -iname "${old_prefix}*.{jpg,jpeg,png,gif,bmp}" | sort))
+
+    # Ensure there are files to rename
+    if [ ${#files[@]} -eq 0 ]; then
+        echo "No files with the prefix '$old_prefix' found in $directory."
+        return 1
+    fi
+
+    # Rename files sequentially
+    local index=0
+    for file in "${files[@]}"; do
+        # Extract the file extension
+        local extension="${file##*.}"
+        local new_filename="${new_prefix}${index}.${extension}"
+        local new_path="$directory/$new_filename"
+
+        # Rename the file
+        mv "$file" "$new_path"
+        echo "Renamed: $(basename "$file") → $new_filename"
+
+        # Increment the index
+        ((index++))
+    done
+}
+

@@ -1977,7 +1977,7 @@ In Django, both Manager and QuerySet are integral parts of the Object-Relational
 
 ---
 
-<details><summary style="font-size:25px;color:Orange">Authentication, Authorizations</summary>
+<details><summary style="font-size:25px;color:Orange">Authentication & Authorizations</summary>
 
 -   [Using the Django authentication system](https://docs.djangoproject.com/en/4.1/topics/auth/default/)
 -   [Customizing authentication in Django](https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#customizing-authentication-in-django)
@@ -2090,7 +2090,7 @@ Authorization refers to the process of determining whether a user has permission
     -   Django supports object-level permissions to control access to individual instances of a model.
     -   This is achieved using the `django.contrib.auth.mixins.PermissionRequiredMixin` or by checking permissions manually in views.
 
-#### Session-Based Authentication
+#### Session-Based Authorization
 
 -   ![Django Session Archictures](/assets/django/django-session-steps.png)
 
@@ -2169,7 +2169,7 @@ Authorization refers to the process of determining whether a user has permission
     ]
     ```
 
-#### Token-Based Authentication
+#### Token-Based Authorization
 
 -   [Why is JWT popular?](https://www.youtube.com/watch?v=P2CPd9ynFLg)
 

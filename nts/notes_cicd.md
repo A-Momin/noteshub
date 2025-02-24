@@ -153,6 +153,11 @@ CI/CD, which stands for Continuous Integration and Continuous Delivery (or Conti
 
 <details><summary style="font-size:20px;color:Magenta">MISC</summary>
 
+#### Configuration
+
+-   Username: jenkins
+-   Password: admin
+
 #### Environment Variables
 
 -   `localhost:8080/env-vars.html` / `remote_IP:8080/env-vars.html` → Location of pre-defined Environment Variables

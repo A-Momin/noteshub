@@ -13,7 +13,7 @@ StrictHostKeyChecking no
 # ============================================================================
 
 Host jmaster
-HostName 34.235.39.82
+HostName 52.7.136.23
 StrictHostKeyChecking no
 User ubuntu
 IdentityFile ~/.ssh/AMominNJ.pem

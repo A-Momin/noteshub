@@ -261,6 +261,17 @@
 
 ---
 
+-   <details><summary style="font-size:25px;color:Orange"> uv </summary>
+    -   [uv for EVERYTHING: How to use uv for Python, venv, and project management](https://www.youtube.com/watch?v=zgSQr0d5EVg)
+    -   `$ brew install uv`
+    -   `$ uv init --no-workspace`
+    -   `$ `
+    -   `$ `
+
+    </details>
+
+---
+
 -   <details><summary style="font-size:25px;color:Orange"> pipx </summary>
 
     -   Use `pipx` to keep your Python CLI tools isolated and avoid dependency conflicts!

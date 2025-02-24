@@ -2,6 +2,7 @@
     "workbench.settings.editor": "json",
     "workbench.settings.openDefaultSettings": true,
     "workbench.settings.useSplitJSON": true,
+    "workbench.iconTheme": "material-icon-theme",
     "workbench.colorCustomizations": {
         "activityBarBadge.background": "#2979FF",
         "activityBar.activeBorder": "#2979FF",
@@ -47,25 +48,12 @@
     "editor.suggestSelection": "first",
     "editor.inlineSuggest.enabled": true,
     "debug.console.fontSize": 14,
-    "files.exclude": {
-        "**/__pycache__": true,
-        "**/.DS_Store": true,
-        "**/.git": true,
-        "**/.hg": true,
-        // "**/.idea": true,
-        "**/.metadata": true,
-        "**/.project": true,
-        "**/.pydevproject": true,
-        "**/.svn": true,
-        // "**/.vscode": true,
-        "**/*.class": true,
-        "**/CVS": true
-    },
     "[json]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[yaml]": {
-        "editor.formatOnSave": true
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[typescript]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
@@ -94,16 +82,16 @@
     "markdown.extension.print.theme": "dark",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
     // "java.configuration.checkProjectSettingsExclusions": false,
-    "python.jediEnabled": false,
     "printcode.printFilePath": "none",
     "printcode.tabSize": 4,
     "printcode.fontSize": 10,
     "printcode.paperSize": "letter",
-    // "python.linting.flake8Args": ["--ignore=E265, E305, E302, E501, E401, F401, E701, W293, E226, E251, E266, E731, E303, E242, F405, E402, F403"],
+    "python.jediEnabled": false,
     "python.analysis.typeCheckingMode": "off",
     "python.languageServer": "Pylance",
+    "python.terminals.activateEnvironment": false,
+    // "python.linting.flake8Args": ["--ignore=E265, E305, E302, E501, E401, F401, E701, W293, E226, E251, E266, E731, E303, E242, F405, E402, F403"],
     "extensions.ignoreRecommendations": false,
-    "workbench.iconTheme": "material-icon-theme",
     "material-icon-theme.folders.color": "#4169E1",
     "material-icon-theme.activeIconPack": "react_redux",
     "security.workspace.trust.untrustedFiles": "open",
@@ -114,11 +102,25 @@
         // "**/templates/**/*": "django-txt",
         ".json": "jsonc"
     },
+    "files.autoSave": "onFocusChange",
     "emmet.includeLanguages": {
         "jinja-html": "html",
         "django-html": "html"
     },
-
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.DS_Store": true,
+        "**/.git": true,
+        "**/.hg": true,
+        // "**/.idea": true,
+        "**/.metadata": true,
+        "**/.project": true,
+        "**/.pydevproject": true,
+        "**/.svn": true,
+        // "**/.vscode": true,
+        "**/*.class": true,
+        "**/CVS": true
+    },
     "prettier.tabWidth": 4,
     "redhat.telemetry.enabled": false,
     "terminal.integrated.fontSize": 16,

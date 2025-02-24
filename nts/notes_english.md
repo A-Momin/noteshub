@@ -307,6 +307,17 @@
         - "I tried to get my point across, but they didn’t understand."
         - "The teacher communicated the concept across very well."
 
+    #### As a matter of the fact
+
+    #### The more ... the more
+
+    1.  **The more** I practice coding, the more confident I become.
+    2.  **The more** I engage with different Jira tickets that involve troubleshooting, automation, and AWS services, **the more** I realize how interconnected these concepts are and how much I still have to learn.
+    3.  **The more** I optimize my workflows by automating frequent tasks, **the more** I realize how much unnecessary manual effort I used to put in.
+    4.  **The more** I step out of my comfort zone and take on challenging tasks, **the more** I grow both as an engineer and as a problem-solver.
+    5.  **The more** we align on project goals and expectations early on, **the more** efficient and conflict-free our execution becomes.
+    6.  **The more** I break down complex problems into smaller, manageable parts, **the more** effective and efficient my solutions become.
+
     </details>
 
 ---
@@ -365,105 +376,105 @@
 
     #### Idioms for Deadlines and Prioritization
 
-    11. **"Crunch time"**
+    10. **"Crunch time"**
 
         -   Meaning: A period of intense work before a deadline.
         -   Example: "It’s crunch time, so let’s focus on the critical tasks."
 
-    12. **"Cutting corners"**
+    11. **"Cutting corners"**
 
         -   Meaning: Doing something quickly and carelessly to save time or effort.
         -   Example: "We can’t afford to cut corners with security testing."
 
-    13. **"In the pipeline"**
+    12. **"In the pipeline"**
 
         -   Meaning: Something is in progress or being developed.
         -   Example: "We have several features in the pipeline for the next release."
 
-    14. **"Ahead of the curve"**
+    13. **"Ahead of the curve"**
 
         -   Meaning: Staying ahead of current trends or innovations.
         -   Example: "Adopting AI early keeps us ahead of the curve in our industry."
 
-    15. **"Race against time"**
+    14. **"Race against time"**
         -   Meaning: Working under pressure to meet a deadline.
         -   Example: "We’re in a race against time to fix this production issue."
 
     #### Idioms for Uncertainty and Risk
 
-    16. **"Take with a grain of salt"**
+    15. **"Take with a grain of salt"**
 
         -   Meaning: Don’t take something too seriously or literally.
         -   Example: "Take the initial user feedback with a grain of salt until we get more data."
 
-    17. **"Up in the air"**
+    16. **"Up in the air"**
 
         -   Meaning: Something is undecided or uncertain.
         -   Example: "The timeline for the next sprint is still up in the air."
 
-    18. **"Throw a wrench in the works"**
+    17. **"Throw a wrench in the works"**
 
         -   Meaning: To disrupt or cause problems in a plan or process.
         -   Example: "The server outage really threw a wrench in the works."
 
-    19. **"Playing it by ear"**
+    18. **"Playing it by ear"**
 
         -   Meaning: Adapting to a situation as it unfolds, without a fixed plan.
         -   Example: "Let’s play it by ear and adjust the roadmap based on customer feedback."
 
-    20. **"A double-edged sword"**
+    19. **"A double-edged sword"**
         -   Meaning: Something that has both positive and negative consequences.
         -   Example: "Open-source contributions are a double-edged sword; they’re great for innovation but hard to maintain."
 
     #### Idioms for Success and Growth
 
-    21. **"Hit the nail on the head"**
+    20. **"Hit the nail on the head"**
 
         -   Meaning: To describe or do something exactly right.
         -   Example: "Your analysis really hit the nail on the head."
 
-    22. **"The big picture"**
+    21. **"The big picture"**
 
         -   Meaning: An overall view of a situation, without focusing on the small details.
         -   Example: "Let’s not lose sight of the big picture while debugging."
 
-    23. **"Move the needle"**
+    22. **"Move the needle"**
 
         -   Meaning: To make a significant impact or progress.
         -   Example: "This feature will really move the needle for user retention."
 
-    24. **"Break new ground"**
+    23. **"Break new ground"**
 
         -   Meaning: Innovate or do something that hasn’t been done before.
         -   Example: "Our team is breaking new ground with this AI-powered tool."
 
-    25. **"Raise the bar"**
+    24. **"Raise the bar"**
         -   Meaning: Set a higher standard of performance or quality.
         -   Example: "The new design system really raises the bar for our UI."
 
     #### Idioms for Challenges
 
-    26. **"Barking up the wrong tree"**
+    25. **"Barking up the wrong tree"**
 
         -   Meaning: Pursuing the wrong solution or approach.
         -   Example: "If we think the bug is in the frontend, we might be barking up the wrong tree."
 
-    27. **"Jumping the gun"**
+    26. **"Jumping the gun"**
 
         -   Meaning: Acting too quickly without preparation or waiting for the right time.
         -   Example: "Let’s not jump the gun by deploying before QA approves."
 
-    28. **"A blessing in disguise"**
+    27. **"A blessing in disguise"**
 
         -   Meaning: Something that seems bad at first but turns out to be beneficial.
         -   Example: "The outage was a blessing in disguise; it revealed a critical vulnerability."
 
-    29. **"Cross that bridge when we come to it"**
+    28. **"Cross that bridge when we come to it"**
 
         -   Meaning: Deal with a problem only when it happens.
         -   Example: "If we hit scaling issues, we’ll cross that bridge when we come to it."
 
-    30. **"Learn the ropes"**
+    29. **"Learn the ropes"**
         -   Meaning: To learn how to do a job or task properly.
         -   Example: "It’ll take a few weeks to learn the ropes of the new framework."
 
@@ -605,5 +616,7 @@
 -   <details><summary style="font-size:22px;color:Orange;text-align:left">Word Caomparison</summary>
 
     -   Span/Embad
+    -   vigilant
+    -   ideal
 
     </details>
