@@ -478,8 +478,6 @@
         -   Meaning: To learn how to do a job or task properly.
         -   Example: "It’ll take a few weeks to learn the ropes of the new framework."
 
-    ***
-
     These idioms are frequently used in software and professional environments to communicate ideas effectively, enhance discussions, and build rapport.
 
     </details>
@@ -613,9 +611,12 @@
 
 ---
 
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Word Caomparison</summary>
+-   <details><summary style="font-size:22px;color:Orange;text-align:left">Word Anlysis</summary>
 
-    -   Span/Embad
+    -   call out
+    -   cutover
+    -   wirte-off
+    -   Span/Embad/Encompass
     -   vigilant
     -   ideal
 

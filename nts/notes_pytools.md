@@ -262,11 +262,60 @@
 ---
 
 -   <details><summary style="font-size:25px;color:Orange"> uv </summary>
+    -   [UV](https://docs.astral.sh/uv/)
+    -   [commands](https://docs.astral.sh/uv/reference/cli/#uv)
     -   [uv for EVERYTHING: How to use uv for Python, venv, and project management](https://www.youtube.com/watch?v=zgSQr0d5EVg)
+    -   [UV for Python… (Almost) All Batteries Included](https://www.youtube.com/watch?v=qh98qOND6MI)
+
     -   `$ brew install uv`
     -   `$ uv init --no-workspace`
+    -   `$ uv tool dir`
+    -   `$ `
+
+    -   `$ uv clean cache`
+    -   `$ uv add -r requirements.txt`
+    -   `$ uv python install 3.11.11`
+    -   `$ uv python list --only-installed`
+    -   `$ uv run main.py`
+    -   `$ uv sync`
+    -   `$ uv add --dev ipykernel`
+    -   `$ uv `
+    -   `$ uv `
+
+    #### Project Initialization
+
+    -   `$ uv init`
+    -   `$ uv add -h`
+    -   `$ uv add --active requests` -> install the requests library into activated environment instead of current projects environment with updating the `pyproject.toml` or `uv.lock` file.
+    -   `$ uv add PyYaml`
+    -   `$ uv pip freeze > requirements.txt` -> create `requirements.txt` file from an activated `uv` environment.(How to integrate packages of a existing `uv` environment)
+    -   `$ uv add -r requirements.txt` -> Integrate packages from an `requirements.txt` file into current project.
+    -   `$ uv `
+    -   `$ uv `
+
+    #### Using a virtual environment
+
+    -   [uv Docs on virtual environment](https://docs.astral.sh/uv/pip/environments/#creating-a-virtual-environment)
+    -   `$ uv venv --help`
+    -   `$ uv venv [OPTIONS] [PATH]`
+    -   `$ uv venv ~/.uv/uvenv1 --python 3.11` -> Create a Virtualenv in `~/.uv/` by the name `uvenv1`
+    -   `$ source ~/.uv/uvenv1/bin/activate` -> Activate `~/.uv/uvenv1` environment.
+    -   `$ uv pip --help`
+    -   `$ uv pip install requests` -> Install request library in the activated venv without updating the `pyproject.toml` or `uv.lock` file
+    -   `$ uv pip uninstall requests` -> Unstall request library from the activated venv.
+    -   `$ uv pip list`
+    -   `$ uv run --activate main.py` -> `--activae` prefer the active virtual environment over the project’s virtual environment. No active virtual environment, it has no eefect.
     -   `$ `
     -   `$ `
+    -   `$ `
+
+    -   **how to create uv environments from uv.lock or pyproject.toml file?**
+        -   `$ uv venv .venv`
+            -   **Option 1: Recommended**
+                -   `$ uv sync` -> This command reads the uv.lock file and installs the exact packages and versions specified within it.
+            -   **Option 2**
+                -   `$ uv pip install pyproject.toml` -> This command reads the pyproject.toml file, resolves dependencies, and installs them into the active virtual environment. If a `uv.lock` file exists, it will be updated
+        -   `$ `
 
     </details>
 

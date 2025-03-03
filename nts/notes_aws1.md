@@ -214,6 +214,11 @@
     -   **Provisioning**: Provisioning refers to the process of setting up and allocating the necessary infrastructure and resources required for an application to run. This includes computing power, storage, networking, and other cloud services.
     -   **Deploying**: Deploying refers to the process of releasing and running an application or service on the provisioned infrastructure. It involves pushing code, configuring runtime environments, and ensuring the application is available to users.
 
+    ##### Stack vs Infrastructure
+
+    -   **Stack** in AWS refers to a collection of AWS resources that are provisioned and managed as a single unit. This is typically done using AWS CloudFormation, AWS's Infrastructure-as-Code (IaC) service.
+    -   **Infrastructure** refers to the overall computing, networking, storage, and security resources required to support an application or workload in AWS. It includes everything that makes up the environment in which applications run.
+
     ##### Rehydration
 
     In the context of AWS, **"rehydration"** typically refers to the process of **restoring or reinitializing data or resources** that were previously "dried out" or removed. This can apply to various AWS services where data or configurations might have been removed, suspended, or cached, and now need to be **reloaded or reactivated**. Common contexts where **rehydration** might be used in AWS:
@@ -268,7 +273,41 @@
 
             -   Ensures that only approved email senders can send messages.
 
-        </details>
+    -   **Drift**: In AWS WAF, drift refers to unintended changes in web ACLs, rules, or rule groups that differ from the expected or deployed configuration. Drift can occur due to manual updates, automated processes, or infrastructure changes outside of IaC tools like AWS CloudFormation. AWS Config can help detect and manage drift in WAF settings.
+
+        -   **How Does Drift Happen in AWS WAF?**:
+
+            1. `Manual Changes`: Someone modifies AWS WAF settings directly via the AWS Management Console, CLI, or SDK instead of using the IaC tool.
+            2. `Untracked Updates`: Changes made outside the control of CloudFormation or Terraform, leading to a mismatch between declared and actual state.
+            3. `Policy or Rule Updates`: AWS-managed rules may get updated, affecting how requests are evaluated.
+            4. `Resource Deletion`: If a WAF rule, ACL, or condition is deleted manually but still referenced in CloudFormation, it results in drift.
+
+        -   **1. AWS CloudFormation Drift Detection**:
+
+            -   If AWS WAF is managed via **CloudFormation**, you can use **Drift Detection** to compare the stack's configuration with the actual state.
+            -   Run drift detection:
+                ```sh
+                aws cloudformation detect-stack-drift --stack-name my-waf-stack
+                ```
+            -   View drift results in the AWS Management Console under **CloudFormation > Stack Details**.
+
+        -   **2. AWS Config Rules for Compliance**:
+
+            -   AWS Config can track configuration changes in AWS WAF resources.
+            -   Set up AWS Config rules to detect drift in WAF ACLs, rules, and policies.
+
+        -   **3. AWS WAF Logging & Monitoring**:
+
+            -   Enable AWS WAF logs to track rule changes over time.
+            -   Use **AWS CloudTrail** to audit who made modifications.
+
+        -   **How to Remediate Drift in AWS WAF?**:
+
+            1. `Revert Manual Changes`: If drift is detected, revert the manual changes to match the CloudFormation/Terraform template.
+            2. `Update Infrastructure Code`: If changes were intentional, update the CloudFormation stack or Terraform state to reflect the new configuration.
+            3. `Use AWS Config Auto-Remediation`: Set up AWS Config auto-remediation to automatically correct drift.
+
+            </details>
 
 ---
 
