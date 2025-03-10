@@ -281,6 +281,8 @@ alias nttf="code $NTHUB/nts/notes_terraform.md"
 alias ntansible="code $NTHUB/nts/notes_ansible.md"
 alias ntmicroservice="code $NTHUB/nts/notes_microservice.md"
 alias ntopenssl="code $NTHUB/nts/notes_openssl.md"
+alias ntbehave="code $NTHUB/nts/notes_behave.md"
+alias ntxpath="code $NTHUB/nts/notes_xpath.md"
 alias nttmp="code $NTHUB/nts/notes_tmp.md"
 
 ###############################################################################

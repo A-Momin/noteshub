@@ -89,7 +89,7 @@
     "python.jediEnabled": false,
     "python.analysis.typeCheckingMode": "off",
     "python.languageServer": "Pylance",
-    "python.terminals.activateEnvironment": false,
+    "python.terminal.activateEnvironment": false,
     // "python.linting.flake8Args": ["--ignore=E265, E305, E302, E501, E401, F401, E701, W293, E226, E251, E266, E731, E303, E242, F405, E402, F403"],
     "extensions.ignoreRecommendations": false,
     "material-icon-theme.folders.color": "#4169E1",
