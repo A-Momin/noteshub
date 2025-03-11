@@ -177,3 +177,59 @@ XPath, short for XML Path Language, is a query language designed to navigate and
     ```
 
     _Result:_ Selects 'en.wikipedia.org', 'de.wikipedia.org', 'fr.wikipedia.org', and 'pl.wikipedia.org', which are siblings preceding 'es.wikipedia.org'.
+
+#### Demonstrate how to use Boolean, Arithmatic operators within XPath?
+
+1. **Selecting Elements Based on Multiple Conditions:**
+
+    ```xpath
+    //book[price < 50 and @category='fiction']
+    ```
+
+    This expression selects all `<book>` elements priced below 50 with a `category` attribute equal to 'fiction'.
+
+2. **Selecting Elements Based on Either Condition:**
+
+    ```xpath
+    //book[author='John Doe' or author='Jane Smith']
+    ```
+
+    This selects all `<book>` elements authored by either 'John Doe' or 'Jane Smith'.
+
+3. **Using the `not()` Function:**
+
+    ```xpath
+    //book[not(@discount)]
+    ```
+
+    This selects all `<book>` elements that do not have a `discount` attribute.
+
+4. **Addition and Subtraction:**
+
+    ```xpath
+    //item[@quantity + @backorder > 100]
+    ```
+
+    This selects all `<item>` elements where the sum of the `quantity` and `backorder` attributes exceeds 100.
+
+5. **Multiplication:**
+
+    ```xpath
+    //product[@price * @quantity > 500]
+    ```
+
+    This selects all `<product>` elements where the product of the `price` and `quantity` attributes is greater than 500.
+
+6. **Division:**
+
+    ```xpath
+    //product[@price div 2 < 20]
+    ```
+
+    This selects all `<product>` elements where half of the `price` attribute is less than 20.
+
+7. **Modulus:**
+
+    ```xpath
+    //chapter[position() mod 2 = 1]
+    ```
