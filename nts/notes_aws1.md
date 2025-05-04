@@ -271,43 +271,62 @@
 
     -   **Whitelisting Email Addresses in Amazon SES**:
 
-            -   Ensures that only approved email senders can send messages.
+        -   Ensures that only approved email senders can send messages.
 
-    -   **Drift**: In AWS WAF, drift refers to unintended changes in web ACLs, rules, or rule groups that differ from the expected or deployed configuration. Drift can occur due to manual updates, automated processes, or infrastructure changes outside of IaC tools like AWS CloudFormation. AWS Config can help detect and manage drift in WAF settings.
+    ##### Drift
 
-        -   **How Does Drift Happen in AWS WAF?**:
+    In AWS WAF, **drift** refers to unintended changes in web ACLs, rules, or rule groups that differ from the expected or deployed configuration. Drift can occur due to manual updates, automated processes, or infrastructure changes outside of IaC tools like AWS CloudFormation. AWS Config can help detect and manage drift in WAF settings.
 
-            1. `Manual Changes`: Someone modifies AWS WAF settings directly via the AWS Management Console, CLI, or SDK instead of using the IaC tool.
-            2. `Untracked Updates`: Changes made outside the control of CloudFormation or Terraform, leading to a mismatch between declared and actual state.
-            3. `Policy or Rule Updates`: AWS-managed rules may get updated, affecting how requests are evaluated.
-            4. `Resource Deletion`: If a WAF rule, ACL, or condition is deleted manually but still referenced in CloudFormation, it results in drift.
+    -   **How Does Drift Happen in AWS WAF?**:
 
-        -   **1. AWS CloudFormation Drift Detection**:
+        1. `Manual Changes`: Someone modifies AWS WAF settings directly via the AWS Management Console, CLI, or SDK instead of using the IaC tool.
+        2. `Untracked Updates`: Changes made outside the control of CloudFormation or Terraform, leading to a mismatch between declared and actual state.
+        3. `Policy or Rule Updates`: AWS-managed rules may get updated, affecting how requests are evaluated.
+        4. `Resource Deletion`: If a WAF rule, ACL, or condition is deleted manually but still referenced in CloudFormation, it results in drift.
 
-            -   If AWS WAF is managed via **CloudFormation**, you can use **Drift Detection** to compare the stack's configuration with the actual state.
-            -   Run drift detection:
-                ```sh
-                aws cloudformation detect-stack-drift --stack-name my-waf-stack
-                ```
-            -   View drift results in the AWS Management Console under **CloudFormation > Stack Details**.
+    -   **1. AWS CloudFormation Drift Detection**:
 
-        -   **2. AWS Config Rules for Compliance**:
+        -   If AWS WAF is managed via **CloudFormation**, you can use **Drift Detection** to compare the stack's configuration with the actual state.
+        -   Run drift detection:
+            ```sh
+            aws cloudformation detect-stack-drift --stack-name my-waf-stack
+            ```
+        -   View drift results in the AWS Management Console under **CloudFormation > Stack Details**.
 
-            -   AWS Config can track configuration changes in AWS WAF resources.
-            -   Set up AWS Config rules to detect drift in WAF ACLs, rules, and policies.
+    -   **2. AWS Config Rules for Compliance**:
 
-        -   **3. AWS WAF Logging & Monitoring**:
+        -   AWS Config can track configuration changes in AWS WAF resources.
+        -   Set up AWS Config rules to detect drift in WAF ACLs, rules, and policies.
 
-            -   Enable AWS WAF logs to track rule changes over time.
-            -   Use **AWS CloudTrail** to audit who made modifications.
+    -   **3. AWS WAF Logging & Monitoring**:
 
-        -   **How to Remediate Drift in AWS WAF?**:
+        -   Enable AWS WAF logs to track rule changes over time.
+        -   Use **AWS CloudTrail** to audit who made modifications.
 
-            1. `Revert Manual Changes`: If drift is detected, revert the manual changes to match the CloudFormation/Terraform template.
-            2. `Update Infrastructure Code`: If changes were intentional, update the CloudFormation stack or Terraform state to reflect the new configuration.
-            3. `Use AWS Config Auto-Remediation`: Set up AWS Config auto-remediation to automatically correct drift.
+    -   **How to Remediate Drift in AWS WAF?**:
 
-            </details>
+        1. `Revert Manual Changes`: If drift is detected, revert the manual changes to match the CloudFormation/Terraform template.
+        2. `Update Infrastructure Code`: If changes were intentional, update the CloudFormation stack or Terraform state to reflect the new configuration.
+        3. `Use AWS Config Auto-Remediation`: Set up AWS Config auto-remediation to automatically correct drift.
+
+    ##### Stateful vs. Stateless Firewalls
+
+    -   Stateful Firewall (Security Groups): Tracks the state of connections. If an incoming request is allowed, the return traffic is automatically allowed.
+    -   Stateless Firewall (Network ACLs): Does not track connections. Rules must explicitly allow both inbound and outbound traffic.
+
+    -   Consider a client connecting to a web server:
+
+        -   Inbound Traffic: Client to Web Server
+            -   Source Port: Dynamic high number (e.g., 65123)
+            -   Destination Port: 80 (HTTP)
+        -   Outbound Traffic: Web Server to Client
+            -   Source Port: 80 (HTTP)
+            -   Destination Port: Dynamic high number (e.g., 65123)
+
+    -   In a stateful firewall (Security Group): Only an inbound rule for port 80 is needed. Return traffic is automatically allowed.
+    -   In a stateless firewall (Network ACL): Both an inbound rule for port 80 and an outbound rule for the dynamic port are needed.
+
+    </details>
 
 ---
 
@@ -426,7 +445,13 @@
 
     -   <details><summary style="font-size:20px;color:Magenta">Auto Scaling Groups</summary>
 
-        AWS **Auto Scaling Groups (ASG)** is a key component of AWS Auto Scaling that ensures the right number of Amazon EC2 instances are running to handle application load efficiently. ASG helps maintain availability, improve performance, and optimize costs by automatically scaling instances based on demand.
+        -   **Auto Scaling Group**: AWS **Auto Scaling Groups (ASG)** is a key component of AWS Auto Scaling that ensures the right number of Amazon EC2 instances are running to handle application load efficiently. ASG helps maintain availability, improve performance, and optimize costs by automatically scaling instances based on demand.
+
+            -   Manages the group of EC2 instances based on policies.
+            -   Key properties:
+                -   **Minimum Capacity:** Minimum number of instances that must run.
+                -   **Desired Capacity:** The ideal number of instances at a given time.
+                -   **Maximum Capacity:** The upper limit of instances that can be launched.
 
         #### Components of ASGs
 
@@ -441,15 +466,7 @@
                 - **IAM Role:** Grants permissions to instances.
                 - **User Data Script:** Custom startup commands.
 
-        2. **Auto Scaling Group**
-
-            - Manages the group of EC2 instances based on policies.
-            - Key properties:
-                - **Minimum Capacity:** Minimum number of instances that must run.
-                - **Desired Capacity:** The ideal number of instances at a given time.
-                - **Maximum Capacity:** The upper limit of instances that can be launched.
-
-        3. **Scaling Policies**
+        2. **Scaling Policies**
 
             - Determines when and how ASG should scale in or out.
             - Types of Auto Scaling Policies:
@@ -460,7 +477,7 @@
                 - **Predictive Scaling**: Uses machine learning to anticipate scaling needs.
                 - **Scheduled Scaling**:
 
-        4. **Health Checks**
+        3. **Health Checks**
 
             - Ensures that unhealthy instances are terminated and replaced.
             - Types:
@@ -468,12 +485,12 @@
                 - **ELB Health Check:** Checks if the instance is responsive to an Elastic Load Balancer.
             - **Health Check Grace Period**:
 
-        5. **Load Balancer Integration**
+        4. **Load Balancer Integration**
 
             - **Elastic Load Balancer (ELB)** ensures traffic is distributed among instances.
             - Auto Scaling Group automatically registers/deregisters instances.
 
-        6. **Termination Policies**
+        5. **Termination Policies**
 
             - Determines which instance is terminated first during scale-in.
             - Options include:
@@ -483,44 +500,44 @@
                 - **Closest to Billing Hour:** Optimizes cost by terminating instances nearing their next billing hour.
             - Termination Protection
 
-        7. **Lifecycle Hooks**
+        6. **Lifecycle Hooks**
 
             - Allows custom actions before an instance is launched or terminated.
             - Common use cases:
                 - Pre-installing software before making the instance active.
                 - Sending logs before terminating an instance.
 
-        8. **Warm Pools**
+        7. **Warm Pools**
 
             - Keeps pre-initialized instances on standby to speed up scaling.
             - Reduces boot time by allowing instances to be launched partially configured.
 
         #### Key Concepts of AWS Auto Scaling Groups
 
-        9. **Cooldowns**:
-        10. **Standby State**:
-        11. **Lifecycle Hooks**:
+        8. **Cooldowns**:
+        9. **Standby State**:
+        10. **Lifecycle Hooks**:
 
-        12. **Elasticity**
+        11. **Elasticity**
 
             - Automatically adjusts capacity to meet traffic demands.
             - Ensures availability during peak times and cost savings during low traffic.
 
-        13. **High Availability**
+        12. **High Availability**
 
             - Auto Scaling Group distributes instances across multiple **Availability Zones (AZs)**.
             - Prevents application downtime due to hardware failure.
 
-        14. **Cost Optimization**
+        13. **Cost Optimization**
 
             - Ensures that only the necessary number of instances are running.
             - Uses **Spot Instances** for cost savings when appropriate.
 
-        15. **Fault Tolerance**
+        14. **Fault Tolerance**
 
             - Automatically replaces failed instances to maintain application health.
 
-        16. **Region and Availability Zone Awareness**
+        15. **Region and Availability Zone Awareness**
 
             - ASG can span multiple **Availability Zones (AZs)** but remains within a single **AWS Region**.
 
@@ -530,204 +547,6 @@
             - **Microservices:** Adjusts instances for each service independently.
 
         </details>
-
-    -   <details><summary style="font-size:20px;color:Magenta">Load balancer</summary>
-
-        A Load Balancer is a managed service provided by Elastic Load Balancing (ELB) that automatically distributes incoming application traffic across multiple targets, such as EC2 instances, containers, IP addresses, and Lambda functions, in one or more Availability Zones. This ensures high availability, fault tolerance, and scalability for your applications. AWS provides the following types of load balancers, each suited to different use cases:
-
-        1. **Application Load Balancer (ALB)**
-
-            - Designed for HTTP and HTTPS traffic.
-            - Operates at **Layer 7** (Application Layer) of the OSI model.
-            - `Features`:
-                - Content-based routing (e.g., route based on URL path or hostname).
-                - WebSocket and HTTP/2 support.
-                - Authentication using OIDC, Cognito, or other mechanisms.
-                - Advanced request-routing capabilities (e.g., based on headers or query strings).
-                - Integration with AWS Web Application Firewall (WAF).
-
-        2. **Network Load Balancer (NLB)**
-
-            - Designed for **TCP, UDP, and TLS** traffic.
-            - Operates at **Layer 4** (Transport Layer).
-            - `Features`:
-                - High-performance handling of millions of requests per second.
-                - Static IP addresses or Elastic IPs for the load balancer.
-                - Ability to preserve client source IP addresses.
-                - Ideal for low-latency, high-throughput workloads.
-
-        3. **Gateway Load Balancer (GWLB)**
-
-            - Designed for deploying and managing third-party virtual appliances (e.g., firewalls, monitoring tools).
-            - Operates at **Layer 3** (Network Layer).
-            - `Features`:
-                - Scalable and elastic traffic distribution for appliances.
-                - Integrates with Virtual Private Cloud (VPC) Ingress Routing.
-
-        4. **Classic Load Balancer (CLB)**
-
-            - Legacy load balancer that supports both **Layer 4** and **Layer 7** traffic.
-            - Limited features compared to ALB and NLB.
-            - `Features`:
-                - Basic routing and health checks.
-                - Supports legacy applications.
-
-        5. **Listeners**
-
-            A listener is a process configured on the load balancer to check for incoming client connection requests. It listens for connections using a specified protocol and port and forwards these requests to the appropriate targets based on the rules configured.
-
-            - **Protocols Supported**:
-                - HTTP/HTTPS (Application Load Balancer)
-                - TCP/TLS/UDP (Network Load Balancer)
-            - **Ports**:
-                - Common ports include **80** (HTTP) and **443** (HTTPS).
-                - You can define custom ports if needed.
-            - **Rules**: Define how the load balancer routes traffic to different target groups.
-
-                - Criteria: Rules can be based on various criteria.
-                    - Path: Route traffic based on the path of the incoming request (e.g., /api, /images).
-                    - Host Header: Route traffic based on the host header in the request (e.g., www.example.com).
-                    - HTTP Headers: Route traffic based on specific HTTP headers in the request.
-                    - Query Parameters: Route traffic based on query parameters in the request URL.
-                - Example: In ALB, rules can include host-based routing (e.g., `www.example.com`) or path-based routing (e.g., `/api`).
-
-            - **Use Cases**:
-                - For ALB: You can configure a listener to route traffic for multiple services running on different paths or domains.
-                - For NLB: Use listeners to route traffic at a network level for high-throughput applications.
-
-        6. **Target Groups**
-
-            A target group is a logical grouping of the targets that the load balancer routes traffic to. Targets can be **EC2 instances**, **IP addresses**, **containers (ECS tasks)**, or **AWS Lambda functions**.
-
-            - **Types of Targets**:
-
-                - **Instances**: Routes traffic to specific EC2 instances.
-                - **IP Addresses**: Targets specific IP addresses. Useful for hybrid architectures.
-                - **Lambda Functions**: ALB supports invoking Lambda functions for serverless applications.
-
-            - **Health Checks**:
-
-                - Automatically perform health checks on the targets to ensure only healthy ones receive traffic.
-                - Parameters include the protocol, ping path, interval, and thresholds.
-
-            - **Routing**:
-
-                - You can associate multiple target groups with different listeners and rules to route traffic intelligently.
-
-            - **Example**:
-
-                - A web app running on multiple EC2 instances can have a target group configured with all those instances.
-                - A microservices architecture could have separate target groups for APIs, user interfaces, and static content.
-
-            - **NOTE**:
-                - API Gateway is not designed to function behind a load balancer.
-                - API Gateway itself is designed to manage traffic, apply security policies, rate limiting, and integrate with AWS services. A Load Balancer in front of API Gateway is redundant.
-
-        7. **Load Balancer Nodes**
-
-            Load balancer nodes are the actual physical or virtual machines that handle the traffic within AWS. They are managed by AWS and operate behind the scenes to distribute traffic effectively.
-
-            - **Distributed Across AZs**:
-                - ELB automatically deploys load balancer nodes in multiple Availability Zones (AZs) for high availability and fault tolerance.
-            - **Scaling**:
-                - Load balancer nodes automatically scale to handle increases in traffic.
-                - When traffic reduces, nodes are scaled down.
-            - **Connection Handling**:
-
-                - These nodes terminate client connections and forward requests to the target.
-
-            - **How It Works**:
-                - A DNS name (e.g., `my-load-balancer-12345.elb.amazonaws.com`) is provided by AWS.
-                - This name resolves to the IP addresses of the load balancer nodes.
-                - Clients connect to these nodes, which distribute the traffic to healthy targets.
-
-        8. **Health Checks**
-
-            Health checks are critical for ensuring that traffic is only sent to healthy targets. ELB continuously monitors the health of targets in a target group and routes traffic to only those that are healthy.
-
-            - **Health Check Configuration**:
-
-                - **Protocol**: HTTP, HTTPS, TCP, or UDP.
-                - **Port**: The port on which the health check is performed.
-                - **Path**: The specific path for HTTP/HTTPS checks (e.g., `/healthcheck`).
-
-            - **Interval and Timeout**:
-
-                - The interval defines how often the health check is performed.
-                - The timeout specifies the time allowed for the target to respond.
-
-            - **Thresholds**:
-
-                - Healthy threshold: Number of consecutive successful responses required to mark the target as healthy.
-                - Unhealthy threshold: Number of consecutive failures required to mark the target as unhealthy.
-
-            - **Example**: A target is considered healthy if it returns a `200 OK` HTTP response for 3 consecutive health check requests within the interval.
-
-        9. **Security Groups**
-
-            Security groups act as virtual firewalls that control inbound and outbound traffic for the load balancer.
-
-            - **Inbound Rules**: Specify the type of traffic allowed to reach the load balancer (e.g., allow HTTP traffic on port 80 or HTTPS on port 443).
-            - **Outbound Rules**: Define the type of traffic that the load balancer can send to targets.
-            - **Granular Control**: You can restrict access to specific IP ranges, CIDR blocks, or other AWS resources.
-
-            - **Example**:
-                - For an internet-facing ALB, configure a security group to allow public traffic on ports 80 and 443.
-                - For an internal-only NLB, restrict traffic to your VPC CIDR range.
-
-        10. **Access Logs**
-
-            Access logs provide detailed information about requests processed by the load balancer. These logs are invaluable for debugging, analyzing traffic patterns, and monitoring security.
-
-            - **Stored in S3**: Logs are automatically saved in an S3 bucket that you specify.
-            - **Log Contents**: Includes information like the request time, client IP, target details, response status, latency, and more.
-            - **Analysis**: Can be analyzed using tools like Amazon Athena, AWS Glue, or third-party log analysis tools.
-
-            - **Use Cases**:
-                - Troubleshoot issues with specific clients or requests.
-                - Monitor and analyze application performance.
-
-        11. **Elastic IPs (NLB Only)**
-
-            Elastic IPs (EIPs) are static IP addresses that can be assigned to the Network Load Balancer for predictable and consistent access.
-
-            - **Static IPs**:
-                - NLB can assign Elastic IPs to its nodes in each AZ.
-            - **Use Cases**:
-                - Simplifies DNS management when clients require fixed IPs.
-                - Useful for firewall configurations and hybrid environments.
-
-        12. **DNS Name**
-
-            AWS ELB provides a DNS name for each load balancer, which clients use to send requests. The DNS name is associated with the IPs of the load balancer nodes.
-
-            - **Dynamic Resolution**:
-                - The DNS name resolves to the IP addresses of the load balancer nodes.
-                - AWS handles changes in the underlying infrastructure automatically.
-            - **Example**: `my-load-balancer-12345.us-west-2.elb.amazonaws.com`.
-
-        13. **Sticky Sessions (Session Affinity)**
-
-            Sticky sessions, Also known as **session affinity**, ensure that requests from the same client are routed to the same target for the duration of the session.
-
-            - **Session Duration**: Controlled by cookies (either AWS-generated or custom).
-            - **Use Cases**: Applications that maintain session state (e.g., user login or shopping cart).
-
-        14. **Cross-Zone Load Balancing**
-
-            - Distributes traffic evenly across all targets in all enabled AZs, regardless of the AZ in which the load balancer node resides.
-
-        15. **Host-Based and Path-Based Routing (ALB)**
-
-            - Host-based routing: Route requests to different target groups based on the **Host** header (e.g., `api.example.com` vs. `app.example.com`).
-            - Path-based routing: Route requests based on the URL path (e.g., `/api` vs. `/login`).
-
-        16. **SSL/TLS Termination**
-
-            - Load balancers can terminate SSL/TLS connections, offloading the encryption and decryption process from the targets.
-            - Managed using **AWS Certificate Manager (ACM)** or custom certificates.
-
-    </details>
 
     </details>
 
@@ -753,7 +572,7 @@
         -   `VPC Endpoints`: VPC endpoints enable private connectivity to AWS services without requiring internet gateway or NAT gateway. This enhances security and can reduce data transfer costs.
         -   `VPC Flow Logs`: VPC Flow Logs capture information about the IP traffic flowing in and out of network interfaces in your VPC. This data can be used for security analysis, troubleshooting, and compliance auditing.
 
-    -   **Subnet**: In AWS, a subnet (short for sub-network) is a segmented portion of an Amazon VPC (Virtual Private Cloud). Subnets allow you to divide a VPC's IP address range into smaller segments, which can be associated with specific availability zones (AZs) within an AWS region. Here are some key points to understand about AWS subnets:
+    -   **Subnet**: In AWS, a subnet (short for sub-network) is a segmented portion of an Amazon VPC. Subnets allow you to divide a VPC's IP address range into smaller segments, which can be associated with specific availability zones (AZs) within an AWS region. Here are some key points to understand about AWS subnets:
 
         -   `Public and Private Subnets`: Subnets can be categorized as public or private based on their routing configuration:
             -   `Public Subnets`: Public subnets have routes to an internet gateway, allowing instances within the subnet to communicate directly with the internet. They are typically used for resources that require public accessibility, such as web servers.
@@ -804,7 +623,7 @@
         -   `Security`: Internet Gateways do not perform any security functions on their own. Security is primarily managed using AWS security groups and network access control lists (NACLs) associated with the instances and subnets within the VPC.
         -   `Billing`: While there is no charge for creating an Internet Gateway, you are billed for data transfer out of your VPC to the internet based on the volume of data transferred.
 
-    -   **NAT Gateway**: An AWS NAT Gateway (Network Address Translation Gateway) is a managed AWS service that enables instances within private subnets of a VPC (Virtual Private Cloud) to initiate outbound traffic to the internet while preventing inbound traffic from reaching those instances. Here are the key aspects of AWS NAT Gateway:
+    -   **NAT Gateway**: An AWS NAT (Network Address Translation) Gateway Gateway is a managed AWS service that enables instances within private subnets of a VPC to initiate outbound traffic to the internet while preventing inbound traffic from reaching those instances. Here are the key aspects of AWS NAT Gateway:
 
         -   `Outbound Internet Access`: NAT Gateway allows instances in private subnets to access the internet for software updates, patching, or downloading dependencies. It achieves this by performing network address translation (NAT), replacing the private IP addresses of the instances with its own public IP address when communicating with external hosts on the internet.
         -   `Private Subnets`: NAT Gateway is typically deployed in a public subnet within the VPC, allowing instances in private subnets to route their outbound traffic through it. Private subnets do not have direct internet connectivity and rely on NAT Gateway to access the internet.
@@ -814,7 +633,7 @@
         -   `Usage Costs`: While there is no charge for creating a NAT Gateway, you are billed for the data processing and data transfer fees associated with outbound traffic routed through the NAT Gateway. Pricing is based on the volume of data processed and the AWS region where the NAT Gateway is deployed.
         -   `Automatic Failover`: AWS NAT Gateway automatically detects failures and redirects traffic to healthy instances. This ensures continuous availability and minimizes disruption to outbound internet connectivity.
 
-    -   **Network Access Control List (NACL)**: AWS Network Access Control Lists (NACLs) are stateless, optional security layers that control inbound and outbound traffic at the subnet level in an Amazon VPC (Virtual Private Cloud). They act as a firewall for controlling traffic entering and leaving one or more subnets within a VPC. Here's an explanation of the key aspects of AWS NACLs:
+    -   **Network Access Control List (NACL)**: AWS Network Access Control Lists (NACLs) are stateless, optional security layers that control inbound and outbound traffic at the subnet level in an Amazon VPC. They act as a firewall for controlling traffic entering and leaving one or more subnets within a VPC. Here's an explanation of the key aspects of AWS NACLs:
 
         -   `Subnet-Level Security`: NACLs are associated with individual subnets within a VPC. Each subnet can have its own NACL, which allows you to customize the network security policies for different parts of your VPC.
         -   `Stateless Inspection`: Unlike security groups, which are stateful, NACLs are stateless. This means that they evaluate each network packet independently, without considering the state of previous packets. As a result, you must explicitly configure rules for both inbound and outbound traffic in both directions.
@@ -825,9 +644,8 @@
         -   `Association`: Each subnet in a VPC must be associated with one NACL for inbound traffic and one NACL for outbound traffic. If no custom NACLs are explicitly associated with a subnet, the default NACL is applied automatically.
         -   `Logging`: You can enable logging for a NACL to capture information about the traffic that matches the rules. This can be helpful for troubleshooting network connectivity issues, monitoring traffic patterns, and auditing security configurations.
 
-    -   **Network Interface**: An AWS network interface is a virtual network interface that can be attached to an EC2 instance in a VPC (Virtual Private Cloud). It acts as a network interface for an EC2 instance, providing connectivity to the network and allowing the instance to communicate with other resources within the VPC and the internet. Here are some key points about AWS network interfaces:
+    -   **Network Interface**: An AWS network interface is a virtual network interface that represents a network interface card (NIC) in a traditional server and can be attached to an EC2 instance in a VPC. It acts as a network interface for an EC2 instance, providing connectivity to the network and allowing the instance to communicate with other resources within the VPC and the internet. Here are some key points about AWS network interfaces:
 
-        -   `Virtual Network Interface`: An AWS network interface is a virtual entity that represents a network interface card (NIC) in a traditional server. It provides networking capabilities to an EC2 instance.
         -   `Flexible Attachment`: Network interfaces can be attached to or detached from EC2 instances as needed. This allows for flexibility in networking configurations, such as adding additional network interfaces for specific purposes like high availability or security.
         -   `Multiple Network Interfaces`: An EC2 instance can have multiple network interfaces attached to it. Each network interface operates independently, with its own private IP address, MAC address, and security groups.
         -   `Private IP Address`: Each network interface is assigned a private IP address from the subnet to which it is attached. This IP address allows the instance to communicate with other resources within the same VPC.
@@ -851,21 +669,21 @@
 
     -   **PrivateLink**: AWS PrivateLink is a networking service that enables secure, **private connectivity** between Virtual Private Clouds (VPCs), AWS services, and on-premises networks without exposing traffic to the public internet. It simplifies network architecture by allowing **direct communication** between services while maintaining security and reducing the need for complex VPC peering or NAT gateways.
 
-        -   **How AWS PrivateLink Works**
+        -   **How AWS PrivateLink Works**:
 
-            1. `Service Provider and Consumer Model`
+            1. `Service Provider and Consumer Model`:
 
                 - A **Service Provider** (AWS services or a custom application in a VPC) **creates a PrivateLink service** (also called a VPC endpoint service).
                 - A **Service Consumer** (another VPC, on-premises network, or AWS account) **connects to the PrivateLink service** via an **interface VPC endpoint**.
                 - The communication remains within AWS's private network, avoiding the **public internet**.
 
-            2. `Uses Elastic Network Interfaces (ENIs)`
+            2. `Uses Elastic Network Interfaces (ENIs)`:
                 - PrivateLink **creates ENIs in the consumer VPC**, acting as an access point to the provider service.
                 - These ENIs have **private IP addresses**, ensuring all communication stays within AWS.
 
-        -   **Components of AWS PrivateLink**
+        -   **Components of AWS PrivateLink**:
 
-            1. `Interface VPC Endpoints*`: Allows private connectivity to AWS services or PrivateLink-enabled services from a VPC.
+            1. `Interface VPC Endpoints`: Allows private connectivity to AWS services or PrivateLink-enabled services from a VPC.
 
                 - Creates an **ENI** in the VPC consumer subnet.
                 - The ENI gets a **private IP address** and serves as the entry point to the service.
@@ -873,7 +691,7 @@
                 - Connecting to AWS services like **S3, DynamoDB, SNS, SQS, Lambda, KMS, and API Gateway** privately.
                 - Accessing **third-party SaaS applications** privately via AWS Marketplace.
 
-            2. `VPC Endpoint Services (PrivateLink Services)*`: Enables a VPC to **offer services privately** to other VPCs using PrivateLink.
+            2. `VPC Endpoint Services (PrivateLink Services)`: Enables a VPC to **offer services privately** to other VPCs using PrivateLink.
 
                 - The **service provider** creates a **VPC endpoint service**.
                 - The **service consumer** requests a connection to that service.
@@ -881,25 +699,70 @@
                 - Private access to **AWS services like Amazon RDS, Amazon S3, or custom applications**.
                 - Secure connectivity between **multi-account AWS environments**.
 
-            3. `NLB (Network Load Balancer) Integration*`
+            3. `NLB (Network Load Balancer) Integration`:
 
                 - PrivateLink services **must be exposed via a Network Load Balancer (NLB)**.
                 - The NLB forwards traffic from the service consumer’s VPC to the **backend instances, containers, or Lambda functions**.
 
-            4. `AWS PrivateLink for On-Premises*`
+            4. `AWS PrivateLink for On-Premises`:
+
                 - **Direct Connect or VPN** can be used to route **on-premises traffic to AWS PrivateLink** services.
                 - Allows **hybrid cloud** architectures with **secure, low-latency** connectivity.
 
-    -   `Egress-only Internet Gatway`:
-    -   `NAT Instanc`:
-    -   `Virtual Private Gateway`:
-    -   `Customer Gateway`:
+    -   **Elastic IP Address**: In AWS, a Elastic IP (EIP) usually refers to an Static IP address is a public, static IPv4 address that you can allocate and associate with AWS resources, most commonly EC2 instances or Network Interfaces.
 
-    -   `Elastic IP Address`: A static IP address that you can associate with your instance, even if it is stopped or started.
-    -   `Peering`: A connection between two VPCs that enables instances in one VPC to communicate with instances in the other VPC as if they were on the same network.
-    -   `VPN`: Virtual Private Network, a connection between your on-premises network and your VPC that enables secure communication.
-    -   `AWS Direct Connect`: A dedicated network connection between your on-premises data center and your VPC.
-    -   `VPC Flow Logs`: A feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC.
+        -   A Static IP is an IP address that does not change over time. It's ideal for services where DNS caching or firewall whitelisting is required (e.g., APIs, external integrations, webhooks, etc.).
+        -   Web servers that need a stable IP for DNS A-records.
+        -   Whitelisting in external firewalls, partners, or SaaS integrations.
+        -   Failover/HA designs where you want to move the IP between instances.
+        -   Outbound NAT gateways using Elastic IPs for fixed egress traffic.
+        -   VPNs, APIs, or reverse proxies with static IP requirements.
+        -   Elastic IPs are region-specific.
+        -   Only 5 EIPs per region by default (can request more).
+        -   Idle EIPs cost money. (When not attached to a running resource.)
+
+    -   **Peering**: VPC Peering is a network connection between two VPCs that enables you to route traffic privately between them using private IP addresses.
+
+        -   Works within a region or across regions (inter-region peering).
+        -   Traffic stays within AWS's backbone network — no public internet involved.
+        -   You can peer across accounts, organizations, or within the same account.
+
+        -   Both VPCs can send/receive traffic once routes are set.
+        -   You can’t use VPC A as a bridge to reach VPC C from VPC B.
+        -   You can peer VPCs in us-east-1 and us-west-2, etc.
+        -   Uses AWS's internal backbone network, not internet.
+        -   Peered VPCs must have non-overlapping IP ranges.
+        -   **No transitive peering:** You can’t chain peering connections. Use **Transit Gateway** if needed.
+        -   **Security Groups** must explicitly allow traffic from the peer CIDR.
+        -   **NACLs** must also allow cross-VPC traffic if used.
+
+        -   How VPC Peering Works (High-Level Flow)
+
+            -   `Create Peering Connection`: One VPC owner initiates the request.
+
+            -   `Accept Peering Request`: The other VPC owner accepts it (same or different AWS account).
+
+            -   `Update Route Tables`: Add routes in both VPCs to enable communication.
+
+            -   `Adjust Security Groups/NACLs`: Allow traffic between the CIDR blocks of the VPCs.
+
+        -   Peering vs Transit Gateway vs VPN
+
+            | Feature                | VPC Peering         | Transit Gateway    | VPN/Direct Connect    |
+            | ---------------------- | ------------------- | ------------------ | --------------------- |
+            | **Type**               | Point-to-point      | Hub-and-spoke      | External connectivity |
+            | **Transitive Routing** | ❌ No               | ✅ Yes             | N/A                   |
+            | **Scale**              | 1:1 connections     | 1000s of VPCs      | Limited               |
+            | **Use Case**           | Small-medium setups | Large/multi-region | Hybrid cloud          |
+
+    -   **VPN**: Virtual Private Network, a connection between your on-premises network and your VPC that enables secure communication.
+    -   **AWS Direct Connect**: A dedicated network connection between your on-premises data center and your VPC.
+    -   **VPC Flow Logs**: A feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC.
+
+    -   **Egress-only Internet Gatway**:
+    -   **NAT Instanc**:
+    -   **Virtual Private Gateway**:
+    -   **Customer Gateway**:
 
     #### Availability Zone
 
@@ -1275,7 +1138,7 @@
         -   `Ingress`: Load balancers handle incoming traffic and distribute it across multiple instances. ALBs are used for routing HTTP/HTTPS traffic, while NLBs handle TCP/UDP traffic.
         -   `Egress`: Load balancers themselves don't generate egress traffic, but instances behind load balancers might generate egress traffic.
 
-    -   **Amazon VPC (Virtual Private Cloud)**:
+    -   **Amazon VPC**:
 
         -   `Ingress and Egress`: VPCs allow you to define routing tables, which control the flow of traffic within and outside the VPC. Ingress and egress routes can be specified to direct traffic to specific destinations.
 
@@ -1392,1973 +1255,2030 @@
 
 ---
 
-<details><summary style="font-size:25px;color:Orange">CloudWatch</summary>
-
--   [Be a Better Dev: AWS Cloudwatch Guides - Learn AWS Monitoring Techniques](https://www.youtube.com/playlist?list=PL9nWRykSBSFir2FLla2thQkEwmLpxPega)
--   [What is AWS CloudWatch? Metric | Alarms | Logs Custom Metric](https://www.youtube.com/watch?v=G4_ay2_h9GI)
-
-Amazon CloudWatch is a monitoring service provided by Amazon Web Services (AWS) that allows you to monitor and collect metrics, collect and monitor log files, and set alarms. Here are some important terms and concepts related to AWS CloudWatch:
-
--   `Metrics`: A metric is a variable that you want to monitor, such as CPU usage, disk space usage, or network traffic. CloudWatch provides a set of predefined metrics for AWS resources, and you can also create your own custom metrics.
--   `Events`: CloudWatch Events is a service that allows you to monitor and respond to changes in your AWS resources. You can create rules that trigger automated actions when certain events occur, such as launching an EC2 instance or creating a new S3 bucket.
-    -   `Event Sources`: an "event source" refers to the entity or service that generates events that CloudWatch Events can capture and process. An event source is the origin or producer of events that you want to monitor and respond to within the AWS ecosystem. CloudWatch Events can capture events from various AWS services and custom applications, and each of these sources is considered an event source.
--   `Alarms`: An alarm is a notification that is triggered when a metric breaches a specified threshold. You can configure CloudWatch to send notifications to various destinations, such as email, SMS, or other AWS services.
--   `Rules`: A rule matches incoming events and routes them to targets for processing. A single rule can route to multiple targets, all of which are processed in parallel. Rules are not processed in a particular order. A rule can customize the JSON sent to the target, by passing only certain parts or by overwriting it with a constant.
--   `Target`: A target processes events. Targets can include Amazon EC2 instances, AWS Lambda functions, Kinesis streams, Amazon ECS tasks, Step Functions state machines, Amazon SNS topics, Amazon SQS queues, and built-in targets. A target receives events in JSON format.
--   `Dashboards`: A dashboard is a customizable view of metrics and alarms that you can create to monitor the health and performance of your AWS resources. You can add multiple metrics and alarms to a single dashboard, and you can create multiple dashboards to monitor different aspects of your infrastructure.
--   `Logs`: CloudWatch Logs is a service that allows you to collect, monitor, and store log files generated by your applications and AWS resources. You can also use CloudWatch Logs to search and analyze log data.
-    -   `Log Groups`: Log groups are containers for log streams.
-    -   `Log Streams`: Log streams represent the sequence of log events coming from a specific source, such as an EC2 instance or Lambda function.
--   `Retention periods`: CloudWatch allows you to specify how long you want to retain your metric data and log data. By default, CloudWatch retains` metric data for 15 months` and `log data for 30 days`, but you can customize these retention periods to suit your needs.
--   `Namespaces`: A namespace is a container for CloudWatch metrics. AWS resources are organized into namespaces, and you can create custom namespaces for your own metrics.
--   `Dimensions`: A dimension is a name-value pair that helps you to uniquely identify a metric. For example, a dimension for an EC2 instance might include the instance ID and the region where the instance is running.
--   `CloudWatch Agent`: The CloudWatch agent is a software component that you can install on your EC2 instances to collect and send system-level metrics and logs to CloudWatch. The agent supports both Windows and Linux operating systems.
-
-#### CloudWatch Events vs EventBridge
-
-Amazon Web Services (AWS) provides two services for managing events and automating responses: Amazon CloudWatch Events and Amazon EventBridge. While both services are designed for event-driven architectures, they have some key differences in terms of functionality and use cases.
-
--   `AWS CloudWatch Events`:
-
-    -   `Use Case`: CloudWatch Events primarily focuses on events related to AWS resources. It is designed for monitoring and reacting to events from AWS services, such as EC2, Lambda, S3, and more.
-    -   `Event Sources`: It integrates with AWS services and can capture events from those services. These events are typically related to resource changes, operational activities, and management.
-    -   `Targets`: CloudWatch Events can route events to targets such as AWS Lambda functions, Amazon SNS topics, Kinesis streams, and more.
-    -   `Event Rules`: You can create event rules that define which events to capture and how to respond to them. These rules are based on events from AWS services.
-    -   `Retention`: CloudWatch Events retains events for a maximum of 1 or 2 weeks, depending on the event source.
-
--   `AWS EventBridge`:
-
-    -   `Use Case`: EventBridge, previously known as CloudWatch Events bus, is an advanced event bus service. It is designed for a broader range of event sources and use cases, including AWS services and custom applications.
-    -   `Event Sources`: EventBridge can capture events from both AWS services and custom applications, making it suitable for hybrid and multi-cloud environments.
-    -   `Schema Registry`: It includes a schema registry that allows you to define the structure of events, making it easier to work with event data.
-    -   `Event Buses`: EventBridge supports multiple event buses that allow you to segment and manage events effectively. Each bus can have its own permissions and event sources.
-    -   `Targets`: Similar to CloudWatch Events, EventBridge can route events to AWS Lambda functions, SNS topics, Kinesis streams, and more.
-    -   `Archiving`: EventBridge offers event archiving, which allows you to retain events for a longer duration than CloudWatch Events.
-    -   `Rules and EventBridge API`: EventBridge introduces more advanced rules and support for the EventBridge API, providing finer-grained control over event routing and transformation.
-
--   `Key Considerations`:
-
-    -   If you primarily need to handle AWS service events, CloudWatch Events may suffice.
-    -   If you need to manage events from custom applications, multiple AWS accounts, or other AWS services in a more structured and scalable way, EventBridge is a better choice.
-    -   EventBridge is often the preferred service for building event-driven architectures for microservices, serverless applications, and complex integrations.
-
-In summary, AWS CloudWatch Events is a specialized service for AWS resource events, while AWS EventBridge is a more versatile event bus service designed for a broader range of event sources and use cases, including custom applications and multi-cloud environments. Your choice depends on your specific use case and requirements.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange">S3</summary>
-
-Amazon S3 (Simple Storage Service) is a highly scalable, durable, and secure object storage service provided by Amazon Web Services (AWS). It is designed to store and retrieve any amount of data from anywhere on the web, making it a fundamental building block for many cloud-based applications. S3 is widely used for data storage, backup and restore, content distribution, big data analytics, archiving, and much more.
-
--   `Bucket`: A bucket is a container for storing objects in Amazon S3. All objects are stored in buckets, and each bucket has a globally unique name that must adhere to specific naming rules. Buckets act as the top-level namespace in S3.
--   `Object`: An object is the basic unit of data in Amazon S3. It can be any file, data, or media, including text files, images, videos, and more. Objects consist of the actual data, a key (or identifier), and metadata (optional attributes).
--   `Key`: The key is the unique identifier for an object within a bucket. It is similar to a file path and is used to retrieve objects from S3. For example, if an object is stored at the path "my-folder/image.jpg", the key would be "my-folder/image.jpg"
--   `Region`: A region is a geographical area where S3 stores data. Each bucket is associated with a specific AWS region, and the data within that bucket is physically stored in data centers located in that region.
--   `Access Control List (ACL)`: An ACL is a set of permissions attached to each object and bucket, defining who can access the objects and what actions they can perform (e.g., read, write, delete). While still supported, IAM policies are now generally recommended for controlling access to S3 resources.
--   `AWS Identity and Access Management (IAM)`: IAM is AWS's identity management service, which allows you to control access to AWS resources. You can use IAM to manage user access to S3 buckets and objects through IAM policies.
--   `Object Versioning`: S3 supports versioning, which allows you to keep multiple versions of an object in the same bucket. It helps protect against accidental deletions or overwrites, and you can easily restore previous versions of objects.
--   `Server-Side Encryption`: S3 provides server-side encryption to protect data at rest. You can choose to have S3 automatically encrypt your objects using AWS Key Management Service (KMS) keys or Amazon S3 managed keys.
--   `Lifecycle Policies`: Lifecycle policies allow you to automatically transition objects between different storage classes or delete objects after a specific period. This helps optimize storage costs and manage data lifecycle.
--   `Cross-Region Replication (CRR)`: CRR is a feature that allows you to replicate objects from one S3 bucket to another bucket in a different AWS region. It provides data redundancy and disaster recovery capabilities.
--   `Event Notifications`: S3 allows you to set up event notifications to trigger actions (e.g., invoking an AWS Lambda function) when specific events occur, such as object creation or deletion.
--   `Access Logs`: You can enable access logging for S3 buckets to track all requests made to the bucket. Access logs are stored in a separate bucket and can help with auditing and monitoring.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange">SNS, SQS & EventBridge</summary>
-
-#### SNS
-
-Amazon Simple Notification Service (SNS) is a messaging service provided by Amazon Web Services (AWS) that enables the publishing and delivery of messages to multiple subscribers or endpoints. Here are some important terms and concepts related to AWS SNS:
-
-![sns](../assets/aws/sns.png)
-
--   `Topic`: A topic is a communication channel in SNS. Publishers send messages to a topic, and subscribers receive messages from a topic. A topic can have one or more subscribers.
-
-    ```python
-    sns = boto3.client('sns')
-    sns.publish(
-        TopicArn='ARN_OF_EC2StateChangeTopic',
-        Message=message,
-        Subject='EC2 State Change Notification'
-    )
-    ```
-
--   `Subscription`: A subscription is a request to receive messages from a topic. Subscribers can receive messages via a variety of protocols, such as email, SMS, HTTP, HTTPS, Lambda, or mobile push notifications.
--   `Publisher`: A publisher is an entity that sends messages to a topic. Publishers can be AWS services or applications that use an SNS client.
--   `Message`: A message is the content that is sent to a topic. Messages can be up to 256 KB in size and can be in a variety of formats, including text, JSON, and binary data.
--   `Protocol`: A protocol is the method used to send messages to subscribers. SNS supports multiple protocols, including HTTP, HTTPS, email, SMS, Lambda, and mobile push notifications.
--   `Endpoint`: An endpoint is the destination for a message. Endpoints can be email addresses, mobile device tokens, HTTP/HTTPS URLs, or Amazon resource names (ARNs) for Lambda functions.
--   `ARN`: An Amazon Resource Name (ARN) is a unique identifier for an AWS resource, such as an SNS topic or a Lambda function.
--   `Message filtering`: SNS allows you to filter messages based on attributes or message content. This enables you to send targeted messages to specific subscribers.
--   `Dead-letter queue`: A dead-letter queue is a queue where messages are sent if they cannot be delivered to their intended recipients. SNS provides support for dead-letter queues to help you troubleshoot message delivery issues.
--   `Message attributes`: SNS allows you to add custom attributes to messages, which can be used for filtering and routing messages to specific subscribers.
--   `Access policies`: SNS allows you to control access to topics and subscriptions using access policies. Access policies define which AWS accounts or users are authorized to perform specific actions on a topic or subscription.
--   `SNS Mobile Push`: SNS provides a mobile push service that enables you to send push notifications to iOS, Android, and Kindle Fire devices. SNS Mobile Push supports Apple Push Notification Service (APNS), Google Cloud Messaging (GCM), Firebase Cloud Messaging (FCM), and Amazon Device Messaging (ADM).
-
-#### SQS:
-
-Amazon Simple Queue Service (SQS) is a fully managed message queuing service provided by Amazon Web Services (AWS) that enables you to decouple and scale microservices, distributed systems, and serverless applications. Here are some important terms and concepts related to AWS SQS:
-
-![sqs](../assets/aws/sqs.png)
-
--   `Queue`: A queue is a container for messages in SQS. Queues allow messages to be stored and retrieved asynchronously between components or services.
-
--   `Message`: A message is the information being sent between components or services. Messages can contain up to 256KB of text in any format.
--   `Producer`: A producer is a system or application that sends messages to a queue.
--   `Consumer`: A consumer is a system or application that receives messages from a queue.
--   `Visibility timeout`: When a consumer retrieves a message from a queue, the message becomes "invisible" to other consumers for a specified period of time known as the visibility timeout. This allows the consumer time to process the message without the risk of another consumer processing the same message.
--   `Long polling`: Long polling is a method of retrieving messages from a queue where the request to retrieve messages stays open for an extended period of time, waiting for new messages to arrive. This reduces the number of empty responses and can improve the efficiency of message retrieval.
--   `Dead-letter queue`: A dead-letter queue is a queue where messages are sent if they cannot be processed successfully by a consumer. SQS provides support for dead-letter queues to help you troubleshoot message processing issues.
--   `FIFO queue`: A FIFO queue is a queue that supports "first-in, first-out" ordering of messages. FIFO queues are designed for applications that require the exact order of messages to be preserved.
--   `Standard queue`: A standard queue is a queue that provides at-least-once delivery of messages. Standard queues are designed for applications that can handle the possibility of duplicate messages or messages that are not delivered in the exact order they were sent.
--   `Message attributes`: SQS allows you to add custom attributes to messages, which can be used for filtering and routing messages to specific consumers.
--   `Access policies`: SQS allows you to control access to queues using access policies. Access policies define which AWS accounts or users are authorized to perform specific actions on a queue.
--   `Batch operations`: SQS supports batch operations that allow you to send, delete, or change the visibility timeout of multiple messages in a single API call.
--   `Delay queues`: Delay queues allow you to delay the delivery of messages for a specified amount of time, up to 15 minutes. This can be useful for scenarios where messages need to be delayed until certain conditions are met.
-
-#### EventBridge:
-
-![event_bridge](../assets/aws/event_bridge.png)
-
--   `Event-Driven Architecture`: Amazon EventBridge facilitates event-driven architecture, where services or applications communicate by emitting and consuming events. An event can be anything from a simple notification to a significant change in your application's state.
-
-Amazon EventBridge is a serverless event bus service that simplifies the building of event-driven architectures. It enables you to connect different AWS services, SaaS applications, and custom applications using events, making it easier to build scalable, decoupled, and flexible applications.
-AWS EventBridge is a serverless event bus service that enables you to connect applications using data from your own apps, integrated Software-as-a-Service (SaaS) apps, and AWS services. It simplifies event-driven architectures, allowing services to communicate through events. Below are the crucial components and concepts in AWS EventBridge:
-
--   **Events**: An **event** is a data record that signifies a change in the state of a system, application, or AWS resource. The event is in JSON format and contains details like the source of the event, the event type, and the event data (payload).
-
-    -   Events in EventBridge are typically generated by:
-        -   AWS services (e.g., S3 file creation).
-        -   Custom applications.
-        -   Integrated SaaS applications.
-
--   **Event Buses**: EventBridge uses an event bus, a central message broker that receives and distributes events to the relevant targets. The event bus acts as the intermediary for the communication between different event sources and event targets.
-
-    -   **Event Bus** is the central component where events are sent and from where they are routed to the appropriate targets.
-        -   **Default Event Bus**: Every AWS account has a default event bus that receives events from AWS services (e.g., EC2, S3).
-        -   **Custom Event Bus**: You can create custom event buses for your applications or microservices to handle specific events.
-        -   **SaaS Partner Event Bus**: SaaS applications can send events directly to your event bus using partner event sources.
-
--   **Event Patterns**: Event Pattern is a set of conditions used to filter and match specific events based on their attributes or content. Event patterns help you identify which events you want to capture and respond to by defining criteria that events must meet before they are processed by rules in EventBridge.
-
-    -   **Event Patterns** are used in rules to filter events and specify which events should trigger a specific rule.
-    -   Patterns can match specific fields in an event, such as event source, detail type, or the contents of custom event data.
-    -   EventBridge checks incoming events against defined patterns, and when there’s a match, it routes the event to the specified target.
-
--   **Rules**: A rule in AWS EventBridge is a configuration that matches incoming events to specific patterns and routes them to one or more target destinations, such as AWS Lambda, SQS, or other services. Rules act as filters, ensuring that only events that meet the defined criteria trigger the specified actions. - **Event Pattern Matching**: EventBridge matches events to rules based on defined event patterns, which are JSON objects that specify the structure and content of the event to be matched. - Rules can trigger multiple targets when a matching event is received. Each rule can have one or more targets.
-
--   **Targets**: Targets are the destination resources or services where events are routed after being matched by a rule.
-
-    -   Some common targets include:
-        -   AWS Lambda functions
-        -   Step Functions
-        -   Amazon SNS or SQS for messaging
-        -   Kinesis Streams or Firehose for data streaming
-        -   Amazon EC2 or ECS
-        -   Other event buses (you can route events between buses)
-
--   **Event Sources**: Event sources are the entities that emit events to EventBridge. AWS services, such as AWS CloudTrail, Amazon S3, or AWS Step Functions, can be event sources. Custom applications and SaaS applications can also emit events to EventBridge using the PutEvents API.
-
-    -   **Event Sources** are the entities that generate events. EventBridge can handle events from:
-        -   **AWS services**: Many AWS services (e.g., S3, EC2) automatically emit events when specific actions occur.
-        -   **Custom Event Producers**: Your own applications or microservices can act as event sources, publishing custom events to EventBridge.
-        -   **SaaS Applications**: Third-party SaaS applications can send events to your EventBridge using SaaS partner integration.
-
--   **Schemas Registry**
-
-    -   **Schema Registry** allows you to automatically discover and manage event schemas used by EventBridge.
-        -   **Schema Discovery**: When you enable schema discovery, EventBridge automatically analyzes incoming events and creates a schema for them.
-        -   Schemas can be downloaded as code bindings for programming languages like Python or Java to make it easier to work with events in your code.
-
--   **Key Use Cases for AWS EventBridge**:
-
-    -   `Event-Driven Architectures`: Helps decouple microservices, where services react to events without direct communication.
-    -   `Monitoring and Automation`: Trigger workflows or Lambda functions in response to events like EC2 state changes or file uploads in S3.
-    -   `SaaS Integrations`: Seamlessly integrate third-party SaaS services like Zendesk, Datadog, or Shopify into your AWS environment.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange">API Gateways</summary>
-
-![API Gateway](../assets/aws/APIGateway.png)
-
-AWS API Gateway is a fully managed service that makes it easy for developers to create, publish, and manage APIs at any scale. It provides a way to create **RESTful APIs**, **WebSocket APIs**, and **HTTP APIs** that can be used to interact with back-end services, such as AWS Lambda, Amazon EC2, and other AWS services, as well as with third-party services.
-AWS API Gateway is a fully managed service that enables developers to create, publish, and manage **RESTful APIs**, **WebSocket APIs**, and **HTTP APIs** at any scale. It serves as a front-door to various backend services like AWS Lambda, EC2, or any web application. Here are the crucial concepts and components of **AWS REST API Gateway**:
-These components and concepts make API Gateway a robust and scalable solution for creating and managing REST APIs, with seamless integration into the AWS ecosystem. API Gateway allows you to build secure, flexible, and scalable APIs that can interact with a variety of backends, including serverless services like AWS Lambda.
-The **REST API** in API Gateway allows developers to create RESTful web services that can interact with a wide range of backend services. API Gateway acts as an intermediary between the client and the backend.
-
--   **Components**:
-    -   **Resources**: Logical endpoints in your API that represent entities or operations.
-    -   **Methods**: HTTP methods (e.g., GET, POST, PUT, DELETE) applied to resources.
-    -   **Stages**: Different deployment environments (e.g., dev, test, prod) with unique URLs.
-
-#### Resources:
-
-**Resources** represent individual endpoints in your API, which map to a particular functionality or entity in your application.
-A resource is an object that represents an entity, such as a customer, order, or product, in the context of an API. Each resource is associated with one or more methods, such as GET, POST, PUT, DELETE, that can be used to access or manipulate the resource's data.
-
--   **Path Parameters**: Resources can include path parameters (e.g., `/users/{user_id}`) to pass variables within the URL.
--   **Nested Resources**: You can create hierarchical resource paths (e.g., `/users/{user_id}/orders`) to organize related API endpoints.
-
-#### Methods:
-
-Each resource in a REST API can have one or more **HTTP methods** associated with it, defining how the resource can be interacted with (e.g., GET, POST, PUT, DELETE).
-A method is an action that can be performed on a resource, such as retrieving, updating, or deleting data. Each method is associated with an HTTP verb, such as GET, POST, PUT, or DELETE, that indicates the type of action that is being performed.
-
--   **Integration with Backends**: Methods define how the API Gateway interacts with backend services, such as AWS Lambda functions, Amazon EC2, or HTTP endpoints.
--   **Input/Output Mapping**: Request and response payloads can be transformed or mapped to fit the backend’s format using **mapping templates**.
-
-#### Stages:
-
-A **stage** in API Gateway is a logical separation of your API for different environments such as development, testing, or production.
-
--   **Features**:
-
-    -   **Stage Variables**: Similar to environment variables, used to define values specific to the stage (e.g., `api_key`, backend endpoint).
-    -   **Stage URLs**: Each stage has a unique URL, for example, `https://api-id.execute-api.aws-region.amazonaws.com/prod/`.
-
-#### Proxy Integration
-
-In AWS API Gateway, **Proxy Integration** is a feature that allows the API to pass through all HTTP requests directly to an AWS Lambda function or another HTTP endpoint without configuring each method, parameter, or mapping. It creates a streamlined and flexible setup, especially useful for microservices architectures. Followings are the key points of proxy integration with aws lambda
-
-1. **Direct Pass-through of Requests**: API Gateway passes the entire request payload to the Lambda function, including the request's headers, query parameters, HTTP method, and body as a JSON object. Lambda receives it in a standard format, making it versatile for different types of requests.
-2. **Single Lambda Handler for All Requests**: With Proxy Integration, a single Lambda function can handle all endpoints and HTTP methods in the API. This reduces the need for defining individual integrations and mappings for each API resource.
-3. **Simplified Deployment**: It streamlines the process of setting up APIs because there’s no need to configure API Gateway resources like request/response templates or parameter mappings. This is especially beneficial for quickly deploying microservices.
-4. **Flexible Response**: The Lambda function returns a response with headers, status codes, and body, which API Gateway then relays back to the client.
-5. **Reduced Configuration**: Since Proxy Integration requires fewer manual configurations, it’s less prone to configuration errors and is generally easier to manage.
-
-In contrast, **Non-Proxy Integration** involves more detailed configurations for each endpoint and allows for customized mapping and transformations. However, Proxy Integration is typically preferred for simpler, JSON-based APIs that don’t need intricate transformations.
-
-#### Method Request
-
--   **Definition**: The **Method Request** is the initial part of the API Gateway process that handles the incoming request from the client.
--   **Purpose**: It sets up and validates client input before passing the request on to the backend integration (e.g., AWS Lambda, HTTP endpoints, or AWS services like Step Functions).
--   **Configuration Options**:
-    -   `Request Parameters`: Defines expected query parameters, headers, or path variables.
-    -   `Request Validation`: Allows validation rules to ensure clients send correct data (e.g., required parameters).
-    -   `Authorization`: Enables access control options like AWS IAM permissions, Cognito User Pools, or custom authorizers.
-
-#### Integration Request
-
--   **Definition**: The **Integration Request** defines how the **Method Request** is transformed and routed to the backend.
--   **Purpose**: It controls how API Gateway forwards requests to the backend service, including any required transformations or modifications.
--   **Configuration Options**:
-    -   `Mapping Templates`: Define how to map and transform incoming request data to match the backend’s expected format.
-    -   `Integration Type`: Specifies the type of backend integration, such as AWS Lambda, HTTP endpoint, AWS service (e.g., Step Functions, DynamoDB).
-    -   `Request Parameters`: Additional parameters or headers to pass along to the backend if required.
-
-#### Integration Response
-
--   **Definition**: The **Integration Response** handles the response from the backend service before passing it back to the client.
--   **Purpose**: It controls the format and transformation of the backend response, including error handling and data formatting.
--   **Configuration Options**:
-    -   `Mapping Templates`: Define transformations to convert backend responses into the desired format.
-    -   `Error Handling`: Specifies conditions (like status codes) to catch errors from the backend and map them to standard responses.
-    -   `Headers and Parameters`: Adds or modifies headers or parameters before sending them back to the client.
-
-#### Method Response
-
--   **Definition**: The **Method Response** is the final step that defines the structure and format of the response that API Gateway sends to the client.
--   **Purpose**: It sets up how the API Gateway should format the response for clients, including defining which HTTP status codes, headers, and data formats are returned.
--   **Configuration Options**:
-    -   `Response Models`: Defines a schema for different HTTP status codes and responses, ensuring predictable response formats.
-    -   `Status Codes`: Specifies which status codes the client can expect (e.g., 200 for success, 400 for client errors).
-    -   `Headers and Parameters`: Defines response headers available to the client, like `Content-Type` or custom headers.
-
-#### Mapping Template
-
-In AWS API Gateway, **Mapping Templates** are used to transform incoming requests before they reach the backend and to modify backend responses before they reach the client. This transformation capability is particularly useful when integrating API Gateway with other AWS services (like AWS Lambda) or external APIs, allowing you to map data formats, handle transformations, and enforce data contracts.
-
--   **Key Features of Mapping Templates**
-
-    1. `Request Transformation`:
-
-        - You can configure mapping templates to modify or structure the data that comes from clients before sending it to the backend.
-        - For instance, if a client sends data in a certain JSON format, you can transform it into another format that your backend expects (like XML or another JSON structure).
-        - Mapping templates use **Velocity Template Language (VTL)**, which provides a set of pre-defined objects and functions to handle conditional logic, loops, and data transformation.
-
-    2. `Response Transformation`:
-
-        - Mapping templates can also be applied to transform the responses from the backend before they are returned to the client.
-        - This is useful if your backend provides data in a certain format, and you need to restructure or filter the data for the client.
-
-    3. `Content-Type Handling`:
-
-        - Mapping templates are associated with **content types**. You can create different templates based on content types like `application/json` or `application/xml`, allowing you to support multiple client formats.
-        - API Gateway then selects the appropriate mapping template based on the content type specified in the client’s request.
-
-    4. `Example Use Cases`:
-        - **Path and Query Parameter Mapping**: Transform parameters from a request path or query string into a request body format expected by the backend.
-        - **Error Handling**: Modify error messages from the backend to make them more meaningful to the client by converting error codes or adding context.
-        - **Data Enrichment**: Enrich requests with additional data, such as injecting metadata or headers required by the backend, without requiring the client to provide them.
-
--   **Example of a Simple Mapping Template**
-
-    -   Suppose you receive a JSON request like this from a client:
-
-        ```json
-        {
-            "username": "john_doe",
-            "age": 30
-        }
-        ```
-
-    -   If your backend expects the request in this format:
-
-        ```json
-        {
-            "user": {
-                "name": "john_doe",
-                "age": 30
-            }
-        }
-        ```
-
-    -   You could create a mapping template like:
-
-        ```vtl
-        {
-        "user": {
-            "name": "$input.path('$.username')",
-            "age": "$input.path('$.age')"
-        }
-        }
-        ```
-
-#### Terms & Concepts:
-
--   **API**: An API (Application Programming Interface) is a set of rules and protocols that allows different software applications to communicate with each other. In the context of AWS API Gateway, an API is a collection of resources and methods that can be accessed through a unique endpoint URL.
--   **Endpoint**: An endpoint is a URL that represents the location of an API or a specific resource within an API. It typically includes the base URL of the API, the resource path, and any query parameters or request headers that are needed to access the resource.
--   **Integration**: An integration is a way to connect an API Gateway method to a back-end service, such as an AWS Lambda function, an Amazon EC2 instance, or a third-party service. API Gateway supports multiple types of integrations, such as Lambda, HTTP, and WebSocket.
--   **Authorization**: Authorization is the process of controlling access to an API by requiring clients to provide valid credentials, such as an API key or an OAuth token. API Gateway supports several types of authorization, including IAM, Lambda, and custom authorizers.
--   **Throttling**: Throttling is the process of limiting the rate at which API clients can make requests to an API. API Gateway supports several types of throttling, including rate limiting and burst limiting, to prevent overloading back-end services or unauthorized access.
--   **API proxying**: It, also known as API gateway or API proxy, is a technique used to route requests from clients to backend services through an intermediary server, known as the proxy or gateway. It acts as an intermediary between the client and the actual API endpoint, providing various benefits such as security, scalability, and flexibility. Here's how API proxying works:
-    -   `Routing`: The API proxy receives requests from clients and forwards them to the appropriate backend service based on predefined routing rules. These rules can be configured to direct requests based on paths, headers, or other criteria.
-    -   `Security`: API proxies often implement security measures such as authentication, authorization, and rate limiting to protect backend services from unauthorized access or abuse. They can handle tasks like API key management, OAuth integration, and encryption of sensitive data.
-    -   `Monitoring and Analytics`: API proxies typically offer monitoring and analytics capabilities to track the usage and performance of APIs. They can collect metrics such as request/response times, error rates, and traffic volume, providing valuable insights for troubleshooting and optimization.
-    -   `Caching`: Proxies may cache responses from backend services to improve performance and reduce latency. By caching frequently accessed data, they can serve subsequent requests without hitting the backend, resulting in faster response times and reduced server load.
-    -   `Transformation`: API proxies can perform data transformation and manipulation on requests and responses. They may modify headers, transform payloads between different data formats (e.g., JSON to XML), or add/remove elements from the request or response body.
-    -   `Load Balancing`: In cases where multiple backend services are available to handle requests, API proxies can perform load balancing to distribute traffic evenly across the servers. This ensures optimal resource utilization and prevents overloading of individual servers.
-
-<details open><summary style="font-size:20px;color:Tomato">RESTful APIs:</summary>
-
-RESTful APIs in AWS API Gateway allow you to build, deploy, and manage RESTful APIs at scale. They adhere to the principles of REST (Representational State Transfer) architecture.
-
--   `Resource-Based Architecture`: RESTful APIs in AWS API Gateway follow a resource-based architecture where resources (e.g., objects, data) are exposed as endpoints (e.g., URLs) and support standard CRUD operations (Create, Read, Update, Delete) on these resources.
--   `HTTP Methods`: You can define HTTP methods (e.g., GET, POST, PUT, DELETE) for each resource, allowing clients to interact with the API through these methods.
--   `Integration`: RESTful APIs can integrate with backend services such as AWS Lambda functions, AWS Elastic Beanstalk applications, or HTTP endpoints. Integration options include Lambda functions, HTTP endpoints, AWS services, and AWS Lambda Proxy integration.
--   `Security`: API Gateway provides features like AWS IAM authorization, resource policies, and usage plans to secure and control access to your RESTful APIs. You can configure API keys, IAM roles, and resource policies for authentication and authorization.
--   `Monitoring and Analytics`: You can monitor API usage, performance metrics, and logs using Amazon CloudWatch and Amazon API Gateway's built-in logging and monitoring features. API Gateway provides detailed metrics, access logs, and execution logs for monitoring and troubleshooting.
--   `Use Cases`: RESTful APIs are suitable for building web services, microservices, and mobile backends where resources need to be exposed and accessed via standard HTTP methods. They are ideal for building CRUD-based applications and adhering to REST architectural principles.
-
-#### RESTful APIs Features:
-
--   `Protocol Support`:
-    -   REST APIs provide comprehensive support for building RESTful APIs according to the principles of Representational State Transfer (REST).
-    -   They support HTTP/1.1 and HTTPS protocols.
--   `Custom Domain Names`:
-    -   REST APIs support custom domain names, allowing you to provide a branded API endpoint with your own domain name.
-    -   You can configure custom domain names directly within API Gateway without additional mappings.
--   `Resource-Based Routing`:
-    -   REST APIs offer resource-based routing, allowing you to define hierarchical resource structures using paths and HTTP methods (e.g., GET /users, POST /users/{id}).
-    -   They follow RESTful design principles, making it easy to organize and expose your API resources.
--   `Integration Types`:
-    -   REST APIs support a variety of integration types, including Lambda functions, HTTP endpoints, AWS services, and AWS Step Functions.
-    -   You can choose the integration type that best fits your use case, allowing you to integrate with various backend systems and services.
--   `API Keys and IAM Roles`:
-    -   REST APIs support API keys and AWS Identity and Access Management (IAM) roles for controlling access to your APIs.
-    -   You can use API keys to throttle and monitor API usage, and IAM roles to grant fine-grained access permissions to API resources.
-
-#### RESTful APIs Limitations:
-
-While REST APIs in AWS API Gateway offer a wide range of features for building RESTful APIs, they also have some limitations to consider. Here are some of the key limitations of REST APIs in AWS API Gateway:
-
--   `Cold Start Latency`: Like other serverless architectures, REST APIs using Lambda functions may experience cold start latency, where the initial invocation of a function takes longer due to resource provisioning. This latency can impact the responsiveness of the API.
--   `Integration Limits`: REST APIs have integration limits, such as a maximum of 30 integration responses per method, a maximum of 10 authorizers per method, and a maximum payload size of 10 MB for request and response bodies. These limits may impact the complexity and scalability of your API design.
--   `Rate Limiting Constraints`: While API Gateway supports rate limiting for controlling access to APIs, there are limitations on the granularity of rate limiting configurations. For example, you cannot specify rate limits based on specific API keys or client IPs, and the default rate limit is applied globally to all clients.
--   `API Gateway Throttling`: API Gateway imposes throttling limits on API requests to prevent abuse and ensure system stability. While throttling is necessary for protecting backend resources, it can lead to temporary service interruptions if request rates exceed the configured limits.
--   `Payload Transformations`: API Gateway supports payload transformations for modifying request and response payloads using mapping templates. However, these transformations are limited in functionality compared to dedicated transformation services, and complex transformations may require additional processing.
--   `CORS Configuration`: Cross-Origin Resource Sharing (CORS) configuration in API Gateway has limitations, such as a maximum of 30 CORS configurations per API and restrictions on wildcard (\*) usage. This may impact the flexibility of CORS policies for enabling cross-origin requests.
--   `Monitoring and Logging Limits`: While API Gateway provides monitoring and logging capabilities for tracking API usage and performance, there are limits on the volume of logs and metrics that can be stored and retained. This may require additional monitoring solutions for long-term data retention and analysis.
--   `Integration Timeout`: API Gateway imposes integration timeouts for API requests to backend services. If the backend service does not respond within the specified timeout period, the request may fail with a timeout error. Configuring appropriate timeout values is important for handling varying backend response times.
--   `Integration Response Mapping`: Mapping integration responses to HTTP status codes and headers in API Gateway can be complex, especially for APIs with multiple integration responses. Managing response mappings and error handling logic may require careful configuration and testing.
-
-</details>
-
-<details open><summary style="font-size:20px;color:Tomato">HTTP APIs:</summary>
-
-HTTP APIs in AWS API Gateway offer a more lightweight and cost-effective alternative to traditional RESTful APIs. They are optimized for serverless workloads and provide features tailored to modern web applications.
-
--   `Simplified Configuration`: HTTP APIs in AWS API Gateway offer a more lightweight and cost-effective alternative to traditional RESTful APIs. They provide simplified configuration options for defining routes, methods, and integrations, making it easier to build and manage APIs.
--   `Built-in CORS Support`: HTTP APIs provide built-in Cross-Origin Resource Sharing (CORS) support, allowing you to define CORS policies to control access from web browsers. CORS settings can be configured at the API level or the route level.
--   `JWT Authorizers`: HTTP APIs support JWT (JSON Web Token) authorizers for authentication and authorization. You can use JWT tokens to authenticate and authorize requests, simplifying the implementation of authentication in serverless applications.
--   `Payload Validation`: HTTP APIs support payload validation, allowing you to validate request and response payloads against JSON schemas or OpenAPI definitions. You can define request and response models and validate incoming and outgoing payloads against these models.
--   `Cost-Effective`: HTTP APIs offer a lower cost structure compared to RESTful APIs, making them suitable for serverless applications with high traffic volume. They provide a cost-effective option for building modern web applications and serverless microservices.
--   `Use Cases`: HTTP APIs are well-suited for building modern web applications, single-page applications (SPAs), and serverless microservices where simplicity, scalability, and cost-effectiveness are priorities. They are ideal for scenarios where traditional RESTful APIs may be too complex or costly to manage.
-
-#### HTTP APIs Features:
-
--   `Protocol Support`:
-    -   HTTP APIs are designed to provide a low-latency and low-cost option for building HTTP-based APIs.
-    -   They support HTTP/1.1 and HTTP/2 protocols.
--   `API Mapping`:
-    -   HTTP APIs offer simplified API mapping, allowing you to map multiple custom domain names to a single API endpoint.
-    -   They do not support custom domain names directly; instead, you configure API mappings using API Gateway stages.
--   `WebSocket Support`:
-    -   HTTP APIs support WebSocket connections, making it easy to build real-time, bidirectional communication applications such as chat apps, gaming platforms, and IoT applications.
-    -   They provide native WebSocket support, allowing you to handle WebSocket connections without the need for additional services.
--   `Lambda Proxy Integration`:
-    -   HTTP APIs support Lambda proxy integration, where the integration request and response payloads are passed directly to and from Lambda functions.
-    -   This simplifies the integration setup and enables you to build serverless applications with Lambda functions as the backend.
--   `OAuth 2.0 and JWT Authorizers`:
-
-    -   HTTP APIs support OAuth 2.0 and JSON Web Token (JWT) authorizers for authenticating and authorizing API requests.
-    -   You can use OAuth 2.0 or JWT tokens to protect your APIs and control access based on user identities or custom claims.
-
-#### HTTP APIs Limitations:
-
--   `Limited Protocol Support`: HTTP APIs support HTTP/1.1 and HTTP/2 protocols but do not support older protocols such as HTTP/1.0. This may limit compatibility with some legacy systems or clients.
--   `Limited Integration Options`: HTTP APIs have limited integration options compared to REST APIs. They primarily support Lambda functions and HTTP endpoints as backend integrations. While Lambda proxy integration is convenient for serverless architectures, it may not be suitable for complex integration scenarios.
--   `Limited Deployment Options`: HTTP APIs are only available in the API Gateway version 2.0, which means they do not support the previous version 1.0 deployment options. This may impact migration efforts or compatibility with existing API Gateway features.
--   `Limited Customization`: HTTP APIs offer fewer customization options compared to REST APIs. For example, they do not support custom domain names directly; instead, you must use API mappings to map custom domain names to API endpoints.
--   `No Stage Variables`: HTTP APIs do not support stage variables, which are commonly used in REST APIs to define environment-specific configuration values. This may require alternative approaches for managing environment-specific settings.
--   `No Resource Policies`: HTTP APIs do not support resource policies, which are used in REST APIs to control access to API resources based on IP address or VPC endpoint. This may limit security controls for certain use cases.
--   `Limited Monitoring and Logging`: HTTP APIs offer basic monitoring and logging capabilities compared to REST APIs. While you can enable logging and monitoring for HTTP APIs, the available metrics and logs may be limited compared to REST APIs.
--   `Limited API Gateway Features`: Some advanced API Gateway features, such as AWS WAF integration, caching, and request/response transformations, are not fully supported or may have limitations when using HTTP APIs.
-
-</details>
-
-<details open><summary style="font-size:20px;color:Tomato">WebSocket APIs:</summary>
-
-WebSocket APIs in AWS API Gateway enable real-time, bidirectional communication between clients and servers over a single TCP connection. They provide full-duplex communication channels.
-
--   `Real-time Communication`: WebSocket APIs support low-latency, real-time communication between clients and servers, making them ideal for applications requiring real-time updates and notifications.
--   `Persistent Connection`: WebSocket APIs establish a persistent connection between clients and servers, allowing both parties to send messages to each other asynchronously.
--   `Serverless Integration`: You can integrate WebSocket APIs with AWS Lambda functions to handle WebSocket messages and execute business logic in a serverless environment.
--   `Security`: WebSocket APIs support authentication and authorization mechanisms to secure connections and control access to resources.
--   `Scalability`: AWS API Gateway automatically scales WebSocket APIs to handle high volumes of concurrent connections and messages.
--   `Use Cases`: WebSocket APIs are commonly used in applications such as chat applications, multiplayer games, real-time collaboration tools, and financial trading platforms.
-</details>
-
-<details open><summary style="font-size:20px;color:#FF1493">Use Cases of API Gateway</summary>
-
-AWS API Gateway has several practical use cases in data engineering, especially in creating and managing APIs that interface with various data pipelines and processes. Here are some common use cases:
-
-1. **Exposing Data Processing Pipelines as APIs**
-
-    - **Use Case**: Create APIs for external or internal users to submit data for processing.
-    - **Example**: An API that receives data from clients and triggers an AWS Lambda function, which preprocesses and loads the data into AWS S3, DynamoDB, or RDS. This can be used in ETL pipelines.
-
-2. **Real-Time Data Ingestion for Streaming Pipelines**
-
-    - **Use Case**: Provide a scalable, low-latency endpoint for ingesting streaming data.
-    - **Example**: API Gateway can front Amazon Kinesis to ingest real-time event data, such as IoT sensor data, which can then be processed and analyzed in real time.
-
-3. **Orchestrating Data Jobs via API**
-
-    - **Use Case**: Expose APIs to trigger specific data engineering jobs or workflows.
-    - **Example**: Use API Gateway to trigger AWS Step Functions, which orchestrate complex ETL pipelines involving services like Lambda, Glue, or EMR for data processing and transformations.
-
-4. **Data Enrichment as a Service**
-
-    - **Use Case**: Provide an API to enhance datasets with additional data from external or internal sources.
-    - **Example**: An API Gateway that fronts a Lambda function to enrich customer records by calling external APIs (e.g., validating address details or credit scores).
-
-5. **Secure Data Access for Analytics**
-
-    - **Use Case**: Securely expose APIs to provide controlled access to datasets stored in S3, DynamoDB, or RDS.
-    - **Example**: An internal API that returns filtered data from S3 buckets or a database (PostgreSQL/MySQL) based on user roles or other security constraints using AWS Identity and Access Management (IAM) and API Gateway custom authorizers.
-
-6. **Serverless Microservices for Data Transformation**
-
-    - **Use Case**: Enable microservices architecture for data transformation logic.
-    - **Example**: API Gateway can be used to invoke Lambda functions that handle data transformations (e.g., format conversion, aggregations) before persisting the data into a data lake or a data warehouse.
-
-7. **REST API for Querying and Fetching Data**
-
-    - **Use Case**: Create APIs for querying datasets for downstream applications.
-    - **Example**: Use API Gateway to expose a REST API for querying a dataset stored in Amazon Redshift or DynamoDB, enabling data retrieval for dashboards or analytics apps.
-
-8. **Data Validation and Preprocessing Layer**
-
-    - **Use Case**: Validate incoming data before ingestion into the data pipeline.
-    - **Example**: API Gateway can expose an API that receives raw data, performs basic validation (via Lambda), and then forwards the valid data to S3 or a Kinesis stream.
-
-9. **Monitoring and Logging of Data APIs**
-
-    - **Use Case**: Implement monitoring and logging for data ingestion and processing APIs.
-    - **Example**: API Gateway can be used with AWS CloudWatch to monitor API performance, logging, and error tracking for APIs that ingest and process data in real-time systems.
-
-10. **API Gateway as Proxy for Third-Party Data Sources**
-
-    - **Use Case**: Use API Gateway as a proxy to fetch or send data to third-party APIs.
-    - **Example**: API Gateway can proxy requests to external services (e.g., payment processors, data providers) and integrate their data into internal pipelines.
-
-11. **Public Data APIs for External Partners or Customers**
-
-    - **Use Case**: Expose specific datasets or aggregated data as APIs for external customers or partners.
-    - **Example**: A data product that exposes aggregated reports or analytics data via API Gateway to allow external partners to query specific metrics or KPIs.
-
-12. **Rate Limiting and Throttling for Ingestion APIs**
-
-    - **Use Case**: Control the flow of data ingestion by applying rate limits or throttling.
-    - **Example**: API Gateway allows you to set up throttling policies to control the number of requests per second to prevent overloading downstream services like Kinesis, S3, or RDS.
-
-</details>
-
-#### Endpoints and Custom Domain Names:
-
-API Gateway provides default **API endpoints** but also allows you to associate your API with a **custom domain name**.
-
--   **Features**:
-    -   **Regional Endpoints**: Serve requests from specific AWS regions.
-    -   **Edge-Optimized Endpoints**: Uses CloudFront to serve requests to globally distributed users.
-    -   **Custom Domain**: Map your custom domain name (e.g., `api.yourdomain.com`) to your API Gateway endpoint.
-
-#### Integration Types:
-
-API Gateway allows you to integrate the frontend API with various backend services via different integration types:
-
--   **Lambda Integration**: Direct integration with AWS Lambda functions, allowing you to run serverless functions as API endpoints.
--   **HTTP/HTTP_PROXY Integration**: API Gateway can route requests to HTTP-based backends such as web servers or third-party APIs.
--   **AWS Service Integration**: Integrate with other AWS services like DynamoDB, SNS, or SQS directly, without requiring Lambda.
-
-#### Mapping Templates (Velocity Templates):
-
-**Mapping templates** are used to transform incoming requests before passing them to the backend or to transform the responses before sending them back to the client. This is done using the **Velocity Template Language (VTL)**.
-
--   **Features**:
-    -   Modify the request format (e.g., JSON to XML).
-    -   Map query parameters, headers, and body to backend-specific formats.
-    -   Extract and modify response data.
-
-#### Authorization:
-
-API Gateway supports several types of authorization to secure access to your APIs:
-
--   **IAM Roles**: Use AWS IAM roles to authorize access to your API based on user identity and policies.
--   **Cognito User Pools**: Use Amazon Cognito to control access via OAuth2 or JWT-based token authentication.
--   **Lambda Authorizer**: Use a custom Lambda function to authenticate and authorize requests based on custom logic (e.g., checking API keys, tokens).
--   **API Keys**: Restrict access to your API using **API keys**, which are passed in the request headers.
-
-#### Caching:
-
-API Gateway provides **caching** at the stage level to reduce the latency of your API and improve performance.
-
--   **Features**:
-    -   Store responses from your backend services in an API Gateway cache.
-    -   Specify TTL (Time to Live) for cache data.
-    -   Cache data per method and per request, based on query strings or headers.
-
-#### Monitoring and Metrics:
-
-API Gateway integrates with **Amazon CloudWatch** for monitoring, logging, and alerting, giving insights into API performance and usage.
-
--   **CloudWatch Metrics**: API Gateway automatically publishes metrics such as **latency**, **error rates**, **cache hits/misses**, and **throttling** counts to CloudWatch.
--   **CloudWatch Logs**: API Gateway can be configured to log request/response data and error details for debugging.
-
-#### Throttling and Rate Limiting:
-
-API Gateway allows you to control the rate of incoming requests to prevent overloading your backend services.
-
--   **Default Throttling**: Set default limits for request rates and burst limits for your API.
--   **Usage Plans**: Use API keys with usage plans to apply throttling rules and quota limits to individual users or applications.
-
-#### API Gateway VPC Link:
-
-**VPC Link** allows API Gateway to integrate with private resources inside a **VPC (Virtual Private Cloud)**, such as internal web services or databases.
-
--   **Features**:
-    -   **Private Integration**: Allows API Gateway to access services running in a private VPC without exposing them to the public internet.
-    -   Ideal for accessing backend services like EC2, ECS, or load balancers that are hosted in a private subnet.
-
-#### Mock Integration:
-
-**Mock Integration** is used to return static responses without sending requests to any backend. It’s useful for testing and prototyping.
-
--   **Features**:
-    -   Simulate API responses.
-    -   Set up static responses based on incoming requests.
-    -   No backend services involved.
-
-#### Deployment:
-
-API Gateway provides the ability to **deploy** APIs to various stages (e.g., dev, test, prod) and manage different versions of your APIs.
-
--   **Features**:
-    -   **Deployment** creates a snapshot of your API configuration and methods at a specific point in time.
-    -   You can **roll back** to previous versions of the API if needed.
-    -   Each stage has a unique URL for accessing the deployed API.
-
-#### Cross-Origin Resource Sharing (CORS):
-
-**CORS** is a security feature implemented by browsers to restrict web applications from making requests to a domain different from the one that served the web page.
-
--   **Features**:
-    -   API Gateway supports **CORS** to allow restricted resources to be accessed on a domain different from the origin.
-    -   You can configure **CORS** settings to control which origins and methods are allowed for your API.
-
-#### OpenAPI (Swagger) Support:
-
-API Gateway supports the **OpenAPI Specification (formerly known as Swagger)** for defining your API structure.
-
--   **Features**:
-    -   Import and export your API definitions using OpenAPI/Swagger files.
-    -   Simplifies API development by providing a standard, machine-readable format.
-    -   Use OpenAPI definitions for documentation or collaboration purposes.
-
-#### API Gateway Policies:
-
-API Gateway supports **resource policies** that allow you to control access to your API at the **resource level**.
-
--   **Features**:
-    -   You can restrict access to specific IP ranges, VPCs, or AWS accounts.
-    -   Resource policies are useful for implementing fine-grained access control to APIs.
-
-#### SDK Generation:
-
-API Gateway can automatically generate **SDKs (Software Development Kits)** for various programming languages (e.g., JavaScript, iOS, Android) based on your API definitions.
-
--   **Features**:
-    -   Simplifies the integration of APIs into client applications.
-    -   Generates client-side code that can handle API calls, including authentication and request/response handling.
-
-#### Error Handling:
-
-API Gateway allows you to define custom error responses, enabling better error handling in your API.
-
--   **Features**:
-    -   You can set up custom response templates to format error messages.
-    -   Define specific HTTP status codes based on the response from the backend (e.g., 4xx for client errors, 5xx for server errors).
-
-#### Access Logs:
-
-API Gateway provides **detailed access logs** to monitor API usage and analyze performance.
-
--   **Features**:
-    -   Logs include detailed information such as request timestamps, IP addresses, request/response payloads, and latency.
-    -   Access logs can be stored in CloudWatch Logs for long-term analysis.
-
-AWS API Gateway provides a range of features and capabilities for creating and managing APIs, making it a powerful tool for building modern, scalable applications. Understanding these key concepts and terms is essential for effectively using and configuring the service.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange">Lambda Function</summary>
-
-AWS Lambda is a serverless computing service provided by Amazon Web Services (AWS) that allows users to run their code without having to manage servers or infrastructure. Here are some key terms and concepts related to AWS Lambda:
-AWS Lambda is a serverless computing service that automatically runs code in response to events, managing the underlying compute infrastructure. It allows you to execute your code without provisioning or managing servers, enabling you to focus solely on your application logic. Here are the main concepts and components of AWS Lambda:
-A **Lambda function** is the core concept of AWS Lambda. It is a piece of code that you write and deploy, which AWS Lambda automatically executes in response to events or triggers.
-
--   **Components**:
-
-    -   **Code**: Written in supported languages (Python, Node.js, Java, Go, Ruby, C#, etc.).
-    -   **Handler**: The entry point of the Lambda function, where the execution begins.
-    -   **Deployment Package**: Includes your code and any dependencies in a zip file or a container image (if using container-based Lambda).
-
-#### Function Configuration
-
-Each Lambda function has a set of configurations that define how it behaves, including memory, timeout, and concurrency settings.
-
-1. **Basic Settings**
-
-    - **Function Name**:
-
-        - The name assigned to the function, which must be unique within an AWS Region and account.
-
-    - **Runtime**:
-
-        - Specifies the programming language and version that the Lambda function will use (e.g., Python 3.9, Node.js 18.x, Java 11).
-        - AWS Lambda manages and updates runtimes, but deprecated versions eventually lose support, so updating periodically is crucial.
-
-    - **Execution Role & Policies**:
-
-        - Lambda functions require an **Identity and Access Management (IAM) role** with permissions to interact with AWS resources.
-        - The role grants the function access to resources such as S3 buckets, DynamoDB tables, or the CloudWatch Logs service where function logs are stored.
-        - Following the principle of least privilege, the role should have the minimum permissions needed.
-        - `Resource-Based Policies`: Lambda functions can have resource-based policies to control which AWS accounts or services can invoke the function. This is especially useful for cross-account or cross-service access, like allowing an S3 bucket from another account to trigger a Lambda function.
-
-    - **Handler**:
-        - Defines the entry point of the function. The handler is a function within your code that AWS Lambda calls to start execution.
-        - The format is typically `filename.method_name` (e.g., `lambda_function.lambda_handler`), where `lambda_function` is the filename and `lambda_handler` is the method name.
-
-2. **Memory and Timeout**
-
-    - **Memory Allocation**:
-
-        - The memory (in MB) allocated to a Lambda function can range from 128 MB to 10 GB, in increments of 1 MB.
-        - More memory usually results in more CPU and network bandwidth allocation, which can speed up execution but also increase costs.
-        - Lambda pricing is based on memory and execution time, so optimizing memory for performance and cost balance is essential.
-
-    - **Timeout**:
-
-        - The maximum time that a Lambda function can run per invocation, with a range from 1 second to 15 minutes (900 seconds).
-        - If the function exceeds the timeout, it is terminated, so setting an appropriate timeout based on expected execution duration is critical to prevent early termination.
-        - Specifies the maximum duration for function execution. Lambda terminates the function if it exceeds this time, ensuring resource cleanup and preventing long-running executions.
-
-    - **Retry Policies**:
-        - You can configure retry policies for asynchronous invocations and event source mappings. These are useful for automatically handling transient failures, allowing your function more opportunities to complete.
-
-3. **Concurrency and Scaling**
-
-    - **Reserved Concurrency**:
-
-        - Allows reserving a portion of account-level concurrency for the function. It ensures that the function has dedicated capacity but limits the maximum concurrent executions it can have.
-        - Useful for protecting other resources from being overwhelmed by excessive function executions.
-
-    - **Provisioned Concurrency**:
-        - Keeps a pre-warmed pool of instances ready to handle requests, reducing cold starts and improving response times for latency-sensitive applications.
-        - This is ideal for API backends, interactive applications, or high-traffic functions where fast execution is critical.
-
-4. **Environment Variables**
-
-    - Key-value pairs used to store configuration data or secrets needed by the function, such as API keys, database credentials, or resource configurations.
-    - **Environment Variable Encryption**: By default, Lambda encrypts environment variables using AWS Key Management Service (KMS). You can also specify a custom KMS key for added security.
-
-5. **Networking**: AWS Lambda can be configured to run inside a **Virtual Private Cloud (VPC)**, allowing your function to access private resources like RDS or EC2 instances.
-
-    - When you configure a Lambda function to connect to a VPC, you specify subnets and security groups to control network access.
-    - Note that adding VPC connectivity may impact Lambda’s cold start time because it requires additional network setup.
-    - `VPC Subnets`: Functions running in VPC can interact with private subnets and on-premises resources through a VPN or Direct Connect.
-    - `VPC Endpoints`: Can be used to access AWS services privately without internet access.
-
-6. **Dead Letter Queue (DLQ)**
-
-    - Specifies an Amazon SQS queue or an Amazon SNS topic as a **Dead Letter Queue** for asynchronous invocation errors.
-    - When a Lambda function cannot process an event after a certain number of retries, the event is sent to the DLQ for later analysis or reprocessing.
-    - Useful for handling errors gracefully, ensuring events aren’t lost.
-
-7. **Error Handling and Retry Policies**
-
-    - **Asynchronous Invocation**: Lambda automatically retries asynchronous invocations (e.g., from S3, SNS, CloudWatch) up to two times if there’s an error. You can configure the retry attempts to 0, 1, or 2.
-    - **Event Source Mapping**: For sources like SQS, Kinesis, and DynamoDB streams, Lambda retries until the message expires, is processed successfully, or is moved to a **destination** or **DLQ** after a set number of attempts.
-    - **Destinations**: With **AWS Lambda destinations**, you can route successful or failed asynchronous invocations to an SNS topic, SQS queue, EventBridge, or another Lambda function, which allows for advanced error handling and processing workflows.
-
-8. **Logging and Monitoring**: AWS Lambda integrates with **Amazon CloudWatch** for logging, monitoring, and observability.
-
-    - `CloudWatch Logs`: Every function invocation produces logs, which can be viewed and monitored through CloudWatch. Lambda sends logs of function execution (including errors, timeouts, and custom logs) to Amazon CloudWatch by default. These logs are useful for debugging, monitoring, and performance tuning.
-    - `X-Ray Tracing`: AWS X-Ray provides insights into function performance and latency by tracing requests as they pass through the application. It helps pinpoint bottlenecks, understand dependencies, and monitor overall performance.
-
-    - `Invocations`: The number of times a function is called.
-    - `Errors`: The number of errors that occurred during function execution.
-    - `Duration`: The time it took for the function to execute.
-    - `Throttles`: The number of times the function was throttled due to reaching the concurrency limit.
-
-9. **File System (EFS) Configuration**
-
-    - **Amazon EFS (Elastic File System)**:
-        - Allows Lambda functions to access a persistent file system across function invocations. This is helpful for functions that require shared storage, such as large models or datasets.
-        - EFS can be mounted on Lambda functions configured within a VPC, and it’s useful for stateful workloads or functions with large code dependencies that exceed Lambda’s 10 GB limit.
-
-10. **Function Code Configuration**
-
--   **Deployment Package**:
-    -   A Lambda function’s deployment package contains the function code and dependencies, packaged in a `.zip` file or container image.
-    -   **Layers**: Lambda layers let you share code, libraries, or binaries across multiple Lambda functions without including them in each function’s deployment package. Up to 5 layers can be used per function, reducing package size and simplifying maintenance.
--   **Container Images**:
-    -   Lambda supports container images up to 10 GB, allowing you to package code and dependencies in Docker images for more complex applications or specific runtime requirements.
-    -   Images are stored in Amazon ECR and provide a way to deploy large applications with custom runtimes or dependencies.
-
-11. **Aliases and Versions**
-
--   **Versions**: Lambda functions can be versioned, with each published version being immutable. Versions allow you to reference specific function code and configuration states, providing stability for production applications.
--   **Aliases**: An alias is a pointer to a specific function version, often used to manage different environments (e.g., `dev`, `test`, `prod`). Aliases allow routing traffic between versions and enable canary deployments by splitting traffic to different versions.
-
-#### Concurrency and Scaling
-
-**Concurrency** in AWS Lambda refers to the number of instances (or executions) of a function that can run simultaneously. AWS Lambda is inherently scalable and can handle multiple invocations in parallel, but understanding how concurrency works is crucial for ensuring predictable scaling behavior. You can manage concurrency to control costs and limit resource usage. AWS Lambda’s concurrency and scaling capabilities are essential for building scalable, serverless applications. Here’s a breakdown of key terms and concepts related to concurrency and scaling in AWS Lambda:
-
-1. **Concurrency Limit**:
-
-    - AWS Lambda has default concurrency limits, which can be adjusted within AWS account settings. This limit is important for managing the maximum number of concurrent executions your account can have across all Lambda functions.
-    - Concurrency settings help ensure that Lambda functions don't overwhelm downstream services, databases, or other resources by invoking too many instances at once.
-
-2. **Reserved Concurrency**:
-
-    - Reserved concurrency is the maximum number of concurrent executions that a specific Lambda function can handle. This is an optional configuration that isolates a portion of account-wide concurrency for a specific Lambda function.
-    - For example, if you reserve concurrency of `50` for one Lambda function, AWS guarantees that up to 50 concurrent executions of that function will run, while preventing it from using more than 50 concurrent executions and consuming resources that other functions need.
-
-3. **Provisioned Concurrency**:
-
-    - Provisioned concurrency is a feature designed to reduce the latency of Lambda functions. It pre-warms a specific number of instances to ensure they are immediately available when requests arrive, preventing cold starts (the delay from initializing resources when a function is first invoked).
-    - This is particularly useful for applications where low latency is critical, such as interactive applications or APIs that require consistent response times.
-
-4. **Cold Start**
-
-    - A **cold start** occurs when AWS Lambda needs to initialize a new environment for an incoming request. When a Lambda function is invoked, AWS must set up resources such as the execution environment, runtime, and dependencies.
-    - Cold starts can lead to latency in the initial request. For functions that require low latency, cold starts can be mitigated by using **Provisioned Concurrency** or by periodically invoking the function to keep it "warm."
-
-5. **Auto Scaling**
-
-    - AWS Lambda automatically scales based on the number of incoming requests and concurrency limits. When more requests arrive than existing Lambda instances can handle, AWS Lambda automatically scales up by creating new instances.
-    - This process is automatic and can handle bursts of traffic efficiently, but scaling is limited by concurrency configurations, reserved concurrency, and account-wide concurrency quotas.
-
-6. **Burst Concurrency**
-
-    - **Burst concurrency** is the initial scaling capacity that AWS Lambda provides within a short time for functions within a particular AWS Region.
-    - AWS Lambda can initially handle a burst of 500 to 3000 concurrent requests per second (depending on the Region). After this burst, Lambda gradually scales up at a rate of 500 additional concurrent invocations per minute until it reaches the maximum concurrency limit of the AWS account.
-
-7. **Throttling**
-
-    - Throttling occurs when AWS Lambda exceeds its maximum concurrency limit (either at the account level or at the function level through reserved concurrency).
-    - When throttling happens, additional requests to a Lambda function are rejected with a `429 TooManyRequests` error. To handle this, the calling service (like API Gateway or SQS) can implement retry logic, or you can increase concurrency limits if throttling is frequent.
-
-8. **Scaling Behavior and Invocation Model**
-
-    - **Synchronous Invocations**:
-        - In synchronous invocations (like those triggered by API Gateway, AWS SDK, or application integrations), Lambda returns the response immediately after execution, and the caller waits for the function to complete.
-        - When the request rate exceeds the function’s concurrency limit, new synchronous invocations are throttled.
-    - **Asynchronous Invocations**: For asynchronous invocations (like those triggered by S3 or CloudWatch Events), Lambda queues the events. It then retries these events if they fail or are throttled until they succeed or until Lambda exhausts the retry limit.
-    - **Event Source Mapping**: When integrating Lambda with services like Amazon SQS or Kinesis (stream-based services), Lambda reads and processes events as they arrive in the source. The scaling of Lambda for these integrations is determined by the event source's processing characteristics and partitioning.
-
-9. **Lambda Scaling with Event Sources**
-
-    - **Amazon SQS**: Lambda can process up to 10 messages at a time from a single Amazon SQS queue and scales horizontally as the number of messages increases, limited by concurrency.
-    - **Amazon Kinesis and DynamoDB Streams**:
-        - Lambda scaling with Kinesis or DynamoDB streams is partitioned. AWS Lambda processes records from each shard or partition concurrently, but only one Lambda instance can process data from a specific shard at a time.
-        - The number of shards defines the maximum concurrency Lambda can achieve with these sources, so you may need to increase the shard count if the function requires greater concurrency.
-
-10. **Concurrency Scaling Considerations**: Concurrency affects costs, latency, and performance, so configuring concurrency properly is key to balancing efficiency and cost in AWS Lambda:
-
-    - **Cost**: Each instance adds cost, so unbounded concurrency can lead to high expenses. Reserved and provisioned concurrency options give finer control over costs.
-    - **Latency**: Low-latency applications may need provisioned concurrency to avoid cold starts.
-    - **Throttling Impact**: Throttling at peak times can cause delays or errors in applications, making it important to monitor concurrency usage and plan capacity according to traffic patterns.
-
-11. **Monitoring and Scaling Metrics**: AWS provides metrics in CloudWatch that help in monitoring and tuning Lambda function scaling:
-    - **ConcurrentExecutions**: Shows the total concurrent executions in the account.
-    - **UnreservedConcurrentExecutions**: Reflects concurrency left after reserved concurrency allocations.
-    - **Throttles**: Indicates throttling events due to exceeded concurrency limits, helping identify scaling needs.
-
-#### Lambda Throttling:
-
-Lambda throttling is a mechanism used in AWS Lambda to limit the rate at which function executions can occur. This mechanism helps protect your resources and ensures the smooth operation of your AWS infrastructure by preventing a Lambda function from being overwhelmed with excessive requests. AWS Lambda provides two types of throttling:
-
--   `Concurrent Execution Throttling`:
-
-    -   Concurrent execution throttling limits the number of function executions that can run simultaneously. AWS imposes a default concurrency limit on your AWS account and can adjust this limit upon request.
-    -   When the limit is reached, AWS will queue any additional invocation requests. These queued requests will be processed as soon as existing executions complete and resources become available. Throttled invocations do not result in errors; they are simply delayed.
-    -   You can view and modify the concurrent execution limit for a specific function in the AWS Lambda Management Console.
-
--   `Invocation Throttling`:
-
-    -   Invocation throttling occurs when you send too many requests to invoke a Lambda function in a short period. This can happen when you repeatedly call the function with a high request rate.
-    -   AWS enforces soft limits on the number of requests per second (RPS) that can be sent to a function. If you exceed these soft limits, AWS may throttle your requests, resulting in delays and retries.
-    -   To mitigate invocation throttling, you can:
-        -   Implement exponential backoff and retries in your code to handle throttled requests gracefully.
-        -   Request a limit increase from AWS Support if your workload requires a higher request rate.
-
--   `Implement Retries`: Build retry logic with exponential backoff into your Lambda client code to handle throttled requests and retries automatically.
--   `Error Handling`: Check for error codes in the Lambda response to detect throttled invocations and take appropriate action.
--   `Throttle Metrics`: Monitor CloudWatch metrics, such as `Throttles` and `ThrottleCount` to gain insight into the rate of throttled invocations.
--   `Limit Increases`: If you anticipate higher traffic, request a concurrency limit increase from AWS Support. Ensure that your architecture and resource usage can handle the increased load.
--   `Batch Processing`: If you're processing large numbers of records, consider batch processing to reduce the rate of function invocations.
--   `Distributed Workloads`: Distribute workloads across multiple Lambda functions to avoid overwhelming a single function.
--   `Provisioned Concurrency`: Consider using AWS Lambda Provisioned Concurrency to pre-warm your functions, ensuring that they can handle surges in traffic without experiencing cold start delays.
-
-#### AWS Lambda Destinations
-
-AWS Lambda Destinations provides a powerful mechanism for handling the asynchronous invocation results of a Lambda function. When a Lambda function is invoked asynchronously (for example, by S3, SNS, or other AWS services), Lambda Destinations can automatically route the outcome (success or failure) to a target destination for further processing.
-**Destinations** allow you to specify what happens after the execution of a Lambda function, based on success or failure.
-
--   **Lambda Destinations supports two types of routes**:
-
-    -   `OnSuccess`: Defines where to send the successful result of an asynchronous invocation.
-    -   `OnFailure`: Defines where to send the result in case of failure during invocation.
-
--   **Key Differences from Dead Letter Queue (DLQ)**
-
-    -   DLQ captures only failed invocations.
-    -   Destinations captures both successes and failures, and allows more flexibility in routing events.
-
--   **Supported Destination Targets**:
-    -   `SNS`: Notify users or systems of function success/failure.
-    -   `SQS`: Queue events for further processing.
-    -   `EventBridge`: Route events for automation workflows.
-    -   `Another Lambda Function`: Trigger another Lambda function.
-
-#### Event Sources / Triggers
-
-**Event sources** are AWS services or external systems that generate events that can trigger a Lambda function to execute. These triggers define when and how Lambda functions are invoked.
-
--   **Common Event Sources**:
-    -   **S3**: Lambda can trigger when an object is created or deleted in an S3 bucket.
-    -   **API Gateway**: Lambda can be invoked via HTTP requests, making it suitable for serverless APIs.
-    -   **SNS (Simple Notification Service)**: Lambda can process messages from SNS.
-    -   **SQS (Simple Queue Service)**: Lambda can process messages from SQS queues.
-    -   **CloudWatch Events**: Lambda can trigger on scheduled events or based on system events (e.g., EC2 instance state change).
-    -   **DynamoDB Streams**: Lambda can trigger on changes in DynamoDB tables.
-
-#### Lambda Execution Environment
-
-The **execution environment** is the runtime in which Lambda functions run. AWS Lambda automatically manages the environment that runs your code, scaling it based on demand.
-
--   **Features**:
-    -   **Isolated environment**: Functions run in isolated environments to ensure security.
-    -   **Runtime management**: AWS manages the language runtime and updates it.
-    -   **Environment variables**: Allows the use of environment variables for dynamic configuration.
-
-#### Lambda Layers
-
-**Lambda layers** allow you to package external libraries, dependencies, or configuration files separately from your function code. These layers can be shared across multiple Lambda functions, reducing code duplication and improving maintainability.
-
--   **Features**:
-    -   You can include libraries, custom runtimes, or configuration data.
-    -   You can use up to 5 layers per Lambda function.
-    -   Layers can be reused by multiple Lambda functions or shared across accounts.
-
-#### Lambda Pricing Model
-
-AWS Lambda follows a pay-per-use model, where you're charged based on the number of function invocations and the compute time used.
-
--   **Pricing Factors**:
-    -   **Number of invocations**: Charged for every request.
-    -   **Compute time**: Charged based on the function's memory and execution duration, measured in milliseconds.
-
-#### Asynchronous and Synchronous Invocations
-
-AWS Lambda supports both **synchronous** and **asynchronous** invocations, depending on how you need the function to interact with other systems.
-
--   **Synchronous invocation**: The caller waits for the function to complete before continuing (e.g., API Gateway).
--   **Asynchronous invocation**: The caller doesn't wait for the function to complete (e.g., S3 event notifications, SNS).
-
-#### AWS Lambda@Edge
-
-**Lambda@Edge** is an extension of AWS Lambda that allows you to run code closer to users (at Amazon CloudFront edge locations), reducing latency for global users.
-
--   **Features**:
-    -   Modify content delivery and customize responses for users.
-    -   Perform operations like URL rewrites, header manipulations, and cache key customizations.
-
----
-
----
-
-#### Features of Lambda Function
-
--   `Serverless Execution`: AWS Lambda allows you to run your code without managing servers. You upload your code, and AWS Lambda takes care of provisioning and scaling the infrastructure needed to execute it.
--   `Event-Driven Execution`: Lambda functions can be triggered by various AWS services or custom events. Examples of triggers include changes to data in an S3 bucket, updates to a DynamoDB table, or HTTP requests through API Gateway.
--   `Supported Runtimes`: Lambda supports multiple programming languages, known as runtimes. These include Node.js, Python, Java, Ruby, Go, .NET, and custom runtimes through the use of custom execution environments.
--   `Automatic Scaling`: Lambda automatically scales your applications in response to incoming traffic. Each function can scale independently, and you pay only for the compute time consumed.
--   `Built-in Fault Tolerance`: AWS Lambda maintains compute capacity, and if a function fails, it automatically retries the execution. If a function execution fails repeatedly, Lambda can be configured to send the event to a Dead Letter Queue (DLQ) for further analysis.
--   `Integrated Logging and Monitoring`: Lambda provides built-in logging through Amazon CloudWatch. You can monitor the performance of your functions, view logs, and set up custom CloudWatch Alarms to be notified of specific events or issues.
--   `Environment Variables`: Lambda allows you to set environment variables for your functions. These variables can be used to store configuration settings or sensitive information, such as API keys.
--   `Execution Role and Permissions`: Each Lambda function is associated with an IAM (Identity and Access Management) role that defines the permissions needed to execute the function and access other AWS resources.
--   `Stateless Execution`: Lambda functions are designed to be stateless. However, you can store persistent data using other AWS services like Amazon S3, DynamoDB, or AWS RDS.
--   `Cold Starts and Warm Containers`: Cold starts occur when a function is invoked for the first time or when there is a need to scale. Subsequent invocations reuse warm containers, reducing cold start times.
--   `VPC Integration`: Lambda functions can be integrated with a VPC (Virtual Private Cloud), allowing them to access resources inside a VPC, such as databases, and allowing private connectivity.
--   `Cross-Region Execution`: You can configure Lambda functions to run in different AWS regions, providing flexibility and redundancy.
--   `Versioning and Aliases`: Lambda supports versioning and aliases, allowing you to manage different versions of your functions and direct traffic to specific versions.
--   `Maximum Execution Duration`: Each Lambda function has a maximum execution duration (timeout) that can be set. If the function runs longer than the specified duration, it is terminated.
--   `Immutable Deployment Packages`: Once a Lambda function is created, its deployment package (code and dependencies) becomes immutable. If you need to make changes, you create a new version of the function.
-
-#### Limitation on Lambda Functions:
-
--   `Execution timeout`: The maximum execution time for a Lambda function is `900 seconds (15 minutes)`.
--   `Concurrent executions`: By default, there is a soft `limit of 1,000 concurrent executions per account per region`. However, you can request a higher limit if you need it.
--   `Environment variables`: You can set environment variables for your Lambda function, but `the maximum size of all environment variables combined is 4 KB`.
-
--   `Deployment package size`: `The maximum compressed deployment package size for a Lambda function is 50 MB`. There are some exceptions for certain runtimes, as outlined in my previous answer.
-
-    -   Uncompressed code & dependencies < 250 MB
-    -   Compressed function package < 50MB
-    -   Total function packages in a region < 75 GB
-    -   Ephemeral storage < 512 MB
-    -   Maximum execution duration < 900 seconds
-    -   Concurrent Lambda functions < 1000
-
--   `Memory allocation`: Up to 10 GB of memory to a Lambda function. The amount of memory you allocate also determines the amount of CPU and network resources that the function gets.
-    -   `Memory allocation`: Up to 10 GB of memory starting from 128 MB with CPU 3GB.
--   `Execution environment`: Lambda functions run in a stateless execution environment, so you can't store data on the local file system. However, you can use other AWS services like S3 or DynamoDB to store data.
--   `Function invocations`: You can trigger a Lambda function in several ways, including through `API Gateway`, `S3 events`, `SNS notifications`, and more. However, there may be some limits or quotas on the number of invocations you can make in a given period.
-
-#### Usecases of Lambda
-
-AWS Lambda is a serverless compute service that lets you run code without provisioning or managing servers. It's often used for various use cases across different industries. Here are the top five most common use cases for AWS Lambda:
-
--   **Event-Driven Processing**: AWS Lambda is frequently used to process events from various AWS services, such as Amazon S3, Amazon DynamoDB, Amazon SNS, Amazon SQS, and more. For example, you can trigger Lambda functions to process new objects uploaded to an S3 bucket, process messages from an SQS queue, or react to changes in a DynamoDB table.
-
--   **Real-time File Processing**: Lambda functions can be used for real-time processing of data streams. For instance, you can use Lambda to analyze streaming data from Amazon Kinesis Data Streams or process logs from Amazon CloudWatch Logs in real-time.
-
--   **Backend for Web Applications**: Lambda functions can serve as the backend for web applications, providing scalable and cost-effective compute resources. You can build APIs using AWS API Gateway and trigger Lambda functions to handle incoming HTTP requests, allowing you to build serverless web applications without managing infrastructure.
-
--   **Scheduled Tasks and Cron Jobs**: Lambda functions can be scheduled to run at specific intervals using AWS CloudWatch Events. This allows you to automate tasks such as data backups, log archiving, or regular data processing jobs without needing to maintain dedicated servers or cron jobs.
-
--   **Data Processing and ETL**: Lambda functions are commonly used for data processing and ETL (Extract, Transform, Load) tasks. You can trigger Lambda functions to process data as soon as it becomes available, perform transformations on the data, and then load it into a data warehouse or database. This approach enables real-time or near-real-time data processing without the need for complex infrastructure.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange">Step Function</summary>
-
--   **NOTES**:
-    -   Each state can store up to 256 KiB of data
-
-AWS Step Functions is a serverless orchestration service that lets you coordinate multiple AWS services into automated workflows. It helps break complex processes into a series of steps that can run in sequence or parallel. You define each step in the process using a state machine, and Step Functions automatically triggers each step, handles failures, and retries if needed, all while visualizing the flow for easier monitoring and debugging.. Below are the key terms and concepts of AWS Step Functions explained in detail:
-
-#### Terminology, Concepts and Components
-
--   **State Machine**:
-
-    -   A state machine is a workflow definition in Step Functions. It represents the various steps of your application as states.
-    -   The state machine specifies how the states interact with each other, the transitions between states, and the inputs/outputs of each state.
-    -   The state machine definition is written in JSON or Amazon States Language (ASL). It defines the states, transitions, input/output, and other configurations.
-
--   **States**: States are the individual steps in a state machine. Step Functions supports several types of states:
-
-    -   `Task State`: Executes an AWS Lambda function or integrates with other AWS services like SNS, SQS, DynamoDB, etc.
-    -   `Choice State`: Adds branching logic to your state machine based on certain conditions.
-    -   `Parallel State`: Executes multiple branches of states simultaneously.
-    -   `Map State`: Iterates over a list of items and executes the same workflow for each item.
-    -   `Wait State`: Introduces a delay for a specified amount of time before moving to the next state.
-    -   `Succeed State`: Indicates that the execution has succeeded.
-    -   `Fail State`: Indicates that the execution has failed and provides error information.
-    -   `Pass State`: Passes its input to its output, performing no work.
-
--   **[Amazon States Language (ASL)](https://states-language.net/)**: ASL is the JSON-based and structured language used to define state machines. It includes the syntax for defining states, transitions, and error handling. Detailed Explanation of Common Fields:
-
-    -   `Type`: Defines the type of state (Task, Choice, Succeed, Fail, etc.).
-    -   `Resource`: Specifies the ARN of the resource to be executed (e.g., Lambda function ARN).
-    -   `Next`: Specifies the next state to transition to after the current state completes.
-    -   `End`: If set to true, designates the state as the final state.
-    -   `InputPath`: JSONPath that selects part of the state input to be passed to the resource.
-    -   `OutputPath`: JSONPath that selects part of the state output to be passed to the next state.
-    -   `Parameters`: Passes specific JSON as input to the resource.
-    -   `ResultPath`: Specifies where to place the result of the resource's execution in the state’s input.
-    -   `ResultSelector`: Manipulates the raw result from the resource before it’s passed to the ResultPath.
-    -   `Retry`: Array of retry policy objects that define retry logic for a state.
-    -   `Catch`: Array of catcher objects that define what to do if an error is encountered.
-
--   **Execution**: An execution is an instance of your state machine in action. Each execution is unique and can be tracked separately.
--   **Context Object**: The context object contains metadata about the execution, such as execution ID, name, and start time. It can be accessed within the state machine.
--   **Event**: Events are the inputs, outputs, and error messages generated by each state during execution.
-
--   **Error Handling**: AWS Step Functions support robust error handling with `Retry` and `Catch` fields.
-
-    -   `Retry`: Defines retry behavior for states in case of errors. You can specify the number of retry attempts, interval between retries, and backoff rate.
-    -   `Catch`: Defines how to handle errors that occur during state execution. You can specify different catch blocks for different error types.
-
--   <details><summary style="font-size:20px;color:#FF1493">Input and Output Processing</summary>
-
-    -   [**Input and Output Processing**](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-input-output-filtering.html): Each state can receive input, process it, and produce output. The output of one state can be the input for the next state.
-
-    -   AWS Step Functions applies the `InputPath` field first, and then the `Parameters` field. You can first filter your raw input to a selection you want using `InputPath`, and then apply `Parameters` to manipulate that input further, or add new values. You can then use the `ResultSelector` field to manipulate the state's output before `ResultPath` is applied.
-
-    -   **InputPath**: Select a part of the JSON input to pass to the state.
-
-        -   **Purpose**: Filters the input data before it reaches the state.
-        -   **Function**: Extracts a subset of the original input using a JSONPath expression.
-        -   **Usage**: If you only need a portion of the input, you can define an `InputPath` to pass only that subset to the state.
-        -   **Default Behavior**: If omitted or set to `"$"`, the entire input is passed to the state.
-
-        -   **Example**:  
-            Consider this input JSON:
-            ```json
-            {
-                "order": {
-                    "id": "1234",
-                    "customer": {
-                        "name": "Alice",
-                        "email": "alice@example.com"
-                    },
-                    "items": ["item1", "item2"]
-                }
-            }
-            ```
-            If you only need the `customer` object:
-            ```json
-            "InputPath": "$.order.customer"
-            ```
-            The state will receive:
-            ```json
-            {
-                "name": "Alice",
-                "email": "alice@example.com"
-            }
-            ```
-
-    -   **Parameters**: Parameters are used to specify which parts of the input are passed to the state’s resource. They allow the customization of input data passed to the resource that performs the task.
-
-        -   **Purpose**: Transforms input data before sending it to a task.
-        -   **Function**: Allows you to customize the request by selecting or renaming fields.
-        -   **Usage**: You can define **key-value pairs** to structure the input.
-
-        -   **Example**: Using the same input JSON:
-            ```json
-            "Parameters": {
-              "customerName.$": "$.order.customer.name",
-              "customerEmail.$": "$.order.customer.email",
-              "orderItems.$": "$.order.items"
-            }
-            ```
-            This modifies the input to:
-            ```json
-            {
-                "customerName": "Alice",
-                "customerEmail": "alice@example.com",
-                "orderItems": ["item1", "item2"]
-            }
-            ```
-
-    -   **ResultSelector**
-
-        -   **Purpose**: Filters the **output** from a state before it is passed to `ResultPath`.
-        -   **Function**: Similar to `Parameters`, but it applies to the **result** of a task.
-        -   **Usage**: Extracts or restructures data **after** execution.
-
-        -   **Example**:  
-            Assume an AWS Lambda task returns this output:
-            ```json
-            {
-                "statusCode": 200,
-                "body": {
-                    "message": "Order processed successfully",
-                    "orderId": "1234"
-                }
-            }
-            ```
-            Applying a `ResultSelector`:
-            ```json
-            "ResultSelector": {
-              "message.$": "$.body.message",
-              "orderId.$": "$.body.orderId"
-            }
-            ```
-            The transformed output becomes:
-            ```json
-            {
-                "message": "Order processed successfully",
-                "orderId": "1234"
-            }
-            ```
-
-    -   **ResultPath**: ResultPath is a field that specifies where to place the results of a state in the overall execution’s input JSON. This allows the combining of state outputs with the initial input.
-
-        -   **Purpose**: Controls where the **output of a state** is merged with its input.
-        -   **Function**: Defines whether the result **replaces, merges, or is discarded**.
-        -   **Usage**:
-
-            -   `"$"` → The entire result replaces the input.
-            -   `null` → The result is discarded.
-            -   A JSONPath (e.g., `$.processedData`) → The result is merged into input under that path.
-
-        -   **Example**:  
-            Before processing:
-            ```json
-            {
-                "order": {
-                    "id": "1234"
-                }
-            }
-            ```
-            Task output:
-            ```json
-            {
-                "processed": true
-            }
-            ```
-            Using:
-            ```json
-            "ResultPath": "$.order.processedData"
-            ```
-            The final output becomes:
-            ```json
-            {
-                "order": {
-                    "id": "1234",
-                    "processedData": {
-                        "processed": true
-                    }
-                }
-            }
-            ```
-
-    -   **OutputPath**: Select a part of the JSON output to pass to the next state.
-
-        -   `Purpose`: Filters the **final output** of a state **before passing it to the next state**.
-        -   `Function`: Selects a portion of the final result to be passed along.
-        -   `Usage`: If a state produces extra data that is unnecessary for downstream steps, `OutputPath` can extract only the relevant parts.
-        -   `Example`:  
-            Final state output:
-            ```json
-            {
-                "order": {
-                    "id": "1234",
-                    "processedData": {
-                        "processed": true
-                    }
-                },
-                "metadata": {
-                    "timestamp": "2024-02-17T12:00:00Z"
-                }
-            }
-            ```
-            Applying:
-            ```json
-            "OutputPath": "$.order"
-            ```
-            The output passed to the next state will be:
-            ```json
-            {
-                "id": "1234",
-                "processedData": {
-                    "processed": true
-                }
-            }
-            ```
+-   <details><summary style="font-size:25px;color:Orange">CloudWatch</summary>
+
+    -   [Be a Better Dev: AWS Cloudwatch Guides - Learn AWS Monitoring Techniques](https://www.youtube.com/playlist?list=PL9nWRykSBSFir2FLla2thQkEwmLpxPega)
+    -   [What is AWS CloudWatch? Metric | Alarms | Logs Custom Metric](https://www.youtube.com/watch?v=G4_ay2_h9GI)
+
+    Amazon CloudWatch is a monitoring service provided by Amazon Web Services (AWS) that allows you to monitor and collect metrics, collect and monitor log files, and set alarms. Here are some important terms and concepts related to AWS CloudWatch:
+
+    -   `Metrics`: A metric is a variable that you want to monitor, such as CPU usage, disk space usage, or network traffic. CloudWatch provides a set of predefined metrics for AWS resources, and you can also create your own custom metrics.
+    -   `Events`: CloudWatch Events is a service that allows you to monitor and respond to changes in your AWS resources. You can create rules that trigger automated actions when certain events occur, such as launching an EC2 instance or creating a new S3 bucket.
+        -   `Event Sources`: an "event source" refers to the entity or service that generates events that CloudWatch Events can capture and process. An event source is the origin or producer of events that you want to monitor and respond to within the AWS ecosystem. CloudWatch Events can capture events from various AWS services and custom applications, and each of these sources is considered an event source.
+    -   `Alarms`: An alarm is a notification that is triggered when a metric breaches a specified threshold. You can configure CloudWatch to send notifications to various destinations, such as email, SMS, or other AWS services.
+    -   `Rules`: A rule matches incoming events and routes them to targets for processing. A single rule can route to multiple targets, all of which are processed in parallel. Rules are not processed in a particular order. A rule can customize the JSON sent to the target, by passing only certain parts or by overwriting it with a constant.
+    -   `Target`: A target processes events. Targets can include Amazon EC2 instances, AWS Lambda functions, Kinesis streams, Amazon ECS tasks, Step Functions state machines, Amazon SNS topics, Amazon SQS queues, and built-in targets. A target receives events in JSON format.
+    -   `Dashboards`: A dashboard is a customizable view of metrics and alarms that you can create to monitor the health and performance of your AWS resources. You can add multiple metrics and alarms to a single dashboard, and you can create multiple dashboards to monitor different aspects of your infrastructure.
+    -   `Logs`: CloudWatch Logs is a service that allows you to collect, monitor, and store log files generated by your applications and AWS resources. You can also use CloudWatch Logs to search and analyze log data.
+        -   `Log Groups`: Log groups are containers for log streams.
+        -   `Log Streams`: Log streams represent the sequence of log events coming from a specific source, such as an EC2 instance or Lambda function.
+    -   `Retention periods`: CloudWatch allows you to specify how long you want to retain your metric data and log data. By default, CloudWatch retains` metric data for 15 months` and `log data for 30 days`, but you can customize these retention periods to suit your needs.
+    -   `Namespaces`: A namespace is a container for CloudWatch metrics. AWS resources are organized into namespaces, and you can create custom namespaces for your own metrics.
+    -   `Dimensions`: A dimension is a name-value pair that helps you to uniquely identify a metric. For example, a dimension for an EC2 instance might include the instance ID and the region where the instance is running.
+    -   `CloudWatch Agent`: The CloudWatch agent is a software component that you can install on your EC2 instances to collect and send system-level metrics and logs to CloudWatch. The agent supports both Windows and Linux operating systems.
+
+    #### CloudWatch Events vs EventBridge
+
+    Amazon Web Services (AWS) provides two services for managing events and automating responses: Amazon CloudWatch Events and Amazon EventBridge. While both services are designed for event-driven architectures, they have some key differences in terms of functionality and use cases.
+
+    -   `AWS CloudWatch Events`:
+
+        -   `Use Case`: CloudWatch Events primarily focuses on events related to AWS resources. It is designed for monitoring and reacting to events from AWS services, such as EC2, Lambda, S3, and more.
+        -   `Event Sources`: It integrates with AWS services and can capture events from those services. These events are typically related to resource changes, operational activities, and management.
+        -   `Targets`: CloudWatch Events can route events to targets such as AWS Lambda functions, Amazon SNS topics, Kinesis streams, and more.
+        -   `Event Rules`: You can create event rules that define which events to capture and how to respond to them. These rules are based on events from AWS services.
+        -   `Retention`: CloudWatch Events retains events for a maximum of 1 or 2 weeks, depending on the event source.
+
+    -   `AWS EventBridge`:
+
+        -   `Use Case`: EventBridge, previously known as CloudWatch Events bus, is an advanced event bus service. It is designed for a broader range of event sources and use cases, including AWS services and custom applications.
+        -   `Event Sources`: EventBridge can capture events from both AWS services and custom applications, making it suitable for hybrid and multi-cloud environments.
+        -   `Schema Registry`: It includes a schema registry that allows you to define the structure of events, making it easier to work with event data.
+        -   `Event Buses`: EventBridge supports multiple event buses that allow you to segment and manage events effectively. Each bus can have its own permissions and event sources.
+        -   `Targets`: Similar to CloudWatch Events, EventBridge can route events to AWS Lambda functions, SNS topics, Kinesis streams, and more.
+        -   `Archiving`: EventBridge offers event archiving, which allows you to retain events for a longer duration than CloudWatch Events.
+        -   `Rules and EventBridge API`: EventBridge introduces more advanced rules and support for the EventBridge API, providing finer-grained control over event routing and transformation.
+
+    -   `Key Considerations`:
+
+        -   If you primarily need to handle AWS service events, CloudWatch Events may suffice.
+        -   If you need to manage events from custom applications, multiple AWS accounts, or other AWS services in a more structured and scalable way, EventBridge is a better choice.
+        -   EventBridge is often the preferred service for building event-driven architectures for microservices, serverless applications, and complex integrations.
+
+    In summary, AWS CloudWatch Events is a specialized service for AWS resource events, while AWS EventBridge is a more versatile event bus service designed for a broader range of event sources and use cases, including custom applications and multi-cloud environments. Your choice depends on your specific use case and requirements.
 
     </details>
 
--   <details><summary style="font-size:20px;color:#FF1493">JSONPath</summary>
+---
 
-    JSONPath is a query language used for extracting and filtering data from JSON documents. It is similar to XPath for XML but designed specifically for JSON. JSONPath expressions allow you to navigate JSON structures, retrieve specific elements, and manipulate data.
+-   <details><summary style="font-size:25px;color:Orange">S3</summary>
 
-    -   **Basic Syntax of JSONPath**: JSONPath expressions use **dot notation** (`$.key`) and **bracket notation** (`$['key']`) to access elements inside a JSON document.
+    Amazon S3 (Simple Storage Service) is a highly scalable, durable, and secure object storage service provided by Amazon Web Services (AWS). It is designed to store and retrieve any amount of data from anywhere on the web, making it a fundamental building block for many cloud-based applications. S3 is widely used for data storage, backup and restore, content distribution, big data analytics, archiving, and much more.
 
-    | **Symbol**    | **Description**                         | **Example**                                                               |
-    | ------------- | --------------------------------------- | ------------------------------------------------------------------------- |
-    | `$`           | Root element                            | `$` selects the entire JSON object                                        |
-    | `.`           | Child operator                          | `$.name` selects `"John Doe"` from `{"name": "John Doe"}`                 |
-    | `[]`          | Bracket notation for keys or indexes    | `$['name']` (same as `$.name`), `$[0]` selects the first item in an array |
-    | `*`           | Wildcard (selects all elements)         | `$.*` selects all keys at the root level                                  |
-    | `..`          | Recursive descent (searches all levels) | `$..price` selects all `price` values from nested objects                 |
-    | `?()`         | Filter expression                       | `$[?(@.price > 20)]` selects items where `price > 20`                     |
-    | `@`           | Current element in filter expressions   | `$[?(@.status == "active")]` selects elements with `"status": "active"`   |
-    | `[,]`         | Union (select multiple elements)        | `$['name', 'age']` selects both `name` and `age`                          |
-    | `[start:end]` | Array slice (Python-like slicing)       | `$[0:3]` selects the first three elements of an array                     |
+    -   `Bucket`: A bucket is a container for storing objects in Amazon S3. All objects are stored in buckets, and each bucket has a globally unique name that must adhere to specific naming rules. Buckets act as the top-level namespace in S3.
+    -   `Object`: An object is the basic unit of data in Amazon S3. It can be any file, data, or media, including text files, images, videos, and more. Objects consist of the actual data, a key (or identifier), and metadata (optional attributes).
+    -   `Key`: The key is the unique identifier for an object within a bucket. It is similar to a file path and is used to retrieve objects from S3. For example, if an object is stored at the path "my-folder/image.jpg", the key would be "my-folder/image.jpg"
+    -   `Region`: A region is a geographical area where S3 stores data. Each bucket is associated with a specific AWS region, and the data within that bucket is physically stored in data centers located in that region.
+    -   `Access Control List (ACL)`: An ACL is a set of permissions attached to each object and bucket, defining who can access the objects and what actions they can perform (e.g., read, write, delete). While still supported, IAM policies are now generally recommended for controlling access to S3 resources.
+    -   `AWS Identity and Access Management (IAM)`: IAM is AWS's identity management service, which allows you to control access to AWS resources. You can use IAM to manage user access to S3 buckets and objects through IAM policies.
+    -   `Object Versioning`: S3 supports versioning, which allows you to keep multiple versions of an object in the same bucket. It helps protect against accidental deletions or overwrites, and you can easily restore previous versions of objects.
+    -   `Server-Side Encryption`: S3 provides server-side encryption to protect data at rest. You can choose to have S3 automatically encrypt your objects using AWS Key Management Service (KMS) keys or Amazon S3 managed keys.
+    -   `Lifecycle Policies`: Lifecycle policies allow you to automatically transition objects between different storage classes or delete objects after a specific period. This helps optimize storage costs and manage data lifecycle.
+    -   `Cross-Region Replication (CRR)`: CRR is a feature that allows you to replicate objects from one S3 bucket to another bucket in a different AWS region. It provides data redundancy and disaster recovery capabilities.
+    -   `Event Notifications`: S3 allows you to set up event notifications to trigger actions (e.g., invoking an AWS Lambda function) when specific events occur, such as object creation or deletion.
+    -   `Access Logs`: You can enable access logging for S3 buckets to track all requests made to the bucket. Access logs are stored in a separate bucket and can help with auditing and monitoring.
 
-    1. **Selecting a Specific Key (`$.key`)**
+    </details>
 
-        ```json
-        {
-            "name": "John Doe",
-            "age": 30,
-            "email": "john@example.com"
-        }
+---
+
+-   <details><summary style="font-size:25px;color:Orange">SNS, SQS & EventBridge</summary>
+
+    #### SNS
+
+    Amazon Simple Notification Service (SNS) is a messaging service provided by Amazon Web Services (AWS) that enables the publishing and delivery of messages to multiple subscribers or endpoints. Here are some important terms and concepts related to AWS SNS:
+
+    ![sns](../assets/aws/sns.png)
+
+    -   `Topic`: A topic is a communication channel in SNS. Publishers send messages to a topic, and subscribers receive messages from a topic. A topic can have one or more subscribers.
+
+        ```python
+        sns = boto3.client('sns')
+        sns.publish(
+            TopicArn='ARN_OF_EC2StateChangeTopic',
+            Message=message,
+            Subject='EC2 State Change Notification'
+        )
         ```
 
-        ```json
-        $.name
-        ```
+    -   `Subscription`: A subscription is a request to receive messages from a topic. Subscribers can receive messages via a variety of protocols, such as email, SMS, HTTP, HTTPS, Lambda, or mobile push notifications.
+    -   `Publisher`: A publisher is an entity that sends messages to a topic. Publishers can be AWS services or applications that use an SNS client.
+    -   `Message`: A message is the content that is sent to a topic. Messages can be up to 256 KB in size and can be in a variety of formats, including text, JSON, and binary data.
+    -   `Protocol`: A protocol is the method used to send messages to subscribers. SNS supports multiple protocols, including HTTP, HTTPS, email, SMS, Lambda, and mobile push notifications.
+    -   `Endpoint`: An endpoint is the destination for a message. Endpoints can be email addresses, mobile device tokens, HTTP/HTTPS URLs, or Amazon resource names (ARNs) for Lambda functions.
+    -   `ARN`: An Amazon Resource Name (ARN) is a unique identifier for an AWS resource, such as an SNS topic or a Lambda function.
+    -   `Message filtering`: SNS allows you to filter messages based on attributes or message content. This enables you to send targeted messages to specific subscribers.
+    -   `Dead-letter queue`: A dead-letter queue is a queue where messages are sent if they cannot be delivered to their intended recipients. SNS provides support for dead-letter queues to help you troubleshoot message delivery issues.
+    -   `Message attributes`: SNS allows you to add custom attributes to messages, which can be used for filtering and routing messages to specific subscribers.
+    -   `Access policies`: SNS allows you to control access to topics and subscriptions using access policies. Access policies define which AWS accounts or users are authorized to perform specific actions on a topic or subscription.
+    -   `SNS Mobile Push`: SNS provides a mobile push service that enables you to send push notifications to iOS, Android, and Kindle Fire devices. SNS Mobile Push supports Apple Push Notification Service (APNS), Google Cloud Messaging (GCM), Firebase Cloud Messaging (FCM), and Amazon Device Messaging (ADM).
 
-        ```json
-        "John Doe"
-        ```
+    #### SQS:
 
-    2. **Accessing Nested Keys (`$.parent.child`)**
+    Amazon Simple Queue Service (SQS) is a fully managed message queuing service provided by Amazon Web Services (AWS) that enables you to decouple and scale microservices, distributed systems, and serverless applications. Here are some important terms and concepts related to AWS SQS:
 
-        ```json
-        {
-            "user": {
-                "id": 101,
+    ![sqs](../assets/aws/sqs.png)
+
+    -   `Queue`: A queue is a container for messages in SQS. Queues allow messages to be stored and retrieved asynchronously between components or services.
+
+    -   `Message`: A message is the information being sent between components or services. Messages can contain up to 256KB of text in any format.
+    -   `Producer`: A producer is a system or application that sends messages to a queue.
+    -   `Consumer`: A consumer is a system or application that receives messages from a queue.
+    -   `Visibility timeout`: When a consumer retrieves a message from a queue, the message becomes "invisible" to other consumers for a specified period of time known as the visibility timeout. This allows the consumer time to process the message without the risk of another consumer processing the same message.
+    -   `Long polling`: Long polling is a method of retrieving messages from a queue where the request to retrieve messages stays open for an extended period of time, waiting for new messages to arrive. This reduces the number of empty responses and can improve the efficiency of message retrieval.
+    -   `Dead-letter queue`: A dead-letter queue is a queue where messages are sent if they cannot be processed successfully by a consumer. SQS provides support for dead-letter queues to help you troubleshoot message processing issues.
+    -   `FIFO queue`: A FIFO queue is a queue that supports "first-in, first-out" ordering of messages. FIFO queues are designed for applications that require the exact order of messages to be preserved.
+    -   `Standard queue`: A standard queue is a queue that provides at-least-once delivery of messages. Standard queues are designed for applications that can handle the possibility of duplicate messages or messages that are not delivered in the exact order they were sent.
+    -   `Message attributes`: SQS allows you to add custom attributes to messages, which can be used for filtering and routing messages to specific consumers.
+    -   `Access policies`: SQS allows you to control access to queues using access policies. Access policies define which AWS accounts or users are authorized to perform specific actions on a queue.
+    -   `Batch operations`: SQS supports batch operations that allow you to send, delete, or change the visibility timeout of multiple messages in a single API call.
+    -   `Delay queues`: Delay queues allow you to delay the delivery of messages for a specified amount of time, up to 15 minutes. This can be useful for scenarios where messages need to be delayed until certain conditions are met.
+
+    #### EventBridge:
+
+    ![event_bridge](../assets/aws/event_bridge.png)
+
+    -   `Event-Driven Architecture`: Amazon EventBridge facilitates event-driven architecture, where services or applications communicate by emitting and consuming events. An event can be anything from a simple notification to a significant change in your application's state.
+
+    Amazon EventBridge is a serverless event bus service that simplifies the building of event-driven architectures. It enables you to connect different AWS services, SaaS applications, and custom applications using events, making it easier to build scalable, decoupled, and flexible applications.
+    AWS EventBridge is a serverless event bus service that enables you to connect applications using data from your own apps, integrated Software-as-a-Service (SaaS) apps, and AWS services. It simplifies event-driven architectures, allowing services to communicate through events. Below are the crucial components and concepts in AWS EventBridge:
+
+    -   **Events**: An **event** is a data record that signifies a change in the state of a system, application, or AWS resource. The event is in JSON format and contains details like the source of the event, the event type, and the event data (payload).
+
+        -   Events in EventBridge are typically generated by:
+            -   AWS services (e.g., S3 file creation).
+            -   Custom applications.
+            -   Integrated SaaS applications.
+
+    -   **Event Buses**: EventBridge uses an event bus, a central message broker that receives and distributes events to the relevant targets. The event bus acts as the intermediary for the communication between different event sources and event targets.
+
+        -   **Event Bus** is the central component where events are sent and from where they are routed to the appropriate targets.
+            -   **Default Event Bus**: Every AWS account has a default event bus that receives events from AWS services (e.g., EC2, S3).
+            -   **Custom Event Bus**: You can create custom event buses for your applications or microservices to handle specific events.
+            -   **SaaS Partner Event Bus**: SaaS applications can send events directly to your event bus using partner event sources.
+
+    -   **Event Patterns**: Event Pattern is a set of conditions used to filter and match specific events based on their attributes or content. Event patterns help you identify which events you want to capture and respond to by defining criteria that events must meet before they are processed by rules in EventBridge.
+
+        -   **Event Patterns** are used in rules to filter events and specify which events should trigger a specific rule.
+        -   Patterns can match specific fields in an event, such as event source, detail type, or the contents of custom event data.
+        -   EventBridge checks incoming events against defined patterns, and when there’s a match, it routes the event to the specified target.
+
+    -   **Rules**: A rule in AWS EventBridge is a configuration that matches incoming events to specific patterns and routes them to one or more target destinations, such as AWS Lambda, SQS, or other services. Rules act as filters, ensuring that only events that meet the defined criteria trigger the specified actions. - **Event Pattern Matching**: EventBridge matches events to rules based on defined event patterns, which are JSON objects that specify the structure and content of the event to be matched. - Rules can trigger multiple targets when a matching event is received. Each rule can have one or more targets.
+
+    -   **Targets**: Targets are the destination resources or services where events are routed after being matched by a rule.
+
+        -   Some common targets include:
+            -   AWS Lambda functions
+            -   Step Functions
+            -   Amazon SNS or SQS for messaging
+            -   Kinesis Streams or Firehose for data streaming
+            -   Amazon EC2 or ECS
+            -   Other event buses (you can route events between buses)
+
+    -   **Event Sources**: Event sources are the entities that emit events to EventBridge. AWS services, such as AWS CloudTrail, Amazon S3, or AWS Step Functions, can be event sources. Custom applications and SaaS applications can also emit events to EventBridge using the PutEvents API.
+
+        -   **Event Sources** are the entities that generate events. EventBridge can handle events from:
+            -   **AWS services**: Many AWS services (e.g., S3, EC2) automatically emit events when specific actions occur.
+            -   **Custom Event Producers**: Your own applications or microservices can act as event sources, publishing custom events to EventBridge.
+            -   **SaaS Applications**: Third-party SaaS applications can send events to your EventBridge using SaaS partner integration.
+
+    -   **Schemas Registry**
+
+        -   **Schema Registry** allows you to automatically discover and manage event schemas used by EventBridge.
+            -   **Schema Discovery**: When you enable schema discovery, EventBridge automatically analyzes incoming events and creates a schema for them.
+            -   Schemas can be downloaded as code bindings for programming languages like Python or Java to make it easier to work with events in your code.
+
+    -   **Key Use Cases for AWS EventBridge**:
+
+        -   `Event-Driven Architectures`: Helps decouple microservices, where services react to events without direct communication.
+        -   `Monitoring and Automation`: Trigger workflows or Lambda functions in response to events like EC2 state changes or file uploads in S3.
+        -   `SaaS Integrations`: Seamlessly integrate third-party SaaS services like Zendesk, Datadog, or Shopify into your AWS environment.
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">Lambda Function</summary>
+
+    AWS Lambda is a serverless computing service provided by Amazon Web Services (AWS) that allows users to run their code without having to manage servers or infrastructure. Here are some key terms and concepts related to AWS Lambda:
+    AWS Lambda is a serverless computing service that automatically runs code in response to events, managing the underlying compute infrastructure. It allows you to execute your code without provisioning or managing servers, enabling you to focus solely on your application logic. Here are the main concepts and components of AWS Lambda:
+    A **Lambda function** is the core concept of AWS Lambda. It is a piece of code that you write and deploy, which AWS Lambda automatically executes in response to events or triggers.
+
+    -   **Components**:
+
+        -   **Code**: Written in supported languages (Python, Node.js, Java, Go, Ruby, C#, etc.).
+        -   **Handler**: The entry point of the Lambda function, where the execution begins.
+        -   **Deployment Package**: Includes your code and any dependencies in a zip file or a container image (if using container-based Lambda).
+
+    #### Function Configuration
+
+    Each Lambda function has a set of configurations that define how it behaves, including memory, timeout, and concurrency settings.
+
+    1. **Basic Settings**
+
+        - **Function Name**:
+
+            - The name assigned to the function, which must be unique within an AWS Region and account.
+
+        - **Runtime**:
+
+            - Specifies the programming language and version that the Lambda function will use (e.g., Python 3.9, Node.js 18.x, Java 11).
+            - AWS Lambda manages and updates runtimes, but deprecated versions eventually lose support, so updating periodically is crucial.
+
+        - **Execution Role & Policies**:
+
+            - Lambda functions require an **Identity and Access Management (IAM) role** with permissions to interact with AWS resources.
+            - The role grants the function access to resources such as S3 buckets, DynamoDB tables, or the CloudWatch Logs service where function logs are stored.
+            - Following the principle of least privilege, the role should have the minimum permissions needed.
+            - `Resource-Based Policies`: Lambda functions can have resource-based policies to control which AWS accounts or services can invoke the function. This is especially useful for cross-account or cross-service access, like allowing an S3 bucket from another account to trigger a Lambda function.
+
+        - **Handler**:
+            - Defines the entry point of the function. The handler is a function within your code that AWS Lambda calls to start execution.
+            - The format is typically `filename.method_name` (e.g., `lambda_function.lambda_handler`), where `lambda_function` is the filename and `lambda_handler` is the method name.
+
+    2. **Memory and Timeout**
+
+        - **Memory Allocation**:
+
+            - The memory (in MB) allocated to a Lambda function can range from 128 MB to 10 GB, in increments of 1 MB.
+            - More memory usually results in more CPU and network bandwidth allocation, which can speed up execution but also increase costs.
+            - Lambda pricing is based on memory and execution time, so optimizing memory for performance and cost balance is essential.
+
+        - **Timeout**:
+
+            - The maximum time that a Lambda function can run per invocation, with a range from 1 second to 15 minutes (900 seconds).
+            - If the function exceeds the timeout, it is terminated, so setting an appropriate timeout based on expected execution duration is critical to prevent early termination.
+            - Specifies the maximum duration for function execution. Lambda terminates the function if it exceeds this time, ensuring resource cleanup and preventing long-running executions.
+
+        - **Retry Policies**:
+            - You can configure retry policies for asynchronous invocations and event source mappings. These are useful for automatically handling transient failures, allowing your function more opportunities to complete.
+
+    3. **Concurrency and Scaling**
+
+        - **Reserved Concurrency**:
+
+            - Allows reserving a portion of account-level concurrency for the function. It ensures that the function has dedicated capacity but limits the maximum concurrent executions it can have.
+            - Useful for protecting other resources from being overwhelmed by excessive function executions.
+
+        - **Provisioned Concurrency**:
+            - Keeps a pre-warmed pool of instances ready to handle requests, reducing cold starts and improving response times for latency-sensitive applications.
+            - This is ideal for API backends, interactive applications, or high-traffic functions where fast execution is critical.
+
+    4. **Environment Variables**
+
+        - Key-value pairs used to store configuration data or secrets needed by the function, such as API keys, database credentials, or resource configurations.
+        - **Environment Variable Encryption**: By default, Lambda encrypts environment variables using AWS Key Management Service (KMS). You can also specify a custom KMS key for added security.
+
+    5. **Networking**: AWS Lambda can be configured to run inside a **Virtual Private Cloud (VPC)**, allowing your function to access private resources like RDS or EC2 instances.
+
+        - When you configure a Lambda function to connect to a VPC, you specify subnets and security groups to control network access.
+        - Note that adding VPC connectivity may impact Lambda’s cold start time because it requires additional network setup.
+        - `VPC Subnets`: Functions running in VPC can interact with private subnets and on-premises resources through a VPN or Direct Connect.
+        - `VPC Endpoints`: Can be used to access AWS services privately without internet access.
+
+    6. **Dead Letter Queue (DLQ)**
+
+        - Specifies an Amazon SQS queue or an Amazon SNS topic as a **Dead Letter Queue** for asynchronous invocation errors.
+        - When a Lambda function cannot process an event after a certain number of retries, the event is sent to the DLQ for later analysis or reprocessing.
+        - Useful for handling errors gracefully, ensuring events aren’t lost.
+
+    7. **Error Handling and Retry Policies**
+
+        - **Asynchronous Invocation**: Lambda automatically retries asynchronous invocations (e.g., from S3, SNS, CloudWatch) up to two times if there’s an error. You can configure the retry attempts to 0, 1, or 2.
+        - **Event Source Mapping**: For sources like SQS, Kinesis, and DynamoDB streams, Lambda retries until the message expires, is processed successfully, or is moved to a **destination** or **DLQ** after a set number of attempts.
+        - **Destinations**: With **AWS Lambda destinations**, you can route successful or failed asynchronous invocations to an SNS topic, SQS queue, EventBridge, or another Lambda function, which allows for advanced error handling and processing workflows.
+
+    8. **Logging and Monitoring**: AWS Lambda integrates with **Amazon CloudWatch** for logging, monitoring, and observability.
+
+        - `CloudWatch Logs`: Every function invocation produces logs, which can be viewed and monitored through CloudWatch. Lambda sends logs of function execution (including errors, timeouts, and custom logs) to Amazon CloudWatch by default. These logs are useful for debugging, monitoring, and performance tuning.
+        - `X-Ray Tracing`: AWS X-Ray provides insights into function performance and latency by tracing requests as they pass through the application. It helps pinpoint bottlenecks, understand dependencies, and monitor overall performance.
+
+        - `Invocations`: The number of times a function is called.
+        - `Errors`: The number of errors that occurred during function execution.
+        - `Duration`: The time it took for the function to execute.
+        - `Throttles`: The number of times the function was throttled due to reaching the concurrency limit.
+
+    9. **File System (EFS) Configuration**
+
+        - **Amazon EFS (Elastic File System)**:
+            - Allows Lambda functions to access a persistent file system across function invocations. This is helpful for functions that require shared storage, such as large models or datasets.
+            - EFS can be mounted on Lambda functions configured within a VPC, and it’s useful for stateful workloads or functions with large code dependencies that exceed Lambda’s 10 GB limit.
+
+    10. **Function Code Configuration**
+
+    -   **Deployment Package**:
+        -   A Lambda function’s deployment package contains the function code and dependencies, packaged in a `.zip` file or container image.
+        -   **Layers**: Lambda layers let you share code, libraries, or binaries across multiple Lambda functions without including them in each function’s deployment package. Up to 5 layers can be used per function, reducing package size and simplifying maintenance.
+    -   **Container Images**:
+        -   Lambda supports container images up to 10 GB, allowing you to package code and dependencies in Docker images for more complex applications or specific runtime requirements.
+        -   Images are stored in Amazon ECR and provide a way to deploy large applications with custom runtimes or dependencies.
+
+    11. **Aliases and Versions**
+
+    -   **Versions**: Lambda functions can be versioned, with each published version being immutable. Versions allow you to reference specific function code and configuration states, providing stability for production applications.
+    -   **Aliases**: An alias is a pointer to a specific function version, often used to manage different environments (e.g., `dev`, `test`, `prod`). Aliases allow routing traffic between versions and enable canary deployments by splitting traffic to different versions.
+
+    #### Concurrency and Scaling
+
+    **Concurrency** in AWS Lambda refers to the number of instances (or executions) of a function that can run simultaneously. AWS Lambda is inherently scalable and can handle multiple invocations in parallel, but understanding how concurrency works is crucial for ensuring predictable scaling behavior. You can manage concurrency to control costs and limit resource usage. AWS Lambda’s concurrency and scaling capabilities are essential for building scalable, serverless applications. Here’s a breakdown of key terms and concepts related to concurrency and scaling in AWS Lambda:
+
+    1. **Concurrency Limit**:
+
+        - AWS Lambda has default concurrency limits, which can be adjusted within AWS account settings. This limit is important for managing the maximum number of concurrent executions your account can have across all Lambda functions.
+        - Concurrency settings help ensure that Lambda functions don't overwhelm downstream services, databases, or other resources by invoking too many instances at once.
+
+    2. **Reserved Concurrency**:
+
+        - Reserved concurrency is the maximum number of concurrent executions that a specific Lambda function can handle. This is an optional configuration that isolates a portion of account-wide concurrency for a specific Lambda function.
+        - For example, if you reserve concurrency of `50` for one Lambda function, AWS guarantees that up to 50 concurrent executions of that function will run, while preventing it from using more than 50 concurrent executions and consuming resources that other functions need.
+
+    3. **Provisioned Concurrency**:
+
+        - Provisioned concurrency is a feature designed to reduce the latency of Lambda functions. It pre-warms a specific number of instances to ensure they are immediately available when requests arrive, preventing cold starts (the delay from initializing resources when a function is first invoked).
+        - This is particularly useful for applications where low latency is critical, such as interactive applications or APIs that require consistent response times.
+
+    4. **Cold Start**
+
+        - A **cold start** occurs when AWS Lambda needs to initialize a new environment for an incoming request. When a Lambda function is invoked, AWS must set up resources such as the execution environment, runtime, and dependencies.
+        - Cold starts can lead to latency in the initial request. For functions that require low latency, cold starts can be mitigated by using **Provisioned Concurrency** or by periodically invoking the function to keep it "warm."
+
+    5. **Auto Scaling**
+
+        - AWS Lambda automatically scales based on the number of incoming requests and concurrency limits. When more requests arrive than existing Lambda instances can handle, AWS Lambda automatically scales up by creating new instances.
+        - This process is automatic and can handle bursts of traffic efficiently, but scaling is limited by concurrency configurations, reserved concurrency, and account-wide concurrency quotas.
+
+    6. **Burst Concurrency**
+
+        - **Burst concurrency** is the initial scaling capacity that AWS Lambda provides within a short time for functions within a particular AWS Region.
+        - AWS Lambda can initially handle a burst of 500 to 3000 concurrent requests per second (depending on the Region). After this burst, Lambda gradually scales up at a rate of 500 additional concurrent invocations per minute until it reaches the maximum concurrency limit of the AWS account.
+
+    7. **Throttling**
+
+        - Throttling occurs when AWS Lambda exceeds its maximum concurrency limit (either at the account level or at the function level through reserved concurrency).
+        - When throttling happens, additional requests to a Lambda function are rejected with a `429 TooManyRequests` error. To handle this, the calling service (like API Gateway or SQS) can implement retry logic, or you can increase concurrency limits if throttling is frequent.
+
+    8. **Scaling Behavior and Invocation Model**
+
+        - **Synchronous Invocations**:
+            - In synchronous invocations (like those triggered by API Gateway, AWS SDK, or application integrations), Lambda returns the response immediately after execution, and the caller waits for the function to complete.
+            - When the request rate exceeds the function’s concurrency limit, new synchronous invocations are throttled.
+        - **Asynchronous Invocations**: For asynchronous invocations (like those triggered by S3 or CloudWatch Events), Lambda queues the events. It then retries these events if they fail or are throttled until they succeed or until Lambda exhausts the retry limit.
+        - **Event Source Mapping**: When integrating Lambda with services like Amazon SQS or Kinesis (stream-based services), Lambda reads and processes events as they arrive in the source. The scaling of Lambda for these integrations is determined by the event source's processing characteristics and partitioning.
+
+    9. **Lambda Scaling with Event Sources**
+
+        - **Amazon SQS**: Lambda can process up to 10 messages at a time from a single Amazon SQS queue and scales horizontally as the number of messages increases, limited by concurrency.
+        - **Amazon Kinesis and DynamoDB Streams**:
+            - Lambda scaling with Kinesis or DynamoDB streams is partitioned. AWS Lambda processes records from each shard or partition concurrently, but only one Lambda instance can process data from a specific shard at a time.
+            - The number of shards defines the maximum concurrency Lambda can achieve with these sources, so you may need to increase the shard count if the function requires greater concurrency.
+
+    10. **Concurrency Scaling Considerations**: Concurrency affects costs, latency, and performance, so configuring concurrency properly is key to balancing efficiency and cost in AWS Lambda:
+
+        - **Cost**: Each instance adds cost, so unbounded concurrency can lead to high expenses. Reserved and provisioned concurrency options give finer control over costs.
+        - **Latency**: Low-latency applications may need provisioned concurrency to avoid cold starts.
+        - **Throttling Impact**: Throttling at peak times can cause delays or errors in applications, making it important to monitor concurrency usage and plan capacity according to traffic patterns.
+
+    11. **Monitoring and Scaling Metrics**: AWS provides metrics in CloudWatch that help in monitoring and tuning Lambda function scaling:
+        - **ConcurrentExecutions**: Shows the total concurrent executions in the account.
+        - **UnreservedConcurrentExecutions**: Reflects concurrency left after reserved concurrency allocations.
+        - **Throttles**: Indicates throttling events due to exceeded concurrency limits, helping identify scaling needs.
+
+    #### Lambda Throttling:
+
+    Lambda throttling is a mechanism used in AWS Lambda to limit the rate at which function executions can occur. This mechanism helps protect your resources and ensures the smooth operation of your AWS infrastructure by preventing a Lambda function from being overwhelmed with excessive requests. AWS Lambda provides two types of throttling:
+
+    -   `Concurrent Execution Throttling`:
+
+        -   Concurrent execution throttling limits the number of function executions that can run simultaneously. AWS imposes a default concurrency limit on your AWS account and can adjust this limit upon request.
+        -   When the limit is reached, AWS will queue any additional invocation requests. These queued requests will be processed as soon as existing executions complete and resources become available. Throttled invocations do not result in errors; they are simply delayed.
+        -   You can view and modify the concurrent execution limit for a specific function in the AWS Lambda Management Console.
+
+    -   `Invocation Throttling`:
+
+        -   Invocation throttling occurs when you send too many requests to invoke a Lambda function in a short period. This can happen when you repeatedly call the function with a high request rate.
+        -   AWS enforces soft limits on the number of requests per second (RPS) that can be sent to a function. If you exceed these soft limits, AWS may throttle your requests, resulting in delays and retries.
+        -   To mitigate invocation throttling, you can:
+            -   Implement exponential backoff and retries in your code to handle throttled requests gracefully.
+            -   Request a limit increase from AWS Support if your workload requires a higher request rate.
+
+    -   `Implement Retries`: Build retry logic with exponential backoff into your Lambda client code to handle throttled requests and retries automatically.
+    -   `Error Handling`: Check for error codes in the Lambda response to detect throttled invocations and take appropriate action.
+    -   `Throttle Metrics`: Monitor CloudWatch metrics, such as `Throttles` and `ThrottleCount` to gain insight into the rate of throttled invocations.
+    -   `Limit Increases`: If you anticipate higher traffic, request a concurrency limit increase from AWS Support. Ensure that your architecture and resource usage can handle the increased load.
+    -   `Batch Processing`: If you're processing large numbers of records, consider batch processing to reduce the rate of function invocations.
+    -   `Distributed Workloads`: Distribute workloads across multiple Lambda functions to avoid overwhelming a single function.
+    -   `Provisioned Concurrency`: Consider using AWS Lambda Provisioned Concurrency to pre-warm your functions, ensuring that they can handle surges in traffic without experiencing cold start delays.
+
+    #### AWS Lambda Destinations
+
+    AWS Lambda Destinations provides a powerful mechanism for handling the asynchronous invocation results of a Lambda function. When a Lambda function is invoked asynchronously (for example, by S3, SNS, or other AWS services), Lambda Destinations can automatically route the outcome (success or failure) to a target destination for further processing.
+    **Destinations** allow you to specify what happens after the execution of a Lambda function, based on success or failure.
+
+    -   **Lambda Destinations supports two types of routes**:
+
+        -   `OnSuccess`: Defines where to send the successful result of an asynchronous invocation.
+        -   `OnFailure`: Defines where to send the result in case of failure during invocation.
+
+    -   **Key Differences from Dead Letter Queue (DLQ)**
+
+        -   DLQ captures only failed invocations.
+        -   Destinations captures both successes and failures, and allows more flexibility in routing events.
+
+    -   **Supported Destination Targets**:
+        -   `SNS`: Notify users or systems of function success/failure.
+        -   `SQS`: Queue events for further processing.
+        -   `EventBridge`: Route events for automation workflows.
+        -   `Another Lambda Function`: Trigger another Lambda function.
+
+    #### Event Sources / Triggers
+
+    **Event sources** are AWS services or external systems that generate events that can trigger a Lambda function to execute. These triggers define when and how Lambda functions are invoked.
+
+    -   **Common Event Sources**:
+        -   **S3**: Lambda can trigger when an object is created or deleted in an S3 bucket.
+        -   **API Gateway**: Lambda can be invoked via HTTP requests, making it suitable for serverless APIs.
+        -   **SNS (Simple Notification Service)**: Lambda can process messages from SNS.
+        -   **SQS (Simple Queue Service)**: Lambda can process messages from SQS queues.
+        -   **CloudWatch Events**: Lambda can trigger on scheduled events or based on system events (e.g., EC2 instance state change).
+        -   **DynamoDB Streams**: Lambda can trigger on changes in DynamoDB tables.
+
+    #### Lambda Execution Environment
+
+    The **execution environment** is the runtime in which Lambda functions run. AWS Lambda automatically manages the environment that runs your code, scaling it based on demand.
+
+    -   **Features**:
+        -   **Isolated environment**: Functions run in isolated environments to ensure security.
+        -   **Runtime management**: AWS manages the language runtime and updates it.
+        -   **Environment variables**: Allows the use of environment variables for dynamic configuration.
+
+    #### Lambda Layers
+
+    **Lambda layers** allow you to package external libraries, dependencies, or configuration files separately from your function code. These layers can be shared across multiple Lambda functions, reducing code duplication and improving maintainability.
+
+    -   **Features**:
+        -   You can include libraries, custom runtimes, or configuration data.
+        -   You can use up to 5 layers per Lambda function.
+        -   Layers can be reused by multiple Lambda functions or shared across accounts.
+
+    #### Lambda Pricing Model
+
+    AWS Lambda follows a pay-per-use model, where you're charged based on the number of function invocations and the compute time used.
+
+    -   **Pricing Factors**:
+        -   **Number of invocations**: Charged for every request.
+        -   **Compute time**: Charged based on the function's memory and execution duration, measured in milliseconds.
+
+    #### Asynchronous and Synchronous Invocations
+
+    AWS Lambda supports both **synchronous** and **asynchronous** invocations, depending on how you need the function to interact with other systems.
+
+    -   **Synchronous invocation**: The caller waits for the function to complete before continuing (e.g., API Gateway).
+    -   **Asynchronous invocation**: The caller doesn't wait for the function to complete (e.g., S3 event notifications, SNS).
+
+    #### AWS Lambda@Edge
+
+    **Lambda@Edge** is an extension of AWS Lambda that allows you to run code closer to users (at Amazon CloudFront edge locations), reducing latency for global users.
+
+    -   **Features**:
+        -   Modify content delivery and customize responses for users.
+        -   Perform operations like URL rewrites, header manipulations, and cache key customizations.
+
+    ***
+
+    ***
+
+    #### Features of Lambda Function
+
+    -   `Serverless Execution`: AWS Lambda allows you to run your code without managing servers. You upload your code, and AWS Lambda takes care of provisioning and scaling the infrastructure needed to execute it.
+    -   `Event-Driven Execution`: Lambda functions can be triggered by various AWS services or custom events. Examples of triggers include changes to data in an S3 bucket, updates to a DynamoDB table, or HTTP requests through API Gateway.
+    -   `Supported Runtimes`: Lambda supports multiple programming languages, known as runtimes. These include Node.js, Python, Java, Ruby, Go, .NET, and custom runtimes through the use of custom execution environments.
+    -   `Automatic Scaling`: Lambda automatically scales your applications in response to incoming traffic. Each function can scale independently, and you pay only for the compute time consumed.
+    -   `Built-in Fault Tolerance`: AWS Lambda maintains compute capacity, and if a function fails, it automatically retries the execution. If a function execution fails repeatedly, Lambda can be configured to send the event to a Dead Letter Queue (DLQ) for further analysis.
+    -   `Integrated Logging and Monitoring`: Lambda provides built-in logging through Amazon CloudWatch. You can monitor the performance of your functions, view logs, and set up custom CloudWatch Alarms to be notified of specific events or issues.
+    -   `Environment Variables`: Lambda allows you to set environment variables for your functions. These variables can be used to store configuration settings or sensitive information, such as API keys.
+    -   `Execution Role and Permissions`: Each Lambda function is associated with an IAM (Identity and Access Management) role that defines the permissions needed to execute the function and access other AWS resources.
+    -   `Stateless Execution`: Lambda functions are designed to be stateless. However, you can store persistent data using other AWS services like Amazon S3, DynamoDB, or AWS RDS.
+    -   `Cold Starts and Warm Containers`: Cold starts occur when a function is invoked for the first time or when there is a need to scale. Subsequent invocations reuse warm containers, reducing cold start times.
+    -   `VPC Integration`: Lambda functions can be integrated with a VPC, allowing them to access resources inside a VPC, such as databases, and allowing private connectivity.
+    -   `Cross-Region Execution`: You can configure Lambda functions to run in different AWS regions, providing flexibility and redundancy.
+    -   `Versioning and Aliases`: Lambda supports versioning and aliases, allowing you to manage different versions of your functions and direct traffic to specific versions.
+    -   `Maximum Execution Duration`: Each Lambda function has a maximum execution duration (timeout) that can be set. If the function runs longer than the specified duration, it is terminated.
+    -   `Immutable Deployment Packages`: Once a Lambda function is created, its deployment package (code and dependencies) becomes immutable. If you need to make changes, you create a new version of the function.
+
+    #### Limitation on Lambda Functions:
+
+    -   `Execution timeout`: The maximum execution time for a Lambda function is `900 seconds (15 minutes)`.
+    -   `Concurrent executions`: By default, there is a soft `limit of 1,000 concurrent executions per account per region`. However, you can request a higher limit if you need it.
+    -   `Environment variables`: You can set environment variables for your Lambda function, but `the maximum size of all environment variables combined is 4 KB`.
+
+    -   `Deployment package size`: `The maximum compressed deployment package size for a Lambda function is 50 MB`. There are some exceptions for certain runtimes, as outlined in my previous answer.
+
+        -   Uncompressed code & dependencies < 250 MB
+        -   Compressed function package < 50MB
+        -   Total function packages in a region < 75 GB
+        -   Ephemeral storage < 512 MB
+        -   Maximum execution duration < 900 seconds
+        -   Concurrent Lambda functions < 1000
+
+    -   `Memory allocation`: Up to 10 GB of memory to a Lambda function. The amount of memory you allocate also determines the amount of CPU and network resources that the function gets.
+        -   `Memory allocation`: Up to 10 GB of memory starting from 128 MB with CPU 3GB.
+    -   `Execution environment`: Lambda functions run in a stateless execution environment, so you can't store data on the local file system. However, you can use other AWS services like S3 or DynamoDB to store data.
+    -   `Function invocations`: You can trigger a Lambda function in several ways, including through `API Gateway`, `S3 events`, `SNS notifications`, and more. However, there may be some limits or quotas on the number of invocations you can make in a given period.
+
+    #### Usecases of Lambda
+
+    AWS Lambda is a serverless compute service that lets you run code without provisioning or managing servers. It's often used for various use cases across different industries. Here are the top five most common use cases for AWS Lambda:
+
+    -   **Event-Driven Processing**: AWS Lambda is frequently used to process events from various AWS services, such as Amazon S3, Amazon DynamoDB, Amazon SNS, Amazon SQS, and more. For example, you can trigger Lambda functions to process new objects uploaded to an S3 bucket, process messages from an SQS queue, or react to changes in a DynamoDB table.
+
+    -   **Real-time File Processing**: Lambda functions can be used for real-time processing of data streams. For instance, you can use Lambda to analyze streaming data from Amazon Kinesis Data Streams or process logs from Amazon CloudWatch Logs in real-time.
+
+    -   **Backend for Web Applications**: Lambda functions can serve as the backend for web applications, providing scalable and cost-effective compute resources. You can build APIs using AWS API Gateway and trigger Lambda functions to handle incoming HTTP requests, allowing you to build serverless web applications without managing infrastructure.
+
+    -   **Scheduled Tasks and Cron Jobs**: Lambda functions can be scheduled to run at specific intervals using AWS CloudWatch Events. This allows you to automate tasks such as data backups, log archiving, or regular data processing jobs without needing to maintain dedicated servers or cron jobs.
+
+    -   **Data Processing and ETL**: Lambda functions are commonly used for data processing and ETL (Extract, Transform, Load) tasks. You can trigger Lambda functions to process data as soon as it becomes available, perform transformations on the data, and then load it into a data warehouse or database. This approach enables real-time or near-real-time data processing without the need for complex infrastructure.
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">Step Function</summary>
+
+    -   **NOTES**:
+        -   Each state can store up to 256 KiB of data
+
+    AWS Step Functions is a serverless orchestration service that lets you coordinate multiple AWS services into automated workflows. It helps break complex processes into a series of steps that can run in sequence or parallel. You define each step in the process using a state machine, and Step Functions automatically triggers each step, handles failures, and retries if needed, all while visualizing the flow for easier monitoring and debugging.. Below are the key terms and concepts of AWS Step Functions explained in detail:
+
+    #### Terminology, Concepts and Components
+
+    -   **State Machine**:
+
+        -   A state machine is a workflow definition in Step Functions. It represents the various steps of your application as states.
+        -   The state machine specifies how the states interact with each other, the transitions between states, and the inputs/outputs of each state.
+        -   The state machine definition is written in JSON or Amazon States Language (ASL). It defines the states, transitions, input/output, and other configurations.
+
+    -   **States**: States are the individual steps in a state machine. Step Functions supports several types of states:
+
+        -   `Task State`: Executes an AWS Lambda function or integrates with other AWS services like SNS, SQS, DynamoDB, etc.
+        -   `Choice State`: Adds branching logic to your state machine based on certain conditions.
+        -   `Parallel State`: Executes multiple branches of states simultaneously.
+        -   `Map State`: Iterates over a list of items and executes the same workflow for each item.
+        -   `Wait State`: Introduces a delay for a specified amount of time before moving to the next state.
+        -   `Succeed State`: Indicates that the execution has succeeded.
+        -   `Fail State`: Indicates that the execution has failed and provides error information.
+        -   `Pass State`: Passes its input to its output, performing no work.
+
+    -   **[Amazon States Language (ASL)](https://states-language.net/)**: ASL is the JSON-based and structured language used to define state machines. It includes the syntax for defining states, transitions, and error handling. Detailed Explanation of Common Fields:
+
+        -   `Type`: Defines the type of state (Task, Choice, Succeed, Fail, etc.).
+        -   `Resource`: Specifies the ARN of the resource to be executed (e.g., Lambda function ARN).
+        -   `Next`: Specifies the next state to transition to after the current state completes.
+        -   `End`: If set to true, designates the state as the final state.
+        -   `InputPath`: JSONPath that selects part of the state input to be passed to the resource.
+        -   `OutputPath`: JSONPath that selects part of the state output to be passed to the next state.
+        -   `Parameters`: Passes specific JSON as input to the resource.
+        -   `ResultPath`: Specifies where to place the result of the resource's execution in the state’s input.
+        -   `ResultSelector`: Manipulates the raw result from the resource before it’s passed to the ResultPath.
+        -   `Retry`: Array of retry policy objects that define retry logic for a state.
+        -   `Catch`: Array of catcher objects that define what to do if an error is encountered.
+
+    -   **Execution**: An execution is an instance of your state machine in action. Each execution is unique and can be tracked separately.
+    -   **Context Object**: The context object contains metadata about the execution, such as execution ID, name, and start time. It can be accessed within the state machine.
+    -   **Event**: Events are the inputs, outputs, and error messages generated by each state during execution.
+
+    -   **Error Handling**: AWS Step Functions support robust error handling with `Retry` and `Catch` fields.
+
+        -   `Retry`: Defines retry behavior for states in case of errors. You can specify the number of retry attempts, interval between retries, and backoff rate.
+        -   `Catch`: Defines how to handle errors that occur during state execution. You can specify different catch blocks for different error types.
+
+    -   <details><summary style="font-size:20px;color:#FF1493">Input and Output Processing</summary>
+
+        -   [**Input and Output Processing**](https://docs.aws.amazon.com/step-functions/latest/dg/concepts-input-output-filtering.html): Each state can receive input, process it, and produce output. The output of one state can be the input for the next state.
+
+        -   AWS Step Functions applies the `InputPath` field first, and then the `Parameters` field. You can first filter your raw input to a selection you want using `InputPath`, and then apply `Parameters` to manipulate that input further, or add new values. You can then use the `ResultSelector` field to manipulate the state's output before `ResultPath` is applied.
+
+        -   **InputPath**: Select a part of the JSON input to pass to the state.
+
+            -   **Purpose**: Filters the input data before it reaches the state.
+            -   **Function**: Extracts a subset of the original input using a JSONPath expression.
+            -   **Usage**: If you only need a portion of the input, you can define an `InputPath` to pass only that subset to the state.
+            -   **Default Behavior**: If omitted or set to `"$"`, the entire input is passed to the state.
+
+            -   **Example**:  
+                Consider this input JSON:
+                ```json
+                {
+                    "order": {
+                        "id": "1234",
+                        "customer": {
+                            "name": "Alice",
+                            "email": "alice@example.com"
+                        },
+                        "items": ["item1", "item2"]
+                    }
+                }
+                ```
+                If you only need the `customer` object:
+                ```json
+                "InputPath": "$.order.customer"
+                ```
+                The state will receive:
+                ```json
+                {
+                    "name": "Alice",
+                    "email": "alice@example.com"
+                }
+                ```
+
+        -   **Parameters**: Parameters are used to specify which parts of the input are passed to the state’s resource. They allow the customization of input data passed to the resource that performs the task.
+
+            -   **Purpose**: Transforms input data before sending it to a task.
+            -   **Function**: Allows you to customize the request by selecting or renaming fields.
+            -   **Usage**: You can define **key-value pairs** to structure the input.
+
+            -   **Example**: Using the same input JSON:
+                ```json
+                "Parameters": {
+                "customerName.$": "$.order.customer.name",
+                "customerEmail.$": "$.order.customer.email",
+                "orderItems.$": "$.order.items"
+                }
+                ```
+                This modifies the input to:
+                ```json
+                {
+                    "customerName": "Alice",
+                    "customerEmail": "alice@example.com",
+                    "orderItems": ["item1", "item2"]
+                }
+                ```
+
+        -   **ResultSelector**
+
+            -   **Purpose**: Filters the **output** from a state before it is passed to `ResultPath`.
+            -   **Function**: Similar to `Parameters`, but it applies to the **result** of a task.
+            -   **Usage**: Extracts or restructures data **after** execution.
+
+            -   **Example**:  
+                Assume an AWS Lambda task returns this output:
+                ```json
+                {
+                    "statusCode": 200,
+                    "body": {
+                        "message": "Order processed successfully",
+                        "orderId": "1234"
+                    }
+                }
+                ```
+                Applying a `ResultSelector`:
+                ```json
+                "ResultSelector": {
+                "message.$": "$.body.message",
+                "orderId.$": "$.body.orderId"
+                }
+                ```
+                The transformed output becomes:
+                ```json
+                {
+                    "message": "Order processed successfully",
+                    "orderId": "1234"
+                }
+                ```
+
+        -   **ResultPath**: ResultPath is a field that specifies where to place the results of a state in the overall execution’s input JSON. This allows the combining of state outputs with the initial input.
+
+            -   **Purpose**: Controls where the **output of a state** is merged with its input.
+            -   **Function**: Defines whether the result **replaces, merges, or is discarded**.
+            -   **Usage**:
+
+                -   `"$"` → The entire result replaces the input.
+                -   `null` → The result is discarded.
+                -   A JSONPath (e.g., `$.processedData`) → The result is merged into input under that path.
+
+            -   **Example**:  
+                Before processing:
+                ```json
+                {
+                    "order": {
+                        "id": "1234"
+                    }
+                }
+                ```
+                Task output:
+                ```json
+                {
+                    "processed": true
+                }
+                ```
+                Using:
+                ```json
+                "ResultPath": "$.order.processedData"
+                ```
+                The final output becomes:
+                ```json
+                {
+                    "order": {
+                        "id": "1234",
+                        "processedData": {
+                            "processed": true
+                        }
+                    }
+                }
+                ```
+
+        -   **OutputPath**: Select a part of the JSON output to pass to the next state.
+
+            -   `Purpose`: Filters the **final output** of a state **before passing it to the next state**.
+            -   `Function`: Selects a portion of the final result to be passed along.
+            -   `Usage`: If a state produces extra data that is unnecessary for downstream steps, `OutputPath` can extract only the relevant parts.
+            -   `Example`:  
+                Final state output:
+                ```json
+                {
+                    "order": {
+                        "id": "1234",
+                        "processedData": {
+                            "processed": true
+                        }
+                    },
+                    "metadata": {
+                        "timestamp": "2024-02-17T12:00:00Z"
+                    }
+                }
+                ```
+                Applying:
+                ```json
+                "OutputPath": "$.order"
+                ```
+                The output passed to the next state will be:
+                ```json
+                {
+                    "id": "1234",
+                    "processedData": {
+                        "processed": true
+                    }
+                }
+                ```
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">JSONPath</summary>
+
+        JSONPath is a query language used for extracting and filtering data from JSON documents. It is similar to XPath for XML but designed specifically for JSON. JSONPath expressions allow you to navigate JSON structures, retrieve specific elements, and manipulate data.
+
+        -   **Basic Syntax of JSONPath**: JSONPath expressions use **dot notation** (`$.key`) and **bracket notation** (`$['key']`) to access elements inside a JSON document.
+
+        | **Symbol**    | **Description**                         | **Example**                                                               |
+        | ------------- | --------------------------------------- | ------------------------------------------------------------------------- |
+        | `$`           | Root element                            | `$` selects the entire JSON object                                        |
+        | `.`           | Child operator                          | `$.name` selects `"John Doe"` from `{"name": "John Doe"}`                 |
+        | `[]`          | Bracket notation for keys or indexes    | `$['name']` (same as `$.name`), `$[0]` selects the first item in an array |
+        | `*`           | Wildcard (selects all elements)         | `$.*` selects all keys at the root level                                  |
+        | `..`          | Recursive descent (searches all levels) | `$..price` selects all `price` values from nested objects                 |
+        | `?()`         | Filter expression                       | `$[?(@.price > 20)]` selects items where `price > 20`                     |
+        | `@`           | Current element in filter expressions   | `$[?(@.status == "active")]` selects elements with `"status": "active"`   |
+        | `[,]`         | Union (select multiple elements)        | `$['name', 'age']` selects both `name` and `age`                          |
+        | `[start:end]` | Array slice (Python-like slicing)       | `$[0:3]` selects the first three elements of an array                     |
+
+        1. **Selecting a Specific Key (`$.key`)**
+
+            ```json
+            {
+                "name": "John Doe",
+                "age": 30,
+                "email": "john@example.com"
+            }
+            ```
+
+            ```json
+            $.name
+            ```
+
+            ```json
+            "John Doe"
+            ```
+
+        2. **Accessing Nested Keys (`$.parent.child`)**
+
+            ```json
+            {
+                "user": {
+                    "id": 101,
+                    "name": "Alice",
+                    "contact": {
+                        "email": "alice@example.com",
+                        "phone": "1234567890"
+                    }
+                }
+            }
+            ```
+
+            ```json
+            $.user.contact.email
+            ```
+
+            ```json
+            "alice@example.com"
+            ```
+
+        3. **Selecting Elements from an Array (`$[index]`)**
+
+            ```json
+            {
+                "products": [
+                    { "name": "Laptop", "price": 1200 },
+                    { "name": "Phone", "price": 800 },
+                    { "name": "Tablet", "price": 600 }
+                ]
+            }
+            ```
+
+            ```json
+            $.products[1]
+            ```
+
+            ```json
+            { "name": "Phone", "price": 800 }
+            ```
+
+        4. **Selecting All Items in an Array (`$[*]`)**
+
+            ```json
+            $.products[*].name
+            ```
+
+            ```json
+            ["Laptop", "Phone", "Tablet"]
+            ```
+
+        5. **Using Wildcards (`$.*` or `$[*]`)**
+
+            ```json
+            {
+                "id": 1,
                 "name": "Alice",
                 "contact": {
                     "email": "alice@example.com",
                     "phone": "1234567890"
                 }
             }
-        }
-        ```
+            ```
 
-        ```json
-        $.user.contact.email
-        ```
+            ```json
+            $..email
+            ```
 
-        ```json
-        "alice@example.com"
-        ```
+            ```json
+            ["alice@example.com"]
+            ```
 
-    3. **Selecting Elements from an Array (`$[index]`)**
+            (Finds all `email` values in the JSON)
 
-        ```json
-        {
-            "products": [
-                { "name": "Laptop", "price": 1200 },
-                { "name": "Phone", "price": 800 },
-                { "name": "Tablet", "price": 600 }
+        6. **Using Filters (`$[?()]`)**
+
+            ```json
+            {
+                "employees": [
+                    { "name": "John", "age": 30, "salary": 5000 },
+                    { "name": "Jane", "age": 25, "salary": 6000 },
+                    { "name": "Doe", "age": 28, "salary": 7000 }
+                ]
+            }
+            ```
+
+            ```json
+            $.employees[?(@.salary > 6000)]
+            ```
+
+            ```json
+            [{ "name": "Doe", "age": 28, "salary": 7000 }]
+            ```
+
+            (Selects employees with salary greater than 6000)
+
+        7. **Selecting Multiple Keys (`$['key1', 'key2']`)**
+
+            ```json
+            $.employees[*]['name', 'salary']
+            ```
+
+            ```json
+            [
+                { "name": "John", "salary": 5000 },
+                { "name": "Jane", "salary": 6000 },
+                { "name": "Doe", "salary": 7000 }
             ]
-        }
-        ```
+            ```
 
-        ```json
-        $.products[1]
-        ```
+        8. **Selecting Data from a Range (`$[start:end]`)**
 
-        ```json
-        { "name": "Phone", "price": 800 }
-        ```
+            ```json
+            $.employees[0:2]
+            ```
 
-    4. **Selecting All Items in an Array (`$[*]`)**
+            ```json
+            [
+                { "name": "John", "age": 30, "salary": 5000 },
+                { "name": "Jane", "age": 25, "salary": 6000 }
+            ]
+            ```
 
-        ```json
-        $.products[*].name
-        ```
+            (Selects the first two employees)
 
-        ```json
-        ["Laptop", "Phone", "Tablet"]
-        ```
+        </details>
 
-    5. **Using Wildcards (`$.*` or `$[*]`)**
+    #### Example Workflow with State Machine Definition
 
-        ```json
-        {
-            "id": 1,
-            "name": "Alice",
-            "contact": {
-                "email": "alice@example.com",
-                "phone": "1234567890"
+    Consider a simple order processing workflow:
+
+    -   **Order Received (Task State)**:
+
+        -   A Lambda function processes the order and checks inventory.
+        -   Transitions to the next state based on the result.
+
+    -   **Check Inventory (Choice State)**:
+
+        -   If the inventory is sufficient, proceed to the billing state.
+        -   If the inventory is insufficient, move to the out-of-stock state.
+
+    -   **Bill Customer (Task State)**:
+
+        -   Charges the customer using a payment service.
+        -   If successful, proceed to the shipping state.
+        -   If failed, retry the billing process.
+
+    -   **Ship Order (Task State)**:
+
+        -   Calls a shipping service to ship the order.
+        -   Ends the workflow with success.
+
+    -   **Out of Stock (Fail State)**:
+
+        -   Ends the workflow indicating that the item is out of stock.
+
+    ```json
+    {
+        "Comment": "A simple order processing state machine",
+        "StartAt": "OrderReceived",
+        "States": {
+            "OrderReceived": {
+                "Type": "Task",
+                "Resource": "arn:aws:lambda:us-east-1:123456789012:function:ProcessOrder",
+                "Next": "CheckInventory"
+            },
+            "CheckInventory": {
+                "Type": "Choice",
+                "Choices": [
+                    {
+                        "Variable": "$.inventoryAvailable",
+                        "BooleanEquals": true,
+                        "Next": "BillCustomer"
+                    },
+                    {
+                        "Variable": "$.inventoryAvailable",
+                        "BooleanEquals": false,
+                        "Next": "OutOfStock"
+                    }
+                ]
+            },
+            "BillCustomer": {
+                "Type": "Task",
+                "Resource": "arn:aws:lambda:us-east-1:123456789012:function:BillCustomer",
+                "Next": "ShipOrder",
+                "Retry": [
+                    {
+                        "ErrorEquals": [
+                            "BillingError",
+                            "Lambda.ServiceException",
+                            "Lambda.AWSLambdaException"
+                        ],
+                        "IntervalSeconds": 5,
+                        "MaxAttempts": 3,
+                        "BackoffRate": 2.0
+                    }
+                ]
+            },
+            "ShipOrder": {
+                "Type": "Task",
+                "Resource": "arn:aws:lambda:us-east-1:123456789012:function:ShipOrder",
+                "End": true
+            },
+            "OutOfStock": {
+                "Type": "Fail",
+                "Error": "OutOfStockError",
+                "Cause": "The item is out of stock."
             }
         }
-        ```
+    }
+    ```
 
-        ```json
-        $..email
-        ```
+    #### Use Cases
 
-        ```json
-        ["alice@example.com"]
-        ```
+    -   **ETL and Data Processing**: Orchestrate ETL (Extract, Transform, Load) workflows by integrating with AWS Glue, Lambda, and S3.
+    -   **Microservices Coordination**: Coordinate microservices architectures, ensuring the right services are called in the correct sequence with error handling.
+    -   **Long-Running Processes**: Manage long-running processes such as order fulfillment, user sign-ups, or data analysis tasks that involve multiple steps and services.
+    -   **Serverless Applications**: Build complex serverless applications by orchestrating Lambda functions and other AWS services without managing servers.
+    -   **Automation and Batch Jobs**: Automate batch jobs and administrative tasks that require coordination of multiple services.
 
-        (Finds all `email` values in the JSON)
+    #### Standard Workflow vs Express Workflow
 
-    6. **Using Filters (`$[?()]`)**
+    AWS Step Functions offers two types of workflows to handle different use cases: Express Workflows and Standard Workflows. Each has its own characteristics and is suited for different kinds of tasks.
 
-        ```json
-        {
-            "employees": [
-                { "name": "John", "age": 30, "salary": 5000 },
-                { "name": "Jane", "age": 25, "salary": 6000 },
-                { "name": "Doe", "age": 28, "salary": 7000 }
-            ]
-        }
-        ```
+    -   **Standard Workflows**
 
-        ```json
-        $.employees[?(@.salary > 6000)]
-        ```
+        -   `Execution Duration`: Standard Workflows can run for up to a year, making them suitable for long-running processes.
+        -   `Execution History`: They provide detailed execution history for each step, which is useful for debugging and auditing.
+        -   `State Transition`: State transitions are recorded, and you can visualize the execution flow.
+        -   `Reliability`: Designed for high reliability and durability, ensuring the state machine's execution is accurately recorded and completed.
+        -   `Concurrency`: They support high levels of concurrency but have a rate limit for execution starts.
+        -   `Error Handling`: Supports robust error handling and retry mechanisms.
 
-        ```json
-        [{ "name": "Doe", "age": 28, "salary": 7000 }]
-        ```
+        -   `Use Cases`: Use when you need detailed execution history, long-running processes, complex business logic, and robust error handling.
 
-        (Selects employees with salary greater than 6000)
+            -   Long-running ETL processes.
+            -   Complex business workflows that require detailed audit trails.
+            -   Processes where each step's result and execution path need to be tracked and visualized.
 
-    7. **Selecting Multiple Keys (`$['key1', 'key2']`)**
+        -   `Pricing`
+            -   Pricing is based on the number of state transitions.
+            -   Execution time also impacts cost.
 
-        ```json
-        $.employees[*]['name', 'salary']
-        ```
+    -   **Express Workflows**
 
-        ```json
-        [
-            { "name": "John", "salary": 5000 },
-            { "name": "Jane", "salary": 6000 },
-            { "name": "Doe", "salary": 7000 }
-        ]
-        ```
+        -   `Execution Duration`: Express Workflows are designed for short-lived executions, with a maximum duration of five minutes. - `Execution Volume`: Optimized for high-volume, short-duration workloads. - `Concurrency`: Can handle a much higher rate of executions compared to Standard Workflows. - `State Transition`: Transitions are recorded at a summary level rather than a detailed step-by-step history. - `Cost`: Pricing is based on the number of requests and their duration, making it cost-effective for high-frequency, short-duration tasks. - `Reliability`: Provides good reliability, though not as high as Standard Workflows. Suitable for high-scale operations that need to manage massive volumes of requests efficiently.
 
-    8. **Selecting Data from a Range (`$[start:end]`)**
+        -   `Use Cases`: Use when you need to handle a high volume of short-duration executions efficiently and cost-effectively, such as in real-time data processing and event-driven architectures.
 
-        ```json
-        $.employees[0:2]
-        ```
+            -   Real-time data processing.
+            -   Event-driven architectures.
+            -   Microservices orchestration.
+            -   High-frequency, short-duration jobs such as real-time file processing or data ingestion tasks.
 
-        ```json
-        [
-            { "name": "John", "age": 30, "salary": 5000 },
-            { "name": "Jane", "age": 25, "salary": 6000 }
-        ]
-        ```
+        -   `Pricing`
+            -   Based on the number of requests and their duration.
+            -   More cost-effective for high-throughput, short-duration tasks.
 
-        (Selects the first two employees)
+    -   **Detailed Comparison**
+
+        | Feature            | Standard Workflows                             | Express Workflows                                |
+        | :----------------- | :--------------------------------------------- | :----------------------------------------------- |
+        | Execution Duration | Up to 1 year                                   | Up to 5 minutes                                  |
+        | Concurrency        | High, but with rate limits on execution starts | Extremely high, designed for massive concurrency |
+        | State Transition   | Detailed history for each step                 | Summary-level transitions                        |
+        | Error Handling     | Robust with detailed retry policies            | Basic retry capabilities                         |
+        | Execution History  | Detailed and visualized                        | Minimal, focused on summary information          |
+        | Cost Model         | Per state transition                           | Per request and duration                         |
+        | Use Cases          | Long-running, complex workflows                | Short-duration, high-volume tasks                |
+
+    #### Features and Capabilities
+
+    -   **Visual Workflow Design**: Step Functions provides a visual editor in the AWS Management Console to create and visualize workflows, making it easier to understand and design complex workflows.
+    -   **Built-in Error Handling**: Step Functions includes built-in error handling, retry, and catch capabilities to handle errors and exceptions during state execution.
+    -   **Service Integrations**: Step Functions can integrate with over 200 AWS services, including Lambda, SNS, SQS, DynamoDB, ECS, Batch, Glue, and more. This allows for powerful orchestration of complex tasks across multiple services.
+    -   **Execution History**: Step Functions provides detailed execution history, including event logs for each step of your workflow. This helps with debugging and monitoring.
+    -   **Express Workflows**: In addition to standard workflows, Step Functions offers express workflows designed for high-volume, short-duration workflows. They provide lower latency and cost for large-scale applications.
 
     </details>
 
-#### Example Workflow with State Machine Definition
+---
 
-Consider a simple order processing workflow:
+-   <details><summary style="font-size:25px;color:Orange">DynamoDB</summary>
 
--   **Order Received (Task State)**:
+    -   [Be A Better Dev: AWS DynamoDB Guides](https://www.youtube.com/playlist?list=PL9nWRykSBSFi5QD8ssI0W5odL9S0309E2)
+    -   [AWS DynamoDB](https://www.youtube.com/playlist?list=PLJo-rJlep0EApPrKspmHybxvbZsXruhzR)
+    -   [boto3.DynamoDB Dcos](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb.html)
 
-    -   A Lambda function processes the order and checks inventory.
-    -   Transitions to the next state based on the result.
+    AWS DynamoDB is a fully managed **Key-Value Stores** NoSQL database service provided by Amazon Web Services (AWS). It is designed to handle large volumes of data with low latency and high performance, offering automatic scaling, high availability, and robust security features. DynamoDB is particularly well-suited for applications that require consistent, single-digit millisecond response times at any scale.
 
--   **Check Inventory (Choice State)**:
+    -   **Key-Value Stores**: Key-Value Store is a type of NoSQL database that uses a simple key-value pair mechanism to store data. It is one of the most straightforward types of databases, where each unique key is associated with a value, which can be any type of data, from simple strings to complex objects like JSON, BLOBs, or serialized objects.
 
-    -   If the inventory is sufficient, proceed to the billing state.
-    -   If the inventory is insufficient, move to the out-of-stock state.
+        -   `Data Model`: Simple key-value pairs; values can be binary blobs or strings.
 
--   **Bill Customer (Task State)**:
+            -   `Keys`: Unique identifiers used to access the associated values. Keys are usually simple strings.
+            -   `Values`: The data associated with the keys, which can be any datatype.
+            -   `Schema-less`: No fixed schema, allowing for flexible and dynamic data storage.
 
-    -   Charges the customer using a payment service.
-    -   If successful, proceed to the shipping state.
-    -   If failed, retry the billing process.
+        -   `High Performance`: Optimized for fast read and write operations, often achieving low latency due to the simplicity of key-value access patterns.
+        -   `Scalability`: Designed to scale horizontally, making it easy to distribute data across multiple servers.
 
--   **Ship Order (Task State)**:
+        -   `Strengths`:
 
-    -   Calls a shipping service to ship the order.
-    -   Ends the workflow with success.
+            -   Extremely fast and scalable for read and write operations.
+            -   Ideal for caching, session management, and real-time analytics.
+            -   Well-suited for high-throughput applications.
 
--   **Out of Stock (Fail State)**:
+        -   `Weaknesses`:
+            -   Limited query capabilities (no complex queries or joins).
+            -   May not support data types beyond strings and binary.
 
-    -   Ends the workflow indicating that the item is out of stock.
+    #### Terms & Concepts
 
-```json
-{
-    "Comment": "A simple order processing state machine",
-    "StartAt": "OrderReceived",
-    "States": {
-        "OrderReceived": {
-            "Type": "Task",
-            "Resource": "arn:aws:lambda:us-east-1:123456789012:function:ProcessOrder",
-            "Next": "CheckInventory"
-        },
-        "CheckInventory": {
-            "Type": "Choice",
-            "Choices": [
-                {
-                    "Variable": "$.inventoryAvailable",
-                    "BooleanEquals": true,
-                    "Next": "BillCustomer"
-                },
-                {
-                    "Variable": "$.inventoryAvailable",
-                    "BooleanEquals": false,
-                    "Next": "OutOfStock"
-                }
-            ]
-        },
-        "BillCustomer": {
-            "Type": "Task",
-            "Resource": "arn:aws:lambda:us-east-1:123456789012:function:BillCustomer",
-            "Next": "ShipOrder",
-            "Retry": [
-                {
-                    "ErrorEquals": [
-                        "BillingError",
-                        "Lambda.ServiceException",
-                        "Lambda.AWSLambdaException"
-                    ],
-                    "IntervalSeconds": 5,
-                    "MaxAttempts": 3,
-                    "BackoffRate": 2.0
-                }
-            ]
-        },
-        "ShipOrder": {
-            "Type": "Task",
-            "Resource": "arn:aws:lambda:us-east-1:123456789012:function:ShipOrder",
-            "End": true
-        },
-        "OutOfStock": {
-            "Type": "Fail",
-            "Error": "OutOfStockError",
-            "Cause": "The item is out of stock."
-        }
-    }
-}
-```
+    -   `Schema`: The term "schema" refers to the structure and organization of the data stored in your DynamoDB tables. Unlike traditional relational databases, DynamoDB is a NoSQL database that does not require a fixed schema defined ahead of time. Instead, each item (record) within a DynamoDB table can have its own attributes, and different items within the same table can have different attributes.
+    -   `Tables`: A DynamoDB table is a collection of items that share the same primary key. Tables are used to store and retrieve data in a scalable and durable manner.
+    -   `Items`: An item is a collection of attributes that is uniquely identifiable by a primary key. In a DynamoDB table, items are the individual records that are stored.
+    -   `Atributes`: Attributes are the fundamental data elements stored in a table. In DynamoDB, attributes are stored in a flexible schema, meaning that you do not need to define a fixed schema for your table beforehand. Instead, you can simply create a table and add or remove attributes as needed when you insert or update items.
 
-#### Use Cases
+        -   Each attribute is made up of a name-value pair.
+        -   Attributes can also be used as primary or sort keys to enable fast and efficient queries.
+        -   Can also define attribute-level access controls.
 
--   **ETL and Data Processing**: Orchestrate ETL (Extract, Transform, Load) workflows by integrating with AWS Glue, Lambda, and S3.
--   **Microservices Coordination**: Coordinate microservices architectures, ensuring the right services are called in the correct sequence with error handling.
--   **Long-Running Processes**: Manage long-running processes such as order fulfillment, user sign-ups, or data analysis tasks that involve multiple steps and services.
--   **Serverless Applications**: Build complex serverless applications by orchestrating Lambda functions and other AWS services without managing servers.
--   **Automation and Batch Jobs**: Automate batch jobs and administrative tasks that require coordination of multiple services.
+    -   `Primary Key`: DynamoDB tables are organized around a primary key composed of one or two attributes, which uniquely identifies the item in the table. There are two types of primary keys: partition key and composite key.
 
-#### Standard Workflow vs Express Workflow
+        -   `Partition Key`: Also known as a hash key, this is a simple primary key composed of a single attribute. DynamoDB uses the partition key value as input to an internal hash function to determine the partition in which an item is stored.
+        -   `Composite Key`: Also known as a partition key and sort key, this is a primary key composed of two attributes.
+            -   `Partition Key`: is used to determine the partition in which an item is stored.
+            -   `Sort Key`: is used to sort items within the partition. It's also known as Range key.
 
-AWS Step Functions offers two types of workflows to handle different use cases: Express Workflows and Standard Workflows. Each has its own characteristics and is suited for different kinds of tasks.
+    -   `Secondary Index`: Secondary Index in Amazon DynamoDB is a separate data structure that allows you to query and retrieve data from a DynamoDB table using attributes other than the primary key. There are two types of secondary indexes: global secondary index and local secondary index.
 
--   **Standard Workflows**
+        -   `Global Secondary Index`: A Global Secondary Index is an independent data structure that has its own partition key and sort key. It does not require to be created at the same time as the table. GSIs index all items in the table by default, provided the indexed attributes (partition key and/or sort key) exist. If an item lacks the attributes defined in the GSI key schema, it is excluded from the index. It enables querying based on attributes not included in the main table's primary key. Here's how it works:
 
-    -   `Execution Duration`: Standard Workflows can run for up to a year, making them suitable for long-running processes.
-    -   `Execution History`: They provide detailed execution history for each step, which is useful for debugging and auditing.
-    -   `State Transition`: State transitions are recorded, and you can visualize the execution flow.
-    -   `Reliability`: Designed for high reliability and durability, ensuring the state machine's execution is accurately recorded and completed.
-    -   `Concurrency`: They support high levels of concurrency but have a rate limit for execution starts.
-    -   `Error Handling`: Supports robust error handling and retry mechanisms.
+            -   `Data Copying`: DynamoDB automatically copies data from the main table to the GSI. The copied data includes the primary key attributes as well as projected attributes.
+            -   `Querying`: You can query a GSI using the Query operation, providing the GSI's partition key and optional sort key values. The query results are limited to the data present in the GSI.
+            -   `Projection`: GSIs also support projected attributes, allowing you to optimize query performance by including frequently accessed attributes.
+            -   `Read and Write Capacity`: GSIs have their own provisioned read and write capacity settings, allowing you to allocate resources specifically for index operations.
+            -   `Consistency`: GSIs support both eventually consistent and strongly consistent reads.
 
-    -   `Use Cases`: Use when you need detailed execution history, long-running processes, complex business logic, and robust error handling.
+        -   `Sparse Index`: A Sparse Index is a type of index (usually a GSI) that includes only a subset of the items in the table. This happens because only items with the attributes defined in the index key schema are indexed.
 
-        -   Long-running ETL processes.
-        -   Complex business workflows that require detailed audit trails.
-        -   Processes where each step's result and execution path need to be tracked and visualized.
+            -   Unlike a regular GSI, a Sparse Index intentionally excludes items that do not have the required attributes.
+            -   The sparseness is a result of using a design where the indexed attributes only exist on certain items.
+            -   Designed to filter out irrelevant data and optimize queries for specific subsets of data. For example, indexing only "high-priority" orders in an orders table.
 
-    -   `Pricing`
-        -   Pricing is based on the number of state transitions.
-        -   Execution time also impacts cost.
+        -   `Local Secondary Index`: A Local Secondary Index is an index that shares the same partition key as the base table but has a different sort key. It requires to be created at the same time as the table and can be used to query and retrieve data in a specific order based on the alternate sort key. Here's how it works:
+            -   `Data Copying`: DynamoDB automatically copies data from the main table to the LSI, using the same partition key value as the main table but with a different sort key.
+            -   `Querying`: You can query an LSI using the Query operation. The partition key value is taken from the main table's partition, but you can specify a range of sort key values for your query.
+            -   `Projection`: Like GSIs, LSIs allow you to specify projected attributes that are included in the index, avoiding the need to access the main table for those attributes during queries.
+            -   `Consistency`: LSIs support both eventually consistent and strongly consistent reads.
 
--   **Express Workflows**
+    #### DynamoDB Throughput
 
-    -   `Execution Duration`: Express Workflows are designed for short-lived executions, with a maximum duration of five minutes. - `Execution Volume`: Optimized for high-volume, short-duration workloads. - `Concurrency`: Can handle a much higher rate of executions compared to Standard Workflows. - `State Transition`: Transitions are recorded at a summary level rather than a detailed step-by-step history. - `Cost`: Pricing is based on the number of requests and their duration, making it cost-effective for high-frequency, short-duration tasks. - `Reliability`: Provides good reliability, though not as high as Standard Workflows. Suitable for high-scale operations that need to manage massive volumes of requests efficiently.
+    -   `Throughput`: Throughput is a mechanism to specify the reading and writing capacity of the DynamoDB table. When you create a table in DynamoDB, you can specify the desired throughput capacity in terms of `RCU`s and `WCU`s. These provisioned throughput values determine how much capacity is allocated to your table, allowing you to handle the expected read and write loads. Keep in mind that DynamoDB's pricing is based on the provisioned throughput capacity you specify. Throughput is measured in `Capacity Units`. There are two types of capacity units:
 
-    -   `Use Cases`: Use when you need to handle a high volume of short-duration executions efficiently and cost-effectively, such as in real-time data processing and event-driven architectures.
+        -   `Read Capacity Unit (RCUs)`: A read capacity unit is the amount of read throughput that is required to read one item per second from a DynamoDB table. One RCU represents the capacity to perform one strongly consistent read per second of an item up to 4 KB in size, or two eventually consistent reads per second of an item up to 4 KB in size. If your items are larger than 4 KB, you will need to provision additional RCUs to handle the extra size.
+        -   `Write Capacity Unit (WCUs)`: A write capacity unit is the amount of write throughput that is required to write one item per second to a DynamoDB table. One WCU represents the capacity to perform one write per second for an item up to 1 KB in size. Like with RCUs, if your items are larger, you'll need to provision additional WCUs.
 
-        -   Real-time data processing.
-        -   Event-driven architectures.
-        -   Microservices orchestration.
-        -   High-frequency, short-duration jobs such as real-time file processing or data ingestion tasks.
+    -   `Provisioned Throughput`: Provisioned throughput is the maximum amount of read and write capacity that can be specified for a DynamoDB table. It determines the number of RCUs and WCUs that are available to the table.
+    -   `Conditional Writes`: Conditional writes are a way to update or delete an item in a DynamoDB table based on a condition. This allows you to ensure that the item being modified meets certain criteria before making the change.
 
-    -   `Pricing`
-        -   Based on the number of requests and their duration.
-        -   More cost-effective for high-throughput, short-duration tasks.
+    -   `Throttling`: Throttling in DynamoDB refers to the mechanism that limits the number of requests that can be made to the service within a specified period. DynamoDB throttling occurs when a table or partition is receiving more read or write requests than it can handle. DynamoDB limits the number of read and write operations per second for each table partition based on the provisioned throughput capacity. If the provisioned capacity is exceeded, the requests are throttled, and an error response with an HTTP 400 status code is returned to the caller. DynamoDB provides two types of throttling:
 
--   **Detailed Comparison**
+        -   `Provisioned throughput throttling`: This type of throttling occurs when you have set up provisioned throughput capacity on a DynamoDB table, and the request rate exceeds the capacity you have provisioned. In this case, DynamoDB returns a ProvisionedThroughputExceededException error.
+        -   `On-demand capacity throttling`: This type of throttling occurs when you use on-demand capacity mode for your DynamoDB table, and the request rate exceeds the maximum burst capacity. In this case, DynamoDB returns a RequestLimitExceeded error.
+        -   To avoid throttling in DynamoDB, you can monitor the provisioned throughput capacity of your tables and increase it if necessary. You can also use best practices such as partitioning your data to evenly distribute read and write requests across the table partitions. Additionally, you can implement exponential backoff retries in your application code to automatically handle throttling errors and reduce the request rate.
 
-    | Feature            | Standard Workflows                             | Express Workflows                                |
-    | :----------------- | :--------------------------------------------- | :----------------------------------------------- |
-    | Execution Duration | Up to 1 year                                   | Up to 5 minutes                                  |
-    | Concurrency        | High, but with rate limits on execution starts | Extremely high, designed for massive concurrency |
-    | State Transition   | Detailed history for each step                 | Summary-level transitions                        |
-    | Error Handling     | Robust with detailed retry policies            | Basic retry capabilities                         |
-    | Execution History  | Detailed and visualized                        | Minimal, focused on summary information          |
-    | Cost Model         | Per state transition                           | Per request and duration                         |
-    | Use Cases          | Long-running, complex workflows                | Short-duration, high-volume tasks                |
+    When using Amazon DynamoDB, you can choose between **Provisioned Capacity** and **On-Demand Capacity** modes to manage the read and write throughput of your tables. Here's a detailed comparison:
 
-#### Features and Capabilities
+    -   **Provisioned Capacity Mode**:
 
--   **Visual Workflow Design**: Step Functions provides a visual editor in the AWS Management Console to create and visualize workflows, making it easier to understand and design complex workflows.
--   **Built-in Error Handling**: Step Functions includes built-in error handling, retry, and catch capabilities to handle errors and exceptions during state execution.
--   **Service Integrations**: Step Functions can integrate with over 200 AWS services, including Lambda, SNS, SQS, DynamoDB, ECS, Batch, Glue, and more. This allows for powerful orchestration of complex tasks across multiple services.
--   **Execution History**: Step Functions provides detailed execution history, including event logs for each step of your workflow. This helps with debugging and monitoring.
--   **Express Workflows**: In addition to standard workflows, Step Functions offers express workflows designed for high-volume, short-duration workflows. They provide lower latency and cost for large-scale applications.
+        -   You predefine the number of **Read Capacity Units (RCUs)** and **Write Capacity Units (WCUs)** for your table.
+        -   The table can handle a fixed number of reads and writes per second based on the allocated capacity.
+        -   `Predictable Workloads`: Ideal for applications with steady or predictable traffic patterns where you can estimate throughput needs.
+        -   `Auto Scaling Option`: You can enable Auto Scaling to adjust capacity automatically in response to traffic changes.
+        -   `Throttling`: If your workload exceeds the provisioned throughput, requests get throttled unless you scale up.
+        -   `Cost`: You pay for the provisioned RCUs and WCUs, regardless of actual usage.
+        -   `Billing:`: Based on the number of provisioned RCUs and WCUs, even if the capacity is underutilized.
 
-</details>
+    -   **On-Demand Capacity Mode**:
+
+        -   No need to specify RCUs or WCUs upfront. DynamoDB automatically adjusts the table's capacity to handle any amount of traffic.
+        -   You are billed only for the actual reads and writes performed.
+        -   `Unpredictable Workloads`: Best for applications with spiky or unpredictable traffic patterns.
+        -   `No Throttling`: Automatically scales to meet the workload.
+        -   `Simplicity`: No capacity planning is needed.
+        -   Applications with unknown or fluctuating workloads (e.g., gaming leaderboards, IoT applications, ad-hoc analytics).
+
+    #### DynamoDB Stream
+
+    A DynamoDB Stream is a feature provided by Amazon DynamoDB. A DynamoDB Stream trigger events (INSERTS, UPDATES, DELETES) capturing changes (inserts, updates, deletes) made to items in a DynamoDB table and then provides a time-ordered sequence of these changes. Streams enable real-time processing and analysis of data changes, making them useful for various scenarios such as data replication, maintaining secondary indexes, triggering AWS Lambda functions, and more. Here are the key aspects of DynamoDB Streams:
+
+    -   `Stream Enabled Table`: To use DynamoDB Streams, you need to enable streams on a DynamoDB table. When streams are enabled, DynamoDB keeps track of changes to the items in that table.
+    -   `Stream Records`: Each change made to a DynamoDB item generates a stream record. A stream record contains information about the change, including the type of operation (insert, modify, delete), the item's data before the change, and the item's data after the change.
+    -   `Time-Ordered Sequence`: The stream records are stored in a time-ordered sequence. This means that changes to the table's items are captured in the order they occur, allowing downstream applications to process the changes in the same order.
+    -   `Consumers`: DynamoDB Streams allow you to set up consumers that read and process the stream records. One common use case is to trigger AWS Lambda functions in response to changes in the stream. For example, you can configure a Lambda function to be invoked whenever a new item is inserted into the table.
+    -   `Data Synchronization and Backup`: Streams can be used for data replication and synchronization between DynamoDB tables or other data stores. They can also serve as a backup mechanism by capturing all changes to your data.
+    -   `Real-time Analytics`: Streams enable real-time processing and analysis of data changes. You can use them to generate real-time insights and metrics based on the changes in your DynamoDB data.
+    -   `Cross-Region Replication`: DynamoDB Streams can be used to replicate data changes across different AWS regions, helping you maintain data availability and disaster recovery capabilities.
+
+    #### DynamoDB Transactions
+
+    DynamoDB Transactions are a feature introduced by Amazon DynamoDB to provide atomicity, consistency, isolation, and durability (ACID) properties for multiple operations within a single transactional context. This ensures that a group of operations either complete successfully or have no effect at all, maintaining data integrity and consistency even in complex scenarios involving multiple items or tables.DynamoDB Transactions are particularly useful in scenarios where data consistency across multiple items or tables is crucial. They are beneficial for applications that require strong guarantees about data integrity, such as financial applications, e-commerce platforms, and more. Here are the key aspects of DynamoDB Transactions:
+
+    -   `Atomicity`: All the operations within a transaction are treated as a single unit of work. If any part of the transaction fails, all changes made by the transaction are rolled back, and the data remains unchanged.
+    -   `Consistency`: DynamoDB Transactions maintain the consistency of the data. This means that the data is transitioned from one valid state to another valid state. All data involved in a transaction adheres to the defined business rules and constraints.
+    -   `Isolation`: Transactions are isolated from each other, meaning that the changes made by one transaction are not visible to other transactions until the transaction is committed. This ensures that concurrent transactions do not interfere with each other's intermediate states.
+    -   `Durability`: Once a transaction is successfully committed, the changes are permanently stored and will not be lost, even in the event of a system failure or restart.
+    -   `Transactional APIs`: DynamoDB provides transactional APIs that allow you to group multiple operations (such as `put`, `update`, `delete`) into a single transaction. You can execute these operations on one or more tables in a consistent and reliable manner.
+    -   `Conditional Expressions`: DynamoDB Transactions can include conditional expressions to ensure that certain conditions are met before the transaction is executed. This adds an additional layer of control over the transactional behavior.
+    -   `Isolation Levels`: DynamoDB supports two isolation levels for transactions: Read Committed and Serializable. Read Committed ensures that the data read in a transaction is the most recent committed data, while Serializable provides a higher level of isolation by preventing other transactions from modifying the data while a transaction is in progress.
+
+    #### FACTS:
+
+    -   `Fully Managed`: AWS manages the infrastructure, scaling, and maintenance of DynamoDB, making it a serverless and highly available database service.
+    -   `Key-Value Store`: DynamoDB primarily operates as a key-value store. Each item in DynamoDB is uniquely identified by a primary key, consisting of one or both of the following components:
+
+        -   `Partition Key`: Used to partition the data for distribution across multiple servers. It determines the physical location of the data.
+        -   `Sort Key (optional)`: Used for range queries and to create a composite primary key.
+
+    -   `Document Support`: DynamoDB also supports a document data model, where items can be structured as nested JSON-like documents. This allows for more flexible and complex data structures.
+    -   `Schemaless`: DynamoDB is schemaless, meaning you can add or remove attributes from items without affecting other items in the same table. This flexibility is common in NoSQL databases.
+
+    -   **High Availability**:
+
+        -   DynamoDB is a fully managed NoSQL database service that provides low latency and high scalability for applications that require consistent, single-digit millisecond response times. To ensure high availability, DynamoDB replicates data synchronously across three AZs in a region, ensuring that there is always a copy of the data available even if one or two AZs experience issues.
+        -   If one AZ becomes unavailable, DynamoDB automatically redirects requests to one of the other two AZs where the data is available, providing uninterrupted access to the database. If two AZs become unavailable, DynamoDB continues to operate normally in the remaining AZ, and recovery processes begin to restore access to the affected AZs.
+        -   Additionally, DynamoDB uses automatic scaling to ensure that it can handle varying levels of traffic without downtime. DynamoDB automatically partitions data and traffic across multiple nodes, allowing it to handle high levels of read and write requests while maintaining consistent performance.
+        -   In summary, AWS DynamoDB provides high availability through `multi-AZ deployment`, `synchronous data replication`, and `automatic scaling`. These features ensure that the database remains accessible and performs consistently, even in the event of infrastructure failures or high traffic volumes.
+
+    -   **Data Durability**:
+
+        -   `Replication`: DynamoDB replicates data across multiple Availability Zones (AZs) within a region, ensuring that if one AZ fails, data is still available from another AZ. This ensures high availability and durability of data.
+        -   `Data Storage`: DynamoDB stores data in solid-state drives (SSDs), which are more reliable and durable than traditional hard disk drives (HDDs). This helps ensure that data is not lost due to hardware failures.
+        -   `Automatic backups and point-in-time recovery`: DynamoDB provides automatic backups and point-in-time recovery features, which help ensure that data is recoverable in case of accidental deletion, application errors, or other types of data loss.
+        -   `Redundancy`: DynamoDB maintains multiple copies of data in different locations, ensuring that data is not lost in case of hardware or network failures.
+        -   `Continuous monitoring and self-healing`: DynamoDB continuously monitors the health of its resources and automatically replaces failed or degraded resources with new ones.
+        -   synchronously replicates data across three facilities in an AWS Region. (99.999% garanteed uptime)
+
+    -   Optimized for performance at scale (scale out horizonlaly by adding more nodes to the cluster)
+    -   runs exclusively on SSDs to provide high I/O performance
+    -   provides provisioned table reads and writes
+    -   automatically partitions, reallocates and re-partitions the data and provisions additional server capacity as data or throughput changes
+    -   provides `Eventually Consistent` (by default) or `Strongly Consistent` option to be specified during an read operation
+    -   creates and maintains indexes for the primary key attributes for efficient access of data in the table
+    -   supports secondary indexes
+
+        -   allows querying attributes other then the primary key attributes without impacting performance.
+        -   are automatically maintained as sparse objects
+
+    -   supports cross region replication using DynamoDB streams which leverages Kinesis and provides time-ordered sequence of item-level changes and can help for lower RPO, lower RTO disaster recovery
+    -   Data Pipeline jobs with EMR can be used for disaster recovery with higher RPO, lower RTO requirements
+    -   supports triggers to allow execution of custom actions or notifications based on item-level updates
+
+    </details>
 
 ---
 
-<details><summary style="font-size:25px;color:Orange">DynamoDB</summary>
+-   <details><summary style="font-size:25px;color:Orange">API Gateways</summary>
 
--   [Be A Better Dev: AWS DynamoDB Guides](https://www.youtube.com/playlist?list=PL9nWRykSBSFi5QD8ssI0W5odL9S0309E2)
--   [AWS DynamoDB](https://www.youtube.com/playlist?list=PLJo-rJlep0EApPrKspmHybxvbZsXruhzR)
--   [boto3.DynamoDB Dcos](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/dynamodb.html)
+    ![API Gateway](../assets/aws/APIGateway.png)
 
-AWS DynamoDB is a fully managed **Key-Value Stores** NoSQL database service provided by Amazon Web Services (AWS). It is designed to handle large volumes of data with low latency and high performance, offering automatic scaling, high availability, and robust security features. DynamoDB is particularly well-suited for applications that require consistent, single-digit millisecond response times at any scale.
+    AWS API Gateway is a fully managed service that makes it easy for developers to create, publish, and manage APIs at any scale. It provides a way to create **RESTful APIs**, **WebSocket APIs**, and **HTTP APIs** that can be used to interact with back-end services, such as AWS Lambda, Amazon EC2, and other AWS services, as well as with third-party services.
+    AWS API Gateway is a fully managed service that enables developers to create, publish, and manage **RESTful APIs**, **WebSocket APIs**, and **HTTP APIs** at any scale. It serves as a front-door to various backend services like AWS Lambda, EC2, or any web application. Here are the crucial concepts and components of **AWS REST API Gateway**:
+    These components and concepts make API Gateway a robust and scalable solution for creating and managing REST APIs, with seamless integration into the AWS ecosystem. API Gateway allows you to build secure, flexible, and scalable APIs that can interact with a variety of backends, including serverless services like AWS Lambda.
+    The **REST API** in API Gateway allows developers to create RESTful web services that can interact with a wide range of backend services. API Gateway acts as an intermediary between the client and the backend.
 
--   **Key-Value Stores**: Key-Value Store is a type of NoSQL database that uses a simple key-value pair mechanism to store data. It is one of the most straightforward types of databases, where each unique key is associated with a value, which can be any type of data, from simple strings to complex objects like JSON, BLOBs, or serialized objects.
+    -   **Components**:
+        -   **Resources**: Logical endpoints in your API that represent entities or operations.
+        -   **Methods**: HTTP methods (e.g., GET, POST, PUT, DELETE) applied to resources.
+        -   **Stages**: Different deployment environments (e.g., dev, test, prod) with unique URLs.
 
-    -   `Data Model`: Simple key-value pairs; values can be binary blobs or strings.
+    #### Resources:
 
-        -   `Keys`: Unique identifiers used to access the associated values. Keys are usually simple strings.
-        -   `Values`: The data associated with the keys, which can be any datatype.
-        -   `Schema-less`: No fixed schema, allowing for flexible and dynamic data storage.
+    **Resources** represent individual endpoints in your API, which map to a particular functionality or entity in your application.
+    A resource is an object that represents an entity, such as a customer, order, or product, in the context of an API. Each resource is associated with one or more methods, such as GET, POST, PUT, DELETE, that can be used to access or manipulate the resource's data.
 
-    -   `High Performance`: Optimized for fast read and write operations, often achieving low latency due to the simplicity of key-value access patterns.
-    -   `Scalability`: Designed to scale horizontally, making it easy to distribute data across multiple servers.
+    -   **Path Parameters**: Resources can include path parameters (e.g., `/users/{user_id}`) to pass variables within the URL.
+    -   **Nested Resources**: You can create hierarchical resource paths (e.g., `/users/{user_id}/orders`) to organize related API endpoints.
 
-    -   `Strengths`:
+    #### Methods:
 
-        -   Extremely fast and scalable for read and write operations.
-        -   Ideal for caching, session management, and real-time analytics.
-        -   Well-suited for high-throughput applications.
+    Each resource in a REST API can have one or more **HTTP methods** associated with it, defining how the resource can be interacted with (e.g., GET, POST, PUT, DELETE).
+    A method is an action that can be performed on a resource, such as retrieving, updating, or deleting data. Each method is associated with an HTTP verb, such as GET, POST, PUT, or DELETE, that indicates the type of action that is being performed.
 
-    -   `Weaknesses`:
-        -   Limited query capabilities (no complex queries or joins).
-        -   May not support data types beyond strings and binary.
+    -   **Integration with Backends**: Methods define how the API Gateway interacts with backend services, such as AWS Lambda functions, Amazon EC2, or HTTP endpoints.
+    -   **Input/Output Mapping**: Request and response payloads can be transformed or mapped to fit the backend’s format using **mapping templates**.
 
-#### Terms & Concepts
+    #### Stages:
 
--   `Schema`: The term "schema" refers to the structure and organization of the data stored in your DynamoDB tables. Unlike traditional relational databases, DynamoDB is a NoSQL database that does not require a fixed schema defined ahead of time. Instead, each item (record) within a DynamoDB table can have its own attributes, and different items within the same table can have different attributes.
--   `Tables`: A DynamoDB table is a collection of items that share the same primary key. Tables are used to store and retrieve data in a scalable and durable manner.
--   `Items`: An item is a collection of attributes that is uniquely identifiable by a primary key. In a DynamoDB table, items are the individual records that are stored.
--   `Atributes`: Attributes are the fundamental data elements stored in a table. In DynamoDB, attributes are stored in a flexible schema, meaning that you do not need to define a fixed schema for your table beforehand. Instead, you can simply create a table and add or remove attributes as needed when you insert or update items.
+    A **stage** in API Gateway is a logical separation of your API for different environments such as development, testing, or production.
 
-    -   Each attribute is made up of a name-value pair.
-    -   Attributes can also be used as primary or sort keys to enable fast and efficient queries.
-    -   Can also define attribute-level access controls.
+    -   **Features**:
 
--   `Primary Key`: DynamoDB tables are organized around a primary key composed of one or two attributes, which uniquely identifies the item in the table. There are two types of primary keys: partition key and composite key.
+        -   **Stage Variables**: Similar to environment variables, used to define values specific to the stage (e.g., `api_key`, backend endpoint).
+        -   **Stage URLs**: Each stage has a unique URL, for example, `https://api-id.execute-api.aws-region.amazonaws.com/prod/`.
 
-    -   `Partition Key`: Also known as a hash key, this is a simple primary key composed of a single attribute. DynamoDB uses the partition key value as input to an internal hash function to determine the partition in which an item is stored.
-    -   `Composite Key`: Also known as a partition key and sort key, this is a primary key composed of two attributes.
-        -   `Partition Key`: is used to determine the partition in which an item is stored.
-        -   `Sort Key`: is used to sort items within the partition. It's also known as Range key.
+    #### Proxy Integration
 
--   `Secondary Index`: Secondary Index in Amazon DynamoDB is a separate data structure that allows you to query and retrieve data from a DynamoDB table using attributes other than the primary key. There are two types of secondary indexes: global secondary index and local secondary index.
+    In AWS API Gateway, **Proxy Integration** is a feature that allows the API to pass through all HTTP requests directly to an AWS Lambda function or another HTTP endpoint without configuring each method, parameter, or mapping. It creates a streamlined and flexible setup, especially useful for microservices architectures. Followings are the key points of proxy integration with aws lambda
 
-    -   `Global Secondary Index`: A Global Secondary Index is an independent data structure that has its own partition key and sort key. It does not require to be created at the same time as the table. GSIs index all items in the table by default, provided the indexed attributes (partition key and/or sort key) exist. If an item lacks the attributes defined in the GSI key schema, it is excluded from the index. It enables querying based on attributes not included in the main table's primary key. Here's how it works:
+    1. **Direct Pass-through of Requests**: API Gateway passes the entire request payload to the Lambda function, including the request's headers, query parameters, HTTP method, and body as a JSON object. Lambda receives it in a standard format, making it versatile for different types of requests.
+    2. **Single Lambda Handler for All Requests**: With Proxy Integration, a single Lambda function can handle all endpoints and HTTP methods in the API. This reduces the need for defining individual integrations and mappings for each API resource.
+    3. **Simplified Deployment**: It streamlines the process of setting up APIs because there’s no need to configure API Gateway resources like request/response templates or parameter mappings. This is especially beneficial for quickly deploying microservices.
+    4. **Flexible Response**: The Lambda function returns a response with headers, status codes, and body, which API Gateway then relays back to the client.
+    5. **Reduced Configuration**: Since Proxy Integration requires fewer manual configurations, it’s less prone to configuration errors and is generally easier to manage.
 
-        -   `Data Copying`: DynamoDB automatically copies data from the main table to the GSI. The copied data includes the primary key attributes as well as projected attributes.
-        -   `Querying`: You can query a GSI using the Query operation, providing the GSI's partition key and optional sort key values. The query results are limited to the data present in the GSI.
-        -   `Projection`: GSIs also support projected attributes, allowing you to optimize query performance by including frequently accessed attributes.
-        -   `Read and Write Capacity`: GSIs have their own provisioned read and write capacity settings, allowing you to allocate resources specifically for index operations.
-        -   `Consistency`: GSIs support both eventually consistent and strongly consistent reads.
+    In contrast, **Non-Proxy Integration** involves more detailed configurations for each endpoint and allows for customized mapping and transformations. However, Proxy Integration is typically preferred for simpler, JSON-based APIs that don’t need intricate transformations.
 
-    -   `Sparse Index`: A Sparse Index is a type of index (usually a GSI) that includes only a subset of the items in the table. This happens because only items with the attributes defined in the index key schema are indexed.
+    #### Method Request
 
-        -   Unlike a regular GSI, a Sparse Index intentionally excludes items that do not have the required attributes.
-        -   The sparseness is a result of using a design where the indexed attributes only exist on certain items.
-        -   Designed to filter out irrelevant data and optimize queries for specific subsets of data. For example, indexing only "high-priority" orders in an orders table.
+    -   **Definition**: The **Method Request** is the initial part of the API Gateway process that handles the incoming request from the client.
+    -   **Purpose**: It sets up and validates client input before passing the request on to the backend integration (e.g., AWS Lambda, HTTP endpoints, or AWS services like Step Functions).
+    -   **Configuration Options**:
+        -   `Request Parameters`: Defines expected query parameters, headers, or path variables.
+        -   `Request Validation`: Allows validation rules to ensure clients send correct data (e.g., required parameters).
+        -   `Authorization`: Enables access control options like AWS IAM permissions, Cognito User Pools, or custom authorizers.
 
-    -   `Local Secondary Index`: A Local Secondary Index is an index that shares the same partition key as the base table but has a different sort key. It requires to be created at the same time as the table and can be used to query and retrieve data in a specific order based on the alternate sort key. Here's how it works:
-        -   `Data Copying`: DynamoDB automatically copies data from the main table to the LSI, using the same partition key value as the main table but with a different sort key.
-        -   `Querying`: You can query an LSI using the Query operation. The partition key value is taken from the main table's partition, but you can specify a range of sort key values for your query.
-        -   `Projection`: Like GSIs, LSIs allow you to specify projected attributes that are included in the index, avoiding the need to access the main table for those attributes during queries.
-        -   `Consistency`: LSIs support both eventually consistent and strongly consistent reads.
+    #### Integration Request
 
-#### DynamoDB Throughput
+    -   **Definition**: The **Integration Request** defines how the **Method Request** is transformed and routed to the backend.
+    -   **Purpose**: It controls how API Gateway forwards requests to the backend service, including any required transformations or modifications.
+    -   **Configuration Options**:
+        -   `Mapping Templates`: Define how to map and transform incoming request data to match the backend’s expected format.
+        -   `Integration Type`: Specifies the type of backend integration, such as AWS Lambda, HTTP endpoint, AWS service (e.g., Step Functions, DynamoDB).
+        -   `Request Parameters`: Additional parameters or headers to pass along to the backend if required.
 
--   `Throughput`: Throughput is a mechanism to specify the reading and writing capacity of the DynamoDB table. When you create a table in DynamoDB, you can specify the desired throughput capacity in terms of `RCU`s and `WCU`s. These provisioned throughput values determine how much capacity is allocated to your table, allowing you to handle the expected read and write loads. Keep in mind that DynamoDB's pricing is based on the provisioned throughput capacity you specify. Throughput is measured in `Capacity Units`. There are two types of capacity units:
+    #### Integration Response
 
-    -   `Read Capacity Unit (RCUs)`: A read capacity unit is the amount of read throughput that is required to read one item per second from a DynamoDB table. One RCU represents the capacity to perform one strongly consistent read per second of an item up to 4 KB in size, or two eventually consistent reads per second of an item up to 4 KB in size. If your items are larger than 4 KB, you will need to provision additional RCUs to handle the extra size.
-    -   `Write Capacity Unit (WCUs)`: A write capacity unit is the amount of write throughput that is required to write one item per second to a DynamoDB table. One WCU represents the capacity to perform one write per second for an item up to 1 KB in size. Like with RCUs, if your items are larger, you'll need to provision additional WCUs.
+    -   **Definition**: The **Integration Response** handles the response from the backend service before passing it back to the client.
+    -   **Purpose**: It controls the format and transformation of the backend response, including error handling and data formatting.
+    -   **Configuration Options**:
+        -   `Mapping Templates`: Define transformations to convert backend responses into the desired format.
+        -   `Error Handling`: Specifies conditions (like status codes) to catch errors from the backend and map them to standard responses.
+        -   `Headers and Parameters`: Adds or modifies headers or parameters before sending them back to the client.
 
--   `Provisioned Throughput`: Provisioned throughput is the maximum amount of read and write capacity that can be specified for a DynamoDB table. It determines the number of RCUs and WCUs that are available to the table.
--   `Conditional Writes`: Conditional writes are a way to update or delete an item in a DynamoDB table based on a condition. This allows you to ensure that the item being modified meets certain criteria before making the change.
+    #### Method Response
 
--   `Throttling`: Throttling in DynamoDB refers to the mechanism that limits the number of requests that can be made to the service within a specified period. DynamoDB throttling occurs when a table or partition is receiving more read or write requests than it can handle. DynamoDB limits the number of read and write operations per second for each table partition based on the provisioned throughput capacity. If the provisioned capacity is exceeded, the requests are throttled, and an error response with an HTTP 400 status code is returned to the caller. DynamoDB provides two types of throttling:
+    -   **Definition**: The **Method Response** is the final step that defines the structure and format of the response that API Gateway sends to the client.
+    -   **Purpose**: It sets up how the API Gateway should format the response for clients, including defining which HTTP status codes, headers, and data formats are returned.
+    -   **Configuration Options**:
+        -   `Response Models`: Defines a schema for different HTTP status codes and responses, ensuring predictable response formats.
+        -   `Status Codes`: Specifies which status codes the client can expect (e.g., 200 for success, 400 for client errors).
+        -   `Headers and Parameters`: Defines response headers available to the client, like `Content-Type` or custom headers.
 
-    -   `Provisioned throughput throttling`: This type of throttling occurs when you have set up provisioned throughput capacity on a DynamoDB table, and the request rate exceeds the capacity you have provisioned. In this case, DynamoDB returns a ProvisionedThroughputExceededException error.
-    -   `On-demand capacity throttling`: This type of throttling occurs when you use on-demand capacity mode for your DynamoDB table, and the request rate exceeds the maximum burst capacity. In this case, DynamoDB returns a RequestLimitExceeded error.
-    -   To avoid throttling in DynamoDB, you can monitor the provisioned throughput capacity of your tables and increase it if necessary. You can also use best practices such as partitioning your data to evenly distribute read and write requests across the table partitions. Additionally, you can implement exponential backoff retries in your application code to automatically handle throttling errors and reduce the request rate.
+    #### Mapping Template
 
-When using Amazon DynamoDB, you can choose between **Provisioned Capacity** and **On-Demand Capacity** modes to manage the read and write throughput of your tables. Here's a detailed comparison:
+    In AWS API Gateway, **Mapping Templates** are used to transform incoming requests before they reach the backend and to modify backend responses before they reach the client. This transformation capability is particularly useful when integrating API Gateway with other AWS services (like AWS Lambda) or external APIs, allowing you to map data formats, handle transformations, and enforce data contracts.
 
--   **Provisioned Capacity Mode**:
+    -   **Key Features of Mapping Templates**
 
-    -   You predefine the number of **Read Capacity Units (RCUs)** and **Write Capacity Units (WCUs)** for your table.
-    -   The table can handle a fixed number of reads and writes per second based on the allocated capacity.
-    -   `Predictable Workloads`: Ideal for applications with steady or predictable traffic patterns where you can estimate throughput needs.
-    -   `Auto Scaling Option`: You can enable Auto Scaling to adjust capacity automatically in response to traffic changes.
-    -   `Throttling`: If your workload exceeds the provisioned throughput, requests get throttled unless you scale up.
-    -   `Cost`: You pay for the provisioned RCUs and WCUs, regardless of actual usage.
-    -   `Billing:`: Based on the number of provisioned RCUs and WCUs, even if the capacity is underutilized.
+        1. `Request Transformation`:
 
--   **On-Demand Capacity Mode**:
+            - You can configure mapping templates to modify or structure the data that comes from clients before sending it to the backend.
+            - For instance, if a client sends data in a certain JSON format, you can transform it into another format that your backend expects (like XML or another JSON structure).
+            - Mapping templates use **Velocity Template Language (VTL)**, which provides a set of pre-defined objects and functions to handle conditional logic, loops, and data transformation.
 
-    -   No need to specify RCUs or WCUs upfront. DynamoDB automatically adjusts the table's capacity to handle any amount of traffic.
-    -   You are billed only for the actual reads and writes performed.
-    -   `Unpredictable Workloads`: Best for applications with spiky or unpredictable traffic patterns.
-    -   `No Throttling`: Automatically scales to meet the workload.
-    -   `Simplicity`: No capacity planning is needed.
-    -   Applications with unknown or fluctuating workloads (e.g., gaming leaderboards, IoT applications, ad-hoc analytics).
+        2. `Response Transformation`:
 
-#### DynamoDB Stream
+            - Mapping templates can also be applied to transform the responses from the backend before they are returned to the client.
+            - This is useful if your backend provides data in a certain format, and you need to restructure or filter the data for the client.
 
-A DynamoDB Stream is a feature provided by Amazon DynamoDB. A DynamoDB Stream trigger events (INSERTS, UPDATES, DELETES) capturing changes (inserts, updates, deletes) made to items in a DynamoDB table and then provides a time-ordered sequence of these changes. Streams enable real-time processing and analysis of data changes, making them useful for various scenarios such as data replication, maintaining secondary indexes, triggering AWS Lambda functions, and more. Here are the key aspects of DynamoDB Streams:
+        3. `Content-Type Handling`:
 
--   `Stream Enabled Table`: To use DynamoDB Streams, you need to enable streams on a DynamoDB table. When streams are enabled, DynamoDB keeps track of changes to the items in that table.
--   `Stream Records`: Each change made to a DynamoDB item generates a stream record. A stream record contains information about the change, including the type of operation (insert, modify, delete), the item's data before the change, and the item's data after the change.
--   `Time-Ordered Sequence`: The stream records are stored in a time-ordered sequence. This means that changes to the table's items are captured in the order they occur, allowing downstream applications to process the changes in the same order.
--   `Consumers`: DynamoDB Streams allow you to set up consumers that read and process the stream records. One common use case is to trigger AWS Lambda functions in response to changes in the stream. For example, you can configure a Lambda function to be invoked whenever a new item is inserted into the table.
--   `Data Synchronization and Backup`: Streams can be used for data replication and synchronization between DynamoDB tables or other data stores. They can also serve as a backup mechanism by capturing all changes to your data.
--   `Real-time Analytics`: Streams enable real-time processing and analysis of data changes. You can use them to generate real-time insights and metrics based on the changes in your DynamoDB data.
--   `Cross-Region Replication`: DynamoDB Streams can be used to replicate data changes across different AWS regions, helping you maintain data availability and disaster recovery capabilities.
+            - Mapping templates are associated with **content types**. You can create different templates based on content types like `application/json` or `application/xml`, allowing you to support multiple client formats.
+            - API Gateway then selects the appropriate mapping template based on the content type specified in the client’s request.
 
-#### DynamoDB Transactions
+        4. `Example Use Cases`:
+            - **Path and Query Parameter Mapping**: Transform parameters from a request path or query string into a request body format expected by the backend.
+            - **Error Handling**: Modify error messages from the backend to make them more meaningful to the client by converting error codes or adding context.
+            - **Data Enrichment**: Enrich requests with additional data, such as injecting metadata or headers required by the backend, without requiring the client to provide them.
 
-DynamoDB Transactions are a feature introduced by Amazon DynamoDB to provide atomicity, consistency, isolation, and durability (ACID) properties for multiple operations within a single transactional context. This ensures that a group of operations either complete successfully or have no effect at all, maintaining data integrity and consistency even in complex scenarios involving multiple items or tables.DynamoDB Transactions are particularly useful in scenarios where data consistency across multiple items or tables is crucial. They are beneficial for applications that require strong guarantees about data integrity, such as financial applications, e-commerce platforms, and more. Here are the key aspects of DynamoDB Transactions:
+    -   **Example of a Simple Mapping Template**
 
--   `Atomicity`: All the operations within a transaction are treated as a single unit of work. If any part of the transaction fails, all changes made by the transaction are rolled back, and the data remains unchanged.
--   `Consistency`: DynamoDB Transactions maintain the consistency of the data. This means that the data is transitioned from one valid state to another valid state. All data involved in a transaction adheres to the defined business rules and constraints.
--   `Isolation`: Transactions are isolated from each other, meaning that the changes made by one transaction are not visible to other transactions until the transaction is committed. This ensures that concurrent transactions do not interfere with each other's intermediate states.
--   `Durability`: Once a transaction is successfully committed, the changes are permanently stored and will not be lost, even in the event of a system failure or restart.
--   `Transactional APIs`: DynamoDB provides transactional APIs that allow you to group multiple operations (such as `put`, `update`, `delete`) into a single transaction. You can execute these operations on one or more tables in a consistent and reliable manner.
--   `Conditional Expressions`: DynamoDB Transactions can include conditional expressions to ensure that certain conditions are met before the transaction is executed. This adds an additional layer of control over the transactional behavior.
--   `Isolation Levels`: DynamoDB supports two isolation levels for transactions: Read Committed and Serializable. Read Committed ensures that the data read in a transaction is the most recent committed data, while Serializable provides a higher level of isolation by preventing other transactions from modifying the data while a transaction is in progress.
+        -   Suppose you receive a JSON request like this from a client:
 
-#### FACTS:
+            ```json
+            {
+                "username": "john_doe",
+                "age": 30
+            }
+            ```
 
--   `Fully Managed`: AWS manages the infrastructure, scaling, and maintenance of DynamoDB, making it a serverless and highly available database service.
--   `Key-Value Store`: DynamoDB primarily operates as a key-value store. Each item in DynamoDB is uniquely identified by a primary key, consisting of one or both of the following components:
+        -   If your backend expects the request in this format:
 
-    -   `Partition Key`: Used to partition the data for distribution across multiple servers. It determines the physical location of the data.
-    -   `Sort Key (optional)`: Used for range queries and to create a composite primary key.
+            ```json
+            {
+                "user": {
+                    "name": "john_doe",
+                    "age": 30
+                }
+            }
+            ```
 
--   `Document Support`: DynamoDB also supports a document data model, where items can be structured as nested JSON-like documents. This allows for more flexible and complex data structures.
--   `Schemaless`: DynamoDB is schemaless, meaning you can add or remove attributes from items without affecting other items in the same table. This flexibility is common in NoSQL databases.
+        -   You could create a mapping template like:
 
--   **High Availability**:
+            ```vtl
+            {
+            "user": {
+                "name": "$input.path('$.username')",
+                "age": "$input.path('$.age')"
+            }
+            }
+            ```
 
-    -   DynamoDB is a fully managed NoSQL database service that provides low latency and high scalability for applications that require consistent, single-digit millisecond response times. To ensure high availability, DynamoDB replicates data synchronously across three AZs in a region, ensuring that there is always a copy of the data available even if one or two AZs experience issues.
-    -   If one AZ becomes unavailable, DynamoDB automatically redirects requests to one of the other two AZs where the data is available, providing uninterrupted access to the database. If two AZs become unavailable, DynamoDB continues to operate normally in the remaining AZ, and recovery processes begin to restore access to the affected AZs.
-    -   Additionally, DynamoDB uses automatic scaling to ensure that it can handle varying levels of traffic without downtime. DynamoDB automatically partitions data and traffic across multiple nodes, allowing it to handle high levels of read and write requests while maintaining consistent performance.
-    -   In summary, AWS DynamoDB provides high availability through `multi-AZ deployment`, `synchronous data replication`, and `automatic scaling`. These features ensure that the database remains accessible and performs consistently, even in the event of infrastructure failures or high traffic volumes.
+    #### Terms & Concepts:
 
--   **Data Durability**:
+    -   **API**: An API (Application Programming Interface) is a set of rules and protocols that allows different software applications to communicate with each other. In the context of AWS API Gateway, an API is a collection of resources and methods that can be accessed through a unique endpoint URL.
+    -   **Endpoint**: An endpoint is a URL that represents the location of an API or a specific resource within an API. It typically includes the base URL of the API, the resource path, and any query parameters or request headers that are needed to access the resource.
+    -   **Integration**: An integration is a way to connect an API Gateway method to a back-end service, such as an AWS Lambda function, an Amazon EC2 instance, or a third-party service. API Gateway supports multiple types of integrations, such as Lambda, HTTP, and WebSocket.
+    -   **Authorization**: Authorization is the process of controlling access to an API by requiring clients to provide valid credentials, such as an API key or an OAuth token. API Gateway supports several types of authorization, including IAM, Lambda, and custom authorizers.
+    -   **Throttling**: Throttling is the process of limiting the rate at which API clients can make requests to an API. API Gateway supports several types of throttling, including rate limiting and burst limiting, to prevent overloading back-end services or unauthorized access.
+    -   **API proxying**: It, also known as API gateway or API proxy, is a technique used to route requests from clients to backend services through an intermediary server, known as the proxy or gateway. It acts as an intermediary between the client and the actual API endpoint, providing various benefits such as security, scalability, and flexibility. Here's how API proxying works:
+        -   `Routing`: The API proxy receives requests from clients and forwards them to the appropriate backend service based on predefined routing rules. These rules can be configured to direct requests based on paths, headers, or other criteria.
+        -   `Security`: API proxies often implement security measures such as authentication, authorization, and rate limiting to protect backend services from unauthorized access or abuse. They can handle tasks like API key management, OAuth integration, and encryption of sensitive data.
+        -   `Monitoring and Analytics`: API proxies typically offer monitoring and analytics capabilities to track the usage and performance of APIs. They can collect metrics such as request/response times, error rates, and traffic volume, providing valuable insights for troubleshooting and optimization.
+        -   `Caching`: Proxies may cache responses from backend services to improve performance and reduce latency. By caching frequently accessed data, they can serve subsequent requests without hitting the backend, resulting in faster response times and reduced server load.
+        -   `Transformation`: API proxies can perform data transformation and manipulation on requests and responses. They may modify headers, transform payloads between different data formats (e.g., JSON to XML), or add/remove elements from the request or response body.
+        -   `Load Balancing`: In cases where multiple backend services are available to handle requests, API proxies can perform load balancing to distribute traffic evenly across the servers. This ensures optimal resource utilization and prevents overloading of individual servers.
 
-    -   `Replication`: DynamoDB replicates data across multiple Availability Zones (AZs) within a region, ensuring that if one AZ fails, data is still available from another AZ. This ensures high availability and durability of data.
-    -   `Data Storage`: DynamoDB stores data in solid-state drives (SSDs), which are more reliable and durable than traditional hard disk drives (HDDs). This helps ensure that data is not lost due to hardware failures.
-    -   `Automatic backups and point-in-time recovery`: DynamoDB provides automatic backups and point-in-time recovery features, which help ensure that data is recoverable in case of accidental deletion, application errors, or other types of data loss.
-    -   `Redundancy`: DynamoDB maintains multiple copies of data in different locations, ensuring that data is not lost in case of hardware or network failures.
-    -   `Continuous monitoring and self-healing`: DynamoDB continuously monitors the health of its resources and automatically replaces failed or degraded resources with new ones.
-    -   synchronously replicates data across three facilities in an AWS Region. (99.999% garanteed uptime)
+    <details open><summary style="font-size:20px;color:Tomato">RESTful APIs:</summary>
 
--   Optimized for performance at scale (scale out horizonlaly by adding more nodes to the cluster)
--   runs exclusively on SSDs to provide high I/O performance
--   provides provisioned table reads and writes
--   automatically partitions, reallocates and re-partitions the data and provisions additional server capacity as data or throughput changes
--   provides `Eventually Consistent` (by default) or `Strongly Consistent` option to be specified during an read operation
--   creates and maintains indexes for the primary key attributes for efficient access of data in the table
--   supports secondary indexes
+    RESTful APIs in AWS API Gateway allow you to build, deploy, and manage RESTful APIs at scale. They adhere to the principles of REST (Representational State Transfer) architecture.
 
-    -   allows querying attributes other then the primary key attributes without impacting performance.
-    -   are automatically maintained as sparse objects
+    -   `Resource-Based Architecture`: RESTful APIs in AWS API Gateway follow a resource-based architecture where resources (e.g., objects, data) are exposed as endpoints (e.g., URLs) and support standard CRUD operations (Create, Read, Update, Delete) on these resources.
+    -   `HTTP Methods`: You can define HTTP methods (e.g., GET, POST, PUT, DELETE) for each resource, allowing clients to interact with the API through these methods.
+    -   `Integration`: RESTful APIs can integrate with backend services such as AWS Lambda functions, AWS Elastic Beanstalk applications, or HTTP endpoints. Integration options include Lambda functions, HTTP endpoints, AWS services, and AWS Lambda Proxy integration.
+    -   `Security`: API Gateway provides features like AWS IAM authorization, resource policies, and usage plans to secure and control access to your RESTful APIs. You can configure API keys, IAM roles, and resource policies for authentication and authorization.
+    -   `Monitoring and Analytics`: You can monitor API usage, performance metrics, and logs using Amazon CloudWatch and Amazon API Gateway's built-in logging and monitoring features. API Gateway provides detailed metrics, access logs, and execution logs for monitoring and troubleshooting.
+    -   `Use Cases`: RESTful APIs are suitable for building web services, microservices, and mobile backends where resources need to be exposed and accessed via standard HTTP methods. They are ideal for building CRUD-based applications and adhering to REST architectural principles.
 
--   supports cross region replication using DynamoDB streams which leverages Kinesis and provides time-ordered sequence of item-level changes and can help for lower RPO, lower RTO disaster recovery
--   Data Pipeline jobs with EMR can be used for disaster recovery with higher RPO, lower RTO requirements
--   supports triggers to allow execution of custom actions or notifications based on item-level updates
+    #### RESTful APIs Features:
 
-</details>
+    -   `Protocol Support`:
+        -   REST APIs provide comprehensive support for building RESTful APIs according to the principles of Representational State Transfer (REST).
+        -   They support HTTP/1.1 and HTTPS protocols.
+    -   `Custom Domain Names`:
+        -   REST APIs support custom domain names, allowing you to provide a branded API endpoint with your own domain name.
+        -   You can configure custom domain names directly within API Gateway without additional mappings.
+    -   `Resource-Based Routing`:
+        -   REST APIs offer resource-based routing, allowing you to define hierarchical resource structures using paths and HTTP methods (e.g., GET /users, POST /users/{id}).
+        -   They follow RESTful design principles, making it easy to organize and expose your API resources.
+    -   `Integration Types`:
+        -   REST APIs support a variety of integration types, including Lambda functions, HTTP endpoints, AWS services, and AWS Step Functions.
+        -   You can choose the integration type that best fits your use case, allowing you to integrate with various backend systems and services.
+    -   `API Keys and IAM Roles`:
+        -   REST APIs support API keys and AWS Identity and Access Management (IAM) roles for controlling access to your APIs.
+        -   You can use API keys to throttle and monitor API usage, and IAM roles to grant fine-grained access permissions to API resources.
+
+    #### RESTful APIs Limitations:
+
+    While REST APIs in AWS API Gateway offer a wide range of features for building RESTful APIs, they also have some limitations to consider. Here are some of the key limitations of REST APIs in AWS API Gateway:
+
+    -   `Cold Start Latency`: Like other serverless architectures, REST APIs using Lambda functions may experience cold start latency, where the initial invocation of a function takes longer due to resource provisioning. This latency can impact the responsiveness of the API.
+    -   `Integration Limits`: REST APIs have integration limits, such as a maximum of 30 integration responses per method, a maximum of 10 authorizers per method, and a maximum payload size of 10 MB for request and response bodies. These limits may impact the complexity and scalability of your API design.
+    -   `Rate Limiting Constraints`: While API Gateway supports rate limiting for controlling access to APIs, there are limitations on the granularity of rate limiting configurations. For example, you cannot specify rate limits based on specific API keys or client IPs, and the default rate limit is applied globally to all clients.
+    -   `API Gateway Throttling`: API Gateway imposes throttling limits on API requests to prevent abuse and ensure system stability. While throttling is necessary for protecting backend resources, it can lead to temporary service interruptions if request rates exceed the configured limits.
+    -   `Payload Transformations`: API Gateway supports payload transformations for modifying request and response payloads using mapping templates. However, these transformations are limited in functionality compared to dedicated transformation services, and complex transformations may require additional processing.
+    -   `CORS Configuration`: Cross-Origin Resource Sharing (CORS) configuration in API Gateway has limitations, such as a maximum of 30 CORS configurations per API and restrictions on wildcard (\*) usage. This may impact the flexibility of CORS policies for enabling cross-origin requests.
+    -   `Monitoring and Logging Limits`: While API Gateway provides monitoring and logging capabilities for tracking API usage and performance, there are limits on the volume of logs and metrics that can be stored and retained. This may require additional monitoring solutions for long-term data retention and analysis.
+    -   `Integration Timeout`: API Gateway imposes integration timeouts for API requests to backend services. If the backend service does not respond within the specified timeout period, the request may fail with a timeout error. Configuring appropriate timeout values is important for handling varying backend response times.
+    -   `Integration Response Mapping`: Mapping integration responses to HTTP status codes and headers in API Gateway can be complex, especially for APIs with multiple integration responses. Managing response mappings and error handling logic may require careful configuration and testing.
+
+    </details>
+
+    <details open><summary style="font-size:20px;color:Tomato">HTTP APIs:</summary>
+
+    HTTP APIs in AWS API Gateway offer a more lightweight and cost-effective alternative to traditional RESTful APIs. They are optimized for serverless workloads and provide features tailored to modern web applications.
+
+    -   `Simplified Configuration`: HTTP APIs in AWS API Gateway offer a more lightweight and cost-effective alternative to traditional RESTful APIs. They provide simplified configuration options for defining routes, methods, and integrations, making it easier to build and manage APIs.
+    -   `Built-in CORS Support`: HTTP APIs provide built-in Cross-Origin Resource Sharing (CORS) support, allowing you to define CORS policies to control access from web browsers. CORS settings can be configured at the API level or the route level.
+    -   `JWT Authorizers`: HTTP APIs support JWT (JSON Web Token) authorizers for authentication and authorization. You can use JWT tokens to authenticate and authorize requests, simplifying the implementation of authentication in serverless applications.
+    -   `Payload Validation`: HTTP APIs support payload validation, allowing you to validate request and response payloads against JSON schemas or OpenAPI definitions. You can define request and response models and validate incoming and outgoing payloads against these models.
+    -   `Cost-Effective`: HTTP APIs offer a lower cost structure compared to RESTful APIs, making them suitable for serverless applications with high traffic volume. They provide a cost-effective option for building modern web applications and serverless microservices.
+    -   `Use Cases`: HTTP APIs are well-suited for building modern web applications, single-page applications (SPAs), and serverless microservices where simplicity, scalability, and cost-effectiveness are priorities. They are ideal for scenarios where traditional RESTful APIs may be too complex or costly to manage.
+
+    #### HTTP APIs Features:
+
+    -   `Protocol Support`:
+        -   HTTP APIs are designed to provide a low-latency and low-cost option for building HTTP-based APIs.
+        -   They support HTTP/1.1 and HTTP/2 protocols.
+    -   `API Mapping`:
+        -   HTTP APIs offer simplified API mapping, allowing you to map multiple custom domain names to a single API endpoint.
+        -   They do not support custom domain names directly; instead, you configure API mappings using API Gateway stages.
+    -   `WebSocket Support`:
+        -   HTTP APIs support WebSocket connections, making it easy to build real-time, bidirectional communication applications such as chat apps, gaming platforms, and IoT applications.
+        -   They provide native WebSocket support, allowing you to handle WebSocket connections without the need for additional services.
+    -   `Lambda Proxy Integration`:
+        -   HTTP APIs support Lambda proxy integration, where the integration request and response payloads are passed directly to and from Lambda functions.
+        -   This simplifies the integration setup and enables you to build serverless applications with Lambda functions as the backend.
+    -   `OAuth 2.0 and JWT Authorizers`:
+
+        -   HTTP APIs support OAuth 2.0 and JSON Web Token (JWT) authorizers for authenticating and authorizing API requests.
+        -   You can use OAuth 2.0 or JWT tokens to protect your APIs and control access based on user identities or custom claims.
+
+    #### HTTP APIs Limitations:
+
+    -   `Limited Protocol Support`: HTTP APIs support HTTP/1.1 and HTTP/2 protocols but do not support older protocols such as HTTP/1.0. This may limit compatibility with some legacy systems or clients.
+    -   `Limited Integration Options`: HTTP APIs have limited integration options compared to REST APIs. They primarily support Lambda functions and HTTP endpoints as backend integrations. While Lambda proxy integration is convenient for serverless architectures, it may not be suitable for complex integration scenarios.
+    -   `Limited Deployment Options`: HTTP APIs are only available in the API Gateway version 2.0, which means they do not support the previous version 1.0 deployment options. This may impact migration efforts or compatibility with existing API Gateway features.
+    -   `Limited Customization`: HTTP APIs offer fewer customization options compared to REST APIs. For example, they do not support custom domain names directly; instead, you must use API mappings to map custom domain names to API endpoints.
+    -   `No Stage Variables`: HTTP APIs do not support stage variables, which are commonly used in REST APIs to define environment-specific configuration values. This may require alternative approaches for managing environment-specific settings.
+    -   `No Resource Policies`: HTTP APIs do not support resource policies, which are used in REST APIs to control access to API resources based on IP address or VPC endpoint. This may limit security controls for certain use cases.
+    -   `Limited Monitoring and Logging`: HTTP APIs offer basic monitoring and logging capabilities compared to REST APIs. While you can enable logging and monitoring for HTTP APIs, the available metrics and logs may be limited compared to REST APIs.
+    -   `Limited API Gateway Features`: Some advanced API Gateway features, such as AWS WAF integration, caching, and request/response transformations, are not fully supported or may have limitations when using HTTP APIs.
+
+    </details>
+
+    <details open><summary style="font-size:20px;color:Tomato">WebSocket APIs:</summary>
+
+    WebSocket APIs in AWS API Gateway enable real-time, bidirectional communication between clients and servers over a single TCP connection. They provide full-duplex communication channels.
+
+    -   `Real-time Communication`: WebSocket APIs support low-latency, real-time communication between clients and servers, making them ideal for applications requiring real-time updates and notifications.
+    -   `Persistent Connection`: WebSocket APIs establish a persistent connection between clients and servers, allowing both parties to send messages to each other asynchronously.
+    -   `Serverless Integration`: You can integrate WebSocket APIs with AWS Lambda functions to handle WebSocket messages and execute business logic in a serverless environment.
+    -   `Security`: WebSocket APIs support authentication and authorization mechanisms to secure connections and control access to resources.
+    -   `Scalability`: AWS API Gateway automatically scales WebSocket APIs to handle high volumes of concurrent connections and messages.
+    -   `Use Cases`: WebSocket APIs are commonly used in applications such as chat applications, multiplayer games, real-time collaboration tools, and financial trading platforms.
+    </details>
+
+    <details open><summary style="font-size:20px;color:#FF1493">Use Cases of API Gateway</summary>
+
+    AWS API Gateway has several practical use cases in data engineering, especially in creating and managing APIs that interface with various data pipelines and processes. Here are some common use cases:
+
+    1. **Exposing Data Processing Pipelines as APIs**
+
+        - **Use Case**: Create APIs for external or internal users to submit data for processing.
+        - **Example**: An API that receives data from clients and triggers an AWS Lambda function, which preprocesses and loads the data into AWS S3, DynamoDB, or RDS. This can be used in ETL pipelines.
+
+    2. **Real-Time Data Ingestion for Streaming Pipelines**
+
+        - **Use Case**: Provide a scalable, low-latency endpoint for ingesting streaming data.
+        - **Example**: API Gateway can front Amazon Kinesis to ingest real-time event data, such as IoT sensor data, which can then be processed and analyzed in real time.
+
+    3. **Orchestrating Data Jobs via API**
+
+        - **Use Case**: Expose APIs to trigger specific data engineering jobs or workflows.
+        - **Example**: Use API Gateway to trigger AWS Step Functions, which orchestrate complex ETL pipelines involving services like Lambda, Glue, or EMR for data processing and transformations.
+
+    4. **Data Enrichment as a Service**
+
+        - **Use Case**: Provide an API to enhance datasets with additional data from external or internal sources.
+        - **Example**: An API Gateway that fronts a Lambda function to enrich customer records by calling external APIs (e.g., validating address details or credit scores).
+
+    5. **Secure Data Access for Analytics**
+
+        - **Use Case**: Securely expose APIs to provide controlled access to datasets stored in S3, DynamoDB, or RDS.
+        - **Example**: An internal API that returns filtered data from S3 buckets or a database (PostgreSQL/MySQL) based on user roles or other security constraints using AWS Identity and Access Management (IAM) and API Gateway custom authorizers.
+
+    6. **Serverless Microservices for Data Transformation**
+
+        - **Use Case**: Enable microservices architecture for data transformation logic.
+        - **Example**: API Gateway can be used to invoke Lambda functions that handle data transformations (e.g., format conversion, aggregations) before persisting the data into a data lake or a data warehouse.
+
+    7. **REST API for Querying and Fetching Data**
+
+        - **Use Case**: Create APIs for querying datasets for downstream applications.
+        - **Example**: Use API Gateway to expose a REST API for querying a dataset stored in Amazon Redshift or DynamoDB, enabling data retrieval for dashboards or analytics apps.
+
+    8. **Data Validation and Preprocessing Layer**
+
+        - **Use Case**: Validate incoming data before ingestion into the data pipeline.
+        - **Example**: API Gateway can expose an API that receives raw data, performs basic validation (via Lambda), and then forwards the valid data to S3 or a Kinesis stream.
+
+    9. **Monitoring and Logging of Data APIs**
+
+        - **Use Case**: Implement monitoring and logging for data ingestion and processing APIs.
+        - **Example**: API Gateway can be used with AWS CloudWatch to monitor API performance, logging, and error tracking for APIs that ingest and process data in real-time systems.
+
+    10. **API Gateway as Proxy for Third-Party Data Sources**
+
+        - **Use Case**: Use API Gateway as a proxy to fetch or send data to third-party APIs.
+        - **Example**: API Gateway can proxy requests to external services (e.g., payment processors, data providers) and integrate their data into internal pipelines.
+
+    11. **Public Data APIs for External Partners or Customers**
+
+        - **Use Case**: Expose specific datasets or aggregated data as APIs for external customers or partners.
+        - **Example**: A data product that exposes aggregated reports or analytics data via API Gateway to allow external partners to query specific metrics or KPIs.
+
+    12. **Rate Limiting and Throttling for Ingestion APIs**
+
+        - **Use Case**: Control the flow of data ingestion by applying rate limits or throttling.
+        - **Example**: API Gateway allows you to set up throttling policies to control the number of requests per second to prevent overloading downstream services like Kinesis, S3, or RDS.
+
+    </details>
+
+    #### Endpoints and Custom Domain Names:
+
+    API Gateway provides default **API endpoints** but also allows you to associate your API with a **custom domain name**.
+
+    -   **Features**:
+        -   **Regional Endpoints**: Serve requests from specific AWS regions.
+        -   **Edge-Optimized Endpoints**: Uses CloudFront to serve requests to globally distributed users.
+        -   **Custom Domain**: Map your custom domain name (e.g., `api.yourdomain.com`) to your API Gateway endpoint.
+
+    #### Integration Types:
+
+    API Gateway allows you to integrate the frontend API with various backend services via different integration types:
+
+    -   **Lambda Integration**: Direct integration with AWS Lambda functions, allowing you to run serverless functions as API endpoints.
+    -   **HTTP/HTTP_PROXY Integration**: API Gateway can route requests to HTTP-based backends such as web servers or third-party APIs.
+    -   **AWS Service Integration**: Integrate with other AWS services like DynamoDB, SNS, or SQS directly, without requiring Lambda.
+
+    #### Mapping Templates (Velocity Templates):
+
+    **Mapping templates** are used to transform incoming requests before passing them to the backend or to transform the responses before sending them back to the client. This is done using the **Velocity Template Language (VTL)**.
+
+    -   **Features**:
+        -   Modify the request format (e.g., JSON to XML).
+        -   Map query parameters, headers, and body to backend-specific formats.
+        -   Extract and modify response data.
+
+    #### Authorization:
+
+    API Gateway supports several types of authorization to secure access to your APIs:
+
+    -   **IAM Roles**: Use AWS IAM roles to authorize access to your API based on user identity and policies.
+    -   **Cognito User Pools**: Use Amazon Cognito to control access via OAuth2 or JWT-based token authentication.
+    -   **Lambda Authorizer**: Use a custom Lambda function to authenticate and authorize requests based on custom logic (e.g., checking API keys, tokens).
+    -   **API Keys**: Restrict access to your API using **API keys**, which are passed in the request headers.
+
+    #### Caching:
+
+    API Gateway provides **caching** at the stage level to reduce the latency of your API and improve performance.
+
+    -   **Features**:
+        -   Store responses from your backend services in an API Gateway cache.
+        -   Specify TTL (Time to Live) for cache data.
+        -   Cache data per method and per request, based on query strings or headers.
+
+    #### Monitoring and Metrics:
+
+    API Gateway integrates with **Amazon CloudWatch** for monitoring, logging, and alerting, giving insights into API performance and usage.
+
+    -   **CloudWatch Metrics**: API Gateway automatically publishes metrics such as **latency**, **error rates**, **cache hits/misses**, and **throttling** counts to CloudWatch.
+    -   **CloudWatch Logs**: API Gateway can be configured to log request/response data and error details for debugging.
+
+    #### Throttling and Rate Limiting:
+
+    API Gateway allows you to control the rate of incoming requests to prevent overloading your backend services.
+
+    -   **Default Throttling**: Set default limits for request rates and burst limits for your API.
+    -   **Usage Plans**: Use API keys with usage plans to apply throttling rules and quota limits to individual users or applications.
+
+    #### API Gateway VPC Link:
+
+    **VPC Link** allows API Gateway to integrate with private resources inside a **VPC**, such as internal web services or databases.
+
+    -   **Features**:
+        -   **Private Integration**: Allows API Gateway to access services running in a private VPC without exposing them to the public internet.
+        -   Ideal for accessing backend services like EC2, ECS, or load balancers that are hosted in a private subnet.
+
+    #### Mock Integration:
+
+    **Mock Integration** is used to return static responses without sending requests to any backend. It’s useful for testing and prototyping.
+
+    -   **Features**:
+        -   Simulate API responses.
+        -   Set up static responses based on incoming requests.
+        -   No backend services involved.
+
+    #### Deployment:
+
+    API Gateway provides the ability to **deploy** APIs to various stages (e.g., dev, test, prod) and manage different versions of your APIs.
+
+    -   **Features**:
+        -   **Deployment** creates a snapshot of your API configuration and methods at a specific point in time.
+        -   You can **roll back** to previous versions of the API if needed.
+        -   Each stage has a unique URL for accessing the deployed API.
+
+    #### Cross-Origin Resource Sharing (CORS):
+
+    **CORS** is a security feature implemented by browsers to restrict web applications from making requests to a domain different from the one that served the web page.
+
+    -   **Features**:
+        -   API Gateway supports **CORS** to allow restricted resources to be accessed on a domain different from the origin.
+        -   You can configure **CORS** settings to control which origins and methods are allowed for your API.
+
+    #### OpenAPI (Swagger) Support:
+
+    API Gateway supports the **OpenAPI Specification (formerly known as Swagger)** for defining your API structure.
+
+    -   **Features**:
+        -   Import and export your API definitions using OpenAPI/Swagger files.
+        -   Simplifies API development by providing a standard, machine-readable format.
+        -   Use OpenAPI definitions for documentation or collaboration purposes.
+
+    #### API Gateway Policies:
+
+    API Gateway supports **resource policies** that allow you to control access to your API at the **resource level**.
+
+    -   **Features**:
+        -   You can restrict access to specific IP ranges, VPCs, or AWS accounts.
+        -   Resource policies are useful for implementing fine-grained access control to APIs.
+
+    #### SDK Generation:
+
+    API Gateway can automatically generate **SDKs (Software Development Kits)** for various programming languages (e.g., JavaScript, iOS, Android) based on your API definitions.
+
+    -   **Features**:
+        -   Simplifies the integration of APIs into client applications.
+        -   Generates client-side code that can handle API calls, including authentication and request/response handling.
+
+    #### Error Handling:
+
+    API Gateway allows you to define custom error responses, enabling better error handling in your API.
+
+    -   **Features**:
+        -   You can set up custom response templates to format error messages.
+        -   Define specific HTTP status codes based on the response from the backend (e.g., 4xx for client errors, 5xx for server errors).
+
+    #### Access Logs:
+
+    API Gateway provides **detailed access logs** to monitor API usage and analyze performance.
+
+    -   **Features**:
+        -   Logs include detailed information such as request timestamps, IP addresses, request/response payloads, and latency.
+        -   Access logs can be stored in CloudWatch Logs for long-term analysis.
+
+    AWS API Gateway provides a range of features and capabilities for creating and managing APIs, making it a powerful tool for building modern, scalable applications. Understanding these key concepts and terms is essential for effectively using and configuring the service.
+
+    </details>
 
 ---
 
-<details><summary style="font-size:25px;color:Orange">ACM</summary>
+-   <details><summary style="font-size:25px;color:Orange">ACM</summary>
 
-**AWS Certificate Manager (ACM)** is a **fully managed** service that handles **SSL/TLS certificate provisioning, management, and renewal** for AWS services like **Elastic Load Balancers (ELB), CloudFront, API Gateway, and AWS App Runner**. It allows **automatic renewal** of certificates, eliminating manual management.
+    **AWS Certificate Manager (ACM)** is a **fully managed** service that handles **SSL/TLS certificate provisioning, management, and renewal** for AWS services like **Elastic Load Balancers (ELB), CloudFront, API Gateway, and AWS App Runner**. It allows **automatic renewal** of certificates, eliminating manual management.
 
-#### Key Components & Terms in ACM
+    #### Key Components & Terms in ACM
 
--   **Public Certificates**: A **public certificate** is an **SSL/TLS certificate issued by a trusted Certificate Authority (CA)** that is recognized globally by web browsers, operating systems, and devices. These certificates **verify the identity of a website or service** and ensure encrypted communication over HTTPS.
+    -   **Public Certificates**: A **public certificate** is an **SSL/TLS certificate issued by a trusted Certificate Authority (CA)** that is recognized globally by web browsers, operating systems, and devices. These certificates **verify the identity of a website or service** and ensure encrypted communication over HTTPS.
 
-    -   **Key Features of Public Certificates**:
+        -   **Key Features of Public Certificates**:
 
-        -   Issued by a public CA such as DigiCert, Let's Encrypt, GlobalSign, or Sectigo.
-        -   Globally trusted by browsers and devices (pre-installed CA root certificates).
-        -   Used for public-facing websites, APIs, and web services.
-        -   Requires domain ownership verification before issuance.
+            -   Issued by a public CA such as DigiCert, Let's Encrypt, GlobalSign, or Sectigo.
+            -   Globally trusted by browsers and devices (pre-installed CA root certificates).
+            -   Used for public-facing websites, APIs, and web services.
+            -   Requires domain ownership verification before issuance.
 
-    -   **Where Are Public Certificates Used?**:
+        -   **Where Are Public Certificates Used?**:
 
-        -   Public websites (e.g., `https://www.example.com`).
-        -   E-commerce sites, SaaS applications, and public APIs.
-        -   Cloud services like AWS CloudFront, ALB, and API Gateway.
+            -   Public websites (e.g., `https://www.example.com`).
+            -   E-commerce sites, SaaS applications, and public APIs.
+            -   Cloud services like AWS CloudFront, ALB, and API Gateway.
 
-    -   **How to Get a Public Certificate?**:
+        -   **How to Get a Public Certificate?**:
 
-        -   Buy from a CA (e.g., DigiCert, Sectigo).
-        -   Use a free CA (e.g., Let's Encrypt).
-        -   Request an AWS Certificate Manager (ACM) Public Certificate (for AWS services).
-        -   `Example`: Requesting a Public Certificate from AWS ACM
-            ```bash
+            -   Buy from a CA (e.g., DigiCert, Sectigo) and then import into ACM
+            -   Use a free CA (e.g., Let's Encrypt) and then import into ACM
+            -   Request an AWS Certificate Manager (ACM) Public Certificate (for AWS services).
+            -   `Example`: Requesting a Public Certificate from AWS ACM
+                ```bash
+                aws acm request-certificate \
+                --domain-name example.com \
+                --validation-method DNS
+                ```
+
+    -   **Private Certificates**: A **private certificate** is an **SSL/TLS certificate issued by a private certificate authority (CA)**, typically within an **organization's internal network**. These certificates **are not publicly trusted** but are used for internal systems, secure communication, and authentication within an organization's infrastructure.
+
+        -   **Key Features of Private Certificates**
+
+            -   Issued by a private CA (e.g., AWS Private CA, Microsoft Active Directory Certificate Services).
+            -   Not publicly trusted (browsers do not recognize them unless manually installed).
+            -   Used for internal services, VPNs, databases, and private applications.
+            -   Provides encryption and authentication without exposing data to the public internet.
+
+        -   **Where Are Private Certificates Used?**
+
+            -   Internal applications (e.g., intranet, internal APIs, databases).
+            -   Private networks, VPNs, and corporate email encryption.
+            -   Mutual TLS (mTLS) authentication between microservices.
+            -   IoT devices, Kubernetes clusters, and internal service communication.
+
+        -   **How to Get a Private Certificate?**
+
+            -   Use AWS Private CA (part of AWS Certificate Manager).
+            -   Set up a self-signed certificate using OpenSSL.
+            -   Use an on-premises CA (e.g., Microsoft Active Directory Certificate Services).
+            -   `Example`: Generating a Private Certificate with OpenSSL
+
+                -   `$ openssl req -x509 -newkey rsa:2048 -keyout private_key.pem -out certificate.pem -days 365`
+
+            -   `Example`: Requesting a Private Certificate from AWS ACM Private CA
+                ```bash
+                aws acm-pca issue-certificate \
+                --certificate-authority-arn <private-ca-arn> \
+                --csr file://csr.pem \
+                --signing-algorithm "SHA256WITHRSA" \
+                --validity Value=365,Type="DAYS"
+                ```
+
+    -   **Certificate Validation Types**: ACM requires domain validation before issuing a certificate. There are two ways:
+
+        -   `DNS Validation (Recommended)`
+
+            -   ACM provides a **CNAME record** to add to your domain's DNS settings.
+            -   Once added, ACM automatically validates and renews the certificate.
+
+        -   `Email Validation`
+
+            -   ACM sends an email to the **domain admin (WHOIS contact)**.
+            -   The recipient must **click a link** to approve the certificate request.
+
+    -   **Certificate Renewal & Expiration**
+
+        -   Public ACM certificates are **auto-renewed** before expiration.
+        -   Private certificates **can be auto-renewed** if configured properly.
+        -   If **DNS validation is used**, renewals are **automatic**.
+        -   If **email validation is used**, renewals **require manual approval**.
+
+    -   **ACM Certificate Deployment**: Once issued, ACM certificates can be **deployed** to AWS services like:
+
+        -   `Elastic Load Balancer (ALB, NLB, CLB)`
+        -   `Amazon CloudFront`
+        -   `Amazon API Gateway`
+        -   `AWS App Runner`
+        -   `AWS Elastic Beanstalk`
+
+    #### Step-by-Step: Requesting an SSL Certificate in ACM
+
+    1. **Request a Certificate**
+
+        - **Using AWS CLI**(alternatively Using AWS Console):
+
+            ```sh
             aws acm request-certificate \
-              --domain-name example.com \
-              --validation-method DNS
+            --domain-name example.com \
+            --validation-method DNS \
+            --subject-alternative-names www.example.com
             ```
 
--   **Private Certificates**: A **private certificate** is an **SSL/TLS certificate issued by a private certificate authority (CA)**, typically within an **organization's internal network**. These certificates **are not publicly trusted** but are used for internal systems, secure communication, and authentication within an organization's infrastructure.
+    2. **Validate Your Domain**:
 
-    -   **Key Features of Private Certificates**
+        - If using **DNS validation**:
 
-        -   Issued by a private CA (e.g., AWS Private CA, Microsoft Active Directory Certificate Services).
-        -   Not publicly trusted (browsers do not recognize them unless manually installed).
-        -   Used for internal services, VPNs, databases, and private applications.
-        -   Provides encryption and authentication without exposing data to the public internet.
+            - Go to **Route 53** (or your DNS provider).
+            - Add the **CNAME record** provided by ACM.
+            - ACM will automatically detect it and issue the certificate.
 
-    -   **Where Are Private Certificates Used?**
+        - If using **Email validation**:
+            - Check the **WHOIS-registered email inbox**.
+            - Click the validation link.
 
-        -   Internal applications (e.g., intranet, internal APIs, databases).
-        -   Private networks, VPNs, and corporate email encryption.
-        -   Mutual TLS (mTLS) authentication between microservices.
-        -   IoT devices, Kubernetes clusters, and internal service communication.
+    3. **Deploy the ACM Certificate**: Once issued, deploy it to supported AWS services.
 
-    -   **How to Get a Private Certificate?**
+        - **Attach to an ALB (Application Load Balancer)**:
 
-        -   Use AWS Private CA (part of AWS Certificate Manager).
-        -   Set up a self-signed certificate using OpenSSL.
-        -   Use an on-premises CA (e.g., Microsoft Active Directory Certificate Services).
-        -   `Example`: Generating a Private Certificate with OpenSSL
-
-            -   `$ openssl req -x509 -newkey rsa:2048 -keyout private_key.pem -out certificate.pem -days 365`
-
-        -   `Example`: Requesting a Private Certificate from AWS ACM Private CA
-            ```bash
-            aws acm-pca issue-certificate \
-              --certificate-authority-arn <private-ca-arn> \
-              --csr file://csr.pem \
-              --signing-algorithm "SHA256WITHRSA" \
-              --validity Value=365,Type="DAYS"
-            ```
-
--   **Certificate Validation Types**: ACM requires domain validation before issuing a certificate. There are two ways:
-
-    -   `DNS Validation (Recommended)`
-
-        -   ACM provides a **CNAME record** to add to your domain's DNS settings.
-        -   Once added, ACM automatically validates and renews the certificate.
-
-    -   `Email Validation`
-
-        -   ACM sends an email to the **domain admin (WHOIS contact)**.
-        -   The recipient must **click a link** to approve the certificate request.
-
--   **Certificate Renewal & Expiration**
-
-    -   Public ACM certificates are **auto-renewed** before expiration.
-    -   Private certificates **can be auto-renewed** if configured properly.
-    -   If **DNS validation is used**, renewals are **automatic**.
-    -   If **email validation is used**, renewals **require manual approval**.
-
--   **ACM Certificate Deployment**: Once issued, ACM certificates can be **deployed** to AWS services like:
-
-    -   `Elastic Load Balancer (ALB, NLB, CLB)`
-    -   `Amazon CloudFront`
-    -   `Amazon API Gateway`
-    -   `AWS App Runner`
-    -   `AWS Elastic Beanstalk`
-
-#### Step-by-Step: Requesting an SSL Certificate in ACM
-
-1. **Request a Certificate**
-
-    - **Using AWS CLI**(alternatively Using AWS Console):
-
-        ```sh
-        aws acm request-certificate \
-        --domain-name example.com \
-        --validation-method DNS \
-        --subject-alternative-names www.example.com
-        ```
-
-2. **Validate Your Domain**:
-
-    - If using **DNS validation**:
-
-        - Go to **Route 53** (or your DNS provider).
-        - Add the **CNAME record** provided by ACM.
-        - ACM will automatically detect it and issue the certificate.
-
-    - If using **Email validation**:
-        - Check the **WHOIS-registered email inbox**.
-        - Click the validation link.
-
-3. **Deploy the ACM Certificate**: Once issued, deploy it to supported AWS services.
-
-    - **Attach to an ALB (Application Load Balancer)**:
-
-        ```sh
-        aws elbv2 create-listener \
-        --load-balancer-arn <your-load-balancer-arn> \
-        --protocol HTTPS --port 443 \
-        --certificates CertificateArn=<your-certificate-arn> \
-        --default-actions Type=forward,TargetGroupArn=<your-target-group-arn>
-        ```
-
-    - **Attach to CloudFront**:
-
-        ```sh
-        aws cloudfront update-distribution \
-        --id <your-distribution-id> \
-        --default-root-object index.html \
-        --viewer-certificate CloudFrontDefaultCertificate=false,ACMCertificateArn=<your-certificate-arn>,SSLSupportMethod=sni-only
-        ```
-
-#### Custom SSL Certificate
-
-A **Custom SSL Certificate** in the context of AWS refers to an **SSL/TLS certificate that you manually upload and manage** instead of using an AWS-managed certificate from **AWS Certificate Manager (ACM)**. These certificates are often issued by third-party **Certificate Authorities (CAs)** or generated for internal use.
-
--   **Custom SSL Certificates Used in AWS**: Custom SSL certificates are typically used in AWS services that require **TLS encryption** for securing connections, such as:
-
-    1. **AWS CloudFront (CDN Service)**: You can upload a custom SSL certificate to **AWS Certificate Manager (ACM) in the US East (N. Virginia) region (`us-east-1`)** and use it for **HTTPS connections** on your CloudFront distribution.
-    2. **AWS Elastic Load Balancer (ELB - ALB, NLB, CLB)**: Custom SSL certificates can be used with **Application Load Balancer (ALB)** and **Network Load Balancer (NLB)** to terminate SSL/TLS traffic before forwarding it to backend instances.
-    3. **AWS API Gateway**: API Gateway allows **custom domain names** with a custom SSL certificate for secure API endpoints.
-    4. **AWS IoT Core & AWS MQTT**: When using AWS IoT services, you may need a **custom SSL certificate** for **device authentication** and secure communication.
-    5. **AWS CloudFormation & Terraform**: Infrastructure as Code (IaC) tools can reference and deploy **custom SSL certificates** stored in ACM.
-    6. **AWS EC2 & Self-Managed Web Servers**: Custom SSL certificates can be installed manually on **Apache, Nginx, or other web servers** running on **Amazon EC2 instances**.
-
--   **Key Features of Custom SSL Certificates**
-
-    -   **Manually uploaded** to AWS ACM or IAM.
-    -   **Supports wildcard (`*.example.com`) and multi-domain (`SAN`) certificates**.
-    -   **Full control** over renewal and revocation.
-    -   Can be used with **ALB, NLB, API Gateway, and CloudFront**.
-
--   **How to Upload and Use a Custom SSL Certificate in AWS?**
-
-    1. **Obtain an SSL Certificate**
-
-        - Purchase an **SSL/TLS certificate** from a trusted CA (e.g., DigiCert, Let’s Encrypt).
-        - Generate a **private key** and **Certificate Signing Request (CSR)**:
-
-            - `openssl req -new -newkey rsa:2048 -nodes -keyout private_key.pem -out csr.pem`
-
-        - Submit the **CSR** to the CA and obtain the **certificate files (`.crt`, `.pem`, `.key`)**.
-
-    2. **Upload the Certificate to AWS**
-
-        - `Option 1`: Upload to AWS Certificate Manager (ACM)
-
-            - Run the following AWS CLI command:
-                ```bash
-                aws acm import-certificate \
-                  --certificate file://certificate.pem \
-                  --private-key file://private_key.pem \
-                  --certificate-chain file://ca_bundle.pem
-                ```
-
-        - `Option 2`: Upload to AWS IAM (For ELB)
-            - Use AWS CLI to upload a custom SSL certificate to IAM for **Classic Load Balancer (CLB)**:
-                ```bash
-                aws iam upload-server-certificate \
-                  --server-certificate-name MyCustomCert \
-                  --certificate-body file://certificate.pem \
-                  --private-key file://private_key.pem \
-                  --certificate-chain file://ca_bundle.pem \
-                  --path /cloudfront/
-                ```
-
-    3. **Attach the Certificate to an AWS Service**
-
-        - `For AWS CloudFront`: Select the Custom SSL Certificate from ACM when configuring CloudFront’s HTTPS settings.
-
-        - `For AWS Load Balancer`: Use the uploaded certificate in Application Load Balancer (ALB) or Network Load Balancer (NLB):
-
-            ```bash
+            ```sh
             aws elbv2 create-listener \
-              --load-balancer-arn <your-load-balancer-arn> \
-              --protocol HTTPS --port 443 \
-              --certificates CertificateArn=<your-certificate-arn> \
-              --default-actions Type=forward,TargetGroupArn=<your-target-group-arn>
+            --load-balancer-arn <your-load-balancer-arn> \
+            --protocol HTTPS --port 443 \
+            --certificates CertificateArn=<your-certificate-arn> \
+            --default-actions Type=forward,TargetGroupArn=<your-target-group-arn>
             ```
 
-        - `For AWS API Gateway`: Assign the custom certificate to a **custom domain name** in API Gateway.
+        - **Attach to CloudFront**:
 
--   **Custom SSL Certificates vs. AWS-Managed Certificates**
+            ```sh
+            aws cloudfront update-distribution \
+            --id <your-distribution-id> \
+            --default-root-object index.html \
+            --viewer-certificate CloudFrontDefaultCertificate=false,ACMCertificateArn=<your-certificate-arn>,SSLSupportMethod=sni-only
+            ```
 
-    | Feature                | Custom SSL Certificate                   | AWS-Managed (ACM) Certificate |
-    | ---------------------- | ---------------------------------------- | ----------------------------- |
-    | **Issued by**          | Third-party CA (DigiCert, Sectigo, etc.) | AWS ACM                       |
-    | **Renewal**            | Manual                                   | Automatic                     |
-    | **Supported Services** | CloudFront, ELB, API Gateway, EC2        | CloudFront, ELB, API Gateway  |
-    | **Management**         | Fully controlled by the user             | Managed by AWS                |
-    | **Cost**               | May require CA fees                      | Free via ACM                  |
+    #### Custom SSL Certificate
 
-#### IAM vs ACM vs Custom SSL Certificates
+    A **Custom SSL Certificate** in the context of AWS refers to an **SSL/TLS certificate that you manually upload and manage** instead of using an AWS-managed certificate from **AWS Certificate Manager (ACM)**. These certificates are often issued by third-party **Certificate Authorities (CAs)** or generated for internal use.
 
-| Feature                                   | IAM Certificate                       | ACM Certificate                | Custom SSL Certificate                      |
-| ----------------------------------------- | ------------------------------------- | ------------------------------ | ------------------------------------------- |
-| **Where Stored?**                         | AWS IAM                               | AWS Certificate Manager (ACM)  | User-managed, can be imported to ACM or IAM |
-| **Managed by AWS?**                       | No                                    | Yes                            | No                                          |
-| **Automatic Renewal?**                    | No                                    | Yes                            | No                                          |
-| **Supports AWS CloudFront?**              | Legacy support only                   | Yes                            | Yes (when imported to ACM)                  |
-| **Supports ALB & NLB?**                   | No                                    | Yes                            | Yes (when imported to ACM)                  |
-| **Supports Classic Load Balancer (CLB)?** | Yes                                   | No                             | Yes (when imported to IAM)                  |
-| **Can Be Used Outside AWS?**              | No                                    | No                             | Yes                                         |
-| **Private Key Exportable?**               | Yes                                   | No                             | Yes                                         |
-| **Supports Self-Signed Certificates?**    | Yes                                   | No                             | Yes                                         |
-| **Best Use Case?**                        | Legacy AWS services (CLB, CloudFront) | Fully AWS-managed environments | Hybrid AWS & non-AWS environments           |
+    -   **Custom SSL Certificates Used in AWS**: Custom SSL certificates are typically used in AWS services that require **TLS encryption** for securing connections, such as:
 
-</details>
+        1. **AWS CloudFront (CDN Service)**: You can upload a custom SSL certificate to **AWS Certificate Manager (ACM) in the US East (N. Virginia) region (`us-east-1`)** and use it for **HTTPS connections** on your CloudFront distribution.
+        2. **AWS Elastic Load Balancer (ELB - ALB, NLB, CLB)**: Custom SSL certificates can be used with **Application Load Balancer (ALB)** and **Network Load Balancer (NLB)** to terminate SSL/TLS traffic before forwarding it to backend instances.
+        3. **AWS API Gateway**: API Gateway allows **custom domain names** with a custom SSL certificate for secure API endpoints.
+        4. **AWS IoT Core & AWS MQTT**: When using AWS IoT services, you may need a **custom SSL certificate** for **device authentication** and secure communication.
+        5. **AWS CloudFormation & Terraform**: Infrastructure as Code (IaC) tools can reference and deploy **custom SSL certificates** stored in ACM.
+        6. **AWS EC2 & Self-Managed Web Servers**: Custom SSL certificates can be installed manually on **Apache, Nginx, or other web servers** running on **Amazon EC2 instances**.
+
+    -   **Key Features of Custom SSL Certificates**
+
+        -   **Manually uploaded** to AWS ACM or IAM.
+        -   **Supports wildcard (`*.example.com`) and multi-domain (`SAN`) certificates**.
+        -   **Full control** over renewal and revocation.
+        -   Can be used with **ALB, NLB, API Gateway, and CloudFront**.
+
+    -   **How to Upload and Use a Custom SSL Certificate in AWS?**
+
+        1. **Obtain an SSL Certificate**
+
+            - Purchase an **SSL/TLS certificate** from a trusted CA (e.g., DigiCert, Let’s Encrypt).
+            - Generate a **private key** and **Certificate Signing Request (CSR)**:
+
+                - `openssl req -new -newkey rsa:2048 -nodes -keyout private_key.pem -out csr.pem`
+
+            - Submit the **CSR** to the CA and obtain the **certificate files (`.crt`, `.pem`, `.key`)**.
+
+        2. **Upload the Certificate to AWS**
+
+            - `Option 1`: Upload to AWS Certificate Manager (ACM)
+
+                - Run the following AWS CLI command:
+                    ```bash
+                    aws acm import-certificate \
+                    --certificate file://certificate.pem \
+                    --private-key file://private_key.pem \
+                    --certificate-chain file://ca_bundle.pem
+                    ```
+
+            - `Option 2`: Upload to AWS IAM (For ELB)
+                - Use AWS CLI to upload a custom SSL certificate to IAM for **Classic Load Balancer (CLB)**:
+                    ```bash
+                    aws iam upload-server-certificate \
+                    --server-certificate-name MyCustomCert \
+                    --certificate-body file://certificate.pem \
+                    --private-key file://private_key.pem \
+                    --certificate-chain file://ca_bundle.pem \
+                    --path /cloudfront/
+                    ```
+
+        3. **Attach the Certificate to an AWS Service**
+
+            - `For AWS CloudFront`: Select the Custom SSL Certificate from ACM when configuring CloudFront’s HTTPS settings.
+
+            - `For AWS Load Balancer`: Use the uploaded certificate in Application Load Balancer (ALB) or Network Load Balancer (NLB):
+
+                ```bash
+                aws elbv2 create-listener \
+                --load-balancer-arn <your-load-balancer-arn> \
+                --protocol HTTPS --port 443 \
+                --certificates CertificateArn=<your-certificate-arn> \
+                --default-actions Type=forward,TargetGroupArn=<your-target-group-arn>
+                ```
+
+            - `For AWS API Gateway`: Assign the custom certificate to a **custom domain name** in API Gateway.
+
+    -   **Custom SSL Certificates vs. AWS-Managed Certificates**
+
+        | Feature                | Custom SSL Certificate                   | AWS-Managed (ACM) Certificate |
+        | ---------------------- | ---------------------------------------- | ----------------------------- |
+        | **Issued by**          | Third-party CA (DigiCert, Sectigo, etc.) | AWS ACM                       |
+        | **Renewal**            | Manual                                   | Automatic                     |
+        | **Supported Services** | CloudFront, ELB, API Gateway, EC2        | CloudFront, ELB, API Gateway  |
+        | **Management**         | Fully controlled by the user             | Managed by AWS                |
+        | **Cost**               | May require CA fees                      | Free via ACM                  |
+
+    #### IAM vs ACM vs Custom SSL Certificates
+
+    | Feature                                   | IAM Certificate                       | ACM Certificate                | Custom SSL Certificate                      |
+    | ----------------------------------------- | ------------------------------------- | ------------------------------ | ------------------------------------------- |
+    | **Where Stored?**                         | AWS IAM                               | AWS Certificate Manager (ACM)  | User-managed, can be imported to ACM or IAM |
+    | **Managed by AWS?**                       | No                                    | Yes                            | No                                          |
+    | **Automatic Renewal?**                    | No                                    | Yes                            | No                                          |
+    | **Supports AWS CloudFront?**              | Legacy support only                   | Yes                            | Yes (when imported to ACM)                  |
+    | **Supports ALB & NLB?**                   | No                                    | Yes                            | Yes (when imported to ACM)                  |
+    | **Supports Classic Load Balancer (CLB)?** | Yes                                   | No                             | Yes (when imported to IAM)                  |
+    | **Can Be Used Outside AWS?**              | No                                    | No                             | Yes                                         |
+    | **Private Key Exportable?**               | Yes                                   | No                             | Yes                                         |
+    | **Supports Self-Signed Certificates?**    | Yes                                   | No                             | Yes                                         |
+    | **Best Use Case?**                        | Legacy AWS services (CLB, CloudFront) | Fully AWS-managed environments | Hybrid AWS & non-AWS environments           |
+
+    #### Trust Store
+
+    A **Trust Store** in AWS is a collection of **trusted Certificate Authorities (CAs)**—specifically, a set of **X.509 certificates** that are used to validate client certificates during **Mutual TLS (mTLS)** authentication. It defines **which certificates your system trusts** when a client tries to establish a secure connection. This concept is foundational for mutual TLS, where **both client and server authenticate each other** using certificates.
+
+    -   **Where Trust Store is Used in AWS**
+
+        1. **Amazon API Gateway (for Mutual TLS)**: When using mTLS with API Gateway, you upload a **Trust Store (a PEM file or an Amazon S3 location of trusted CA certs)**. This Trust Store is used to **validate the client’s certificate**.
+
+        -   The Trust Store must contain the **root CA certificates** that issued the client certs.
+        -   If the client presents a cert signed by a CA not in the trust store, the connection is rejected.
+
+        > Used when you want to **verify client identity** with certificates (e.g., B2B APIs, internal systems).
+
+        2. **AWS Verified Access**: In AWS Verified Access (used to provide secure access to internal apps without VPN), a **Trust Provider** can use a **Trust Store** to validate device or user certificates.
+
+            - This helps ensure that only devices/users with valid certificates from a trusted CA can access resources.
+
+        3. **Custom Applications on EC2, ELB, or NLB**: If you’re running a service on EC2 behind an **Elastic Load Balancer (ELB)** with mTLS enabled, you may need to configure your backend with a **trust store** to validate incoming client certificates.
+
+        4. **Private Certificate Authority (CA)**: While not called a "trust store" directly, AWS Private CA can issue certificates, and the certificates issued by a trusted CA (internal or external) would be included in the **Trust Store** of clients/servers that validate those certs.
+
+    -   **How it Works: Mutual TLS & Trust Store**
+
+        1. **Client sends certificate** during TLS handshake.
+        2. **API Gateway or backend checks client cert**:
+            - Is it signed by a trusted CA from the Trust Store?
+            - Is it expired or revoked?
+        3. **If valid**, the connection proceeds.
+        4. **If not trusted**, the connection is denied (HTTP 403).
+
+    -   **How to Create a Trust Store in AWS**
+
+        -   Upload one or more PEM-encoded X.509 certificates (Root/Intermediate CAs) to **Amazon S3**.
+        -   Reference the Trust Store in services like API Gateway by providing:
+            ```json
+            {
+                "truststoreUri": "s3://your-bucket/path-to-ca.pem"
+            }
+            ```
+        -   Ensure S3 permissions allow the service to access the Trust Store.
+
+    -   **Best Practices**
+
+        -   Keep your Trust Store updated with **valid CA certificates**.
+        -   Revoke or remove compromised CA certs immediately.
+        -   Use **certificate revocation lists (CRLs)** or **OCSP** for more dynamic cert validation (depending on service support).
+        -   Use **least privilege** for access to the Trust Store (e.g., S3 bucket policies).
+
+    -   **Example Use Case (Securing Internal APIs with mTLS)**: You have a service hosted in AWS API Gateway that should only be accessed by clients within your org:
+
+        -   You generate client certs using AWS Private CA.
+        -   You upload the CA certs to S3 to act as a Trust Store.
+        -   You enable mTLS on API Gateway and point it to the Trust Store.
+        -   Now, only clients with valid certs signed by your CA can access the API.
+
+        </details>
 
 ---
 
-<details><summary style="font-size:25px;color:Orange">DNS (Domain Name System)</summary>
+-   <details><summary style="font-size:25px;color:Orange">DNS (Domain Name System)</summary>
 
-#### DNS (Domain Name System)
+    #### DNS (Domain Name System)
 
-**DNS (Domain Name System)** is a hierarchical, distributed system that translates human-readable domain names (e.g., `example.com`) into machine-readable IP addresses (e.g., `192.168.1.1`). It functions like the phonebook of the internet, allowing users to access websites using domain names instead of numerical IP addresses.
+    **DNS (Domain Name System)** is a hierarchical, distributed system that translates human-readable domain names (e.g., `example.com`) into machine-readable IP addresses (e.g., `192.168.1.1`). It functions like the phonebook of the internet, allowing users to access websites using domain names instead of numerical IP addresses.
 
--   **How DNS Works?**: When you enter a domain name in your browser, DNS follows these steps to resolve it to an IP address:
+    #### How DNS Works
+
+    When you enter a domain name in your browser, DNS follows these steps to resolve it to an IP address:
 
     1. **User Request (DNS Query)**:
 
@@ -3373,7 +3293,7 @@ A **Custom SSL Certificate** in the context of AWS refers to an **SSL/TLS certif
 
     3. **Root DNS Server**: The Root Server directs the resolver to the appropriate TLD (Top-Level Domain) Name Server based on the domain extension (`.com`, `.org`, `.net`, etc.).
 
-    4. **TLD Name Server**: The TLD Server (e.g., `.com` Name Server) directs the resolver to the Authoritative Name Server responsible for the domain.
+    4. **TLD Name Server**: The TLD (Top Level Domain) Server (e.g., `.com` Name Server) directs the resolver to the Authoritative Name Server responsible for the domain.
 
     5. **Authoritative Name Server**:
 
@@ -3383,7 +3303,9 @@ A **Custom SSL Certificate** in the context of AWS refers to an **SSL/TLS certif
     6. **Connecting to the Web Server**:
         - The browser connects to the retrieved IP address and loads the website content.
 
--   **Domain Name**: A Domain Name is a human-readable address used to identify and access resources on the internet, such as websites, web services, and APIs. It is mapped to an IP address through the Domain Name System (DNS), allowing users to access websites without remembering complex numerical IP addresses. It serves as a user-friendly alias for an IP address (e.g., `192.168.1.1` → `example.com`). A domain name consists of multiple parts, separated by dots (`.`), organized in a hierarchical structure.
+    #### Domain Name
+
+    A Domain Name is a human-readable address used to identify and access resources on the internet, such as websites, web services, and APIs. It is mapped to an IP address through the Domain Name System (DNS), allowing users to access websites without remembering complex numerical IP addresses. It serves as a user-friendly alias for an IP address (e.g., `192.168.1.1` → `example.com`). A domain name consists of multiple parts, separated by dots (`.`), organized in a hierarchical structure.
 
     -   **Top-Level Domains (TLDs)**
 
@@ -3415,462 +3337,763 @@ A **Custom SSL Certificate** in the context of AWS refers to an **SSL/TLS certif
         4. **Top-Level Domain (TLD)** – The domain extension (e.g., `.com`, `.org`, `.net`).
         5. **Root Domain (.)** – The implied, invisible dot at the end, representing the root of the DNS hierarchy.
 
-#### DNS Record
+    #### DNS Record
 
-A **DNS Record** is a rule stored in DNS servers that defines how a domain or subdomain is resolved to an IP address or another service.
+    A **DNS Record** is a rule stored in DNS servers that defines how a domain or subdomain is resolved to an IP address or another service.
 
--   **Common Types of DNS Records:**
+    -   **Common Types of DNS Records:**
 
-    -   **A Record (Address Record)** → Maps a domain to an IPv4 address (`example.com` → `192.168.1.1`).
-    -   **CNAME Record (Canonical Name)** → Maps a domain to another domain (`www.example.com` → `example.com`).
-    -   **AAAA Record** → Maps a domain to an IPv6 address.
-    -   **MX Record (Mail Exchange)** → Specifies the mail servers for email routing.
-    -   **TXT Record** → Stores text information (used for SPF, DKIM, and verification purposes).
-    -   **NS Record (Name Server)** → Specifies the authoritative name servers for a domain.
+        -   **A Record (Address Record)** → Maps a domain to an IPv4 address (`example.com` → `192.168.1.1`).
+        -   **CNAME Record (Canonical Name)** → Maps a domain to another domain (`www.example.com` → `example.com`).
+        -   **AAAA Record** → Maps a domain to an IPv6 address.
+        -   **MX Record (Mail Exchange)** → Specifies the mail servers for email routing.
+        -   **TXT Record** → Stores text information (used for SPF, DKIM, and verification purposes).
+        -   **NS Record (Name Server)** → Specifies the authoritative name servers for a domain.
 
--   **Example DNS Records for `example.com`**:
+    -   **Example DNS Records for `example.com`**:
 
-    ```plaintext
-    example.com.   A     192.168.1.1
-    www            CNAME example.com
-    mail           MX    10 mail.example.com
-    ```
+        ```plaintext
+        example.com.   A     192.168.1.1
+        www            CNAME example.com
+        mail           MX    10 mail.example.com
+        ```
 
-#### DNS Server
+    #### DNS Server
 
-A DNS (Domain Name System) Server is a specialized server responsible for translating domain names (e.g., `example.com`) into IP addresses (e.g., `192.168.1.1`). This translation process allows users to access websites and online services using human-readable domain names instead of remembering numerical IP addresses.
+    A DNS (Domain Name System) Server is a specialized server responsible for translating domain names (e.g., `example.com`) into IP addresses (e.g., `192.168.1.1`). This translation process allows users to access websites and online services using human-readable domain names instead of remembering numerical IP addresses.
 
-1. **Recursive DNS Resolver (Caching Name Server)**
+    1. **Recursive DNS Resolver (Caching Name Server)**
 
-    - A Recursive Resolver is the first stop when a user requests a website.
-    - It searches for the requested domain's IP address by querying other DNS servers.
-    - If it has a cached record of the IP, it returns the result immediately.
-    - Examples:
-        - Your Internet Service Provider’s (ISP) DNS resolver
-        - Public DNS resolvers like Google DNS (8.8.8.8), Cloudflare DNS (1.1.1.1), OpenDNS
+        - A Recursive Resolver is the first stop when a user requests a website.
+        - It searches for the requested domain's IP address by querying other DNS servers.
+        - If it has a cached record of the IP, it returns the result immediately.
+        - Examples:
+            - Your Internet Service Provider’s (ISP) DNS resolver
+            - Public DNS resolvers like Google DNS (8.8.8.8), Cloudflare DNS (1.1.1.1), OpenDNS
 
-2. **Root DNS Server**
+    2. **Root DNS Server**
 
-    - The Root Server is the top-level DNS server in the hierarchy.
-    - It directs queries to the appropriate Top-Level Domain (TLD) Name Server based on the domain extension (`.com`, `.org`, `.net`, etc.).
-    - There are 13 root name servers globally, managed by different organizations.
+        - The Root Server is the top-level DNS server in the hierarchy.
+        - It directs queries to the appropriate Top-Level Domain (TLD) Name Server based on the domain extension (`.com`, `.org`, `.net`, etc.).
+        - There are **a total of 13 root DNS servers globally**. These servers are identified by the letters A through M and are operated by different organizations. While there are only 13 primary root servers, each is replicated multiple times around the world, resulting in hundreds of physical servers
 
-3. **TLD (Top-Level Domain) Name Server**
+    3. **TLD (Top-Level Domain) Name Server**
 
-    - This server handles queries for domain extensions like `.com`, `.org`, `.net`.
-    - It directs the request to the Authoritative Name Server responsible for the domain.
-    - Example: The `.com` TLD name server manages domains like `amazon.com`, `google.com`.
+        - This server handles queries for domain extensions like `.com`, `.org`, `.net`.
+        - It directs the request to the Authoritative Name Server responsible for the domain.
+        - Example: The `.com` TLD name server manages domains like `amazon.com`, `google.com`.
 
-4. **Authoritative DNS Server**
+    4. **Authoritative DNS Server**
 
-    - This server holds the official DNS records for a domain (like `example.com`).
-    - It responds with the final IP address for the requested domain.
-    - If a website uses a DNS hosting service, its authoritative DNS is managed by providers like:
-        - AWS Route 53
-        - Cloudflare
-        - Google Cloud DNS
-        - GoDaddy
+        - It responds with the final IP address for the requested domain.
+        - This server holds the official DNS records for a domain (like `example.com`).
+        - If a website uses a DNS hosting service, its authoritative DNS is managed by providers like:
+            - **AWS Route 53**
+            - Cloudflare
+            - Google Cloud DNS
+            - GoDaddy
 
-#### MISC
+    #### MISC
 
--   **Types of DNS Lookups**
+    -   **Types of DNS Lookups**
 
-    -   `Forward DNS Lookup`: Translates a domain name (`example.com`) to an IP address (`192.168.1.1`).
-    -   `Reverse DNS Lookup`: Maps an IP address (`192.168.1.1`) back to a domain name (`example.com`).
+        -   `Forward DNS Lookup`: Translates a domain name (`example.com`) to an IP address (`192.168.1.1`).
+        -   `Reverse DNS Lookup`: Maps an IP address (`192.168.1.1`) back to a domain name (`example.com`).
 
--   **Types of DNS Resolution Methods**
+    -   **Types of DNS Resolution Methods**
 
-    -   `Recursive Resolution` → The resolver handles the entire lookup process and returns the final IP address.
-    -   `Iterative Resolution` → The resolver queries multiple DNS servers, each returning the next step until the final IP is found.
+        -   `Recursive Resolution` → The resolver handles the entire lookup process and returns the final IP address.
+        -   `Iterative Resolution` → The resolver queries multiple DNS servers, each returning the next step until the final IP is found.
 
--   **DNS Caching and Performance**: To improve efficiency, DNS results are cached at different levels:
+    -   **DNS Caching and Performance**: To improve efficiency, DNS results are cached at different levels:
 
-    -   `Browser Cache` → Stores previously resolved domains to reduce lookup times.
-    -   `OS Cache` → The operating system caches DNS records to avoid frequent lookups.
-    -   `ISP Resolver Cache` → The ISP caches results to speed up internet access.
-    -   `Global DNS Caching` → Content Delivery Networks (CDNs) cache DNS responses to improve performance worldwide.
+        -   `Browser Cache` → Stores previously resolved domains to reduce lookup times.
+        -   `OS Cache` → The operating system caches DNS records to avoid frequent lookups.
+        -   `ISP Resolver Cache` → The ISP caches results to speed up internet access.
+        -   `Global DNS Caching` → Content Delivery Networks (CDNs) cache DNS responses to improve performance worldwide.
 
--   **DNS Services & Management**: Popular DNS service providers:
+    -   **DNS Services & Management**: Popular DNS service providers:
 
-    -   `Cloud-Based DNS` → AWS Route 53, Google Cloud DNS, Azure DNS.
-    -   `Public DNS Resolvers` → Google Public DNS (`8.8.8.8`), Cloudflare DNS (`1.1.1.1`), OpenDNS.
-    -   `Private/Internal DNS` → Used within corporate networks for managing internal domains.
+        -   `Cloud-Based DNS` → AWS Route 53, Google Cloud DNS, Azure DNS.
+        -   `Public DNS Resolvers` → Google Public DNS (`8.8.8.8`), Cloudflare DNS (`1.1.1.1`), OpenDNS.
+        -   `Private/Internal DNS` → Used within corporate networks for managing internal domains.
 
-</details>
+    </details>
 
 ---
 
-<details><summary style="font-size:25px;color:Orange">Route-53</summary>
+-   <details><summary style="font-size:25px;color:Orange">Route-53</summary>
 
-AWS Route 53 is a highly available and scalable Domain Name System (DNS) web service provided by Amazon Web Services (AWS). It is designed to route end-user requests efficiently by translating domain names into numerical IP addresses used for internet communication.
+    AWS Route 53 is a highly available and scalable Domain Name System (DNS) web service provided by Amazon Web Services (AWS). It is designed to route end-user requests efficiently by translating domain names into numerical IP addresses used for internet communication.
 
-#### Hosted Zone
+    #### Hosted Zone
 
-A **Hosted Zone** is an essential component of DNS (Domain Name System), specifically within AWS Route 53. It represents a container for managing DNS records associated with a specific domain or subdomain.
+    A **Hosted Zone** is an essential component of DNS (Domain Name System), specifically within AWS Route 53. It represents a container for managing DNS records associated with a specific domain or subdomain.
 
-1. **What is a Hosted Zone?**
+    1. **Hosted Zone**
 
-    - A Hosted Zone is an AWS Route 53 configuration that holds DNS records for a domain (e.g., `example.com`).
-    - It acts as a DNS database, defining how traffic is routed for that domain.
-    - Each Hosted Zone contains multiple DNS record sets that map domain names to IP addresses, AWS resources, or other services.
+        - A Hosted Zone is an AWS Route 53 configuration that holds DNS records for a domain (e.g., `example.com`).
+        - It acts as a DNS database, defining how traffic is routed for that domain.
+        - Each Hosted Zone contains multiple DNS record sets that map domain names to IP addresses, AWS resources, or other services.
 
-    - **Public Hosted Zone**:
+        - **Public Hosted Zone**:
 
-        - Used for domains accessible on the public internet.
-        - It is required when you want your website (`example.com`) to be publicly available.
-        - Stores records like A, AAAA, CNAME, MX, TXT, etc.
-        - Example: A public Hosted Zone for `example.com` resolves `www.example.com` to an AWS Elastic Load Balancer (ELB).
+            - Used for domains accessible on the public internet.
+            - It is required when you want your website (`example.com`) to be publicly available.
+            - Stores records like A, AAAA, CNAME, MX, TXT, etc.
+            - Example: A public Hosted Zone for `example.com` resolves `www.example.com` to an AWS Elastic Load Balancer (ELB).
 
-    - **Private Hosted Zone**:
-        - Used for internal DNS resolution within an AWS VPC (Virtual Private Cloud).
-        - It is not publicly accessible but helps resolve domain names within a private AWS environment.
-        - Used when instances inside a VPC need custom domain names.
-        - Example: `internal.example.com` resolves to private EC2 instances.
+        - **Private Hosted Zone**:
+            - Used for internal DNS resolution within an AWS VPC.
+            - It is not publicly accessible but helps resolve domain names within a private AWS environment.
+            - Used when instances inside a VPC need custom domain names.
+            - Example: `internal.example.com` resolves to private EC2 instances.
 
-2. **Hosted Zone Components**: Each Hosted Zone contains:
+    2. **Hosted Zone Components**: Each Hosted Zone contains:
 
-    - **SOA (Start of Authority) Record**: Defines the primary name server for the domain.
-    - **NS (Name Server) Records**: Assigns AWS Route 53 name servers for the domain. These servers are responsible to route your traffic according to DNS Records.
-    - **DNS Records (A, CNAME, MX, TXT, etc.)**: Controls how domain names are mapped to IPs or AWS services.
+        - **DNS Records**: A DNS record is a structured entry in the DNS database that defines how to handle queries for a domain or subdomain. It Controls how domain names are mapped to IPs or AWS services.
 
-        - `A Record` → Maps a domain to an IPv4 address.
-        - `AAAA Record` → Maps a domain to an IPv6 address.
-        - `CNAME Record` → Maps a domain to another domain (e.g., `www.example.com` → `example.com`).
-        - `MX Record` → Specifies mail servers for handling emails.
-        - `TXT Record` → Stores arbitrary text data, often used for verification and security keys.
-        - `NS Record` → Lists the name servers managing a domain.
-        - `SOA Record` → Defines essential details about the domain, including primary name server and TTL (Time-To-Live).
+            - `A Record` → An A Record maps a domain name to an **IPv4 address** (which is 32 bits).
+            - `AAAA Record` → Maps a domain to an **IPv6 address** (which is 128 bits = 4 × 32 bits = 4A where A → IPv4 (32 bits)).
+            - `CNAME Record` → Maps a domain to another domain (e.g., `www.example.com` → `example.com`).
+            - `MX Record` → **Mail Exchange Record** specifies mail servers for handling emails.
+            - `TXT Record` → Stores arbitrary text data, often used for verification and security keys.
+            - `NS Record` → **Name Server Record** Assigns AWS Route 53 name servers for the domain. These servers are responsible to route your traffic according to DNS Records.
+            - `SOA Record` → **Start of Authority Record** defines essential details about the domain, including primary name server and **TTL** (Time-To-Live).
 
-    - **Alias Records**:
+        - **Alias Records**:
 
-        - Maps domain names to AWS resources like ELB, CloudFront, and S3.
-        - Unlike CNAME records, alias records work at the root domain level.
+            - Maps domain names to AWS resources like ELB, CloudFront, and S3.
+            - Unlike CNAME records, alias records work at the root domain level.
 
-#### Routing Policies
+    #### Routing Policies
 
--   **Simple Routing**
+    -   **Simple Routing**
 
-    -   Maps a single domain name to a single resource.
+        -   Maps a single domain name to a single resource.
 
--   **Weighted Routing**
+    -   **Weighted Routing**
 
-    -   Distributes traffic based on assigned weights (percentage).
-    -   Useful for A/B testing and gradual deployments.
+        -   Distributes traffic based on assigned weights (percentage).
+        -   Useful for A/B testing and gradual deployments.
 
--   **Latency-Based Routing**
+    -   **Latency-Based Routing**
 
-    -   Directs users to the region with the lowest latency.
-    -   Enhances user experience by reducing response time.
+        -   Routes DNS queries to the AWS Region with the lowest latency for the user.
+        -   To optimize performance for users by serving content from the nearest (fastest) AWS region.
+        -   Useful when you have multiple endpoints (e.g., EC2, ELB) across different regions and want to deliver the best possible experience based on geography and network conditions.
+        -   Enhances user experience by reducing response time.
 
--   **Geolocation Routing**
+    -   **Geolocation Routing**
 
-    -   Routes traffic based on the geographic location of the user.
-    -   Useful for content localization and regulatory compliance.
+        -   Routes traffic based on the geographic location of the user.
+        -   Useful for content localization and regulatory compliance.
 
--   **Geoproximity Routing**
+    -   **Geoproximity Routing**
 
-    -   Adjusts routing based on the user's geographic location and bias settings.
-    -   Allows shifting traffic dynamically to preferred locations.
+        -   Adjusts routing based on the user's geographic location and bias settings.
+        -   Allows shifting traffic dynamically to preferred locations.
 
--   **Failover Routing**
+    -   **Failover Routing**
 
-    -   Directs traffic to a secondary resource if the primary fails.
-    -   Requires health checks to monitor resource availability.
+        -   Directs traffic to a secondary resource if the primary fails.
+        -   Requires health checks to monitor resource availability.
 
--   **Multivalue Answer Routing**
-    -   Returns multiple IP addresses for a domain.
-    -   Provides basic load balancing without an additional load balancer.
+    -   **Multivalue Answer Routing**
+        -   Returns multiple IP addresses for a domain.
+        -   Provides basic load balancing without an additional load balancer.
 
-#### Health Checks and Monitoring
+    #### Health Checks and Monitoring
 
--   Monitors the health of websites, servers, or applications by sending periodic requests.
--   Configurable with HTTP, HTTPS, and TCP health checks.
--   Can trigger failover mechanisms when a resource becomes unresponsive.
+    -   Monitors the health of websites, servers, or applications by sending periodic requests.
+    -   Configurable with HTTP, HTTPS, and TCP health checks.
+    -   Can trigger failover mechanisms when a resource becomes unresponsive.
 
-#### Domain Name Registration
+    #### Domain Name Registration
 
--   Allows users to purchase and manage domain names directly from AWS.
--   Supports automatic DNS configuration with AWS-hosted services.
--   Provides domain transfer and renewal options.
+    -   Allows users to purchase and manage domain names directly from AWS.
+    -   Supports automatic DNS configuration with AWS-hosted services.
+    -   Provides domain transfer and renewal options.
 
-#### DNSSEC (Domain Name System Security Extensions)
+    #### DNSSEC (Domain Name System Security Extensions)
 
--   Protects against DNS spoofing and cache poisoning attacks.
--   Provides cryptographic signatures to validate DNS responses.
+    **DNSSEC** ensures that DNS responses come unchanged from their authoritative source by using digital signatures. It is a security feature that helps protect your domain from DNS spoofing, cache poisoning, and man-in-the-middle attacks by enabling cryptographic verification of DNS data.
 
-#### Integration with AWS Services
+    -   Protects against DNS spoofing and cache poisoning attacks.
+    -   Provides cryptographic signatures to validate DNS responses.
+    -   **When DNSSEC is enabled**:
+        -   Your hosted zone (via Route 53) signs DNS records with private keys.
+        -   DNS resolvers validate those signatures using public keys stored in the parent zone (like .com).
+        -   If a response is tampered with, validation will fail, and the client will discard it.
 
--   Works seamlessly with EC2, S3, CloudFront, Elastic Load Balancer (ELB), AWS WAF, and Shield.
--   Supports routing to AWS resources using Alias Records, reducing query costs.
+    #### Integration with AWS Services
 
-#### How AWS Route 53 Works
+    -   Works seamlessly with EC2, S3, CloudFront, Elastic Load Balancer (ELB), AWS WAF, and Shield.
+    -   Supports routing to AWS resources using Alias Records, reducing query costs.
 
--   **Step 1: Domain Registration (Optional)**: Register a domain using AWS Route 53 or transfer an existing domain.
--   **Step 2: Create a Hosted Zone**: Create either a **Public** or **Private Hosted Zone** for managing DNS records.
--   **Step 3: Configure DNS Records**: Add **A, CNAME, MX, TXT, or Alias Records** to route traffic appropriately.
--   **Step 4: Update Name Servers (If Using an External Registrar)**: Update the domain’s **NS Records** to point to AWS Route 53.
--   **Step 5: Configure Routing Policies**: Select the appropriate routing policy (e.g., Simple, Weighted, Failover).
--   **Step 6: Set Up Health Checks (Optional)**: Monitor application availability and enable failover mechanisms.
--   **Step 7: Test and Validate**: Verify domain resolution using tools like `nslookup`, `dig`, or AWS console.
+    #### How AWS Route 53 Works
 
-</details>
+    -   **Step 1: Domain Registration (Optional)**: Register a domain using AWS Route 53 or transfer an existing domain.
+    -   **Step 2: Create a Hosted Zone**: Create either a **Public** or **Private Hosted Zone** for managing DNS records.
+    -   **Step 3: Configure DNS Records**: Add **A, CNAME, MX, TXT, or Alias Records** to route traffic appropriately.
+    -   **Step 4: Update Name Servers (If Using an External Registrar)**: Update the domain’s **NS Records** to point to AWS Route 53.
+    -   **Step 5: Configure Routing Policies**: Select the appropriate routing policy (e.g., Simple, Weighted, Failover).
+    -   **Step 6: Set Up Health Checks (Optional)**: Monitor application availability and enable failover mechanisms.
+    -   **Step 7: Test and Validate**: Verify domain resolution using tools like `nslookup`, `dig`, or AWS console.
+
+    </details>
 
 ---
 
-<details><summary style="font-size:25px;color:Orange">WAF</summary>
+-   <details><summary style="font-size:25px;color:Orange">Load balancer</summary>
 
-AWS WAF (Web Application Firewall) is a security service that helps protect web applications from common web exploits, unauthorized access, and malicious traffic by filtering and monitoring HTTP/HTTPS requests based on defined rules.
+    A **Load Balancer** is a managed service provided by Elastic Load Balancing (ELB) that automatically distributes incoming application traffic across multiple targets, such as EC2 instances, containers, IP addresses, and Lambda functions, in one or more Availability Zones. This ensures high availability, fault tolerance, and scalability for your applications. AWS provides the following types of load balancers, each suited to different use cases:
 
-It integrates with **Amazon CloudFront**, **Application Load Balancer (ALB)**, and **API Gateway**, allowing businesses to apply security protections at the edge, before requests reach the application.
+    1. **Application Load Balancer (ALB)**
 
-#### Key Components of AWS WAF
+        - Designed for HTTP and HTTPS traffic.
+        - Operates at **Layer 7** (Application Layer) of the OSI model.
+        - Content-based or path-based routing (e.g., route based on URL path or hostname).
+        - WebSocket and HTTP/2 support.
+        - Authentication using OIDC, Cognito, or other mechanisms.
+        - Advanced request-routing capabilities (e.g., based on headers or query strings).
+        - Integration with AWS Web Application Firewall (WAF).
 
--   **Web ACL (Web Access Control List)**: A **Web ACL** is the core component of AWS WAF. It acts as a **firewall policy** and consists of **rules** that define how AWS WAF should handle incoming web requests.
+    2. **Network Load Balancer (NLB)**
 
-    -   **Attach to:** CloudFront, ALB, or API Gateway.
-    -   **Each Web ACL consists of:** - **Rules** → Define specific security conditions.
-    -   **Rule Groups** → Collections of related rules.
-    -   **Default Action** → Allow or Block requests that don’t match any rule.
+        - Designed for **TCP, UDP, and TLS** traffic.
+        - Operates at **Layer 4** (Transport Layer).
+        - High-performance handling of millions of requests per second.
+        - Static IP addresses or Elastic IPs for the load balancer.
+        - Ability to preserve client source IP addresses.
+        - Ideal for low-latency, high-throughput workloads.
 
--   **Rules**: Rules define conditions that filter traffic based on various attributes. You can create custom rules or use **AWS Managed Rules**.
+    3. **Gateway Load Balancer (GWLB)**
 
-    -   `Rate-Based Rule`: Blocks IPs sending excessive requests (prevents DDoS).
-    -   `IP Set Rule`: Allows or blocks requests from a list of IPs.
-    -   `String Matching Rule`: Filters requests based on headers, body, or query parameters.
-    -   `Regex Match Rule`: Matches specific patterns in request data.
-    -   `Size Constraint Rule`: Blocks requests exceeding defined size limits.
-    -   `Geographical Match Rule`: Blocks requests from specific countries.
-    -   `Bot Control Rule`: Detects and blocks bot traffic.
+        - Designed for deploying and managing third-party virtual appliances (e.g., firewalls, monitoring tools).
+        - Operates at **Layer 3** (Network Layer).
+        - Scalable and elastic traffic distribution for appliances.
+        - Integrates with Virtual Private Cloud (VPC) Ingress Routing.
 
--   **Rule Groups**: Rule Groups are **collections of related rules** that can be shared across multiple Web ACLs.
+    4. **Classic Load Balancer (CLB)**
 
-    -   `AWS Managed Rule Groups`:Pre-configured rules for common attacks (e.g., SQL Injection, XSS).
-    -   `Custom Rule Groups`:User-defined rules for specific security needs.
+        - Legacy load balancer that supports both **Layer 4** and **Layer 7** traffic.
+        - Limited features compared to ALB and NLB.
+        - Basic routing and health checks.
+        - Supports legacy applications.
 
--   **Conditions** : define **how AWS WAF evaluates a request**. Common conditions include:
+    5. **Scheme**: The Scheme of an AWS Elastic Load Balancer (ELB) determines how the load balancer is exposed — whether it's **internet-facing** or **internal-only**.
 
-    -   **IP Match Condition** (specific IP addresses).
-    -   **String Match Condition** (specific query strings, URIs, or headers).
-    -   **SQL Injection Condition** (SQL attack patterns).
-    -   **Cross-Site Scripting (XSS) Condition** (malicious JavaScript).
+    6. **Listeners**: A listener is a process configured on the load balancer to check for incoming client connection requests. It listens for connections using a specified protocol and port and forwards these requests to the appropriate targets based on the rules configured.
 
--   **Actions**: When a request matches a rule, AWS WAF takes one of the following actions:
+        - **Protocols Supported**:
 
-    -   `Allow`: Permits the request to pass through.
-    -   `Block`: Completely denies the request.
-    -   `Count`: Logs the request for monitoring but does not block it.
-    -   `CAPTCHA`: Challenges the user with a CAPTCHA test.
+            - HTTP/HTTPS (Application Load Balancer)
+            - TCP/TLS/UDP (Network Load Balancer)
 
-#### AWS WAF Advanced Features
+        - **Ports**:
 
--   **AWS Managed Rules**: AWS provides pre-configured rule sets to **protect against known vulnerabilities**:
+            - Common ports include **80** (HTTP) and **443** (HTTPS).
+            - You can define custom ports if needed.
 
-    -   `Core Rule Set (CRS)`:Protects against SQL Injection, XSS, and other common exploits.
-    -   `IP Reputation List`:Blocks traffic from known malicious IP addresses.
-    -   `Amazon Threat Intelligence Feeds`:Uses AWS security data to block suspicious traffic.
+        - **Rules**: Define how the load balancer routes traffic to different target groups.
 
--   **AWS WAF Logging & Metrics**
+            - `Criteria`: Rules can be based on various criteria.
 
-    -   Logs traffic data to **Amazon S3**, **CloudWatch Logs**, or **Kinesis Data Firehose**.
-    -   Provides insights into attack patterns and blocked requests.
+                - _Path_: Route traffic based on the path of the incoming request (e.g., /api, /images).
+                - _Host Header_: Route traffic based on the host header in the request (e.g., www.example.com).
+                - _HTTP Headers_: Route traffic based on specific HTTP headers in the request.
+                - _Query Parameters_: Route traffic based on query parameters in the request URL.
 
--   **AWS WAF Rate Limiting (DDoS Protection)**
+            - `Example`: In ALB, rules can include host-based routing (e.g., `www.example.com`) or path-based routing (e.g., `/api`).
 
-    -   **Rate-Based Rules** help prevent **Distributed Denial-of-Service (DDoS) attacks** by blocking IPs sending too many requests.
-    -   Example: Block IPs that send **more than 2000 requests per 5 minutes**.
+        - **Use Cases**:
+            - For ALB: You can configure a listener to route traffic for multiple services running on different paths or domains.
+            - For NLB: Use listeners to route traffic at a network level for high-throughput applications.
 
--   **AWS WAF and Shield Integration**
+    7. **Target Groups**: A Target Group is a configuration object used by Elastic Load Balancing (ELB) to route requests to one or more registered targets (e.g., `EC2 instances`, `Lambda functions`, `IP addresses`, or `ALB/NLB`). Target groups are central to how Application Load Balancers (ALBs) and Network Load Balancers (NLBs) direct traffic.
 
-    -   **AWS Shield Standard:** Provides basic DDoS protection (included with AWS WAF).
-    -   **AWS Shield Advanced:** Offers enhanced DDoS protection with automated attack mitigation.
+        - **Types of Targets**:
 
-#### AWS WAF Deployment Options
+            - **Instances**: Routes traffic to specific EC2 instances.
+            - **IP Addresses**: Targets specific IP addresses. Useful for hybrid architectures.
+            - **Lambda Functions**: ALB supports invoking Lambda functions for serverless applications.
+            - **ECS**:
 
--   **With Amazon CloudFront (Edge Protection)**
+        - **Port**
 
-    -   Best for **global applications** and content delivery.
-    -   Blocks threats before they reach your application.
-    -   Reduces latency by filtering traffic at AWS edge locations.
+            - Each target group has a default port (e.g., 80 or 443).
+            - Traffic sent to registered targets uses this port unless overridden per target.
 
--   **With Application Load Balancer (ALB)**
+        - **Protocol**: Defines what protocol the load balancer uses to communicate with targets:
 
-    -   Best for **internal AWS applications and microservices**.
-    -   Provides security at the load balancer level.
-    -   Works with multiple EC2 instances and containers.
+            - HTTP or HTTPS (for ALB)
+            - TCP, TLS, UDP, or TCP_UDP (for NLB)
 
--   **With API Gateway**
+        - **Health Checks**:
 
-    -   Best for **securing RESTful APIs**.
-    -   Protects APIs from attacks like **API scraping, bot abuse, and SQL Injection**.
+            - Automatically perform health checks on the targets to ensure only healthy ones receive traffic.
+            - Parameters include the protocol, ping path, interval, and thresholds.
 
-#### Summary Table
+        - **Routing**: You can associate multiple target groups with different listeners and rules to route traffic intelligently.
 
-| AWS WAF Component     | Description                                                      |
-| --------------------- | ---------------------------------------------------------------- |
-| **Web ACL**           | Defines firewall rules and actions (Allow, Block, Count)         |
-| **Rules**             | Defines specific security conditions                             |
-| **Rule Groups**       | Collections of rules (Managed or Custom)                         |
-| **Actions**           | What to do when a request matches a rule (Allow, Block, CAPTCHA) |
-| **Managed Rules**     | AWS-provided rule sets for common threats                        |
-| **Rate-Based Rules**  | Blocks excessive traffic from a single IP                        |
-| **Logging & Metrics** | Provides insights into blocked requests                          |
-| **Deployment**        | Works with CloudFront, ALB, and API Gateway                      |
-| **DDoS Protection**   | Works with AWS Shield to mitigate large-scale attacks            |
+        - **Example**:
 
-<details><summary style="font-size:20px;color:Tomato">APIGateway WAF</summary>
+            - A web app running on multiple EC2 instances can have a target group configured with all those instances.
+            - A microservices architecture could have separate target groups for APIs, user interfaces, and static content.
 
-In AWS, **API Gateway WAFs** refer to the integration of **AWS Web Application Firewall (AWS WAF)** with **Amazon API Gateway** to protect API endpoints from security threats, such as SQL injection, cross-site scripting (XSS), bot attacks, and other common web exploits.
+        - **NOTE**:
+            - API Gateway is not designed to function behind a load balancer.
+            - API Gateway itself is designed to manage traffic, apply security policies, rate limiting, and integrate with AWS services. A Load Balancer in front of API Gateway is **redundant**.
 
--   **How AWS WAF Works with API Gateway**
-    -   **AWS WAF** acts as a **security layer** in front of **Amazon API Gateway**.
-    -   You can define **WAF rules** to allow, block, or monitor (count) HTTP(S) requests before they reach your API.
-    -   AWS WAF filters incoming requests based on various criteria, such as **IP addresses, request headers, query strings, request body size, or specific attack signatures**.
+    8. **Load Balancer Nodes**: Load balancer nodes are the actual physical or virtual machines that handle the traffic within AWS. They are managed by AWS and operate behind the scenes to distribute traffic effectively.
 
-### Key Components of API Gateway WAFs
+        - **Distributed Across AZs**:
 
--   **1. Web ACL (Web Access Control List)**
+            - ELB automatically deploys load balancer nodes in multiple Availability Zones (AZs) for high availability and fault tolerance.
 
-    -   A **Web ACL** is a set of rules that define the filtering logic.
-    -   It can be associated with **API Gateway**, **CloudFront**, or an **Application Load Balancer (ALB)**.
-    -   Rules inside the Web ACL determine which requests are allowed, blocked, or monitored.
+        - **Scaling**:
 
--   **2. WAF Rules**
+            - Load balancer nodes automatically scale to handle increases in traffic.
+            - When traffic reduces, nodes are scaled down.
 
-    -   Rules specify conditions that incoming API requests must meet.
-    -   Example rule types:
-        -   **IP-based rules** (Block requests from specific IP addresses or countries)
-        -   **Rate limiting** (Prevent DDoS-like attacks by limiting requests from a single source)
-        -   **SQL Injection/XSS rule sets** (Detect and block malicious input)
-        -   **Custom rules** using regex patterns, headers, and query string filtering.
+        - **Connection Handling**:
 
--   **3. Rule Groups**
+            - These nodes terminate client connections and forward requests to the target.
 
-    -   Collections of pre-defined WAF rules.
-    -   AWS provides **Managed Rule Groups** to protect against common attacks.
+        - **How It Works**:
 
--   **4. Logging and Monitoring**
-    -   AWS WAF logs can be sent to **Amazon CloudWatch**, **Amazon S3**, or **Amazon Kinesis Data Firehose** for further analysis.
-    -   You can use **AWS Shield Advanced** for additional **DDoS protection**.
+            - A DNS name (e.g., `my-load-balancer-12345.elb.amazonaws.com`) is provided by AWS.
+            - This name resolves to the IP addresses of the load balancer nodes.
+            - Clients connect to these nodes, which distribute the traffic to healthy targets.
+
+    9. **Health Checks**: Health checks are critical for ensuring that traffic is only sent to healthy targets. ELB continuously monitors the health of targets in a target group and routes traffic to only those that are healthy.
+
+        - **Health Check Configuration**:
+
+            - **Protocol**: HTTP, HTTPS, TCP, or UDP.
+            - **Port**: The port on which the health check is performed.
+            - **Path**: The specific path for HTTP/HTTPS checks (e.g., `/healthcheck`).
+
+        - **Interval and Timeout**:
+
+            - The interval defines how often the health check is performed.
+            - The timeout specifies the time allowed for the target to respond.
+
+        - **Thresholds**:
+
+            - Healthy threshold: Number of consecutive successful responses required to mark the target as healthy.
+            - Unhealthy threshold: Number of consecutive failures required to mark the target as unhealthy.
+
+        - **Example**: A target is considered healthy if it returns a `200 OK` HTTP response for 3 consecutive health check requests within the interval.
+
+    10. **Security Groups**: Security groups act as virtual firewalls that control inbound and outbound traffic for the load balancer.
+
+        - **Inbound Rules**: Specify the type of traffic allowed to reach the load balancer (e.g., allow HTTP traffic on port 80 or HTTPS on port 443).
+        - **Outbound Rules**: Define the type of traffic that the load balancer can send to targets.
+        - **Granular Control**: You can restrict access to specific IP ranges, CIDR blocks, or other AWS resources.
+
+        - **Example**:
+            - For an internet-facing ALB, configure a security group to allow public traffic on ports 80 and 443.
+            - For an internal-only NLB, restrict traffic to your VPC CIDR range.
+
+    11. **Access Logs**: Access logs provide detailed information about requests processed by the load balancer. These logs are invaluable for debugging, analyzing traffic patterns, and monitoring security.
+
+        - **Stored in S3**: Logs are automatically saved in an S3 bucket that you specify.
+        - **Log Contents**: Includes information like the request time, client IP, target details, response status, latency, and more.
+        - **Analysis**: Can be analyzed using tools like Amazon Athena, AWS Glue, or third-party log analysis tools.
+
+        - **Use Cases**:
+            - Troubleshoot issues with specific clients or requests.
+            - Monitor and analyze application performance.
+
+    12. **Elastic IPs (NLB Only)**: Elastic IPs (EIPs) are static IP addresses that can be assigned to the Network Load Balancer for predictable and consistent access.
+
+        - **Static IPs**:
+            - NLB can assign Elastic IPs to its nodes in each AZ.
+        - **Use Cases**:
+            - Simplifies DNS management when clients require fixed IPs.
+            - Useful for firewall configurations and hybrid environments.
+
+    13. **DNS Name**: AWS ELB provides a DNS name for each load balancer, which clients use to send requests. The DNS name is associated with the IPs of the load balancer nodes.
+
+        - **Dynamic Resolution**:
+            - The DNS name resolves to the IP addresses of the load balancer nodes.
+            - AWS handles changes in the underlying infrastructure automatically.
+        - **Example**: `my-load-balancer-12345.us-west-2.elb.amazonaws.com`.
+
+    14. **Sticky Sessions (Session Affinity)**: Sticky sessions, Also known as **session affinity**, ensure that requests from the same client are routed to the same target for the duration of the session.
+
+        - **Session Duration**: Controlled by cookies (either AWS-generated or custom).
+        - **Use Cases**: Applications that maintain session state (e.g., user login or shopping cart).
+
+    15. **Host-Based and Path-Based Routing (ALB)**
+
+        - `Host-based routing`: Route requests to different target groups based on the **Host** header (e.g., `api.example.com` vs. `app.example.com`).
+        - `Path-based routing`: Route requests based on the URL path (e.g., `/api` vs. `/login`).
+
+    16. **SSL/TLS Termination**
+
+        - Load balancers can terminate SSL/TLS connections, offloading the encryption and decryption process from the targets.
+        - Managed using **AWS Certificate Manager (ACM)** or custom certificates.
+
+    17. **Cross-Zone Load Balancing**: Distributes traffic evenly across all targets in all enabled AZs, regardless of the AZ in which the load balancer node resides.
+
+    ##### ALB Metrics
+
+    -   **1. Traffic Metrics**: These reflect the amount of request/response traffic handled by the ALB.
+
+        | **Metric Name**    | **Description**                       | **Unit** |
+        | ------------------ | ------------------------------------- | -------- |
+        | `RequestCount`     | Number of HTTP(S) requests received   | Count    |
+        | `ProcessedBytes`   | Total bytes processed by the ALB      | Bytes    |
+        | `IPv6RequestCount` | Number of requests received over IPv6 | Count    |
+
+    -   **3. Error Metrics**: These help identify issues like client or server-side errors.
+
+        | **Metric Name**                  | **Description**                          | **Unit** |
+        | -------------------------------- | ---------------------------------------- | -------- |
+        | `HTTPCode_ELB_4XX_Count`         | Count of 4XX errors generated by the ALB | Count    |
+        | `HTTPCode_ELB_5XX_Count`         | Count of 5XX errors generated by the ALB | Count    |
+        | `HTTPCode_Target_2XX_Count`      | 2XX responses from targets               | Count    |
+        | `HTTPCode_Target_3XX_Count`      | 3XX responses from targets               | Count    |
+        | `HTTPCode_Target_4XX_Count`      | 4XX responses from targets               | Count    |
+        | `HTTPCode_Target_5XX_Count`      | 5XX responses from targets               | Count    |
+        | `TargetConnectionErrorCount`     | Target connection failures               | Count    |
+        | `TargetTLSNegotiationErrorCount` | TLS negotiation errors with targets      | Count    |
+
+    -   **4. Health Check Metrics**: Used to monitor target health within target groups.
+
+        | **Metric Name**      | **Description**             | **Unit** |
+        | -------------------- | --------------------------- | -------- |
+        | `HealthyHostCount`   | Number of healthy targets   | Count    |
+        | `UnHealthyHostCount` | Number of unhealthy targets | Count    |
+
+    -   **6. Rule and Listener Metrics**
+
+        | **Metric Name**      | **Description**                             | **Unit** |
+        | -------------------- | ------------------------------------------- | -------- |
+        | `RuleEvaluations`    | Number of rule evaluations done by ALB      | Count    |
+        | `RedirectCount`      | Number of HTTP redirects issued by rules    | Count    |
+        | `FixedResponseCount` | Number of fixed responses sent by ALB rules | Count    |
+
+    -   **8. Target Group-Level Metrics**: Every target group can emit these metrics separately.
+
+        | **Metric Name**             | **Description**                                  | **Unit** |
+        | --------------------------- | ------------------------------------------------ | -------- |
+        | `TargetResponseTime`        | Average time for a target to respond             | Seconds  |
+        | `HTTPCode_Target_XXX_Count` | Per-target-group response codes (2XX, 4XX, etc.) | Count    |
+        | `RequestCountPerTarget`     | Average requests per target during the period    | Count    |
+
+        > 💡 All target-level metrics can be filtered by **TargetGroup** and **LoadBalancer** dimensions.
+
+    ##### Performance Metrics of AWS ALB
+
+    -   **1. Latency Metrics**
+
+        | **Metric**                                   | **Description**                                                 | **Unit** |
+        | -------------------------------------------- | --------------------------------------------------------------- | -------- |
+        | `TargetResponseTime`                         | Time from ALB forwarding request to target → receiving response | Seconds  |
+        | `ELBResponseTime` _(custom via access logs)_ | Time ALB takes before forwarding to target                      | Seconds  |
+
+        > 🔹 **Performance Impact:** Higher values indicate slow target responses or backend issues.
+
+    -   **2. Throughput Metrics (Traffic Volume)**
+
+        | **Metric**       | **Description**                             | **Unit** |
+        | ---------------- | ------------------------------------------- | -------- |
+        | `RequestCount`   | Number of HTTP(S) requests received         | Count    |
+        | `ProcessedBytes` | Total bytes processed (in + out) by the ALB | Bytes    |
+
+        > 🔹 **Performance Impact:** Indicates how much load your ALB is handling.
+
+    -   **3. Load Distribution Metrics**
+
+        | **Metric**              | **Description**                         | **Unit** |
+        | ----------------------- | --------------------------------------- | -------- |
+        | `RequestCountPerTarget` | Avg requests per target in target group | Count    |
+        | `HealthyHostCount`      | Number of healthy targets               | Count    |
+        | `UnHealthyHostCount`    | Number of unhealthy targets             | Count    |
+
+        > 🔹 **Performance Impact:** Too many requests per target = possible overload.
+
+    -   **5. Connection Metrics**: Used to monitor ALB connections and reuse efficiency.
+
+        | **Metric Name**                  | **Description**                                       | **Unit** |
+        | -------------------------------- | ----------------------------------------------------- | -------- |
+        | `ActiveConnectionCount`          | Number of active TCP connections                      | Count    |
+        | `ClientTLSNegotiationErrorCount` | Number of TLS negotiation failures from clients       | Count    |
+        | `NewConnectionCount`             | Number of new TCP connections established             | Count    |
+        | `RejectedConnectionCount`        | Rejected connections due to listener or config errors | Count    |
+
+        > 🔹 **Performance Impact:** Connection spikes or rejections can degrade ALB performance.
+
+    -   **7. TLS/SSL Metrics**
+
+        | **Metric Name**                  | **Description**                                | **Unit** |
+        | -------------------------------- | ---------------------------------------------- | -------- |
+        | `TLSNegotiationErrorCount`       | TLS negotiation errors (client or target side) | Count    |
+        | `ClientTLSNegotiationErrorCount` | Errors during TLS negotiation with clients     | Count    |
+        | `TargetTLSNegotiationErrorCount` | Errors during TLS negotiation with targets     | Count    |
+
+        > 🔹 **Performance Impact:** TLS negotiation issues delay or fail request handling.
+
+    </details>
 
 ---
 
--   **How to Attach AWS WAF to an API Gateway**
-    1. **Create a Web ACL** in the **AWS WAF console**.
-    2. **Define WAF rules** within the Web ACL.
-    3. **Associate the Web ACL** with your API Gateway stage:
-        - Navigate to API Gateway in AWS Console.
-        - Select your **API** → Go to **Stages**.
-        - Under **Web Application Firewall (WAF)** settings, attach the Web ACL.
+-   <details><summary style="font-size:25px;color:Orange">WAF</summary>
+
+    AWS WAF (Web Application Firewall) is a security service that helps protect web applications from common web exploits, unauthorized access, and malicious traffic by filtering and monitoring HTTP/HTTPS requests based on defined rules.
+
+    It integrates with **Amazon CloudFront**, **Application Load Balancer (ALB)**, and **API Gateway**, allowing businesses to apply security protections at the edge, before requests reach the application.
+
+    #### Key Components of AWS WAF
+
+    -   **Web ACL (Web Access Control List)**: A **Web ACL** is the core component of AWS WAF. It acts as a **firewall policy** and consists of **rules** that define how AWS WAF should handle incoming web requests.
+
+        -   **Attach to:** CloudFront, ALB, or API Gateway.
+        -   **Each Web ACL consists of:** - **Rules** → Define specific security conditions.
+        -   **Rule Groups** → Collections of related rules.
+        -   **Default Action** → Allow or Block requests that don’t match any rule.
+
+    -   **Rules**: Rules define conditions that filter traffic based on various attributes. You can create custom rules or use **AWS Managed Rules**.
+
+        -   `Rate-Based Rule`: Blocks IPs sending excessive requests (prevents DDoS).
+        -   `IP Set Rule`: Allows or blocks requests from a list of IPs.
+        -   `String Matching Rule`: Filters requests based on headers, body, or query parameters.
+        -   `Regex Match Rule`: Matches specific patterns in request data.
+        -   `Size Constraint Rule`: Blocks requests exceeding defined size limits.
+        -   `Geographical Match Rule`: Blocks requests from specific countries.
+        -   `Bot Control Rule`: Detects and blocks bot traffic.
+
+    -   **Rule Groups**: Rule Groups are **collections of related rules** that can be shared across multiple Web ACLs.
+
+        -   `AWS Managed Rule Groups`:Pre-configured rules for common attacks (e.g., SQL Injection, XSS).
+        -   `Custom Rule Groups`:User-defined rules for specific security needs.
+
+    -   **Conditions** : define **how AWS WAF evaluates a request**. Common conditions include:
+
+        -   **IP Match Condition** (specific IP addresses).
+        -   **String Match Condition** (specific query strings, URIs, or headers).
+        -   **SQL Injection Condition** (SQL attack patterns).
+        -   **Cross-Site Scripting (XSS) Condition** (malicious JavaScript).
+
+    -   **Actions**: When a request matches a rule, AWS WAF takes one of the following actions:
+
+        -   `Allow`: Permits the request to pass through.
+        -   `Block`: Completely denies the request.
+        -   `Count`: Logs the request for monitoring but does not block it.
+        -   `CAPTCHA`: Challenges the user with a CAPTCHA test.
+
+    #### AWS WAF Advanced Features
+
+    -   **AWS Managed Rules**: AWS provides pre-configured rule sets to **protect against known vulnerabilities**:
+
+        -   `Core Rule Set (CRS)`:Protects against SQL Injection, XSS, and other common exploits.
+        -   `IP Reputation List`:Blocks traffic from known malicious IP addresses.
+        -   `Amazon Threat Intelligence Feeds`:Uses AWS security data to block suspicious traffic.
+
+    -   **AWS WAF Logging & Metrics**
+
+        -   Logs traffic data to **Amazon S3**, **CloudWatch Logs**, or **Kinesis Data Firehose**.
+        -   Provides insights into attack patterns and blocked requests.
+
+    -   **AWS WAF Rate Limiting (DDoS Protection)**
+
+        -   **Rate-Based Rules** help prevent **Distributed Denial-of-Service (DDoS) attacks** by blocking IPs sending too many requests.
+        -   Example: Block IPs that send **more than 2000 requests per 5 minutes**.
+
+    -   **AWS WAF and Shield Integration**
+
+        -   **AWS Shield Standard:** Provides basic DDoS protection (included with AWS WAF).
+        -   **AWS Shield Advanced:** Offers enhanced DDoS protection with automated attack mitigation.
+
+    #### AWS WAF Deployment Options
+
+    -   **With Amazon CloudFront (Edge Protection)**
+
+        -   Best for **global applications** and content delivery.
+        -   Blocks threats before they reach your application.
+        -   Reduces latency by filtering traffic at AWS edge locations.
+
+    -   **With Application Load Balancer (ALB)**
+
+        -   Best for **internal AWS applications and microservices**.
+        -   Provides security at the load balancer level.
+        -   Works with multiple EC2 instances and containers.
+
+    -   **With API Gateway**
+
+        -   Best for **securing RESTful APIs**.
+        -   Protects APIs from attacks like **API scraping, bot abuse, and SQL Injection**.
+
+    #### Summary Table
+
+    | AWS WAF Component     | Description                                                      |
+    | --------------------- | ---------------------------------------------------------------- |
+    | **Web ACL**           | Defines firewall rules and actions (Allow, Block, Count)         |
+    | **Rules**             | Defines specific security conditions                             |
+    | **Rule Groups**       | Collections of rules (Managed or Custom)                         |
+    | **Actions**           | What to do when a request matches a rule (Allow, Block, CAPTCHA) |
+    | **Managed Rules**     | AWS-provided rule sets for common threats                        |
+    | **Rate-Based Rules**  | Blocks excessive traffic from a single IP                        |
+    | **Logging & Metrics** | Provides insights into blocked requests                          |
+    | **Deployment**        | Works with CloudFront, ALB, and API Gateway                      |
+    | **DDoS Protection**   | Works with AWS Shield to mitigate large-scale attacks            |
+
+    <details><summary style="font-size:20px;color:Tomato">APIGateway WAF</summary>
+
+    In AWS, **API Gateway WAFs** refer to the integration of **AWS Web Application Firewall (AWS WAF)** with **Amazon API Gateway** to protect API endpoints from security threats, such as SQL injection, cross-site scripting (XSS), bot attacks, and other common web exploits.
+
+    -   **How AWS WAF Works with API Gateway**
+        -   **AWS WAF** acts as a **security layer** in front of **Amazon API Gateway**.
+        -   You can define **WAF rules** to allow, block, or monitor (count) HTTP(S) requests before they reach your API.
+        -   AWS WAF filters incoming requests based on various criteria, such as **IP addresses, request headers, query strings, request body size, or specific attack signatures**.
+
+    ### Key Components of API Gateway WAFs
+
+    -   **1. Web ACL (Web Access Control List)**
+
+        -   A **Web ACL** is a set of rules that define the filtering logic.
+        -   It can be associated with **API Gateway**, **CloudFront**, or an **Application Load Balancer (ALB)**.
+        -   Rules inside the Web ACL determine which requests are allowed, blocked, or monitored.
+
+    -   **2. WAF Rules**
+
+        -   Rules specify conditions that incoming API requests must meet.
+        -   Example rule types:
+            -   **IP-based rules** (Block requests from specific IP addresses or countries)
+            -   **Rate limiting** (Prevent DDoS-like attacks by limiting requests from a single source)
+            -   **SQL Injection/XSS rule sets** (Detect and block malicious input)
+            -   **Custom rules** using regex patterns, headers, and query string filtering.
+
+    -   **3. Rule Groups**
+
+        -   Collections of pre-defined WAF rules.
+        -   AWS provides **Managed Rule Groups** to protect against common attacks.
+
+    -   **4. Logging and Monitoring**
+
+        -   AWS WAF logs can be sent to **Amazon CloudWatch**, **Amazon S3**, or **Amazon Kinesis Data Firehose** for further analysis.
+        -   You can use **AWS Shield Advanced** for additional **DDoS protection**.
+
+    -   **How to Attach AWS WAF to an API Gateway**
+
+        1. **Create a Web ACL** in the **AWS WAF console**.
+        2. **Define WAF rules** within the Web ACL.
+        3. **Associate the Web ACL** with your API Gateway stage:
+            - Navigate to API Gateway in AWS Console.
+            - Select your **API** → Go to **Stages**.
+            - Under **Web Application Firewall (WAF)** settings, attach the Web ACL.
+
+    -   **Benefits of Using AWS WAF with API Gateway**
+        -   **Protect APIs from common web attacks** (SQL Injection, XSS, etc.).
+        -   **Limit abusive traffic** (Rate limiting, bot mitigation).
+        -   **Improve security compliance** (Helps meet security standards).
+        -   **Reduce backend load** (Blocks malicious traffic before reaching your API).
+
+    </details>
+    </details>
 
 ---
 
--   **Benefits of Using AWS WAF with API Gateway**
-    -   **Protect APIs from common web attacks** (SQL Injection, XSS, etc.).
-    -   **Limit abusive traffic** (Rate limiting, bot mitigation).
-    -   **Improve security compliance** (Helps meet security standards).
-    -   **Reduce backend load** (Blocks malicious traffic before reaching your API).
+-   <details><summary style="font-size:25px;color:Orange">CloudFront</summary>
 
-</details>
-</details>
+    AWS CloudFront is a Content Delivery Network (CDN) service that securely delivers data, videos, applications, and APIs to users with low latency and high transfer speeds. It caches content at globally distributed edge locations to optimize performance and reduce load on origin servers.
 
----
+    #### Key Concepts
 
-<details><summary style="font-size:25px;color:Orange">CloudFront</summary>
+    -   **Content Delivery Network (CDN)**
 
-AWS CloudFront is a Content Delivery Network (CDN) service that securely delivers data, videos, applications, and APIs to users with low latency and high transfer speeds. It caches content at globally distributed edge locations to optimize performance and reduce load on origin servers.
+        -   Distributes content globally for low-latency access.
+        -   Caches content at edge locations to reduce origin server load.
 
-#### Key Concepts
+    -   **Edge Locations**
 
--   **Content Delivery Network (CDN)**
+        -   Data centers positioned globally to cache and deliver content.
+        -   Reduces latency for users by serving requests from the nearest edge location.
 
-    -   Distributes content globally for low-latency access.
-    -   Caches content at edge locations to reduce origin server load.
+    -   **Regional Edge Caches**
 
--   **Edge Locations**
+        -   Intermediate caching layer between origin servers and edge locations.
+        -   Optimizes cache hit ratio and reduces origin fetch requests.
 
-    -   Data centers positioned globally to cache and deliver content.
-    -   Reduces latency for users by serving requests from the nearest edge location.
+    -   **Origin Server**
 
--   **Regional Edge Caches**
+        -   The original source of content, such as an S3 bucket, an EC2 instance, or an on-premises server.
+        -   CloudFront fetches data from the origin when needed.
 
-    -   Intermediate caching layer between origin servers and edge locations.
-    -   Optimizes cache hit ratio and reduces origin fetch requests.
+    -   **Distributions**
+        -   Defines how CloudFront delivers content.
+        -   Two types:
+            -   **Web Distribution** – Used for websites, APIs, and static/dynamic content.
+            -   **RTMP Distribution** – Used for streaming media (deprecated).
 
--   **Origin Server**
+    #### CloudFront Components
 
-    -   The original source of content, such as an S3 bucket, an EC2 instance, or an on-premises server.
-    -   CloudFront fetches data from the origin when needed.
+    -   **Behaviors**
 
--   **Distributions**
-    -   Defines how CloudFront delivers content.
-    -   Two types:
-        -   **Web Distribution** – Used for websites, APIs, and static/dynamic content.
-        -   **RTMP Distribution** – Used for streaming media (deprecated).
+        -   Rules that define how CloudFront handles requests.
+        -   Configurable per path pattern, including caching policies, origin request settings, and HTTPS enforcement.
 
-#### CloudFront Components
+    -   **Cache Control**
 
--   **Behaviors**
+        -   Managed via headers such as `Cache-Control` and `Expires`.
+        -   Determines how long content is stored at edge locations.
 
-    -   Rules that define how CloudFront handles requests.
-    -   Configurable per path pattern, including caching policies, origin request settings, and HTTPS enforcement.
+    -   **Invalidations**
 
--   **Cache Control**
+        -   Allows forced updates by removing objects from cache before expiration.
+        -   Can be triggered manually to refresh content immediately.
 
-    -   Managed via headers such as `Cache-Control` and `Expires`.
-    -   Determines how long content is stored at edge locations.
+    -   **Lambda@Edge**
 
--   **Invalidations**
+        -   Serverless computing at edge locations.
+        -   Used for request/response modifications, authentication, and dynamic content generation.
 
-    -   Allows forced updates by removing objects from cache before expiration.
-    -   Can be triggered manually to refresh content immediately.
+    -   **Field-Level Encryption**
 
--   **Lambda@Edge**
+        -   Encrypts sensitive user data before forwarding to origin.
+        -   Ensures security by allowing only authorized applications to decrypt.
 
-    -   Serverless computing at edge locations.
-    -   Used for request/response modifications, authentication, and dynamic content generation.
+    -   **Signed URLs and Signed Cookies**
+        -   Restricts access to content using time-limited access control.
+        -   Signed URLs apply per file, while signed cookies apply to multiple files.
 
--   **Field-Level Encryption**
+    #### Security Features
 
-    -   Encrypts sensitive user data before forwarding to origin.
-    -   Ensures security by allowing only authorized applications to decrypt.
+    -   **Origin Access Control (OAC)**
 
--   **Signed URLs and Signed Cookies**
-    -   Restricts access to content using time-limited access control.
-    -   Signed URLs apply per file, while signed cookies apply to multiple files.
+        -   Securely restricts CloudFront access to S3 origins.
+        -   Prevents direct access to S3 buckets from outside CloudFront.
 
-#### Security Features
+    -   **HTTPS and SSL/TLS**
 
--   **Origin Access Control (OAC)**
+        -   Supports secure content delivery with HTTPS.
+        -   Custom SSL certificates can be deployed using AWS Certificate Manager (ACM).
 
-    -   Securely restricts CloudFront access to S3 origins.
-    -   Prevents direct access to S3 buckets from outside CloudFront.
+    -   **AWS WAF Integration**
+        -   Protects applications from DDoS attacks and malicious traffic.
+        -   Blocks suspicious requests at the CloudFront layer.
 
--   **HTTPS and SSL/TLS**
+    #### Logging and Monitoring
 
-    -   Supports secure content delivery with HTTPS.
-    -   Custom SSL certificates can be deployed using AWS Certificate Manager (ACM).
+    -   **CloudFront Access Logs**
 
--   **AWS WAF Integration**
-    -   Protects applications from DDoS attacks and malicious traffic.
-    -   Blocks suspicious requests at the CloudFront layer.
+        -   Captures request details for analytics and security monitoring.
+        -   Stored in S3 and can be analyzed with AWS Athena or other tools.
 
-#### Logging and Monitoring
+    -   **Real-time Metrics and Monitoring**
+        -   CloudWatch provides insights into request counts, cache hit ratios, and data transfer usage.
+        -   Custom alarms can be set for performance tracking.
 
--   **CloudFront Access Logs**
+    ### How AWS CloudFront Works
 
-    -   Captures request details for analytics and security monitoring.
-    -   Stored in S3 and can be analyzed with AWS Athena or other tools.
+    1. **User Request:** A user accesses content (e.g., a webpage, image, or video).
+    2. **Edge Location Check:** CloudFront checks if the content is cached at the nearest edge location.
+        - If cached, CloudFront serves the content directly.
+        - If not cached, CloudFront fetches it from the origin and caches it for future requests.
+    3. **Content Delivery:** The user receives the content with low latency.
 
--   **Real-time Metrics and Monitoring**
-    -   CloudWatch provides insights into request counts, cache hit ratios, and data transfer usage.
-    -   Custom alarms can be set for performance tracking.
-
-### How AWS CloudFront Works
-
-1. **User Request:** A user accesses content (e.g., a webpage, image, or video).
-2. **Edge Location Check:** CloudFront checks if the content is cached at the nearest edge location.
-    - If cached, CloudFront serves the content directly.
-    - If not cached, CloudFront fetches it from the origin and caches it for future requests.
-3. **Content Delivery:** The user receives the content with low latency.
-
-</details>
+    </details>

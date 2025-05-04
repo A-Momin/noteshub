@@ -1,30 +1,3 @@
-
-
-# Add `GNU grep` to the path so that it can be used instead of the Apple version (BSD grep).
-export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"
-
-# Set `VSCode` as Crontab's editor.
-# export VISUAL=code
-
-# Added Web Drivers for Automation Testing
-export PATH="$HOME/mydocs/Software_Development/Web_Development/qa_automation/robot_framework/chromedriver:$PATH"
-export PATH="$HOME/mydocs/Software_Development/Web_Development/qa_automation/robot_framework/geckodriver:$PATH"
-
-
-export ADS="$HOME/mydocs/Software_Development/Algorithms_and_Data_Structures"
-export SD="$HOME/mydocs/Software_Development"
-export GD="$HOME/mydocs/gd"
-export ML="$HOME/mydocs/Software_Development/Machine_Learning/ml_courses"
-export NLTK_DATA='$HOME/nltk_data'
-export UTILS="$HOME/mydocs/Software_Development/noteshub/utils"
-export DATA="$HOME/DATA"
-
-# Flask Environment Variables
-export FLASK_APP=run.py
-export FLASK_DEBUG=1
-export FLASK_ENV=dev
-
-
 beautify_prompt(){
     # colors:
     green="\[\033[0;32m\]"
@@ -62,8 +35,6 @@ beautify_prompt(){
         #	\W     ->> the basename of the current working directory
 }
 
-
-
 base_dotfile_symlinks(){
     ln -sf $NTHUB/dotfiles/macos/bash_profile_mos01 $HOME/.bash_profile
     ln -sf $NTHUB/dotfiles/macos/git-aliases.bash $HOME/.git-aliases.bash
@@ -73,16 +44,7 @@ base_dotfile_symlinks(){
     ln -sf $NTHUB/dotfiles/macos/bash_utils.bash $HOME/.bash_utils.bash
 }
 
-
-create_alias(){
-    alias python=python3
-    alias pip=pip3
-    alias vim=nvim
-    # alias tmux="tmux 2"
-}
-
-
-establish_symlinks(){
+pvt_symbolic_links(){
     # Source: $NTHUB
     ln -sf $NTHUB/dotfiles/macos/aws_config.ini \
         $HOME/.aws/config
@@ -109,7 +71,13 @@ establish_symlinks(){
         $HOME/mydocs/Software_Development/Web_Development/cicd/ansible/notes_ansible.md
     ln -sf $NTHUB/nts/notes_networking.md \
         $HOME/mydocs/Software_Development/networking/notes_networking.md
-    
+
+    ln -sf $NTHUB/nts/notes_db.md \
+        $HOME/mydocs/Software_Development/Databases/RDBMS/sql/notes_db.md
+        
+    ln -sf $NTHUB/nts/query_questions_answers.md \
+        $HOME/mydocs/Software_Development/Databases/RDBMS/sql/query_questions_answers.md
+
     # VSCode User Settings.json
     ln -sf $NTHUB/dotfiles/vscode/settings.json \
         ~/Library/Application\ Support/Code/User/settings.json
@@ -119,19 +87,26 @@ establish_symlinks(){
     ln -sf $NTHUB/dotfiles/macos/config \
         $HOME/.ssh/config
 
-    ln -sf $NTHUB/nts/notes_db.md \
-        $HOME/mydocs/Software_Development/Databases/RDBMS/sql/notes_db.md
-        
-    ln -sf $NTHUB/nts/query_questions_answers.md \
-        $HOME/mydocs/Software_Development/Databases/RDBMS/sql/query_questions_answers.md
-        
-
     if [ ! -f $HOME/notes_rough.md ]; then
         touch $HOME/notes_rough.md;
     fi
 
 }
 
+c1_symbolic_links(){
+    # VSCode User Settings.json
+    ln -sf $NTHUB/dotfiles/vscode/settings.json \
+        ~/Library/Application\ Support/Code/User/settings.json
+    ln -sf $NTHUB/dotfiles/vscode/style.less \
+        $HOME/.local/state/crossnote/style.less
+    
+    ln -sf $NTHUB/dotfiles/macos/config \
+        $HOME/.ssh/config
+
+    if [ ! -f $HOME/notes_rough.md ]; then
+        touch $HOME/notes_rough.md;
+    fi
+}
 
 tmxnew(){
     if [[ -n $1 ]]; then tmux new -s $1 
@@ -187,6 +162,38 @@ sync_to_volume() {
     #         echo "Invalid target. Please choose one of: mypassport, mc01, target3."
     #         ;;
     # esac
+}
+
+sync_to_c1() {
+    : '
+    Args:
+        $1 (mendatory): the name of the volume attached to the mac.
+    
+    Example:
+        `$ sync_to_c1 mypassport`
+    '
+
+    # local target="$1"
+    rsync -avz \
+        --delete \
+        --exclude '*secrets.bash' \
+        --exclude '*interviewprep' \
+        --exclude '.git' \
+        --exclude '.gitignore' \
+        --exclude '.venv' \
+        --exclude 'venv*' \
+        --exclude 'node_modules' \
+        --exclude '.ipynb_checkpoints' \
+        --exclude '.egg-info' \
+        --exclude '*.egg-info' \
+        --exclude '*.pyc' \
+        --exclude '*.class' \
+        --exclude '.tmp.drivedownload' \
+        --exclude '.tmp.driveupload' \
+        --exclude '*.DS_Store' \
+        --exclude '.pytest_cache' \
+        --exclude '__pycache__' \
+        /Volumes/$1/MYDOCS_BACKUP/Software_Development/noteshub $HOME/
 }
 
 remove_pattern(){
@@ -371,41 +378,6 @@ create_old_jnb_pyenv(){
 }
 
 
-function findsz() {
-    : '
-    Finds and displays the sizes of directories in a given path.
-
-    Parameters:
-      $1 (optional) - Directory path to search (default: current directory).
-      $2 (optional) - Max depth level for search (default: 1).
-
-    Example Usage:
-      findsz /var/log 2
-      # Lists directory sizes in /var/log up to depth 2, sorted by size.
-    '
-
-    find ${1:-.} -maxdepth ${2:-1} -type d -exec du -sh {} + | sort -h
-}
-
-function cleandir() {
-    : '
-    Deletes directories matching a given name pattern within the current directory.
-
-    Parameters:
-      $1 (optional) - Directory name pattern to match (default: "*.venv").
-
-    Example Usage:
-      cleandir node_modules
-      # Removes all directories named "node_modules" in the current directory.
-
-      cleandir
-      # Removes all directories named "*.venv" in the current directory.
-    '
-
-    find . -type d -name "${1:-*.venv}" -exec rm -rf {} +
-}
-
-
 # PASSED
 run_python_func() {
     : '
@@ -495,3 +467,55 @@ rename_images() {
     done
 }
 
+
+function findsz() {
+    : '
+    Finds and displays the sizes of directories in a given path.
+
+    Parameters:
+      $1 (optional) - Directory path to search (default: current directory).
+      $2 (optional) - Max depth level for search (default: 1).
+
+    Example Usage:
+      findsz /var/log 2
+      # Lists directory sizes in /var/log up to depth 2, sorted by size.
+    '
+
+    find ${1:-.} -maxdepth ${2:-1} -type d -exec du -sh {} + | sort -h
+}
+
+function cleandir() {
+    : '
+    Deletes directories matching a given name pattern within the current directory.
+
+    Parameters:
+      $1 (optional) - Directory name pattern to match (default: "*.venv").
+
+    Example Usage:
+      cleandir node_modules
+      # Removes all directories named "node_modules" in the current directory.
+
+      cleandir
+      # Removes all directories named "*.venv" in the current directory.
+    '
+
+    find . -type d -name "${1:-*.venv}" -exec rm -rf {} +
+}
+
+setup_noteshub_on_c1(){
+    : '
+    This function sets up the my noteshub environment on a macOS system of Capital One.
+    '
+    if [ -d "$HOME/noteshub" ]; then
+        cp -fr $HOME/noteshub $HOME/noteshub.bak # Forcefully and recursively
+    fi
+
+    export NTHUB="$HOME/noteshub"
+    export DOTFILES="$NTHUB/dotfiles/macos"
+    ln -fs $DOTFILES/bash_profile_capone $HOME/.bash_profile
+    source $HOME/.bash_profile
+
+    echo "Previous 'noteshub' folder has been backed up to $HOME/noteshub.bak"
+    echo "Remove the backup folder if you don't need it anymore by running the following command:"
+    echo -e "\trm -rf $HOME/noteshub.bak" # -e flag enables interpretation of escape sequences like \t for a tab.
+}

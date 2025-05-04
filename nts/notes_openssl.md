@@ -1,10 +1,3 @@
--   [AWS IAM Roles Anywhere with OpenSSL](https://www.youtube.com/watch?v=aIX9by2uEgU)
--   [Masterclass in openSSL](https://www.youtube.com/watch?v=d8OpUcHzTeg&t=231s)
--   [OpenSSL Certification Authority (CA) on Ubuntu Server](https://www.youtube.com/watch?v=oCl0gzLPPMI)
--   [Intro to Digital Certificates](https://www.youtube.com/watch?v=qXLD2UHq2vk)
--   [Create CSR & Install SSL Certificate (OpenSSL)](https://www.digicert.com/kb/csr-ssl-installation/apache-openssl.htm#ssl_certificate_install)
--   [Cacert | Trust Store | Key Store in 3 minutes](https://www.youtube.com/watch?v=1I9lQ42SnLA)
-
 -   <details><summary style="font-size:25px;color:Orange">SSL/TLS Certificate</summary>
 
     An **SSL/TLS certificate** is a digital certificate that authenticates a website’s identity and enables an encrypted connection between a client (browser) and a server. It ensures that data transmitted over the internet remains **secure, encrypted, and tamper-proof** by using **SSL (Secure Sockets Layer)** or **TLS (Transport Layer Security)** protocols.
@@ -44,8 +37,8 @@
 
     6. **Common Name (CN) / Subject Alternative Name (SAN)**
 
-        - **Common Name (CN)**: The domain name the certificate is issued for (e.g., `harnesstechtx.com`).
-        - **Subject Alternative Name (SAN)**: Additional domains/subdomains covered under a single certificate (e.g., `www.harnesstechtx.com`, `mail.harnesstechtx.com`).
+        - **Common Name (CN)**: The domain name the certificate is issued for (e.g., `example.com`).
+        - **Subject Alternative Name (SAN)**: Additional domains/subdomains covered under a single certificate (e.g., `www.example.com`, `mail.example.com`).
 
     7. **Validity Period**
 
@@ -59,140 +52,116 @@
 
     #### Types of SSL/TLS Certificates
 
-    9. **Domain Validated (DV) Certificates**
+    1. **Domain Validated (DV) Certificates**
 
         - Provides **basic encryption** and verifies only domain ownership.
         - **Issued quickly** (usually within minutes).
         - Ideal for **blogs, personal websites, and small businesses**.
 
-    10. **Organization Validated (OV) Certificates**
+    2. **Organization Validated (OV) Certificates**
 
         - Verifies both **domain ownership** and **organization details** (e.g., company name, location).
         - Requires manual verification by the CA.
         - Suitable for **business websites and e-commerce stores**.
 
-    11. **Extended Validation (EV) Certificates**
+    3. **Extended Validation (EV) Certificates**
 
         - Provides **highest level of authentication and trust**.
         - Verifies **business identity, legal status, and physical existence**.
         - Displays a **company name in the browser address bar** (on some browsers).
         - Ideal for **banks, financial institutions, and large enterprises**.
 
-    12. **Wildcard Certificates**
+    4. **Wildcard Certificates**
 
         - Secures a **primary domain and all its subdomains**.
-        - Example: A wildcard certificate for `*.harnesstechtx.com` covers:
-            - `www.harnesstechtx.com`
-            - `mail.harnesstechtx.com`
-            - `blog.harnesstechtx.com`
+        - Example: A wildcard certificate for `*.example.com` covers:
+            - `www.example.com`
+            - `mail.example.com`
+            - `blog.example.com`
 
-    13. **Multi-Domain (SAN) Certificates**
+    5. **Multi-Domain (SAN) Certificates**
 
         - Protects multiple different domain names under a single certificate.
         - Useful for organizations managing **multiple websites**.
 
-    14. **Self-Signed Certificates**
+    6. **Self-Signed Certificates**
 
         - Generated internally without a trusted CA.
         - **Not recommended for public websites** due to browser security warnings.
         - Used for **internal testing and development environments**.
 
-    #### Trusted CA Certificate **vs** Trusted Server Certificate **vs** Self-Signed Certificate
-
-    15. **Trusted CA Certificate**
-
-        -   Issued by a **Certificate Authority (CA)**, which is a trusted third party.
-        -   Used to sign and validate server certificates.
-        -   Examples of trusted CAs: DigiCert, GlobalSign, Let's Encrypt.
-        -   Web browsers and systems maintain a list of trusted CA certificates.
-        -   Ensures high trust and is widely accepted.
-
-    16. **Trusted Server Certificate**
-
-        -   A certificate issued to a server (e.g., a website or an API endpoint) by a **Trusted CA**.
-        -   Ensures that the server’s identity is verified and the connection is secure.
-        -   Used in HTTPS/TLS communication to encrypt data between a client and server.
-        -   Trusted because it is signed by a CA that is recognized by the client.
-
-    17. **Self-Signed Certificate**
-        -   A certificate that is generated and signed by the entity itself instead of a CA.
-        -   Not trusted by default in browsers or operating systems.
-        -   Often used for internal testing, development, or private network use.
-        -   Can be manually added to a system's trusted store but lacks third-party verification.
-        -   Requires manual trust configuration in client systems.
-
     #### SSL/TLS Handshake Process
 
-    18. **Client Hello**: The browser sends a request to the server, listing supported SSL/TLS versions and cipher suites.
-    19. **Server Hello**: The server responds with an SSL/TLS certificate and chosen encryption method.
-    20. **Certificate Verification**: The browser verifies the certificate’s authenticity against the CA.
-    21. **Key Exchange**:
-        -   For **RSA encryption**, the client encrypts a session key using the server’s **public key**.
-        -   For **ECDHE (Elliptic Curve Diffie-Hellman)**, both client and server generate a shared key.
-    22. **Session Key Generation**: The server decrypts the session key using its **private key**.
-    23. **Secure Communication Established**: Both client and server use the session key for encrypted communication.
+    1. **Client Hello**: The browser sends a request to the server, listing supported SSL/TLS versions and cipher suites.
+    2. **Server Hello**: The server responds with an SSL/TLS certificate and chosen encryption method.
+    3. **Certificate Verification**: The browser verifies the certificate’s authenticity against the CA.
+    4. **Key Exchange**:
+        - For **RSA encryption**, the client encrypts a session key using the server’s **public key**.
+        - For **ECDHE (Elliptic Curve Diffie-Hellman)**, both client and server generate a shared key.
+    5. **Session Key Generation**: The server decrypts the session key using its **private key**.
+    6. **Secure Communication Established**: Both client and server use the session key for encrypted communication.
 
     #### Common SSL/TLS Terms and Concepts
 
-    24. **TLS vs. SSL**:
+    1. **TLS vs. SSL**:
 
-        -   **SSL (Secure Sockets Layer)** is the older protocol (SSL 2.0, SSL 3.0).
-        -   **TLS (Transport Layer Security)** is the modern and secure version (TLS 1.2, TLS 1.3).
-        -   **TLS 1.3** is the latest version, offering improved performance and security.
+        - **SSL (Secure Sockets Layer)** is the older protocol (SSL 2.0, SSL 3.0).
+        - **TLS (Transport Layer Security)** is the modern and secure version (TLS 1.2, TLS 1.3).
+        - **TLS 1.3** is the latest version, offering improved performance and security.
 
-    25. **Cipher Suites**: A set of cryptographic algorithms used for securing SSL/TLS connections.
+    2. **Cipher Suites**: A set of cryptographic algorithms used for securing SSL/TLS connections.
 
-        -   Includes:
-            -   **Key Exchange Algorithm** (RSA, ECDHE)
-            -   **Symmetric Encryption Algorithm** (AES, ChaCha20)
-            -   **Hashing Algorithm** (SHA-256, SHA-384)
+        - Includes:
+            - **Key Exchange Algorithm** (RSA, ECDHE)
+            - **Symmetric Encryption Algorithm** (AES, ChaCha20)
+            - **Hashing Algorithm** (SHA-256, SHA-384)
 
-    26. **Perfect Forward Secrecy (PFS)**: Ensures that **compromising a single session key does not affect past or future sessions**.
+    3. **Perfect Forward Secrecy (PFS)**: Ensures that **compromising a single session key does not affect past or future sessions**.
 
-        -   Uses **Diffie-Hellman key exchange** (DHE, ECDHE).
+        - Uses **Diffie-Hellman key exchange** (DHE, ECDHE).
 
-    27. **SSL/TLS Offloading**: Offloads SSL encryption/decryption to a **load balancer or CDN** (e.g., AWS CloudFront, AWS ELB).
+    4. **SSL/TLS Offloading**: Offloads SSL encryption/decryption to a **load balancer or CDN** (e.g., AWS CloudFront, AWS ELB).
 
-    28. **HSTS (HTTP Strict Transport Security)**: Forces all traffic to use **HTTPS** to prevent downgrade attacks.
+    5. **HSTS (HTTP Strict Transport Security)**: Forces all traffic to use **HTTPS** to prevent downgrade attacks.
 
-    29. **Certificate Transparency (CT)**: A Google initiative to detect fraudulent SSL certificates.
+    6. **Certificate Transparency (CT)**: A Google initiative to detect fraudulent SSL certificates.
 
-    #### How to Obtain and Install an SSL/TLS Certificate
+    #### **How to Obtain and Install an SSL/TLS Certificate**
 
-    30. **Generate a Certificate Signing Request (CSR)**:
+    1.  **Generate a Certificate Signing Request (CSR)**:
 
-        -   Run the following command to generate a **CSR** and **private key**:
+        -   Run the following command to generate a **CSR and private key**:
             ```bash
             openssl req -new -newkey rsa:2048 -nodes -keyout private_key.pem -out csr.pem
             ```
-        -   Provide details like **Common Name (CN)**, **Organization**, and **Country**.
+        -   Provide details like **Common Name (CN), Organization, and Country**.
 
-    31. **Submit CSR to a Certificate Authority (CA)**:
+    2.  **Submit CSR to a Certificate Authority (CA)**:
 
-        -   Choose a trusted CA (e.g., **Let's Encrypt**, **DigiCert**, **Sectigo**).
+        -   Choose a trusted CA (e.g., Let's Encrypt, DigiCert, Sectigo).
         -   Upload the **CSR file** and complete domain verification.
 
-    32. **Install the Certificate on the Server**:
+    3.  **Install the Certificate on the Server**:
 
         -   Upload the issued certificate (`certificate.crt`) and CA bundle (`ca_bundle.crt`).
         -   Configure the web server to use SSL:
 
-            -   **For Apache**:
+            **For Apache**:
 
-                ```bash
-                SSLCertificateFile /path/to/certificate.crt
-                SSLCertificateKeyFile /path/to/private_key.pem
-                SSLCertificateChainFile /path/to/ca_bundle.crt
-                ```
+            ```bash
+            SSLCertificateFile /path/to/certificate.crt
+            SSLCertificateKeyFile /path/to/private_key.pem
+            SSLCertificateChainFile /path/to/ca_bundle.crt
+            ```
 
-            -   **For Nginx**:
+            **For Nginx**:
 
-                ```bash
-                ssl_certificate /path/to/certificate.crt;
-                ssl_certificate_key /path/to/private_key.pem;
-                ```
+            ```bash
+            ssl_certificate /path/to/certificate.crt;
+            ssl_certificate_key /path/to/private_key.pem;
+            ```
 
-    33. **Verify the SSL/TLS Installation**:
+    4.  **Verify the SSL/TLS Installation**:
 
         -   Test using an SSL checker like [SSL Labs](https://www.ssllabs.com/ssltest/).
 

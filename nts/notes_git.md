@@ -178,7 +178,6 @@
 
 -   <details><summary style="font-size:25px;color:Orange;text-align:left">Git Commands</summary>
 
-
     🔥 HELP:
 
     -   `$ git --help`
@@ -360,6 +359,9 @@
         -   `$ git merge <origin_branch_name> < local_branch_name>` → Merge a local branch into a origin branch.
         -   `$ git merge <local_branch_name1> < local_branch_name2>` → Merges two branches in local repository.
         -   `$ git merge —abort` → Abort merge if it is not possible to merge for any reason.
+        -   `$ git rebase`
+        -   `$ git rebase`
+        -   `$ git rebase`
 
     -   🔥 PUSH/PULL/FETCH:
         -   `$ git remote set-url origin git@github.com:Aminul-Momin/Algorithms_and_Data_Structures.git` → to set remote origin url
@@ -385,10 +387,9 @@
 
     </details>
 
-    ---
+---
 
 -   <details><summary style="font-size:25px;color:Orange;text-align:left">Github CLI Commands</summary>
-
 
     [DOC](https://cli.github.com/manual/gh_api)
 
@@ -789,3 +790,5 @@
         </details>
 
     </details>
+
+---

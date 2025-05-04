@@ -1,12 +1,37 @@
 # ============================================================================
-# Define a CRITICAL environment variable. 
+# # Run the snippet below to setup 'bash_profile_capone' file as your 'bash_profile' file.
+# # It assumes that 'nthub' is downloaded in your home directory.
 export NTHUB="$HOME/mydocs/Software_Development/noteshub"
 export DOTFILES="$NTHUB/dotfiles/macos"
+ln -fs $DOTFILES/bash_profile_mos01 $HOME/.bash_profile
+
+# ----------------------------------------------------------------------------
+export ADS="$HOME/mydocs/Software_Development/Algorithms_and_Data_Structures"
+export SD="$HOME/mydocs/Software_Development"
+export GD="$HOME/mydocs/gd"
+export ML="$HOME/mydocs/Software_Development/Machine_Learning/ml_courses"
+export NLTK_DATA='$HOME/nltk_data'
+export UTILS="$HOME/mydocs/Software_Development/noteshub/utils"
+export DATA="$HOME/DATA"
+
+# Add `GNU grep` to the path so that it can be used instead of the Apple version (BSD grep).
+export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"
+
+# Set `VSCode` as Crontab's editor.
+# export VISUAL=code
+
+# Flask Environment Variables
+export FLASK_APP=run.py
+export FLASK_DEBUG=1
+export FLASK_ENV=dev
+
+
+# ============================================================================
+
 # set horizontal-scroll-mode on # to disable word wrap in terminal; not Working !!
 
 # This will add the code command to your system's PATH, allowing you to open Visual Studio Code from the terminal.
 export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-# ============================================================================
 
 # It is specific to Git and used by the Git prompt (PS1) script to determine whether to show the dirty state of the working directory.
 export GIT_PS1_SHOWDIRTYSTATE=1
@@ -63,9 +88,16 @@ complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes Syste
 
 # =============================================================================
 beautify_prompt
-create_alias
-establish_symlinks
+pvt_symbolic_links
+pvt_aliases
 
+
+host=$(whoami)
+if [ $host = "am" ]; then
+    pvt_aliases
+elif [ $host = "hky162" ]; then
+    c1_aliases
+fi
 # =============================================================================
 # =============================================================================
 # Add pyenv to PATH

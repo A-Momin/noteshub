@@ -154,10 +154,8 @@ alias path='echo -e ${PATH//:/\\n}'
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
 # alias cleanvenvdir="find . -type d -name '*.venv' -exec rm -rf {} +"
 
-
 alias runsshagent='eval $(ssh-agent)'
 
-#=============================================================================
 #=============================================================================
 
 # Easier navigation: .., ..., ...., ....., ~ and -
@@ -168,47 +166,17 @@ alias .....="cd ../../../.. && ls -1"
 alias -- -="cd -"
 
 
-# Shortcuts
-alias mydocs="cd $HOME/mydocs && ls -1"
-alias gd="cd $HOME/mydocs/gd && ls -1"
-alias sd="cd $HOME/mydocs/Software_Development && ls -1"
-alias wd="cd $HOME/mydocs/Software_Development/Web_Development && ls -1"
 alias dl="cd $HOME/Downloads && ls -1"
 alias dt="cd $HOME/Desktop && ls -1"
-alias sshot="open $HOME/Desktop/Screenshots"
+alias sshot="open $HOME/Desktop/ss"
+alias mdstyle="code $HOME/.local/state/crossnote/style.less"
 
-alias chrome="open -na 'Google Chrome' --args --new-window"
+alias bp="code $HOME/.bash_profile"                    # bp ==> Bash Profile
 alias bu="code $DOTFILES/bash_utils.bash"
 alias secrets="code $DOTFILES/secrets.bash"
 alias aliases="code $DOTFILES/aliases"
-
-alias mdstyle="code $HOME/.local/state/crossnote/style.less"
-alias resumes="open $GD/jobs/resumes"
-alias resumede="open $GD/jobs/resumes/AM-DE.gdoc"
-alias resumetx="open $GD/jobs/resumes/AMominTX-pyeng.gdoc"
-alias mvntpdf="mv $NTHUB/{nts,iqs}/*.pdf $GD/NOTES_PDF/notes/"
-
-## NON-TECHNICAL
-alias passdb="open $HOME/mydocs/gd/passdb.gsheet"
-alias jobdb="open $HOME/mydocs/gd/jobs/Jobs_DB.gsheet"
-alias apartments="code $GD/MISC/apartments.md"
-alias ntrgh="code $HOME/notes_rough.md"
-alias ntht="code $HOME/mydocs/gd/Harness-Tech/notes_ht.md"
-
-#========== Docker Shortcuts =============
-dkr_aliases(){
-    image_tag=$1
-    container_info=$(docker ps | grep $image_tag)
-
-    alias dps="docker ps | grep ${container_info:0:12}"
-    alias dstp="docker stop ${container_info:0:12}"
-    alias dbld="""docker build -t "${image_tag}""""
-    alias dlg="docker logs --follow ${container_info:0:12}"
-    alias dx="docker exec -it ${container_info:0:12} bash"
-}
-#=========================================
-
-
+alias sshconfig="code $HOME/.ssh/config"
+alias chrome="open -na 'Google Chrome' --args --new-window"
 
 alias ae="deactivate &> /dev/null; source .venv/bin/activate"
 alias de="deactivate"
@@ -217,13 +185,8 @@ alias pde="pyenv deactivate"
 alias cae="conda activate $1"
 alias cde="conda deactivate"
 
-alias startmysql="sudo /usr/local/mysql/support-files/mysql.server start"
-alias stopmysql="sudo /usr/local/mysql/support-files/mysql.server stop"
-alias statusmysql="sudo /usr/local/mysql/support-files/mysql.server status"
-alias logmysql="sudo tail -f /usr/local/mysql/data/$(hostname).err"
-alias mvpdf="mv $NTHUB/{nts,cmds}/*.pdf $GD/NOTES_PDF/notes/"
-
-# NOTES & BOOKS of various Development Tools.
+# =============================================================================
+# =============================================================================
 
 alias ntpdf="open $NTHUB/nts && open $NTHUB/PDFs"
 alias nthub="cd $NTHUB"
@@ -283,11 +246,12 @@ alias ntmicroservice="code $NTHUB/nts/notes_microservice.md"
 alias ntopenssl="code $NTHUB/nts/notes_openssl.md"
 alias ntbehave="code $NTHUB/nts/notes_behave.md"
 alias ntxpath="code $NTHUB/nts/notes_xpath.md"
-alias nttmp="code $NTHUB/nts/notes_tmp.md"
+alias ntselenium="code $NTHUB/nts/notes_selenium.md"
 
 ###############################################################################
 alias ntislam="code $NTHUB/nts/notes_islam.md"
 alias nteng="code $NTHUB/nts/notes_english.md"
+alias nttmp="code $NTHUB/nts/notes_tmp.md"
 ###############################################################################
 alias cmdnpm="code $NTHUB/nts/cmd_npm.txt"
 alias cmdreact="code $NTHUB/nts/cmd_react.txt"
@@ -295,25 +259,9 @@ alias cmdcpp="code $NTHUB/nts/cmd_cpp.txt"
 ###############################################################################
 
 
-alias bigdata="cd $HOME/mydocs/Software_Development/Big_Data"
-alias books="cd $HOME/mydocs/BOOKS/PDF\ Books && ls -1"
+
 alias jlb="jupyter-lab"
 alias jnb="jupyter notebook"
-alias mlcourses="cd $HOME/mydocs/Software_Development/Machine_Learning/ml_courses && ls -1"
-alias ml="cd $HOME/mydocs/Software_Development/Machine_Learning && ls -1"                 # ml ==> Machine_Learning
-
-alias ads="cd $HOME/mydocs/Software_Development/Algorithms_and_Data_Structures"
-alias epi="cd $HOME/mydocs/Software_Development/Python_Program/Python3/elements-of-programming-interview && deactivate &> /dev/null; source .venv/bin/activate"
-alias pp="cd $HOME/mydocs/Software_Development/Python_Program && ls -1"                   # pp ==> Python Program
-alias bp="code $HOME/.bash_profile"                    # bp ==> Bash Profile
-alias pp2="cd $HOME/mydocs/Software_Development/Python_Program/Python2 && ls -1"          # pp2 ==> Python2 Program
-alias pp3="cd $HOME/mydocs/Software_Development/Python_Program/Python3 && ls -1"          # pp3 ==> Python3 Program
-alias jp="cd $HOME/mydocs/Software_Development/JavaPragrams && ls -1"                     # cpp ==> C++ Programs
-alias jsp="cd $HOME/mydocs/Software_Development/Web_Development/Javascript_Program && ls -1"                         # pp3 ==> Python3 Program
-alias cpp="cd $HOME/mydocs/Software_Development/C++_Programs && ls -1"                    # cpp ==> C++ Programs
-alias algs4="cd $HOME/mydocs/Software_Development/algs4/src/main/java/edu/princeton/cs/algs4"
-alias db="cd $HOME/mydocs/Software_Development/Databases && ls -1"                        # sql ==> MySQL Program
-alias nttax="code $GD/TaxReturn/notes_tax.md"
 
 
 # =============================================================================
@@ -348,3 +296,68 @@ alias nbtorch="code $NTHUB/nbs/nt_torch.ipynb"
 alias nbstat="code $NTHUB/nbs/statistics.ipynb"
 # =============================================================================
 
+dkr_aliases(){
+    #========== Docker Shortcuts =============
+    image_tag=$1
+    container_info=$(docker ps | grep $image_tag)
+
+    alias dps="docker ps | grep ${container_info:0:12}"
+    alias dstp="docker stop ${container_info:0:12}"
+    alias dbld="""docker build -t "${image_tag}""""
+    alias dlg="docker logs --follow ${container_info:0:12}"
+    alias dx="docker exec -it ${container_info:0:12} bash"
+}
+
+pvt_aliases(){
+
+    alias startmysql="sudo /usr/local/mysql/support-files/mysql.server start"
+    alias stopmysql="sudo /usr/local/mysql/support-files/mysql.server stop"
+    alias statusmysql="sudo /usr/local/mysql/support-files/mysql.server status"
+    alias logmysql="sudo tail -f /usr/local/mysql/data/$(hostname).err"
+    alias mvpdf="mv $NTHUB/{nts,cmds}/*.pdf $GD/NOTES_PDF/notes/"
+
+    # NON-TECHNICAL
+    alias passdb="open $HOME/mydocs/gd/passdb.gsheet"
+    alias jobdb="open $HOME/mydocs/gd/jobs/Jobs_DB.gsheet"
+    alias apartments="code $GD/MISC/apartments.md"
+    alias ntrgh="code $HOME/notes_rough.md"
+    alias ntht="code $HOME/mydocs/gd/Harness-Tech/notes_ht.md"
+
+
+    alias mlcourses="cd $HOME/mydocs/Software_Development/Machine_Learning/ml_courses && ls -1"
+    alias ml="cd $HOME/mydocs/Software_Development/Machine_Learning && ls -1"                 # ml ==> Machine_Learning
+    alias bigdata="cd $HOME/mydocs/Software_Development/Big_Data"
+    alias books="cd $HOME/mydocs/BOOKS/PDF\ Books && ls -1"
+
+    alias ads="cd $HOME/mydocs/Software_Development/Algorithms_and_Data_Structures"
+    alias epi="cd $HOME/mydocs/Software_Development/Python_Program/Python3/elements-of-programming-interview && deactivate &> /dev/null; source .venv/bin/activate"
+    alias pp="cd $HOME/mydocs/Software_Development/Python_Program && ls -1"                   # pp ==> Python Program
+    alias pp2="cd $HOME/mydocs/Software_Development/Python_Program/Python2 && ls -1"          # pp2 ==> Python2 Program
+    alias pp3="cd $HOME/mydocs/Software_Development/Python_Program/Python3 && ls -1"          # pp3 ==> Python3 Program
+    alias jp="cd $HOME/mydocs/Software_Development/JavaPragrams && ls -1"                     # cpp ==> C++ Programs
+    alias jsp="cd $HOME/mydocs/Software_Development/Web_Development/Javascript_Program && ls -1"                         # pp3 ==> Python3 Program
+    alias cpp="cd $HOME/mydocs/Software_Development/C++_Programs && ls -1"                    # cpp ==> C++ Programs
+    alias algs4="cd $HOME/mydocs/Software_Development/algs4/src/main/java/edu/princeton/cs/algs4"
+    alias db="cd $HOME/mydocs/Software_Development/Databases && ls -1"                        # sql ==> MySQL Program
+    alias nttax="code $GD/TaxReturn/notes_tax.md"
+
+    alias mydocs="cd $HOME/mydocs && ls -1"
+    alias gd="cd $HOME/mydocs/gd && ls -1"
+    alias sd="cd $HOME/mydocs/Software_Development && ls -1"
+    alias wd="cd $HOME/mydocs/Software_Development/Web_Development && ls -1"
+    alias resumes="open $GD/jobs/resumes"
+    alias resumede="open $GD/jobs/resumes/AM-DE.gdoc"
+    alias resumetx="open $GD/jobs/resumes/AMominTX-pyeng.gdoc"
+    alias mvntpdf="mv $NTHUB/{nts,iqs}/*.pdf $GD/NOTES_PDF/notes/"
+
+    alias python=python3
+    alias pip=pip3
+    alias vim=nvim
+
+    # alias tmux="tmux 2"
+}
+
+c1_aliases(){
+    alias cb="cd $HOME/codebase"
+    alias gd="cd $HOME/mydocs/gd && ls -1"
+}

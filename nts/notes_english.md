@@ -1,26 +1,3 @@
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Hearing</summary>
-
-    You can politely and professionally inform others about your hearing difficulty in a way that encourages understanding and cooperation. Here’s a polite way to say it in a conference room setting:
-
-    -   `Option 1`: Before the Meeting Starts (Proactive Approach)
-
-        -   _"Hey everyone, I just wanted to mention that I have some difficulty hearing, especially in crowded settings or when voices come through speakers. If I ask for clarification or repetition, I appreciate your patience. It really helps if people speak clearly and directly. Thanks for your understanding!"_
-
-    -   `Option 2`: If You’re Struggling During the Meeting
-
-        -   "Sorry, I’m having a little trouble hearing. Could you please speak up or repeat that? I sometimes struggle with voices through speakers or in large groups."
-
-    -   `Option 3`: If You’re Addressing the Host/Facilitator Privately
-        -   "Hey [Facilitator’s Name], just a quick note—I have some difficulty hearing, especially with speakers or in a crowd. If possible, I’d appreciate it if people could speak clearly or if key points could be repeated when needed. Thanks for understanding!"
-
-    These approaches keep the tone professional, clear, and considerate, while ensuring that others are aware of your needs. Let me know if you’d like to adjust the phrasing!
-
-    -   **Example Explanation**: _"I wanted to share that I have some hearing difficulties. Specifically, I often hear sounds at a lower volume than they actually are, and sometimes the sounds are distorted or noisy, making it harder for me to understand speech. This can be especially difficult when there’s background noise or when voices come through speakers. I may ask for clarification or repetition from time to time, and I really appreciate your understanding and patience."_
-
-    </details>
-
----
-
 -   <details><summary style="font-size:22px;color:Orange;text-align:left">Useful Phrase</summary>
 
     #### Commonly used English phrases that are useful in professional settings
@@ -112,6 +89,18 @@
         -   "I’ll keep you updated on any changes."
         -   "Can we revisit this once I have more information?"
         -   "I appreciate your patience on this matter."
+
+    This phrase helps you sound focused, purposeful, and structured in your communication!
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:22px;color:Orange;text-align:left">Phrasal Verbs</summary>
+
+    #### wrap head around
+
+    #### look up
 
     #### So To Speak
 
@@ -206,13 +195,28 @@
         -   `A`: "We need to increase productivity without overwhelming the team."
         -   `B`: "To that end, we could introduce automation tools to streamline repetitive tasks."
 
-    This phrase helps you sound focused, purposeful, and structured in your communication!
+    #### Page out
 
-    </details>
+    The phrase **page out** typically refers to the movement of data from RAM (memory) to disk (swap space) when the system is under memory pressure. In cybersecurity or cloud infrastructure contexts (like AWS), it's not a phrase you’d hear often in general conversation—but it can be relevant when discussing performance, incident analysis, or system stability, especially for EC2 instances, container workloads, or memory-sensitive applications.
 
----
+    1. **EC2 Instance Monitoring:**
 
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Phrasal Verbs</summary>
+        > "We noticed the EC2 instance began to page out heavily due to an unoptimized Lambda function consuming excess memory—this led to slower response times and triggered our WAF rate-based rules."
+
+    2. **Security Incident Review:**
+
+        > "During the DDoS simulation, the server started paging out memory, causing critical processes to slow down—this could be exploited in a real attack scenario if not mitigated."
+
+    3. **CloudWatch Alert Setup:**
+
+        > "We configured CloudWatch alarms to notify us when memory page-out activity spikes, as it might be an early sign of a memory exhaustion attack."
+
+    4. **Container Security:**
+
+        > "The ECS task began paging out when memory usage exceeded the soft limit, which made the application vulnerable to timeouts and potential data leaks."
+
+    5. **Auto Scaling Group Health:**
+        > "Instances in the auto scaling group were paging out during peak hours; we updated the launch template to use memory-optimized instances to prevent security degradation under load."
 
     #### Build out
 
@@ -226,6 +230,45 @@
         -   `Meaning`: Expanding the sales team by hiring more people.
     -   _"They are building out a new office space."_
         -   `Meaning`: Expanding or furnishing a physical location.
+
+    #### cut in/out
+
+    -   _You **cut out** for a second—can you repeat that?_
+    -   _Your voice keeps cutting out._
+    -   _The call **cut out** right in the middle._
+
+    1. **Interrupting a conversation** (most common usage in human interactions)
+
+        - _Sorry to **cut in**, but I have a quick point._
+        - _He kept cutting in while I was speaking._
+
+    1. **Audio suddenly coming back or interjecting randomly** (less common, but still used technically)
+
+        - _Your audio **cut in** for a second and then went silent again._
+        - _It cuts in and out—it’s hard to follow._
+
+    #### carve out
+
+    **"Carve out"** is a phrase that means to **create, establish, or allocate something by making deliberate effort or removing obstacles.**
+
+    1. **To Create or Allocate Time**
+
+        - _"I need to carve out some time for this project."_
+        - `Meaning`: I need to set aside or allocate time for this project.
+
+    2. **To Establish a Niche or Position**
+
+        - _"She carved out a successful career in data engineering."_
+        - `Meaning`: She built or established her career through effort and skill.
+
+    3. **To Separate a Business or Unit**
+
+        - _"The company decided to carve out its cloud division into a separate entity."_
+        - `Meaning`: The company separated its cloud division to function independently.
+
+    4. **To Physically Remove or Cut Out Something**
+        - _"They carved out a path through the dense forest."_
+        - `Meaning`: They physically cleared a path by cutting through obstacles.
 
     #### Looking forward
 
@@ -252,29 +295,6 @@
 
         _"I’m looking forward to deploying the new ETL pipeline."_
         _"Looking forward to discussing AWS Glue optimizations in our next meeting."_
-
-    #### carve out
-
-    **"Carve out"** is a phrase that means to **create, establish, or allocate something by making deliberate effort or removing obstacles.**
-
-    1. **To Create or Allocate Time**
-
-        - _"I need to carve out some time for this project."_
-        - `Meaning`: I need to set aside or allocate time for this project.
-
-    2. **To Establish a Niche or Position**
-
-        - _"She carved out a successful career in data engineering."_
-        - `Meaning`: She built or established her career through effort and skill.
-
-    3. **To Separate a Business or Unit**
-
-        - _"The company decided to carve out its cloud division into a separate entity."_
-        - `Meaning`: The company separated its cloud division to function independently.
-
-    4. **To Physically Remove or Cut Out Something**
-        - _"They carved out a path through the dense forest."_
-        - `Meaning`: They physically cleared a path by cutting through obstacles.
 
     #### across
 
@@ -311,12 +331,12 @@
 
     #### The more ... the more
 
-    1.  **The more** I practice coding, the more confident I become.
-    2.  **The more** I engage with different Jira tickets that involve troubleshooting, automation, and AWS services, **the more** I realize how interconnected these concepts are and how much I still have to learn.
-    3.  **The more** I optimize my workflows by automating frequent tasks, **the more** I realize how much unnecessary manual effort I used to put in.
-    4.  **The more** I step out of my comfort zone and take on challenging tasks, **the more** I grow both as an engineer and as a problem-solver.
-    5.  **The more** we align on project goals and expectations early on, **the more** efficient and conflict-free our execution becomes.
-    6.  **The more** I break down complex problems into smaller, manageable parts, **the more** effective and efficient my solutions become.
+    5.  **The more** I practice coding, the more confident I become.
+    6.  **The more** I engage with different Jira tickets that involve troubleshooting, automation, and AWS services, **the more** I realize how interconnected these concepts are and how much I still have to learn.
+    7.  **The more** I optimize my workflows by automating frequent tasks, **the more** I realize how much unnecessary manual effort I used to put in.
+    8.  **The more** I step out of my comfort zone and take on challenging tasks, **the more** I grow both as an engineer and as a problem-solver.
+    9.  **The more** we align on project goals and expectations early on, **the more** efficient and conflict-free our execution becomes.
+    10. **The more** I break down complex problems into smaller, manageable parts, **the more** effective and efficient my solutions become.
 
     </details>
 
@@ -324,171 +344,216 @@
 
 -   <details><summary style="font-size:22px;color:Orange;text-align:left">Idioms</summary>
 
-    Here’s a list of **commonly used idioms** in professional settings, particularly relevant to the **software industry** and workplaces:
+    -   **beat around the bush** means to **avoid saying something directly**—usually because it’s uncomfortable, awkward, or hard to say. It’s often used when someone is taking too long to get to the point.
+
+        1. **In a conversation:**
+
+            - **A:** "Did you tell your boss you're quitting?"
+            - **B:** "Well, I mentioned how I’m feeling lately and how I’ve been thinking a lot..."
+            - **A:** "Stop beating around the bush and just tell him!"
+
+        2. **At work:**
+
+            - "The manager kept beating around the bush about layoffs. We just wanted a straight answer."
+
+        3. **In a relationship:**
+
+            - "If you don’t want to be with me, just say it. Don’t beat around the bush."
+
+        4. **In interviews:**
+            - "The interviewer beat around the bush when I asked about the salary range."
+
+    #### Keeps something on Radar
+
+    -   **Synonyms**:
+        -   Keep in mind
+        -   Keep an eye on
+        -   Be aware of
+        -   Monitor in the background
+    -   **Examples**:
+        -   We’re not addressing that security finding right away, but let’s keep it on our radar for the next sprint.
+        -   The customer hasn’t asked for multi-region support yet, but it’s something we should keep on our radar.
+        -   That new AWS service looks promising. We’re not using it now, but let’s keep it on our radar.
 
     #### Idioms for Collaboration and Teamwork
 
     1. **"Get the ball rolling"**
 
-        - Meaning: Start a project or task.
+        - `Meaning`: Start a project or task.
         - Example: "Let’s get the ball rolling on this feature implementation."
 
     2. **"On the same page"**
 
-        - Meaning: Everyone understands and agrees on the same thing.
+        - `Meaning`: Everyone understands and agrees on the same thing.
         - Example: "Before we proceed, let’s ensure we’re all on the same page."
 
     3. **"Burning the midnight oil"**
 
-        - Meaning: Working late into the night.
+        - `Meaning`: Working late into the night.
         - Example: "We’ve been burning the midnight oil to meet the release deadline."
 
     4. **"Pull your weight"**
 
-        - Meaning: Contribute your fair share to the team’s effort.
+        - `Meaning`: Contribute your fair share to the team’s effort.
         - Example: "Everyone needs to pull their weight to complete this sprint."
 
     5. **"Hit the ground running"**
-        - Meaning: Start a project or task quickly and effectively.
+        - `Meaning`: Start a project or task quickly and effectively.
         - Example: "We need someone who can hit the ground running with this new tech stack."
 
     #### Idioms for Problem-Solving
 
     6. **"Think outside the box"**
 
-        - Meaning: Approach a problem in a creative or unconventional way.
+        - `Meaning`: Approach a problem in a creative or unconventional way.
         - Example: "We’ll need to think outside the box to optimize this algorithm."
 
-    7. **"Go back to the drawing board"**
+    7. **"In a nutshell"**
 
-        - Meaning: Start over with a new approach after a failure.
-        - Example: "The client didn’t like the design, so we have to go back to the drawing board."
-
-    8. **"In a nutshell"**
-
-        - Meaning: Summarize something briefly.
+        - `Meaning`: Summarize something briefly.
         - Example: "In a nutshell, the bug was caused by a missing dependency."
 
-    9. **"Bite the bullet"**
+    8. **"Bite the bullet"**
 
-        - Meaning: Accept and deal with something unpleasant.
+        - `Meaning`: Accept and deal with something unpleasant.
         - Example: "We’ll have to bite the bullet and rewrite this legacy code."
 
     #### Idioms for Deadlines and Prioritization
 
-    10. **"Crunch time"**
+    9.  **"Crunch time"**
 
-        -   Meaning: A period of intense work before a deadline.
+        -   `Meaning`: A period of intense work before a deadline.
         -   Example: "It’s crunch time, so let’s focus on the critical tasks."
 
-    11. **"Cutting corners"**
+    10. **"Cutting corners"**
 
-        -   Meaning: Doing something quickly and carelessly to save time or effort.
+        -   `Meaning`: Doing something quickly and carelessly to save time or effort.
         -   Example: "We can’t afford to cut corners with security testing."
 
-    12. **"In the pipeline"**
+    11. **"In the pipeline"**
 
-        -   Meaning: Something is in progress or being developed.
+        -   `Meaning`: Something is in progress or being developed.
         -   Example: "We have several features in the pipeline for the next release."
 
-    13. **"Ahead of the curve"**
+    12. **"Ahead of the curve"**
 
-        -   Meaning: Staying ahead of current trends or innovations.
+        -   `Meaning`: Staying ahead of current trends or innovations.
         -   Example: "Adopting AI early keeps us ahead of the curve in our industry."
 
-    14. **"Race against time"**
-        -   Meaning: Working under pressure to meet a deadline.
+    13. **"Race against time"**
+        -   `Meaning`: Working under pressure to meet a deadline.
         -   Example: "We’re in a race against time to fix this production issue."
 
     #### Idioms for Uncertainty and Risk
 
-    15. **"Take with a grain of salt"**
+    14. **"Take with a grain of salt"**
 
-        -   Meaning: Don’t take something too seriously or literally.
+        -   `Meaning`: Don’t take something too seriously or literally.
         -   Example: "Take the initial user feedback with a grain of salt until we get more data."
 
-    16. **"Up in the air"**
+    15. **"Up in the air"**
 
-        -   Meaning: Something is undecided or uncertain.
+        -   `Meaning`: Something is undecided or uncertain.
         -   Example: "The timeline for the next sprint is still up in the air."
 
-    17. **"Throw a wrench in the works"**
+    16. **"Throw a wrench in the works"**
 
-        -   Meaning: To disrupt or cause problems in a plan or process.
+        -   `Meaning`: To disrupt or cause problems in a plan or process.
         -   Example: "The server outage really threw a wrench in the works."
 
-    18. **"Playing it by ear"**
+    17. **"Playing it by ear"**
 
-        -   Meaning: Adapting to a situation as it unfolds, without a fixed plan.
+        -   `Meaning`: Adapting to a situation as it unfolds, without a fixed plan.
         -   Example: "Let’s play it by ear and adjust the roadmap based on customer feedback."
 
-    19. **"A double-edged sword"**
-        -   Meaning: Something that has both positive and negative consequences.
+    18. **"A double-edged sword"**
+        -   `Meaning`: Something that has both positive and negative consequences.
         -   Example: "Open-source contributions are a double-edged sword; they’re great for innovation but hard to maintain."
 
     #### Idioms for Success and Growth
 
-    20. **"Hit the nail on the head"**
+    19. **"Hit the nail on the head"**
 
-        -   Meaning: To describe or do something exactly right.
+        -   `Meaning`: To describe or do something exactly right.
         -   Example: "Your analysis really hit the nail on the head."
 
-    21. **"The big picture"**
+    20. **"The big picture"**
 
-        -   Meaning: An overall view of a situation, without focusing on the small details.
+        -   `Meaning`: An overall view of a situation, without focusing on the small details.
         -   Example: "Let’s not lose sight of the big picture while debugging."
 
-    22. **"Move the needle"**
+    21. **"Move the needle"**
 
-        -   Meaning: To make a significant impact or progress.
+        -   `Meaning`: To make a significant impact or progress.
         -   Example: "This feature will really move the needle for user retention."
 
-    23. **"Break new ground"**
+    22. **"Break new ground"**
 
-        -   Meaning: Innovate or do something that hasn’t been done before.
+        -   `Meaning`: Innovate or do something that hasn’t been done before.
         -   Example: "Our team is breaking new ground with this AI-powered tool."
 
-    24. **"Raise the bar"**
-        -   Meaning: Set a higher standard of performance or quality.
+    23. **"Raise the bar"**
+        -   `Meaning`: Set a higher standard of performance or quality.
         -   Example: "The new design system really raises the bar for our UI."
 
     #### Idioms for Challenges
 
-    25. **"Barking up the wrong tree"**
+    24. **"Barking up the wrong tree"**
 
-        -   Meaning: Pursuing the wrong solution or approach.
+        -   `Meaning`: Pursuing the wrong solution or approach.
         -   Example: "If we think the bug is in the frontend, we might be barking up the wrong tree."
 
-    26. **"Jumping the gun"**
+    25. **"Jumping the gun"**
 
-        -   Meaning: Acting too quickly without preparation or waiting for the right time.
+        -   `Meaning`: Acting too quickly without preparation or waiting for the right time.
         -   Example: "Let’s not jump the gun by deploying before QA approves."
 
-    27. **"A blessing in disguise"**
+    26. **"A blessing in disguise"**
 
-        -   Meaning: Something that seems bad at first but turns out to be beneficial.
+        -   `Meaning`: Something that seems bad at first but turns out to be beneficial.
         -   Example: "The outage was a blessing in disguise; it revealed a critical vulnerability."
 
-    28. **"Cross that bridge when we come to it"**
+    27. **"Cross that bridge when we come to it"**
 
-        -   Meaning: Deal with a problem only when it happens.
+        -   `Meaning`: Deal with a problem only when it happens.
         -   Example: "If we hit scaling issues, we’ll cross that bridge when we come to it."
 
-    29. **"Learn the ropes"**
-        -   Meaning: To learn how to do a job or task properly.
+    28. **"Learn the ropes"**
+        -   `Meaning`: To learn how to do a job or task properly.
         -   Example: "It’ll take a few weeks to learn the ropes of the new framework."
-
-    These idioms are frequently used in software and professional environments to communicate ideas effectively, enhance discussions, and build rapport.
 
     </details>
 
 ---
 
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Common Technical Adverbs</summary>
+-   <details><summary style="font-size:22px;color:Orange;text-align:left">Word Anlysis</summary>
 
-    -   supposedly
-    -   intentionaly
-    -   deliberately
+    -   based off/in/out
+    -   call out/off/in/over
+    -   push out/off
+    -   cutover
+    -   wirte-off
+    -   hand off / handoffs
+    -   Span/Embad/Encompass
+    -   vigilant/deligent
+    -   rundown
+    -   scale up/down/in/out
+    -   ideal
+    -   redact
+    -   carve out
+    -   exploit
+    -   **Resources/Assets**:
+        -   `Resources` can refer to any data or helper files used by the software, including dynamic or localized content, configuration files, and external dependencies — and sometimes even compute/storage/network capacity in cloud-native environments. Exmples: `.json`, `.xml`, `.properties`, `.env`, `.yaml`, `Templates`.
+        -   `Assets` are usually static files or content that are packaged with your application or deployed alongside it. Examples: Images (.png, .svg), Fonts (.ttf, .woff), Videos, CSS files, JavaScript files, Favicon
+    -   **Cadence/Frequency**:
+
+        -   `Cadence`:
+        -   `Frequency`:
+
+    -   **Integration/Incorporation**:
+        -   `Integration`:
+        -   `Incorporation`:
+    -
 
     </details>
 
@@ -611,13 +676,35 @@
 
 ---
 
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Word Anlysis</summary>
+-   <details><summary style="font-size:22px;color:Orange;text-align:left">Common Technical Adverbs</summary>
 
-    -   call out
-    -   cutover
-    -   wirte-off
-    -   Span/Embad/Encompass
-    -   vigilant
-    -   ideal
+    -   supposedly
+    -   intentionaly
+    -   deliberately
 
     </details>
+
+---
+
+-   <details><summary style="font-size:22px;color:Orange;text-align:left">Hearing</summary>
+
+    You can politely and professionally inform others about your hearing difficulty in a way that encourages understanding and cooperation. Here’s a polite way to say it in a conference room setting:
+
+    -   `Option 1`: Before the Meeting Starts (Proactive Approach)
+
+        -   _"Hey everyone, I just wanted to mention that I have some difficulty hearing, especially in crowded settings or when voices come through speakers. If I ask for clarification or repetition, I appreciate your patience. It really helps if people speak clearly and directly. Thanks for your understanding!"_
+
+    -   `Option 2`: If You’re Struggling During the Meeting
+
+        -   "Sorry, I’m having a little trouble hearing. Could you please speak up or repeat that? I sometimes struggle with voices through speakers or in large groups."
+
+    -   `Option 3`: If You’re Addressing the Host/Facilitator Privately
+        -   "Hey [Facilitator’s Name], just a quick note—I have some difficulty hearing, especially with speakers or in a crowd. If possible, I’d appreciate it if people could speak clearly or if key points could be repeated when needed. Thanks for understanding!"
+
+    These approaches keep the tone professional, clear, and considerate, while ensuring that others are aware of your needs. Let me know if you’d like to adjust the phrasing!
+
+    -   **Example Explanation**: _"I wanted to share that I have some hearing difficulties. Specifically, I often hear sounds at a lower volume than they actually are, and sometimes the sounds are distorted or noisy, making it harder for me to understand speech. This can be especially difficult when there’s background noise or when voices come through speakers. I may ask for clarification or repetition from time to time, and I really appreciate your understanding and patience."_
+
+    </details>
+
+---

@@ -132,6 +132,8 @@ Each type of testing is chosen based on the specific phase of development, goals
     -   Prevents financial loss due to fraud or human error.
     -   Improves internal processes by identifying weaknesses.
 
+#### Penatration Testing
+
 #### Non-Functional Testing
 
 -   **Performance Testing**: Examines the speed, responsiveness, and stability under a particular workload. Includes:
@@ -167,6 +169,8 @@ Each type of testing is chosen based on the specific phase of development, goals
 
 -   **Manual Testing**: Test cases are executed manually by QA testers without the use of automated tools. It’s best for exploratory, usability, and ad-hoc testing.
 -   **Automated Testing**: Uses tools and scripts to run tests repeatedly, which is ideal for regression, performance, and load testing where repetitive tasks can be automated.
+
+#### A/B Testing
 
 </details>
 
