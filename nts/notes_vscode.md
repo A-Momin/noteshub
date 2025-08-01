@@ -1,9 +1,10 @@
 -   [How to make your own VS Code theme!](https://www.youtube.com/watch?v=pGzssFNtWXw)
--   𝐔𝐬𝐞𝐟𝐮𝐥𝐥 𝑺𝒚𝒎𝒃𝒐𝒍𝒔: ⇧ ⮐ ⎇ ⌘ ⌥ + ⌃ + ⤶  ⤶ ⬋ ↩︎ ↲ ↵ ↫ ⭿ ♥ ★ → ➡️ ⬅️ ⬆︎ ⬇️
+-   𝐔𝐬𝐞𝐟𝐮𝐥𝐥 𝑺𝒚𝒎𝒃𝒐𝒍𝒔: → ⌘ ⌥ + ⌃ + ⤶ ⇧ ⇪ ␣ ⌦ ⎋  ⮐ ⤶ ↩︎ ↲ ↵ ⬋ ↫ ♥ ★ → ➡️ ⬅️ ⬆︎ ⬇️
 
 -   `^ + ⌘ + Spaces` → To get Emoji (🏠)
 -   `^ + Spaces` → To get markdown snippet autocomplete.
--   `⌘ + ⇧ + O` → Allow open various symbol
+-   `⌘ + ⇧ + O` → Open drop down to select Heading leve to move to the selected heading.
+-   `⌥ + 8` → Shortcut to get dot symbol(•).
 
 <details><summary style="font-size:25px;color:Orange;text-align:left">Notes Link</summary>
 
@@ -32,8 +33,15 @@
 
 #### Shortcuts
 
+-   `⬆︎ + ^ + -` → Split cell into two cells
+-   `⬆︎ + m` → merges selected cells
+-   `m` → Change selected cell to markdown cell
+-   `y` → Change selected cell to code cell
+-   🔥 `⌥ + z` → Toggle Wrap/Unwrap words in integrated VSC terminal.
+-   🔥 `^ + ␣` → Search for custom code snippet shortcuts for markdown.
+-   `^ + -` → Jump cursor backword in the chain of it's previous position
+-   `^ + ⇧ + -` → Jump cursor forward in the chain of it's previous position
 -   `⌘ + ⇧ + f` → Search a patteren in multiple files.
--   🔥 `⌥ + z` → Toggle Wrap/Unwrap word of integrated terminal.
 -   `⌘ + ⇧ + k` → Delete the line of code at the cursor.
 -   `⌘ + x` → Cut the line of code at the cursor to paste somewhere else.
 -   🔥 `⌘ + k + 0` → Fold code at the base indentation lavel
@@ -61,6 +69,9 @@
         -   `ndentationToSpaces` ↦ ⮐
         -   `indentationToTabs` ↦ ⮐
         -   `Profiles: Switch Profile` -> to Switch Between Profiles
+        -   `Notebook: Join Selected Cells` ↦ ⮐
+        -   `Notebook: Collapse all Cell Outputs` ↦ ⮐
+        -   `Notebook: Expand all Cell Inputs` ↦ ⮐
 
 #### Configuration Shortcuts
 

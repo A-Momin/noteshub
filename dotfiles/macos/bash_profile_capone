@@ -3,10 +3,14 @@
 ## following three lines of code in your terminal one by one to set up
 # # this bash profile.
 export NTHUB="$HOME/noteshub"
+export GD="$HOME/Google Drive/My Drive"
+export NTHUBC1="$GD/noteshubc1"
+export CODEBASE="$HOME/codebase"
 export DOTFILES="$NTHUB/dotfiles/macos"
 ln -fs $DOTFILES/bash_profile_capone $HOME/.bash_profile
 # ============================================================================
 
+export UV="$HOME/.local/share/uv" # Where custom uv virtual environments are stored.
 export DT="$HOME/Desktop"
 export DL="$HOME/Downloads"
 export DOC="$HOME/Documents"
@@ -79,7 +83,7 @@ complete -o "nospace" -W "Contacts Calendar Dock Finder Mail Safari iTunes Syste
 beautify_prompt
 c1_symbolic_links
 c1_aliases
-
+source "$NTHUBC1/.utils/bash_utils_c1.sh"
 # =============================================================================
 # =============================================================================
 # Setting PATH for Python 3.9

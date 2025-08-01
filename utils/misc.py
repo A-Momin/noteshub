@@ -4,7 +4,10 @@ import random
 from datetime import datetime, timedelta
 import yaml
 
-
+def convert_datetime(obj):
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    raise TypeError("Type %s not serializable" % type(obj))
 
 def rename_images(directory, old_prefix="screenshot ", new_prefix="screenshot "):
     # Get all files in the directory

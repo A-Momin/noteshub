@@ -78,11 +78,14 @@ pvt_symbolic_links(){
     ln -sf $NTHUB/nts/query_questions_answers.md \
         $HOME/mydocs/Software_Development/Databases/RDBMS/sql/query_questions_answers.md
 
-    # VSCode User Settings.json
+    ############ VSCode User Settings.json ############################
     ln -sf $NTHUB/dotfiles/vscode/settings.json \
         ~/Library/Application\ Support/Code/User/settings.json
+    ln -sf $NTHUB/dotfiles/vscode/custom_keybindings.json \
+        $HOME/Library/Application\ Support/Code/User/keybindings.json
     ln -sf $NTHUB/dotfiles/vscode/style.less \
         $HOME/.local/state/crossnote/style.less
+    ###################################################################
     
     ln -sf $NTHUB/dotfiles/macos/config \
         $HOME/.ssh/config
@@ -94,11 +97,14 @@ pvt_symbolic_links(){
 }
 
 c1_symbolic_links(){
-    # VSCode User Settings.json
+    ############ VSCode User Settings.json ############################
     ln -sf $NTHUB/dotfiles/vscode/settings.json \
         ~/Library/Application\ Support/Code/User/settings.json
+    ln -sf $NTHUB/dotfiles/vscode/custom_keybindings.json \
+        $HOME/Library/Application\ Support/Code/User/keybindings.json
     ln -sf $NTHUB/dotfiles/vscode/style.less \
         $HOME/.local/state/crossnote/style.less
+    ###################################################################
     
     ln -sf $NTHUB/dotfiles/macos/config \
         $HOME/.ssh/config
@@ -183,6 +189,7 @@ sync_to_c1() {
         --exclude '.venv' \
         --exclude 'venv*' \
         --exclude 'node_modules' \
+        --exclude '.teraform' \
         --exclude '.ipynb_checkpoints' \
         --exclude '.egg-info' \
         --exclude '*.egg-info' \
@@ -194,6 +201,36 @@ sync_to_c1() {
         --exclude '.pytest_cache' \
         --exclude '__pycache__' \
         /Volumes/$1/MYDOCS_BACKUP/Software_Development/noteshub $HOME/
+}
+
+sync_aws_to_c1(){
+    : '
+    Args:
+        $1 (mendatory): the name of the volume attached to the mac.
+    
+    Example:
+        `$ sync_aws_to_c1 mypassport`
+    '
+
+    # local target="$1"
+    rsync -avz \
+        --delete \
+        --exclude '.git' \
+        --exclude '.venv' \
+        --exclude 'venv*' \
+        --exclude '.teraform' \
+        --exclude 'node_modules' \
+        --exclude '.ipynb_checkpoints' \
+        --exclude '.egg-info' \
+        --exclude '*.egg-info' \
+        --exclude '*.pyc' \
+        --exclude '*.class' \
+        --exclude '.tmp.drivedownload' \
+        --exclude '.tmp.driveupload' \
+        --exclude '*.DS_Store' \
+        --exclude '.pytest_cache' \
+        --exclude '__pycache__' \
+        /Volumes/$1/MYDOCS_BACKUP/Software_Development/Web_Development/aws $CODEBASE/
 }
 
 remove_pattern(){
@@ -360,7 +397,7 @@ setscpath(){
     defaults write com.apple.screencapture include-date -bool false
     # defaults write com.apple.screencapture "include-date" -string "$(date +'%H:%M:%S')"
 
-    defaults write com.apple.screencapture location ${1:-~/Desktop/screenshots}
+    defaults write com.apple.screencapture location ${1:-~/Desktop/ss}
 
     echo "Screenshots will be saved in '$(defaults read com.apple.screencapture location)'"
 }
@@ -518,4 +555,9 @@ setup_noteshub_on_c1(){
     echo "Previous 'noteshub' folder has been backed up to $HOME/noteshub.bak"
     echo "Remove the backup folder if you don't need it anymore by running the following command:"
     echo -e "\trm -rf $HOME/noteshub.bak" # -e flag enables interpretation of escape sequences like \t for a tab.
+}
+
+proxyon(){
+
+    cofproxy on
 }

@@ -1,97 +1,120 @@
 -   **𝑺𝒚𝒎𝒃𝒐𝒍𝒔**: ⌘ ⌥ + ⌃ + ⤶ ⇧  ⤶ ⬋ ↩︎ ↲ ↵ ↫ ⭿ ♥ ★ 🎾 & 🔹
 
--   **site module**: The Python site module is part of the Python standard library and is used to configure the Python environment on startup. It plays a crucial role in setting up the Python environment, including configuring the module search path and handling user-specific site-packages directories.
+-   <details><summary style="font-size:25px;color:Orange">Termilology</summary>
 
--   **python3 -m site**: It is used to display information about the site module in Python, which includes paths to various site-packages directories and other configuration details about the Python environment
+    -   **PYTHONPATH**:
 
-    ```ini
-    sys.path = [
-        '/home/user',
-        '/usr/local/lib/python39.zip',
-        '/usr/local/lib/python3.9',
-        '/usr/local/lib/python3.9/lib-dynload',
-        '/usr/local/lib/python3.9/site-packages',
-    ]
-    USER_BASE: '/home/user/.local' (exists)
-    USER_SITE: '/home/user/.local/lib/python3.9/site-packages' (exists)
-    ENABLE_USER_SITE: True
-    ```
+        -   `PYTHONPATH` is an environment variable in Python that tells the interpreter where to locate the module files imported into a program. It is a colon-separated list of directories that the Python interpreter searches for modules when executing your code.
+        -   When you try to import a module, Python looks for the module in the directories listed in sys.path. The `PYTHONPATH` environment variable allows you to customize this search path.
 
--   **`.whl`** File: A `.whl` file (Wheel file) is a binary distribution format for Python packages. It is a pre-built, compressed package that allows for faster installation compared to building from source.
+    -   **sys.path**: In your Python script, you can modify the sys.path list to include the directories containing your Python modules.
 
-    -   Pre-compiled: Unlike setup.py, which requires building, a `.whl` fi le contains a pre-compiled package, making installation (`pip install package.whl`) faster.
-    -   Faster Installation: Since it avoids compilation, installing a wheel file with pip is significantly faster.
-    -   Standard Format: `.whl` follows the PEP 427 (Wheel Standard), making it the preferred way to distribute Python packages.
+        ```python
+        import sys
+        sys.path.append('/path/to/your/module')
+        # Now you can import your module
+        import your_module
+        ```
+
+        ```python
+        >>> import sys
+        >>> sys.argv
+        >>> sys.executable
+            '/Library/Frameworks/Python.framework/Versions/3.7/bin/python3'
+        ```
+
+    -   **sit-modules**: The Python site module is part of the Python standard library and is used to configure the Python environment on startup. It plays a crucial role in setting up the Python environment, including configuring the module search path and handling user-specific site-packages directories.
+
+    -   **python3 -m site**: It is used to display information about the site module in Python, which includes paths to various site-packages directories and other configuration details about the Python environment
+
+        ```ini
+        sys.path = [
+            '/home/user',
+            '/usr/local/lib/python39.zip',
+            '/usr/local/lib/python3.9',
+            '/usr/local/lib/python3.9/lib-dynload',
+            '/usr/local/lib/python3.9/site-packages',
+        ]
+        USER_BASE: '/home/user/.local' (exists)
+        USER_SITE: '/home/user/.local/lib/python3.9/site-packages' (exists)
+        ENABLE_USER_SITE: True
+        ```
+
+    -   **`.whl`** File: A `.whl` file (Wheel file) is a binary distribution format for Python packages. It is a pre-built, compressed package that allows for faster installation compared to building from source.
+
+        -   `Pre-compiled`: Unlike setup.py, which requires building, a `.whl` fi le contains a pre-compiled package, making installation (`pip install package.whl`) faster.
+        -   `Faster Installation`: Since it avoids compilation, installing a wheel file with pip is significantly faster.
+        -   `Standard Format`: `.whl` follows the PEP 427 (Wheel Standard), making it the preferred way to distribute Python packages.
+
+    #### setup.cfg:
+
+    `setup.cfg` is a configuration file used to specify various options and metadata for a Python package. It is typically used in conjunction with the `setup.py` file or as an alternative to it. Some common settings that can be specified in `setup.cfg` include package metadata (name, version, author, etc.), dependencies, entry points, testing configurations, and more. It follows the INI file format with sections and key-value pairs.
+
+    Using `setup.cfg` can help keep the `setup.py` file clean and focused on the essential setup logic, while the configuration details are stored in a separate file. To use `setup.cfg`, you typically run python `setup.py` commands that automatically read the configuration from `setup.cfg`.
+
+    #### setup.py:
+
+    `setup.py` is a Python script that contains the setup logic for a Python package. It is commonly used to define the package structure, dependencies, installation instructions, and other details required for packaging and distribution. The `setup.py` file typically imports the setuptools or distutils module to define the package and its associated metadata.
+
+    Running commands like python `setup.py` install or python `setup.py` sdist executes the setup script to perform actions such as package installation, building source distributions, running tests, and more.
+
+    While `setup.cfg` is focused on configuration settings, `setup.py` contains the executable logic for package setup. It is usually more customizable and can handle complex scenarios, such as dynamic generation of code or custom setup steps.
+
+    #### pyproject.toml
+
+    `pyproject.toml` is a configuration file used in Python projects that adhere to the PEP 517 and PEP 518 standards. It is primarily used for specifying build and distribution tooling configurations, such as build system dependencies, build tool configuration, and project metadata. The file is written in the TOML (Tom's Obvious, Minimal Language) format.
+
+    Here are the key aspects and purposes of pyproject.toml:
+
+    -   `Build System Configuration`: pyproject.toml allows you to specify the build system requirements and configuration for your project. This includes the build backend to be used (e.g., setuptools, flit, poetry), as well as any required build tools, such as compilers or transpilers.
+    -   `Dependency Declarations`: You can declare the dependencies required for building and testing your project. This includes both runtime dependencies (specified in install_requires) and build/test dependencies (specified in build-system.requires or build-system.build-backend.requires). These dependencies are typically resolved and managed by the build tool.
+    -   `Project Metadata`: pyproject.toml allows you to specify project metadata, such as the package name, version, author, license, and other relevant information. This metadata is used during packaging and distribution processes.
+    -   `Tool Configuration`: The file provides a place to configure specific build tools or plugins used in your project. For example, you can configure code linters, code formatters, testing frameworks, or other development tools specific to your project.
+    -   `Standardized Project Structure`: By using pyproject.toml, you adhere to the PEP 517 and PEP 518 standards, which define a standardized approach to Python project build and distribution. This helps ensure compatibility and consistency across different build tools and environments.
+
+    It's important to note that pyproject.toml alone does not perform any build or distribution actions. Instead, it provides the necessary configuration for build tools (specified in build-system.build-backend) to execute the build and distribution processes.
+
+    Popular build tools that utilize pyproject.toml include `setuptools`, `flit`, and `poetry`. These tools interpret the configuration in pyproject.toml and perform actions such as building source distributions (sdist), building binary distributions (bdist), installing the package (install), running tests (test), and more.
+
+    Overall, pyproject.toml serves as a central configuration file for build and distribution tooling in Python projects, enabling standardized build processes and providing a consistent way to specify project metadata and dependencies.
+
+    #### MANIFEST.in
+
+    The `MANIFEST.in` file is used in Python projects to specify additional files that should be included when creating source distributions or packaging the project. It is commonly used in conjunction with the "`setup.py`" script and build tools like "setuptools" to define the contents of the distribution package.
+
+    The purpose of the "MANIFEST.in" file is to provide explicit instructions on what files and directories should be included in the distribution, beyond the default inclusion rules specified by the build tool. By default, build tools like "setuptools" include only the necessary files based on the Python package's structure and metadata specified in "`setup.py`". However, there might be additional files or directories that are required for the package to function correctly or need to be distributed with the package.
+
+    Here are some common use cases and directives that can be specified in the "MANIFEST.in" file:
+
+    #### pytest.ini
+
+    The `pytest.ini` file is a configuration file used by the pytest testing framework. It allows you to customize the behavior and settings of pytest for your project. When pytest runs, it looks for a `pytest.ini` file in the current directory or any of its parent directories.
+
+    The `pytest.ini` file is written in the INI file format and typically includes various sections and options that define how pytest should discover and execute tests, specify test paths, configure plugins, and more. Some commonly used options in `pytest.ini` include:
+
+    -   `[pytest] section`: This section is used to configure general pytest options, such as the test discovery behavior, test naming conventions, test markers, and output settings.
+
+    -   `[testpaths] section`: This section allows you to specify the directories or paths where pytest should search for tests. You can define multiple test paths separated by line breaks.
+
+    -   `[pytest-watch] section`: If you have the pytest-watch plugin installed, you can use this section to configure its behavior, such as the files to watch for changes and the commands to run when changes occur.
+
+    -   `Other sections and options`: Depending on your project's needs and installed plugins, you may have additional sections and options in your `pytest.ini` file. For example, if you use plugins like `pytest-cov` for code coverage or `pytest-html` for HTML test reports, you may have sections to configure those plugins.
+
+    By configuring options in the `pytest.ini` file, you can set project-specific defaults and avoid passing command-line options to pytest every time you run tests. It helps in maintaining consistent test configurations across different environments and makes it easier to share your project with other developers.
+
+    Note that the `pytest.ini` file is optional, and if it's not present, pytest will use its default settings.
+
+   </details>
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange"> Software Version System </summary>
-
-    Software versioning is a system of assigning unique identifiers (version numbers) to different releases of a software product. These versions help in tracking changes, managing updates, and ensuring compatibility.
-
-    #### Versioning Schemes
-
-    -   **Semantic Versioning (SemVer)**: Uses a structured `MAJOR.MINOR.PATCH` format:
-
-        -   **MAJOR** (`X.0.0`) → Increments when there are breaking changes.
-        -   **MINOR** (`1.X.0`) → Increments when new features are added in a backward-compatible manner.
-        -   **PATCH** (`1.0.X`) → Increments when bug fixes and minor improvements are made.
-        -   **Example:**
-        -   `1.0.0` → Initial stable release
-        -   `1.1.0` → Added new feature (backward-compatible)
-        -   `1.1.1` → Bug fix release
-        -   `2.0.0` → Breaking changes introduced
-
-    -   **Date-Based Versioning**: Uses the release date as the version number, typically `YYYY.MM.DD` or `YYYY.R` (where `R` is the release number for that year).
-
-        -   **Example**: `2024.1`, `2024.02.15`
-
-    -   **Incremental Versioning**: Uses a simple incremental number (`1`, `2`, `3`, etc.).
-        -   **Example**: Windows 10, Windows 11
-
-    #### Versioning Terminology
-
-    -   **Pre-Release Versions**: These are versions released before the final stable version and usually include experimental or test features.
-
-        -   **Alpha (`alpha`)** → Very early-stage, unstable version for internal testing.
-        -   Example: `1.0.0-alpha.1`
-        -   **Beta (`beta`)** → More stable than Alpha, but still under development.
-        -   Example: `1.0.0-beta.2`
-        -   **Release Candidate (`rc`)** → A version that is almost final, pending last-minute testing.
-        -   Example: `1.0.0-rc.1`
-
-    -   **Stable Release**: Official, fully tested version ready for production use. Example: `1.0.0`
-
-    -   **Long-Term Support (LTS)**: A version supported for a longer period with security and bug fixes. Example: `Node.js 18 LTS`
-
-    -   **Hotfix**: A minor release to fix a critical issue. Example: `1.0.1`
-
-    -   **Deprecated Version**: A version that is no longer supported and should not be used.
-
-    #### Other Versioning Concepts
-
-    -   **Backward Compatibility** → New versions work with older data or APIs.
-    -   **Forward Compatibility** → Older versions can work with new data or APIs.
-    -   **Rolling Release** → Continuous software updates without distinct version numbers (e.g., Arch Linux).
-
-    </details>
-
----
-
--   <details><summary style="font-size:25px;color:Orange"> PYTHON3 </summary>
+-   <details><summary style="font-size:25px;color:Orange">PYTHON3</summary>
 
     -   [Corey: How to Set the Path and Switch Between Different Versions/Executables (Mac & Linux)](https://www.youtube.com/watch?v=PUIE7CPANfo&list=PL-osiE80TeTskrapNbzXhwoFUiLCjGgY7&index=14&t=1218s)
 
-    ```python
-    >>> import sys
-    >>> sys.argv
-    >>> sys.executable
-        '/Library/Frameworks/Python.framework/Versions/3.7/bin/python3'
-    ```
-
     -   **TROUBLESHOOTING ON PYTHON EXECUTABLES**:
 
-        -   `$ which -a python3` → locate all (-a) python3 file in the user's path
+        -   `$ which -a python3` → locate all (`-a`) python3 file in the user's path
         -   `$ which python3.11`
         -   `$ whereis python3` → /usr/bin/python3
         -   `$ ls -al /opt/homebrew/bin | grep python`
@@ -151,7 +174,7 @@
     -   `$ jupyter kernelspec list`
     -   `$ jupyter kernelspec remove kernel_name`
 
-    ### python3 Virtual Environment: (python version ≥ 3.3)
+    #### python3 Virtual Environment: (python version ≥ 3.3)
 
     -   [How to Use Virtual Environments with the Built-In venv Module](https://www.youtube.com/watch?v=Kg1Yvry_Ydk&list=PL-osiE80TeTskrapNbzXhwoFUiLCjGgY7&index=25&t=0s)
 
@@ -179,11 +202,11 @@
         -   `pip install -r requirements.txt` → Install dependencies
         -   `deactivate` → Exit the virtual environment
 
-    </details>
+   </details>
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange"> pip3 </summary>
+-   <details><summary style="font-size:25px;color:Orange">pip3</summary>
 
     -   `$ which pip` → run the command from the newly created env
     -   `$ pip3 -V` → Version of the pip3
@@ -257,28 +280,36 @@
         | **Global Installation**          | Safe for installing global CLI tools                                       | Not recommended for global installation (can lead to dependency conflicts) |
         | **Uninstallation**               | Clean and removes all traces of a package                                  | May leave behind dependencies that are no longer needed                    |
 
-    </details>
+   </details>
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange"> uv </summary>
+-   <details><summary style="font-size:25px;color:Orange">uv</summary>
+
     -   [UV](https://docs.astral.sh/uv/)
     -   [commands](https://docs.astral.sh/uv/reference/cli/#uv)
     -   [uv for EVERYTHING: How to use uv for Python, venv, and project management](https://www.youtube.com/watch?v=zgSQr0d5EVg)
     -   [UV for Python… (Almost) All Batteries Included](https://www.youtube.com/watch?v=qh98qOND6MI)
 
-    -   `$ brew install uv`
-    -   `$ uv init --no-workspace`
-    -   `$ uv tool dir`
-    -   `$ `
+    -   `$ brew install uv` → Installs the [`uv`](https://github.com/astral-sh/uv) package manager via Homebrew on macOS. `uv` is a fast Python package manager built in Rust by Astral.
+    -   `$ uv python install 3.11.11` → Downloads and installs **Python 3.11.11** via `uv`’s environment manager.
+    -   `$ uv python list --only-installed` → Lists all installed Python versions managed by `uv`.
+    -   `$ uv python pin` →
+    -   `$ uv python pin -h` →
+    -   `$ uv python dir` →
+    -   `$ uv python find` →
+    -   `$ uv python uninstall` →
 
-    -   `$ uv clean cache`
-    -   `$ uv add -r requirements.txt`
-    -   `$ uv python install 3.11.11`
-    -   `$ uv python list --only-installed`
-    -   `$ uv run main.py`
-    -   `$ uv sync`
-    -   `$ uv add --dev ipykernel`
+    -   `$ uv init --no-workspace` → Initializes a new Python project **without a workspace layout**, creating basic project files like `pyproject.toml`.
+    -   `$ uv tool dir` → Prints the directory path where `uv` stores tool environments (e.g., virtual environments or tool-specific envs).
+    -   `$ uv clean cache` → Clears the `uv` cache (packages, indices, etc.) to free up disk space or fix caching issues.
+    -   `$ uv add --dev black` → Installs the black code formatter as a development dependency.
+    -   `$ uv add -r requirements.txt` → Adds dependencies listed in `requirements.txt` to your project’s `pyproject.toml` and installs them.
+    -   `$ uv run main.py` → Runs `main.py` inside the project's managed Python environment (like `poetry run` or `pipenv run`).
+    -   `$ uv run --activate main.py` -> `--activae` prefer the active virtual environment over the project’s virtual environment. No active virtual environment, it has no eefect.
+    -   `$ uv sync` → Synchronizes your environment with your `pyproject.toml` and `uv.lock` — installs all declared dependencies.
+    -   `$ uv add --dev ipykernel` → Adds `ipykernel` as a **development dependency**, useful for running Jupyter notebooks or using IPython.
+
     -   `$ uv `
     -   `$ uv `
 
@@ -298,30 +329,100 @@
     -   [uv Docs on virtual environment](https://docs.astral.sh/uv/pip/environments/#creating-a-virtual-environment)
     -   `$ uv venv --help`
     -   `$ uv venv [OPTIONS] [PATH]`
+    -   `$ uv venv [venv_name]`
     -   `$ uv venv ~/.uv/uvenv1 --python 3.11` -> Create a Virtualenv in `~/.uv/` by the name `uvenv1`
     -   `$ source ~/.uv/uvenv1/bin/activate` -> Activate `~/.uv/uvenv1` environment.
-    -   `$ uv pip --help`
-    -   `$ uv pip install requests` -> Install request library in the activated venv without updating the `pyproject.toml` or `uv.lock` file
-    -   `$ uv pip uninstall requests` -> Unstall request library from the activated venv.
-    -   `$ uv pip list`
     -   `$ uv run --activate main.py` -> `--activae` prefer the active virtual environment over the project’s virtual environment. No active virtual environment, it has no eefect.
-    -   `$ `
-    -   `$ `
+    -   `$ uv pip --help`
+    -   `$ uv pip install requests` → Installs the `requests` library into the current `uv` virtual environment.
+    -   `$ uv pip list` → Lists all packages currently installed in the `uv` virtual environment along with their versions.
+    -   `$ uv pip uninstall pandas` → Uninstalls the `pandas` package from the `uv` virtual environment.
+    -   `$ uv pip freeze > requirements.txt` → Outputs all currently installed packages (with exact versions) in `requirements.txt` format and writes them to a `requirements.txt` file.
+    -   `$ uv sync --dev`
+    -   `$ uv sync --strict`
+    -   `$ rm -fr $UV/myvenv` -> Remove `myvenv` virtual environment.
     -   `$ `
 
-    -   **how to create uv environments from uv.lock or pyproject.toml file?**
-        -   `$ uv venv .venv`
-            -   **Option 1: Recommended**
-                -   `$ uv sync` -> This command reads the uv.lock file and installs the exact packages and versions specified within it.
-            -   **Option 2**
-                -   `$ uv pip install pyproject.toml` -> This command reads the pyproject.toml file, resolves dependencies, and installs them into the active virtual environment. If a `uv.lock` file exists, it will be updated
+    -   **how to create uv project and venv from? `requirements_dev.txt`**
+
+        -   `$ uv init --no-workspace`
+        -   `$ uv add --dev -r requirements_dev.txt`
+
+    -   **How create a empty venv and add packages using `uv`**
+
+        -   `$ uv venv`
+        -   `$ source .venv/bin/activate`
+        -   `$ uv pip install requests`
+        -   `$ uv sync`
+        -   `$ uv add --dev pytest`
         -   `$ `
+        -   `$ uv pip freeze | xargs uv pip uninstall`
 
-    </details>
+    -   **how to create `uv` venv from `uv.lock` or `pyproject.toml` file?**
+
+        -   **Option 1:**
+            -   `$ uv venv` -> Create virtual environments in `.venv`
+            -   `$ source .venv/bin/activate` -> Activate the virtual environments - `.venv`
+            -   `$ uv sync` -> This command reads the `uv.lock` file and installs the exact packages and versions specified within it.
+        -   **Option 2**: Create named uv virtual env.
+            -   `$ uv venv $UV/named_venv --python 3.11` -> Create virtual environments in `$UV` by the name of `named_venv`
+            -   `$ source $UV/named_venv/bin/activate` -> Activate the virtual environments - `named_venv`
+            -   **Option 1**:
+                -   `$ uv sync --active` -> This command reads the `uv.lock` file and installs the exact packages and versions specified within active environment.
+            -   **Option 2**:
+                -   `$ uv pip install -r pyproject.toml` -> This command reads the `pyproject.toml` file, resolves dependencies, and installs them into the active virtual environment. If a `uv.lock` file exists, it will be updated
+
+    -   **How create `uv` virtual environment in a central location?**
+        -   `$ uv venv $UV/my_uv_env`
+        -   `$ uv venv $UV/my_uv_env --python=python3.11`
+        -   `$ uv venv $UV/my_uv_env -python 3.11`
+        -   `$ uae` -> Activate `uv` environment using aliases - `uae`
+        -   `$ ude` -> Deactivate `uv` environment using aliases - `ude`
+
+    #### Tool Environments
+
+    **Tool Environments** refer to **dedicated, isolated virtual environments automatically managed by `uv`** to install and run project-specific developer tools — such as linters (`black`), test runners (`pytest`), formatters (`ruff`, `isort`), or other CLI tools — **separately from your main application dependencies**.
+
+    -   **Why tool environments exist**: Tool environments help with:
+
+        -   ✅ **Separation of concerns**: Keep your runtime dependencies (`requests`, `numpy`, etc.) separate from dev tools.
+        -   ✅ **Reproducibility**: Tools get installed exactly as defined in `uv.lock`, isolated from system or user Python.
+        -   ✅ **Speed**: `uv` can reuse cached tool environments across multiple projects.
+        -   ✅ **Clean development**: Prevents cluttering your main environment with dev-only packages.
+
+    -   **Where they live**: Tool environments are typically stored in a central location, like `~/.cache/uv/tools/`
+
+    -   **Example**
+
+        If your `pyproject.toml` includes:
+
+        ```toml
+        [tool.uv.dependencies]
+        requests = "^2.32"
+
+        [tool.uv.dev-dependencies]
+        black = "^24.0"
+        pytest = "^8.0"
+        ```
+
+        -   `$ uv run black .`
+            -   Automatically install and cache `black` into a **tool environment**.
+            -   Not affect your main application virtual environment.
+
+    -   **Tool Envs vs Main venv**
+
+        | Aspect               | Main `venv`                   | Tool Environment                     |
+        | -------------------- | ----------------------------- | ------------------------------------ |
+        | Purpose              | Run the actual Python app     | Run dev tools like `black`, `pytest` |
+        | Created by           | `uv venv`, `uv sync`          | Auto-created by `uv`                 |
+        | Location             | Project folder or manual path | `~/.cache/uv/tools/`                 |
+        | Shared between repos | ❌ (project-specific)         | ✅ (cached and reused)               |
+
+   </details>
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange"> pipx </summary>
+-   <details><summary style="font-size:25px;color:Orange">pipx</summary>
 
     -   Use `pipx` to keep your Python CLI tools isolated and avoid dependency conflicts!
     -   Installing CLI Applications
@@ -490,11 +591,11 @@
     | `$ pipx reinstall-all`                 | Reinstall all packages                      |
     | `$ pipx inject <package> <dependency>` | Add a dependency to a package's environment |
 
-    </details>
+   </details>
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange"> pyenv </summary>
+-   <details><summary style="font-size:25px;color:Orange">pyenv</summary>
 
     -   [pyenv doc](https://github.com/pyenv/pyenv-installer)
     -   [How to Install and Run Multiple Python Versions on macOS](https://www.youtube.com/watch?v=31WU0Dhw4sk)
@@ -577,11 +678,11 @@
     -   `$ pyenv ` →
     -   `$ pyenv ` →
 
-    </details>
+   </details>
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange"> pipenv </summary>
+-   <details><summary style="font-size:25px;color:Orange">pipenv</summary>
 
     -   [Corey: Easily Manage Packages and Virtual Environments](https://www.youtube.com/watch?v=zDYL22QNiWk&list=PL-osiE80TeTskrapNbzXhwoFUiLCjGgY7&index=23&t=672s)
     -   [Pipenv & Virtual Environments](https://pipenv-fork.readthedocs.io/en/latest/install.html#installing-pipenv)
@@ -713,13 +814,13 @@
 
         This prevents Pipenv from creating a new virtual environment and forces it to use the currently activated one.
 
-        </details>
+       </details>
 
-        </details>
+       </details>
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange"> poetry </summary>
+-   <details><summary style="font-size:25px;color:Orange">poetry</summary>
 
     -   **Poetry** is a dependency management and packaging tool for Python that simplifies the process of managing dependencies, packaging projects, and publishing to PyPI. It provides an easy way to create, build, and distribute Python packages while handling virtual environments automatically.
 
@@ -748,11 +849,11 @@
     -   `$ poetry config --list` → Show current Poetry configuration
     -   `$ poetry export -f requirements.txt > requirements.txt` → Export dependencies to a `requirements.txt` file
 
-    </details>
+   </details>
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange"> conda </summary>
+-   <details><summary style="font-size:25px;color:Orange">conda</summary>
 
     -   [ANACONDA Documentations](https://conda.io/projects/conda/en/latest/user-guide/index.html)
     -   [Corey Schafer: How to manage multiple version and environments of python](https://www.youtube.com/watch?v=cY2NXB_Tqq0)
@@ -833,11 +934,206 @@
             -   unset SECRET_KEY
             -   unset DATABASE_URI
 
+   </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">Linter: Pylint</summary>
+
+    -   A linter is a static code analysis tool used in programming to automatically check your code for errors, bugs, style issues, and potential problems—before you run it. Examples of Linters in Different Languages:
+
+        | Language   | Linter Tools                                    |
+        | ---------- | ----------------------------------------------- |
+        | Python     | `pylint`, `flake8`, `mypy`, `black` (formatter) |
+        | JavaScript | `eslint`, `jshint`                              |
+        | Go         | `golint`, `go vet`                              |
+        | Java       | `Checkstyle`, `PMD`, `SpotBugs`                 |
+        | C/C++      | `cppcheck`, `clang-tidy`                        |
+
+    ##### Pylint
+
+    -   **Pylint** is a **static code analysis tool** for Python that checks for:
+
+        -   Syntax errors
+        -   Code quality issues
+        -   Coding standard violations (e.g., PEP8)
+        -   Refactoring suggestions
+        -   Unused variables or imports
+
+    -   It scores your code and gives you actionable feedback to improve readability, maintainability, and correctness.
+    -   `$ pip install pylint`
+
+    ##### ✅ Step 3: Configure Pylint as the Linter
+
+    1. Open **Command Palette** (`Ctrl+Shift+P`)
+    2. Search: `Python: Select Linter`
+    3. Choose: `pylint`
+
+    This tells VS Code to use `pylint` as the default linter.
+
+    ##### ✅ Step 4: (Optional) Customize `pylint` Settings
+
+    You can create a custom configuration file:
+
+    -   `$ pylint --generate-rcfile > .pylintrc`
+
+    -   Then modify the `.pylintrc` file to:
+
+        -   Ignore specific rules or directories
+        -   Customize naming conventions
+        -   Set max line length, etc.
+
+        ```ini
+        [MESSAGES CONTROL]
+        disable=C0114, C0115, C0116, W0611
+
+            # C0114: Missing module docstring
+            # C0115: Missing class docstring
+            # C0116: Missing function or method docstring
+            # W0611: Unused import
+        [MASTER]
+        ignore=tests,migrations
+        ignore-patterns=.*_test\.py
+        [FORMAT]
+        max-line-length=100
+        [BASIC]
+        variable-rgx=[a-z_][a-z0-9_]{2,30}$
+        function-rgx=[a-z_][a-z0-9_]{2,30}$
+        class-rgx=[A-Z_][a-zA-Z0-9]+$
+        const-rgx=(([A-Z_][A-Z0-9_]*)|(__.*__))$
+        [TYPECHECK]
+        ignored-modules=numpy,torch
+
+        [REPORTS]
+        output-format=colorized
+        ```
+
+    -   Or configure through `settings.json` in VS Code:
+
+        ```json
+        "python.linting.pylintEnabled": true,
+        "python.linting.enabled": true,
+        "python.linting.pylintArgs": [
+            "--disable=C0114,C0115,C0116",  // Example: disable docstring warnings
+        ]
+        ```
+
+   </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">Formatter: Black</summary>
+
+    A **formatter** is a tool that automatically adjusts your code to follow a consistent **style guide**. It fixes indentation, spacing, line lengths, quotation marks, etc., without changing what the code _does_.
+
+    ##### Black
+
+    **Black** is an **opinionated code formatter** for Python.
+    It reformats your entire code base to follow a standard style (PEP 8 + Black's rules), making your code look **clean and uniform**.
+
+    > "Black makes code formatting a non-issue. By using it, you no longer need to argue over style."
+
+    -   `$ pip install black`
+    -   `$ pip install -U black --user`
+
+    -   Make sure the official **Python extension** from Microsoft is installed in your VS Code.
+
+    -   **Configure VS Code to Use Black**
+
+        1. Open `settings.json` (use `Ctrl+Shift+P` → "Preferences: Open Settings (JSON)")
+        2. Add or update these settings:
+
+        ```json
+        {
+            "python.formatting.provider": "black",
+            "editor.formatOnSave": true,
+            "[python]": {
+                "editor.defaultFormatter": "ms-python.python"
+            }
+        }
+        ```
+
+        > You can also disable formatting on save or only run Black manually if you prefer.
+
+    -   **Optional**: Create a `pyproject.toml` to Customize Black to formate your project
+
+        ```toml
+        [tool.black]
+        line-length = 100
+        skip-string-normalization = true
+        target-version = ['py39']
+        ```
+
+        > Place this in your project root to customize Black’s behavior (e.g., line length, skipping double quotes, etc.)
+
+    -   **Benefits of Using Black**
+
+        -   Enforces **uniform code style**
+        -   Saves **review time** and avoids style arguments
+        -   Works well with linters (like Pylint or Flake8)
+        -   Easy integration with **CI/CD** and **pre-commit hooks**
+
+   </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">isort</summary>
+
+   </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">Sphinx (Document Generator)</summary>
+
+    -   **Sphinx** is a **documentation generator** written in Python. It's widely used to build **HTML, PDF, LaTeX**, and other formats from **reStructuredText (reST)** source files.
+
+        -   Converts `.rst` or `.md` and docstrings into beautiful documentation
+        -   Highly customizable via themes, extensions, and plugins
+        -   Supports API docs via `autodoc` (introspects your Python code)
+        -   Officially used by Python documentation (e.g., `docs.python.org`)
+
+        -   You install and enable Napoleon like this:
+
+            -   `pip install sphinx`
+
+        -   In `conf.py` (Sphinx config):
+
+            ```python
+            extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon']
+            ```
+
+    -   **Napoleon** is a **Sphinx extension** that allows Sphinx to **understand and parse**:
+
+        1. **Google-style** docstrings
+        2. **NumPy-style** docstrings
+        3. Without Napoleon, Sphinx **only understands reST-style docstrings**, which are more verbose and harder to write manually.
+
+    -   **Sphinx vs Napoleon: Comparison Table**
+
+        | Feature                        | **Sphinx (Core)**              | **Napoleon (Extension)**                          |
+        | ------------------------------ | ------------------------------ | ------------------------------------------------- |
+        | Parses reStructuredText        | ✅ Yes                         | 🚫 No                                             |
+        | Parses Google-style docstrings | ❌ No (native)                 | ✅ Yes                                            |
+        | Parses NumPy-style docstrings  | ❌ No (native)                 | ✅ Yes                                            |
+        | HTML/LaTeX/PDF output          | ✅ Yes                         | ➖ Not its role (relies on Sphinx)                |
+        | Auto-generates API docs        | ✅ (via `autodoc`)             | ✅ (works with `autodoc`)                         |
+        | Setup complexity               | Medium                         | Low (just add to `extensions` list)               |
+        | Best use case                  | Full control, official formats | Modern, readable docstring formats (Google/NumPy) |
+
+    -   **When to Use What?**
+
+        | Scenario                                           | Use                              |
+        | -------------------------------------------------- | -------------------------------- |
+        | You prefer `reStructuredText` everywhere           | Just Sphinx (no Napoleon)        |
+        | You use **Google-style or NumPy-style** docstrings | Sphinx + Napoleon                |
+        | You are documenting a data science or ML library   | Sphinx + Napoleon (NumPy-style)  |
+        | You want clean, readable inline docstrings         | Sphinx + Napoleon (Google-style) |
+
     </details>
 
 ---
 
--   <details><summary style="font-size:25px;color:Tomato"> Publish a Python package into PyPI Repository </summary>
+-   <details><summary style="font-size:25px;color:Tomato"> Publish a Python package into PyPI Repository</summary>
 
     #### Experimental Python package:
 
@@ -845,4 +1141,4 @@
     -   **Created `pyenv` Environment**: `pypkgpublish`
     -   **Project Location**: `/Users/am/mydocs/Software_Development/Python_Program/Python3/2023-package`
 
-    </details>
+   </details>

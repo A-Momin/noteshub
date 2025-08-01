@@ -25,6 +25,7 @@
     -   [AWS Lambda – Terraform Example with API Gateway](https://tekanaid.com/posts/aws-lambda-terraform-configuration-example-with-api-gateway#code)
     -   [Terraform to create AWS SNS | GitHub Actions](https://www.youtube.com/watch?v=e7P0TGwp1VA&t=679s)
     -   [Terraform to create AWS SNS and AWS SQS service which invokes AWS lambda function | GitHub Actions](https://www.youtube.com/watch?v=tTD5D9ZHYUc)
+    -   [HashiCorp Vault + Terraform: The Ultimate Secrets Management Guide](https://www.youtube.com/watch?v=FQE_gyEwu0Q)
 
     </details>
 

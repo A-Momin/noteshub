@@ -1,5 +1,7 @@
 <h1 style="color:red" align="center" >LINUX SHELL:</h1>
 
+-   `$ grep -E '^\[(Developer|ProdSupport)]' ~/.aws/credentials` -> Display Developer and Support profile
+
 ---
 
 <details><summary style="font-size:25px;color:Orange">Documents & Tutorials</summary>

@@ -175,13 +175,19 @@ alias bp="code $HOME/.bash_profile"                    # bp ==> Bash Profile
 alias bu="code $DOTFILES/bash_utils.bash"
 alias secrets="code $DOTFILES/secrets.bash"
 alias aliases="code $DOTFILES/aliases"
+alias galiases="code $DOTFILES/git-aliases.bash"
 alias sshconfig="code $HOME/.ssh/config"
-alias chrome="open -na 'Google Chrome' --args --new-window"
-
+alias chrome="open -na 'Google Chrome' --args --new-window" # open new (`-n`) Chrome application (`-a`) with arguments (`--args` and `--new-window`)
+alias chromeincog="open -na 'Google Chrome' --args --new-window --incognito" # open new (`-n`) Chrome application (`-a`) with arguments (`--args` and `--new-window`)
 alias ae="deactivate &> /dev/null; source .venv/bin/activate"
 alias de="deactivate"
 alias pae="pyenv activate $1"
 alias pde="pyenv deactivate"
+# alias uae="source $UV/$1/bin/activate"
+uae() {
+    source "$UV/$1/bin/activate" && echo -e "Activated \033[0;32m$1\033[0m Virual Environment, which is located in $UV"
+}
+alias ude="pyenv deactivate"
 alias cae="conda activate $1"
 alias cde="conda deactivate"
 
@@ -219,7 +225,8 @@ alias ntvim="code $NTHUB/nts/notes_vim.md"
 alias ntvsc="code $NTHUB/nts/notes_vscode.md"
 alias ntmac="code $NTHUB/nts/notes_mac.md"
 alias ntpy="code $NTHUB/nts/notes_python.md"
-alias ntpytools="code $NTHUB/nts/notes_pytools.md"
+alias ntpytl="code $NTHUB/nts/notes_pytools.md"
+alias ntdvtl="code $NTHUB/nts/notes_devtools.md"
 alias ntpytest="code $NTHUB/nts/notes_pytest.md"
 alias nteng="open /Users/a.momin/gd/Writing\ English/Notes_English.gsheet"
 alias ntflask="code $NTHUB/nts/notes_flask.md"
@@ -247,8 +254,15 @@ alias ntopenssl="code $NTHUB/nts/notes_openssl.md"
 alias ntbehave="code $NTHUB/nts/notes_behave.md"
 alias ntxpath="code $NTHUB/nts/notes_xpath.md"
 alias ntselenium="code $NTHUB/nts/notes_selenium.md"
+alias ntcolabtl="code $NTHUB/nts/notes_colaboration_tools.md"
+alias ntawsglue="code $NTHUB/nts/notes_awsglue.md"
+alias ntprompt="code $NTHUB/nts/notes_prompts.md"
+alias ntllm="code $NTHUB/nts/notes_llm.md"
+alias ntdatabricks="code $NTHUB/nts/notes_databricks.md"
+
 
 ###############################################################################
+alias ntcarlog="code $NTHUB/nts/notes_car_log.md"
 alias ntislam="code $NTHUB/nts/notes_islam.md"
 alias nteng="code $NTHUB/nts/notes_english.md"
 alias nttmp="code $NTHUB/nts/notes_tmp.md"
@@ -277,15 +291,19 @@ alias iqdjango="code $NTHUB/iqs/iq_django.md"
 alias iqdrf="code $NTHUB/iqs/iq_drf.md"
 alias iqdb="code $NTHUB/iqs/iq_db.md"
 alias iqsql="code $NTHUB/iqs/iq_sql.md"
-alias cmdspark="code $NTHUB/cmds/cmd_spark.md"
+alias cmdspark="code $NTHUB/cmds/cmd_pyspark.md"
 alias cmdawsglue="code $NTHUB/cmds/cmd_awsglue.md"
+alias adhocsql="code $SD/Databases/RDBMS/sql/schemas/adhocsql.sql"
+alias adhocspark="code $SD/Big_Data/elements_of_spark/adhocspark.py"
 # =============================================================================
 
 ## OPEN JUPYTER NOTEBOOK
 alias nbsql="code $NTHUB/nbs/nt_sql.ipynb"
 alias nbsqliq="code $SD/Databases/RDBMS/sql/notebooks/sql_queries_questions.ipynb"
+alias nbsqllc="code $SD/Databases/RDBMS/sql/notebooks/leetcode_sql_questions.ipynb"
 alias nbepp="code $NTHUB/nbs/nt_epp.ipynb"
 alias nbpypkg="code $NTHUB/nbs/nt_python_packages.ipynb"
+alias nboop="code $NTHUB/nbs/nt_oop.ipynb"
 alias nbpd="code $NTHUB/nbs/nt_pd.ipynb"
 alias nbspark="code $NTHUB/nbs/nt_spark.ipynb"
 alias nbsparksql="code $NTHUB/nbs/nt_spark_sql.ipynb"
@@ -294,6 +312,7 @@ alias nbplt="code $NTHUB/nbs/nt_plt.ipynb"
 alias nbml="code $NTHUB/nbs/nt_ml.ipynb"
 alias nbtorch="code $NTHUB/nbs/nt_torch.ipynb"
 alias nbstat="code $NTHUB/nbs/statistics.ipynb"
+alias nbadhocsql="code $NTHUB/nbs/adhoc_sql.ipynb"
 # =============================================================================
 
 dkr_aliases(){
@@ -321,6 +340,7 @@ pvt_aliases(){
     alias jobdb="open $HOME/mydocs/gd/jobs/Jobs_DB.gsheet"
     alias apartments="code $GD/MISC/apartments.md"
     alias ntrgh="code $HOME/notes_rough.md"
+    alias nttmp="code $HOME/Desktop/notes_tmp.md"
     alias ntht="code $HOME/mydocs/gd/Harness-Tech/notes_ht.md"
 
 
@@ -328,7 +348,7 @@ pvt_aliases(){
     alias ml="cd $HOME/mydocs/Software_Development/Machine_Learning && ls -1"                 # ml ==> Machine_Learning
     alias bigdata="cd $HOME/mydocs/Software_Development/Big_Data"
     alias books="cd $HOME/mydocs/BOOKS/PDF\ Books && ls -1"
-
+    alias llmapp="cd $SD/llm_app && ls -1"
     alias ads="cd $HOME/mydocs/Software_Development/Algorithms_and_Data_Structures"
     alias epi="cd $HOME/mydocs/Software_Development/Python_Program/Python3/elements-of-programming-interview && deactivate &> /dev/null; source .venv/bin/activate"
     alias pp="cd $HOME/mydocs/Software_Development/Python_Program && ls -1"                   # pp ==> Python Program
@@ -346,8 +366,9 @@ pvt_aliases(){
     alias sd="cd $HOME/mydocs/Software_Development && ls -1"
     alias wd="cd $HOME/mydocs/Software_Development/Web_Development && ls -1"
     alias resumes="open $GD/jobs/resumes"
+    alias curresume="open $GD/jobs/resumes/AM-DE-PYDEV.gdoc"
+    alias myresume="open $GD/jobs/resumes/AM-DE-PYDEV.gdoc"
     alias resumede="open $GD/jobs/resumes/AM-DE.gdoc"
-    alias resumetx="open $GD/jobs/resumes/AMominTX-pyeng.gdoc"
     alias mvntpdf="mv $NTHUB/{nts,iqs}/*.pdf $GD/NOTES_PDF/notes/"
 
     alias python=python3
@@ -358,6 +379,23 @@ pvt_aliases(){
 }
 
 c1_aliases(){
-    alias cb="cd $HOME/codebase"
-    alias gd="cd $HOME/mydocs/gd && ls -1"
+
+    alias dt="cd $DT"
+    alias dl="cd $DL"
+    alias gd='cd "$GD" && ls -1'
+    alias doc='cd "$DOC" && ls -1'
+    alias cb="cd $CODEBASE"
+    alias nthubc1='cd "$NTHUBC1" && ls -1'
+
+    #========== C1 Shortcuts =============
+    alias ntrgh='code "$HOME"/notes_rough.md'
+    alias ntrgh2='code "$NTHUBC1"/notes_rough2.md'
+    alias ntc1='code "$NTHUBC1"/notes_c1.md'
+    alias ntdoc='code "$NTHUBC1"/ntdoc.md'
+    alias ntdsu='code "$NTHUBC1"/ntdsu.md'
+    alias nttkt='code "$NTHUBC1"/nttkt.md'
+
+    alias buc1='code "$NTHUBC1"/.utils/bash_utils_c1.sh'
+    alias nbadhocsh='code "$NTHUBC1"/bscripts_jnb/adhocsh.ipynb'
+
 }

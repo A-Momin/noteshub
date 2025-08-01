@@ -1,31 +1,31 @@
--   𝑺𝒚𝒎𝒃𝒐𝒍𝒔: ⌘ ⌥ + ⌃ + ⤶ ⇧ ⇪ ␣ ⌦ ⎋  ⤶ ⬋ ↩︎ ↲ ↵ ↫ ⭿ ♥ ★ 🎾 &
+-   𝐔𝐬𝐞𝐟𝐮𝐥𝐥 𝑺𝒚𝒎𝒃𝒐𝒍𝒔: ⌘ ⌥ + ⌃ + ⤶ ⇧ ⇪ ␣ ⌦ ⎋ ↵  ⮐ ⤶ ↩︎ ↲ ⬋ ↫ ♥ ★ → ➡️ ⬅️ ⬆︎ ⬇️
 
-    -   `⌘` -> Command Key
-    -   `⌥` -> Option Key
-    -   `^` -> Control Key
-    -   `⇧` -> Shift Key
-    -   `⇪` -> Capslock Key
-    -   `Fn` -> Function Key
-    -   `⎋` -> Escape Key
-    -   `␣` -> Space Key
-    -   `⌦` -> Delete Key
+    -   `⌘` → Command Key
+    -   `⌥` → Option Key
+    -   `^` → Control Key
+    -   `⇧` → Shift Key
+    -   `⇪` → Capslock Key
+    -   `Fn` → Function Key
+    -   `⎋` → Escape Key
+    -   `␣` → Space Key
+    -   `⌦` → Delete Key
 
 -   Modifier Keys:
 
-    -   `⇪` -> Capslock Key
-    -   `^` -> Control Key
-    -   `⌘` -> Command Key
-    -   `Fn` -> Function Key
-    -   `⌥` -> Option Key
+    -   `⇪` → Capslock Key
+    -   `^` → Control Key
+    -   `⌘` → Command Key
+    -   `Fn` → Function Key
+    -   `⌥` → Option Key
 
--   `⇧ + ⌥ + k` -> 
--   `⇧ + ⌥ + p` -> ∏
+-   `⇧ + ⌥ + k` → 
+-   `⇧ + ⌥ + p` → ∏
 
 <details><summary style="font-size:22px;color:Orange;text-align:left">Shortcuuts</summary>
 
--   `⇧ + ⌘ + .` -> Make Dotfiles/Dotrepos in finders visible/invisible.
--   `⌘ + ␣` -> Make Spotlight Searchbar to apear for searching.
--   `$ `
+-   `⇧ + ⌘ + .` → Make Dotfiles/Dotrepos in finders visible/invisible.
+-   `⌘ + ␣` → Make Spotlight Searchbar to apear for searching.
+-   `^ + ⌥ + ␣` → Search for Emoji
 
 </details>
 
@@ -36,7 +36,7 @@
 -   [Automatically Backup Files to External Hard Drive on a Mac Using Automator](https://www.youtube.com/watch?v=n17XsI80ndE)
 
 -   `$ diskutil list`
--   `$ gcc --version` -> Install virsion of C-compilar
+-   `$ gcc --version` → Install virsion of C-compilar
 -   `$ ls /usr/local/Cellar/`
 -   `$ ls /Users/am/Library/Caches`
 -   -   `$ less /var/log/system.log`
@@ -45,10 +45,10 @@
 -   `$ `
 -   `$ `
 -   `$ man screencapture`
--   `$ screencapture ~/Desktop/screenshot.png` --> Capture the entire screen and save it to the desktop
--   `$ screencapture -T 5 ~/Desktop/screenshot.png` --> Capture the screen after a delay (e.g., 5 seconds) and save it to the desktop
--   `$ screencapture -T 5 ~/Desktop/SShot"$(date +'%Y-%m-%d %H:%M:%S')".png` --> Capture the screen after a delay (e.g., 5 seconds) and save it to the desktop
--   `$ screencapture -R x,y,width,height ~/Desktop/screenshot.png` --> Capture a specific area of the screen and save it to the desktop:
+-   `$ screencapture ~/Desktop/screenshot.png` -→ Capture the entire screen and save it to the desktop
+-   `$ screencapture -T 5 ~/Desktop/screenshot.png` -→ Capture the screen after a delay (e.g., 5 seconds) and save it to the desktop
+-   `$ screencapture -T 5 ~/Desktop/SShot"$(date +'%Y-%m-%d %H:%M:%S')".png` -→ Capture the screen after a delay (e.g., 5 seconds) and save it to the desktop
+-   `$ screencapture -R x,y,width,height ~/Desktop/screenshot.png` -→ Capture a specific area of the screen and save it to the desktop:
 
 -   **How to set Bash as your default shell on MaOS**
 
@@ -57,9 +57,9 @@
 
 -   **Configure Screenshoots App**
 
-    -   `$ defaults read com.apple.screencapture location` -> To check the current location where screenshots are being saved
-    -   `$ defaults write com.apple.screencapture location ~/Desktop/screenshots` -> Change Default Screenshot Location
-    -   `$ defaults write com.apple.screencapture type jpg` -> Change Screenshot File Format
+    -   `$ defaults read com.apple.screencapture location` → To check the current location where screenshots are being saved
+    -   `$ defaults write com.apple.screencapture location ~/Desktop/screenshots` → Change Default Screenshot Location
+    -   `$ defaults write com.apple.screencapture type jpg` → Change Screenshot File Format
 
 -   **Usefull Terminal Commands**
 
@@ -73,12 +73,12 @@
 -   **How to ssh into another mac in the same network**
 
     -   Enable Remote Login (SSH) On the Target Mac:
-        -   Click: "System Preferences" -> "Sharing." -> "Remote Login"
+        -   Click: "System Preferences" → "Sharing." → "Remote Login"
 
 -   **how to share a mac screen to another mac in the same network**
 
     -   Enable Screen Sharing On the Target Mac:
-        -   Click: "System Preferences" -> "Sharing" -> Select: "Screen Sharing" -> Click: "Computer Settings"
+        -   Click: "System Preferences" → "Sharing" → Select: "Screen Sharing" → Click: "Computer Settings"
 
 </details>
 
@@ -100,8 +100,8 @@ Homebrew is a popular package manager for macOS. It simplifies the installation 
 ##### Brew Commands
 
 -   `$ brew help`
--   `$ brew list` -> List installed packages
--   `$ brew list --cask` -> List installed Cask (GUI Applications)
+-   `$ brew list` → List installed packages
+-   `$ brew list --cask` → List installed Cask (GUI Applications)
 -   `$ brew search <package_name>`
     -   `$ brew search openjdk`
 -   `$ brew install <package_name>`

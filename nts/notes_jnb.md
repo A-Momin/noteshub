@@ -164,7 +164,7 @@ These are just a few examples, and there are many more magic commands available.
     ```bash
     create_bash_kernel(){
         # It install a bash kernel for jupyter notebook.
-        # NOTE: It's recommanded to install it in a perticular conda environment.
+        # NOTE: It's recommanded to install it in a perticular virtual environment. It can be install in your global python namespace
 
         pip install bash_kernel
         python -m bash_kernel.install
@@ -177,7 +177,7 @@ These are just a few examples, and there are many more magic commands available.
     ```bash
     create_sql_kernel(){
         # It install a mysql kernel for jupyter notebook.
-        # NOTE: It's recommanded to install it in a perticular conda environment.
+        # NOTE: It's recommanded to install it in a perticular virtual environment. It can be install in your global python namespace
 
         pip install mysql-kernel #
         python -m mysql_kernel.install
@@ -199,6 +199,13 @@ These are just a few examples, and there are many more magic commands available.
 
 -   `$ jupyter kernelspec list`
 -   `$ jupyter kernelspec remove kernel_name`
+
+-   Setup `uv` virtual environment to be selected by Jupyter Notebook in VSCode
+
+    -   `$ uv pip install ipykernel`
+    -   `$ python -m ipykernel install --user --name=uv-env --display-name "Python (uv)"`
+    -   `$ jupyter kernelspec uninstall uv-env`
+    -   `$ `
 
 #### ENABLE JUPYTER NOTEBOOK EXTENSION & THEMES:
 
@@ -459,7 +466,8 @@ By following these steps, you can add and apply a custom CSS file to style your 
 -   🔥 `⬆︎ + tab + tab` → Print the long version of the document string.
 -   `⬆︎ + tab + tab + tab` →
 -   `⎇ + tab ` → Auto Completion
--   `^ + ⬆︎ + -` → Split cell into two cells
+-   `⬆︎ + ^ + -` → Split cell into two cells
+-   `⬆︎ + m` → merges selected cells
 -   `Hold down 'alt'` → Use multiple cursors
 -   `Cmd + '[' / ']'` → Indent / dedent line
 -   `%load <path/python_file.py>`

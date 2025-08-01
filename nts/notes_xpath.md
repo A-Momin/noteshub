@@ -2,47 +2,57 @@ XPath, short for XML Path Language, is a query language designed to navigate and
 
 #### Core Concepts and Components of XPath
 
-1. **Expressions:**
+1. **Expressions:**: An XPath expression is a sequence that identifies a set of nodes within an XML document. These expressions can range from simple to complex, depending on the desired selection.
 
-    - An XPath expression is a sequence that identifies a set of nodes within an XML document. These expressions can range from simple to complex, depending on the desired selection.
+2. **Location Paths:**: A location path consists of one or more location steps, separated by slashes (`/`). Each step defines a movement through the XML tree structure.
 
-2. **Location Paths:**
+3. **Axes:**: Axes define the direction of traversal relative to the current (context) node. They specify the tree relationship between nodes. Common axes include:
 
-    - A location path consists of one or more location steps, separated by slashes (`/`). Each step defines a movement through the XML tree structure.
+    - `ancestor`: Selects all ancestors (parent, grandparent, etc.) of the context node.
+    - `ancestor-or-self`: Selects all ancestors (parent, grandparent, etc.) of the current node and the current node itself
+    - `parent`: Selects the parent of the context node.
+    - `preceding`: Selects all nodes that appear before the current node in the document, except ancestors, attribute nodes and namespace nodes
+    - `preceding-sibling`: Selects all siblings before the context node.
+    - `child`: Selects children of the context node.
+    - `descendant`: Selects all descendants (children, grandchildren, etc.) of the context node.
+    - `descendant-or-self`: Selects all descendants (children, grandchildren, etc.) of the current node and the current node itself
+    - `following`: Selects everything in the document after the closing tag of the current node
+    - `following-sibling`: Selects all siblings after the context node.
+    - `attribute`: Selects attributes of the context node.
+    - `namespace`: Selects all namespace nodes of the current node
+    - `Examples:`
 
-3. **Axes:**
+        ```python
+        from selenium import webdriver
+        from selenium.webdriver.common.by import By
 
-    - Axes define the direction of traversal relative to the current (context) node. They specify the tree relationship between nodes. Common axes include:
-        - `child`: Selects children of the context node.
-        - `parent`: Selects the parent of the context node.
-        - `descendant`: Selects all descendants (children, grandchildren, etc.) of the context node.
-        - `ancestor`: Selects all ancestors (parent, grandparent, etc.) of the context node.
-        - `following-sibling`: Selects all siblings after the context node.
-        - `preceding-sibling`: Selects all siblings before the context node.
-        - `attribute`: Selects attributes of the context node.
+        driver = webdriver.Chrome()
 
-4. **Node Tests:**
+        # Step 1: Find the starting element
+        element = driver.find_element(By.XPATH, "your_xpath_here")
 
-    - Node tests filter nodes based on their type or name. For example:
-        - `*`: Selects any node.
-        - `text()`: Selects text nodes.
-        - `comment()`: Selects comment nodes.
-        - `processing-instruction()`: Selects processing instruction nodes.
+        # Step 2: Search up the DOM for the first ancestor <table>
+        parent_table = element.find_element(By.XPATH, "./ancestor::table[1]")
 
-5. **Predicates:**
+        ```
 
-    - Predicates are conditions enclosed in square brackets (`[]`) that further refine node selections. They can filter nodes based on various criteria, such as position or attribute values. For example, `[1]` selects the first node, and `[@id='example']` selects nodes with an `id` attribute equal to 'example'.
+4. **Node Tests:**: Node tests filter nodes based on their type or name. For example:
 
-6. **Functions:**
+    - `*`: Selects any node.
+    - `text()`: Selects text nodes.
+    - `comment()`: Selects comment nodes.
+    - `processing-instruction()`: Selects processing instruction nodes.
 
-    - XPath provides a set of built-in functions to perform operations on strings, numbers, and node-sets. Examples include:
-        - `position()`: Returns the position of a node in a node-set.
-        - `last()`: Returns the position of the last node in a node-set.
-        - `contains()`: Checks if a string contains a substring.
-        - `starts-with()`: Checks if a string starts with a specific substring.
+5. **Predicates:**: Predicates are conditions enclosed in square brackets (`[]`) that further refine node selections. They can filter nodes based on various criteria, such as position or attribute values. For example, `[1]` selects the first node, and `[@id='example']` selects nodes with an `id` attribute equal to 'example'.
 
-7. **Operators:**
-    - XPath supports various operators for arithmetic (`+`, `-`, `*`, `div`, `mod`), comparison (`=`, `!=`, `<`, `>`, `<=`, `>=`), and boolean logic (`and`, `or`, `not()`).
+6. **Functions:**: XPath provides a set of built-in functions to perform operations on strings, numbers, and node-sets. Examples include:
+
+    - `position()`: Returns the position of a node in a node-set.
+    - `last()`: Returns the position of the last node in a node-set.
+    - `contains()`: Checks if a string contains a substring.
+    - `starts-with()`: Checks if a string starts with a specific substring.
+
+7. **Operators:**: Xpath supports various operators for arithmetic (`+`, `-`, `*`, `div`, `mod`), comparison (`=`, `!=`, `<`, `>`, `<=`, `>=`), and boolean logic (`and`, `or`, `not()`).
 
 #### Syntax Variants
 

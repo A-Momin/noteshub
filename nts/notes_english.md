@@ -1,348 +1,434 @@
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Useful Phrase</summary>
+-   gotcha
+-   sorted out
+-   should/would have been
+-   what so ever
+-   get along
+-   align on
+-   seamless integration
+-   baseline (deploy Baseline security policy)
+-   Tools that monitor metrics and baselines (for example, GuardDuty, Systems Manager)
+-   remediation/fixing
+-   Timeline/Pipeline/Process/workflow
+-   Schema/Scheme/Schemetic
+-   utileze/leverage
+-   having said that/ with that being said
+-   work out
+-   lift off
+-   clunky
+-   roll off/out/back
+-   based off/in/out
+-   call out/off/in/over
+-   push out/off
+-   pull off
+-   stand out
+-   take up/on/off/out
+-   plan/work out
+-   back out
+-   cutover
+-   wirte-off
+-   hand off / handoffs
+-   Span/Embad/Encompass
+-   vigilant/deligent
+-   rundown
+-   scale up/down/in/out
+-   ideal
+-   redact
+-   carve out
+-   exploit
+-
 
-    #### Commonly used English phrases that are useful in professional settings
+-   <details><summary style="font-size:25px;color:Orange">Sentence Analysis</summary>
 
-    -   **Starting Conversations**
+    -   **Jira Points**:the point assigned on my Jira ticket is unjustified. The task of the ticket deserve more points
 
-        -   "I hope this email/message finds you well."
-        -   "Thank you for taking the time to meet with me."
-        -   "I’d like to follow up on…"
-        -   "Could we schedule a time to discuss this further?"
-        -   "I wanted to touch base on…"
+        > I believe the story points assigned to my Jira ticket may not accurately reflect the effort required. Based on the complexity of the task, I think it warrants a higher estimate.
 
-    -   **Collaborating**
+        > "I feel the current story point estimate might not fully capture the complexity of the task. Based on what’s involved, it might be worth revisiting the estimate."
 
-        -   "Let’s align on our next steps."
-        -   "How can I support you with this?"
-        -   "Do you have the bandwidth to take this on?"
-        -   "Let’s circle back to this later."
-        -   "Can we brainstorm some ideas together?"
+        > "After diving deeper into the task, it seems more involved than initially expected. I’d suggest we consider adjusting the story points accordingly."
 
-    -   **In Meetings**
+        > "The scope of this ticket turned out to be broader than it first appeared. I believe it may justify a higher point estimate."
 
-        -   "Can everyone hear me okay?"
-        -   "Let’s do a quick round of introductions."
-        -   "Could you elaborate on that?"
-        -   "What are the key takeaways from this discussion?"
-        -   "Let’s table this topic for now and revisit it later."
+        > "Given the technical challenges and the time required, I think the current story point estimate might be a bit low. Could we re-evaluate it?"
 
-    -   **Requesting Help or Information**
+        > "This task involves more complexity than initially assumed. I’d recommend revisiting the story point estimate to better reflect the effort."
 
-        -   "Could you provide more details on this?"
-        -   "I’d appreciate it if you could clarify..."
-        -   "Would you mind taking a look at this?"
-        -   "Do you have any insights on this matter?"
-        -   "Can you point me in the right direction?"
+    -   **Hearing**: You can politely and professionally inform others about your hearing difficulty in a way that encourages understanding and cooperation. Here’s a polite way to say it in a conference room setting:
 
-    -   **Providing Feedback**
+        -   `Option 1`: Before the Meeting Starts (Proactive Approach)
 
-        -   "I’d like to share some constructive feedback."
-        -   "What worked well here was..."
-        -   "One area for improvement could be..."
-        -   "This is great, but we might want to consider..."
-        -   "Have you thought about approaching it this way?"
+            -   _"Hey everyone, I just wanted to mention that I have some difficulty hearing, especially in crowded settings or when voices come through speakers. If I ask for clarification or repetition, I appreciate your patience. It really helps if people speak clearly and directly. Thanks for your understanding!"_
 
-    -   **Acknowledging and Appreciating**
+        -   `Option 2`: If You’re Struggling During the Meeting
 
-        -   "Thank you for your hard work on this."
-        -   "I really appreciate your input."
-        -   "Great job on completing this ahead of schedule!"
-        -   "Your insights made a big difference."
-        -   "I value your perspective on this."
+            -   "Sorry, I’m having a little trouble hearing. Could you please speak up or repeat that? I sometimes struggle with voices through speakers or in large groups."
 
-    -   **Problem-Solving**
+        -   `Option 3`: If You’re Addressing the Host/Facilitator Privately
 
-        -   "Let’s identify the root cause of this issue."
-        -   "How can we prevent this from happening again?"
-        -   "What are our options here?"
-        -   "Let’s prioritize the most urgent tasks."
-        -   "Is there a way to simplify this process?"
+            -   "Hey [Facilitator’s Name], just a quick note—I have some difficulty hearing, especially with speakers or in a crowd. If possible, I’d appreciate it if people could speak clearly or if key points could be repeated when needed. Thanks for understanding!"
 
-    -   **Making Suggestions**
+        These approaches keep the tone professional, clear, and considerate, while ensuring that others are aware of your needs. Let me know if you’d like to adjust the phrasing!
 
-        -   "May I propose an alternative approach?"
-        -   "Here’s a potential solution to consider."
-        -   "What if we tried it this way instead?"
-        -   "This might be worth exploring further."
-        -   "Would it make sense to…?"
-
-    -   **Ending Conversations**
-
-        -   "Thank you for your time and input."
-        -   "Let’s reconnect on this next week."
-        -   "Please don’t hesitate to reach out if you have questions."
-        -   "Looking forward to our next discussion."
-        -   "I’ll follow up with you by [specific date/time]."
-
-    -   **Handling Disagreements**
-
-        -   "I see your point, but here’s another perspective..."
-        -   "Let’s focus on finding a common ground."
-        -   "I understand where you’re coming from, and here’s my thought process..."
-        -   "Could we revisit this with more data?"
-        -   "Let’s agree to disagree and move forward."
-
-    -   **Professional Etiquette**
-
-        -   "Excuse me, may I add something here?"
-        -   "Let me know if this time works for you."
-        -   "I’ll keep you updated on any changes."
-        -   "Can we revisit this once I have more information?"
-        -   "I appreciate your patience on this matter."
-
-    This phrase helps you sound focused, purposeful, and structured in your communication!
+        -   **Example Explanation**: _"I wanted to share that I have some hearing difficulties. Specifically, I often hear sounds at a lower volume than they actually are, and sometimes the sounds are distorted or noisy, making it harder for me to understand speech. This can be especially difficult when there’s background noise or when voices come through speakers. I may ask for clarification or repetition from time to time, and I really appreciate your understanding and patience."_
 
     </details>
 
 ---
 
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Phrasal Verbs</summary>
+-   <details><summary style="font-size:25px;color:Orange">Phrasal Verbs</summary>
 
-    #### wrap head around
+    -   <details><summary style="font-size:20px;color:#FF1493">wrap your head around</summary>
 
-    #### look up
+        1. > It took me a while to wrap my head around how AWS IAM policies actually work.
 
-    #### So To Speak
+            - It was hard to understand how IAM policies function at first.
 
-    The phrase **"so to speak"** is a common idiom in English, used in conversations to indicate that the words being spoken should not be taken literally but rather figuratively, metaphorically, or as an expression.
+        2. > I still can't wrap my head around the pricing model of Databricks.
 
-    -   **When to Use "So to Speak"?**
+            - I’m struggling to understand how Databricks pricing works.
 
-        1. **To clarify a figurative or non-literal meaning**:
-            - It suggests that the phrase is not meant in its exact, literal sense but is a way of expressing an idea.
-        2. **To emphasize creativity or uniqueness in word choice**:
-            - It can highlight an unusual or less obvious way of describing something.
+        3. > She’s trying to wrap her head around quantum physics for her exam.
 
-    -   **Examples**:
+            - She’s working hard to understand quantum physics.
 
-        1. **Figurative Usage**:
+        4. > It’s hard to wrap your head around differential equations if you don’t understand calculus first.
 
-            - "He’s the heart of the team, so to speak."
-            - `Meaning`: He is the most important or central person, not literally a "heart."
+            - You need to understand calculus before you can comprehend differential equations.
 
-        2. **Metaphorical Usage**:
+        5. > I just can't wrap my head around why he quit his job without a backup plan.
 
-            - "We’ve hit a wall in this project, so to speak."
-            - `Meaning`: The project has stalled or encountered significant challenges, not literally hit a wall.
+            - I don’t understand his decision to quit suddenly.
 
-        3. **Unusual Phrasing**:
-            - "We’re cleaning up the mess from the last meeting, so to speak."
-            - `Meaning`: Resolving unresolved issues, not literally cleaning up.
+        6. > It’s difficult to wrap my head around the fact that she's gone.
 
-    -   **Why Use It?**
+            - It’s emotionally hard to accept that she has passed away.
 
-        -   **Adds Nuance**: It signals to the listener that the phrase is an analogy or figure of speech.
-        -   **Avoids Confusion**: It clarifies that what you’re saying isn’t meant to be taken literally.
-        -   **Enriches Language**: It makes the conversation sound more expressive or creative.
+        7. > We're still trying to wrap our heads around the client’s new requirements.
 
-    -   **Alternative Phrases**:
+            - We’re still figuring out what the client wants.
 
-        -   "As it were."
-        -   "In a manner of speaking."
-        -   "If you will."
+        8. > Before implementing the new architecture, let’s first wrap our heads around the business logic.
 
-    -   **In Conversation**:
-        -   `A`: "It sounds like you’re juggling a lot right now."
-        -   `B`: "Yeah, I’ve got too many balls in the air, so to speak."
-        -   `Meaning`: They are managing multiple tasks, not literally juggling.
+            - Let’s first make sure we understand the logic properly.
 
-    By using **"so to speak"**, you're guiding the listener to interpret your words in a figurative way, adding a layer of subtlety to your communication.
+        </details>
 
-    #### to that end
+    -   <details><summary style="font-size:20px;color:#FF1493">look up / Look up to</summary>
 
-    The phrase **"to that end"** is a formal expression used in English conversations to indicate **purpose or intent**. It connects a goal or objective to the action or plan being taken to achieve it.
+        </details>
 
-    -   **When to Use "To That End"**
+    -   <details><summary style="font-size:20px;color:#FF1493">Take off/on/down</summary>
 
-        1. **To show alignment between an objective and a solution**:
+        </details>
 
-            - It implies that whatever follows is being done to accomplish the previously mentioned goal.
+    -   <details><summary style="font-size:20px;color:#FF1493">Check in/out</summary>
 
-        2. **To transition smoothly in formal or professional communication**:
-            - It’s often used in meetings, emails, or discussions to emphasize that an action is directed toward achieving a specific outcome.
+        </details>
 
-    -   **Examples**:
+    -   <details><summary style="font-size:20px;color:#FF1493">So to Speak</summary>
 
-        1. **In a professional context**:
+        The phrase **"so to speak"** is a common idiom in English, used in conversations to indicate that the words being spoken should not be taken literally but rather figuratively, metaphorically, or as an expression.
 
-            - "We need to improve customer retention. To that end, we’re implementing a loyalty rewards program."
-            - `Meaning`: The rewards program is being introduced to achieve the goal of improving retention.
+        -   **When to Use "So to Speak"?**
 
-        2. **In a formal conversation**:
+            1. **To clarify a figurative or non-literal meaning**:
+                - It suggests that the phrase is not meant in its exact, literal sense but is a way of expressing an idea.
+            2. **To emphasize creativity or uniqueness in word choice**:
+                - It can highlight an unusual or less obvious way of describing something.
 
-            - "Our focus is on reducing downtime. To that end, we’re investing in better server infrastructure."
-            - `Meaning`: The server upgrade is aligned with the goal of reducing downtime.
+        -   **Examples**:
 
-        3. **In everyday use**:
-            - "I want to improve my health. To that end, I’ve started exercising daily and eating more vegetables."
-            - `Meaning`: Exercising and eating healthier are actions taken to achieve better health.
+            1. **Figurative Usage**:
 
-    -   **Why Use It**
+                - "He’s the heart of the team, so to speak."
+                - `Meaning`: He is the most important or central person, not literally a "heart."
 
-        -   **Provides clarity**: It links an action directly to its purpose.
-        -   **Enhances professionalism**: It’s commonly used in formal or workplace discussions.
-        -   **Avoids repetition**: It eliminates the need to re-state the goal in a sentence.
+            2. **Metaphorical Usage**:
 
-    -   **Similar Phrases**:
+                - "We’ve hit a wall in this project, so to speak."
+                - `Meaning`: The project has stalled or encountered significant challenges, not literally hit a wall.
 
-        -   "For this reason..."
-        -   "With this in mind..."
-        -   "Towards that goal..."
-        -   "In line with this objective..."
+            3. **Unusual Phrasing**:
+                - "We’re cleaning up the mess from the last meeting, so to speak."
+                - `Meaning`: Resolving unresolved issues, not literally cleaning up.
 
-    -   **In a Conversation**:
+        -   **Why Use It?**
 
-        -   `A`: "We need to increase productivity without overwhelming the team."
-        -   `B`: "To that end, we could introduce automation tools to streamline repetitive tasks."
+            -   **Adds Nuance**: It signals to the listener that the phrase is an analogy or figure of speech.
+            -   **Avoids Confusion**: It clarifies that what you’re saying isn’t meant to be taken literally.
+            -   **Enriches Language**: It makes the conversation sound more expressive or creative.
 
-    #### Page out
+        -   **Alternative Phrases**:
 
-    The phrase **page out** typically refers to the movement of data from RAM (memory) to disk (swap space) when the system is under memory pressure. In cybersecurity or cloud infrastructure contexts (like AWS), it's not a phrase you’d hear often in general conversation—but it can be relevant when discussing performance, incident analysis, or system stability, especially for EC2 instances, container workloads, or memory-sensitive applications.
+            -   "As it were."
+            -   "In a manner of speaking."
+            -   "If you will."
 
-    1. **EC2 Instance Monitoring:**
+        -   **In Conversation**:
+            -   `A`: "It sounds like you’re juggling a lot right now."
+            -   `B`: "Yeah, I’ve got too many balls in the air, so to speak."
+            -   `Meaning`: They are managing multiple tasks, not literally juggling.
 
-        > "We noticed the EC2 instance began to page out heavily due to an unoptimized Lambda function consuming excess memory—this led to slower response times and triggered our WAF rate-based rules."
+        By using **"so to speak"**, you're guiding the listener to interpret your words in a figurative way, adding a layer of subtlety to your communication.
 
-    2. **Security Incident Review:**
+        </details>
 
-        > "During the DDoS simulation, the server started paging out memory, causing critical processes to slow down—this could be exploited in a real attack scenario if not mitigated."
+    -   <details><summary style="font-size:20px;color:#FF1493">to that end</summary>
 
-    3. **CloudWatch Alert Setup:**
+        The phrase **"to that end"** is a formal expression used in English conversations to indicate **purpose or intent**. It connects a goal or objective to the action or plan being taken to achieve it.
 
-        > "We configured CloudWatch alarms to notify us when memory page-out activity spikes, as it might be an early sign of a memory exhaustion attack."
+        -   **When to Use "To That End"**
 
-    4. **Container Security:**
+            1. **To show alignment between an objective and a solution**:
 
-        > "The ECS task began paging out when memory usage exceeded the soft limit, which made the application vulnerable to timeouts and potential data leaks."
+                - It implies that whatever follows is being done to accomplish the previously mentioned goal.
 
-    5. **Auto Scaling Group Health:**
-        > "Instances in the auto scaling group were paging out during peak hours; we updated the launch template to use memory-optimized instances to prevent security degradation under load."
+            2. **To transition smoothly in formal or professional communication**:
+                - It’s often used in meetings, emails, or discussions to emphasize that an action is directed toward achieving a specific outcome.
 
-    #### Build out
+        -   **Examples**:
 
-    **Build out** means to expand, develop, or enhance something by adding more components or features. It is commonly used in business, technology, and construction contexts.
+            1. **In a professional context**:
 
-    -   _"We need to build out the API with additional endpoints."_
-        -   `Meaning`: Expand the API by adding more features.
-    -   _"The company is building out its cloud infrastructure."_
-        -   `Meaning`: Expanding and improving the cloud setup.
-    -   _"We are building out our sales team to support more clients."_
-        -   `Meaning`: Expanding the sales team by hiring more people.
-    -   _"They are building out a new office space."_
-        -   `Meaning`: Expanding or furnishing a physical location.
+                - "We need to improve customer retention. To that end, we’re implementing a loyalty rewards program."
+                - `Meaning`: The rewards program is being introduced to achieve the goal of improving retention.
 
-    #### cut in/out
+            2. **In a formal conversation**:
 
-    -   _You **cut out** for a second—can you repeat that?_
-    -   _Your voice keeps cutting out._
-    -   _The call **cut out** right in the middle._
+                - "Our focus is on reducing downtime. To that end, we’re investing in better server infrastructure."
+                - `Meaning`: The server upgrade is aligned with the goal of reducing downtime.
 
-    1. **Interrupting a conversation** (most common usage in human interactions)
+            3. **In everyday use**:
+                - "I want to improve my health. To that end, I’ve started exercising daily and eating more vegetables."
+                - `Meaning`: Exercising and eating healthier are actions taken to achieve better health.
 
-        - _Sorry to **cut in**, but I have a quick point._
-        - _He kept cutting in while I was speaking._
+        -   **Why Use It**
 
-    1. **Audio suddenly coming back or interjecting randomly** (less common, but still used technically)
+            -   **Provides clarity**: It links an action directly to its purpose.
+            -   **Enhances professionalism**: It’s commonly used in formal or workplace discussions.
+            -   **Avoids repetition**: It eliminates the need to re-state the goal in a sentence.
 
-        - _Your audio **cut in** for a second and then went silent again._
-        - _It cuts in and out—it’s hard to follow._
+        -   **Similar Phrases**:
 
-    #### carve out
+            -   "For this reason..."
+            -   "With this in mind..."
+            -   "Towards that goal..."
+            -   "In line with this objective..."
 
-    **"Carve out"** is a phrase that means to **create, establish, or allocate something by making deliberate effort or removing obstacles.**
+        -   **In a Conversation**:
 
-    1. **To Create or Allocate Time**
+            -   `A`: "We need to increase productivity without overwhelming the team."
+            -   `B`: "To that end, we could introduce automation tools to streamline repetitive tasks."
 
-        - _"I need to carve out some time for this project."_
-        - `Meaning`: I need to set aside or allocate time for this project.
+        </details>
 
-    2. **To Establish a Niche or Position**
+    -   <details><summary style="font-size:20px;color:#FF1493">Page out</summary>
 
-        - _"She carved out a successful career in data engineering."_
-        - `Meaning`: She built or established her career through effort and skill.
+            In the context of an on-call engineer's role, "page out" (or being "paged") refers to the process where the engineer is alerted—typically outside of regular working hours—about a system incident or issue that needs immediate attention.
 
-    3. **To Separate a Business or Unit**
+            -   **Trigger**:
 
-        - _"The company decided to carve out its cloud division into a separate entity."_
-        - `Meaning`: The company separated its cloud division to function independently.
+                > A monitoring or alerting system (e.g., AWS CloudWatch, Datadog, Prometheus, etc.) detects a critical problem—like a service outage, high error rate, or infrastructure failure.
 
-    4. **To Physically Remove or Cut Out Something**
-        - _"They carved out a path through the dense forest."_
-        - `Meaning`: They physically cleared a path by cutting through obstacles.
+            -   **Alert**:
 
-    #### Looking forward
+                > The system sends a notification (a "page") to the on-call engineer via SMS, phone call, push notification, or email using tools like PagerDuty, Opsgenie, or VictorOps.
 
-    **"Looking forward"** is commonly used in professional and casual settings to express anticipation or excitement about a future event. Here’s how to use it correctly:
+            -   **Response**:
+                > The on-call engineer is expected to acknowledge the alert quickly and investigate or remediate the issue as soon as possible, often under pressure.
 
-    -   **"Looking forward to" + noun (or gerund)**: Used when anticipating something specific.
+            The phrase **page out** typically refers to the movement of data from RAM (memory) to disk (swap space) when the system is under memory pressure. In cybersecurity or cloud infrastructure contexts (like AWS), it's not a phrase you’d hear often in general conversation—but it can be relevant when discussing performance, incident analysis, or system stability, especially for EC2 instances, container workloads, or memory-sensitive applications.
 
-        -   _"I am looking forward to the meeting tomorrow."_
-        -   _"We are looking forward to working with you."_
+            1. **EC2 Instance Monitoring:**
 
-        -   **Incorrect:** _"I am looking forward to meet you."_  
-            (Use **"meeting"** instead of **"meet"** because "to" is a preposition here.)
+                > "We noticed the EC2 instance began to page out heavily due to an unoptimized Lambda function consuming excess memory—this led to slower response times and triggered our WAF rate-based rules."
 
-    -   **"Looking forward to" at the end of emails/messages**: Often used in business emails as a polite closing.
+            2. **Security Incident Review:**
 
-        -   _"Looking forward to your response."_
-        -   _"Looking forward to hearing from you soon."_
+                > "During the DDoS simulation, the server started paging out memory, causing critical processes to slow down—this could be exploited in a real attack scenario if not mitigated."
 
-    -   **"Looking forward" without "to"**: Less common, but used informally.
+            3. **CloudWatch Alert Setup:**
 
-        -   _"I’m really looking forward!"_ _(Only if the context is clear, like in a conversation.)_
+                > "We configured CloudWatch alarms to notify us when memory page-out activity spikes, as it might be an early sign of a memory exhaustion attack."
 
-    -   **Examples in a Work Context (Data Engineering)**
+            4. **Container Security:**
 
-        _"I’m looking forward to deploying the new ETL pipeline."_
-        _"Looking forward to discussing AWS Glue optimizations in our next meeting."_
+                > "The ECS task began paging out when memory usage exceeded the soft limit, which made the application vulnerable to timeouts and potential data leaks."
 
-    #### across
+            5. **Auto Scaling Group Health:**
+                > "Instances in the auto scaling group were paging out during peak hours; we updated the launch template to use memory-optimized instances to prevent security degradation under load."
 
-    The word **"across"** can be used in different ways in English sentences. Here are the common usages with examples:
+        </details>
 
-    1. **As a Preposition (Showing Movement or Position)**: It means **from one side to another** or **on the other side of something**.
+    -   <details><summary style="font-size:20px;color:#FF1493">Build out</summary>
 
-        - `Movement`:
+        **Build out** means to expand, develop, or enhance something by adding more components or features. It is commonly used in business, technology, and construction contexts.
 
-            - "She walked across the street."
-            - "We traveled across the country by train."
+        -   _"We need to build out the API with additional endpoints."_
+            -   `Meaning`: Expand the API by adding more features.
+        -   _"The company is building out its cloud infrastructure."_
+            -   `Meaning`: Expanding and improving the cloud setup.
+        -   _"We are building out our sales team to support more clients."_
+            -   `Meaning`: Expanding the sales team by hiring more people.
+        -   _"They are building out a new office space."_
+            -   `Meaning`: Expanding or furnishing a physical location.
 
-        - `Position`:
-            - "There is a coffee shop across the road."
-            - "His office is across the hall from mine."
+        </details>
 
-    2. **As an Adverb (Indicating Direction or Spread)**: It means **horizontally or covering a large area**.
+    -   <details><summary style="font-size:20px;color:#FF1493">cut in/out/over</summary>
 
-        - "She looked across at him and smiled."
-        - "News about the event spread across social media quickly."
-        - "The bridge goes across the river."
+        -   > You **cut out** for a second—can you repeat that?
+        -   > Your voice keeps cutting out.
+        -   > The call **cut out** right in the middle.
 
-    3. **As "Across From" (Indicating Opposite Position)**: It means **directly opposite to something**.
+        1. **Interrupting a conversation** (most common usage in human interactions)
 
-        - "The hotel is **across from** the park."
-        - "He sat **across from** me at the meeting."
+            - > Sorry to **cut in**, but I have a quick point.
+            - > He kept cutting in while I was speaking.
 
-    4. **As an Idiomatic or Abstract Meaning (Indicating Understanding or Effect)**: It means **being understood or experienced**.
+        2. **Audio suddenly coming back or interjecting randomly** (less common, but still used technically)
 
-        - "I tried to get my point across, but they didn’t understand."
-        - "The teacher communicated the concept across very well."
+            - > Your audio **cut in** for a second and then went silent again.
+            - > It cuts in and out—it’s hard to follow.
 
-    #### As a matter of the fact
+        </details>
 
-    #### The more ... the more
+    -   <details><summary style="font-size:20px;color:#FF1493">carve out</summary>
 
-    5.  **The more** I practice coding, the more confident I become.
-    6.  **The more** I engage with different Jira tickets that involve troubleshooting, automation, and AWS services, **the more** I realize how interconnected these concepts are and how much I still have to learn.
-    7.  **The more** I optimize my workflows by automating frequent tasks, **the more** I realize how much unnecessary manual effort I used to put in.
-    8.  **The more** I step out of my comfort zone and take on challenging tasks, **the more** I grow both as an engineer and as a problem-solver.
-    9.  **The more** we align on project goals and expectations early on, **the more** efficient and conflict-free our execution becomes.
-    10. **The more** I break down complex problems into smaller, manageable parts, **the more** effective and efficient my solutions become.
+        **"Carve out"** is a phrase that means to **create, establish, or allocate something by making deliberate effort or removing obstacles.**
+
+        1. **To Create or Allocate Time**
+
+            - _"I need to carve out some time for this project."_
+            - `Meaning`: I need to set aside or allocate time for this project.
+
+        2. **To Establish a Niche or Position**
+
+            - _"She carved out a successful career in data engineering."_
+            - `Meaning`: She built or established her career through effort and skill.
+
+        3. **To Separate a Business or Unit**
+
+            - _"The company decided to carve out its cloud division into a separate entity."_
+            - `Meaning`: The company separated its cloud division to function independently.
+
+        4. **To Physically Remove or Cut Out Something**
+            - _"They carved out a path through the dense forest."_
+            - `Meaning`: They physically cleared a path by cutting through obstacles.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">Looking forward</summary>
+
+        **"Looking forward"** is commonly used in professional and casual settings to express anticipation or excitement about a future event. Here’s how to use it correctly:
+
+        -   **"Looking forward to" + noun (or gerund)**: Used when anticipating something specific.
+
+            -   _"I am looking forward to the meeting tomorrow."_
+            -   _"We are looking forward to working with you."_
+
+            -   **Incorrect:** _"I am looking forward to meet you."_  
+                (Use **"meeting"** instead of **"meet"** because "to" is a preposition here.)
+
+        -   **"Looking forward to" at the end of emails/messages**: Often used in business emails as a polite closing.
+
+            -   _"Looking forward to your response."_
+            -   _"Looking forward to hearing from you soon."_
+
+        -   **"Looking forward" without "to"**: Less common, but used informally.
+
+            -   _"I’m really looking forward!"_ _(Only if the context is clear, like in a conversation.)_
+
+        -   **Examples in a Work Context (Data Engineering)**
+
+            _"I’m looking forward to deploying the new ETL pipeline."_
+            _"Looking forward to discussing AWS Glue optimizations in our next meeting."_
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">across</summary>
+
+        The word **"across"** can be used in different ways in English sentences. Here are the common usages with examples:
+
+        1. **As a Preposition (Showing Movement or Position)**: It means **from one side to another** or **on the other side of something**.
+
+            - `Movement`:
+
+                - "She walked across the street."
+                - "We traveled across the country by train."
+
+            - `Position`:
+                - "There is a coffee shop across the road."
+                - "His office is across the hall from mine."
+
+        2. **As an Adverb (Indicating Direction or Spread)**: It means **horizontally or covering a large area**.
+
+            - "She looked across at him and smiled."
+            - "News about the event spread across social media quickly."
+            - "The bridge goes across the river."
+
+        3. **As "Across From" (Indicating Opposite Position)**: It means **directly opposite to something**.
+
+            - "The hotel is **across from** the park."
+            - "He sat **across from** me at the meeting."
+
+        4. **As an Idiomatic or Abstract Meaning (Indicating Understanding or Effect)**: It means **being understood or experienced**.
+
+            - "I tried to get my point across, but they didn’t understand."
+            - "The teacher communicated the concept across very well."
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">As a matter of the fact</summary>
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">The more ... the more</summary>
+
+        1.  **The more** I practice coding, the more confident I become.
+        2.  **The more** I engage with different Jira tickets that involve troubleshooting, automation, and AWS services, **the more** I realize how interconnected these concepts are and how much I still have to learn.
+        3.  **The more** I optimize my workflows by automating frequent tasks, **the more** I realize how much unnecessary manual effort I used to put in.
+        4.  **The more** I step out of my comfort zone and take on challenging tasks, **the more** I grow both as an engineer and as a problem-solver.
+        5.  **The more** we align on project goals and expectations early on, **the more** efficient and conflict-free our execution becomes.
+        6.  **The more** I break down complex problems into smaller, manageable parts, **the more** effective and efficient my solutions become.
+
+        </details>
 
     </details>
 
 ---
 
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Idioms</summary>
+-   <details><summary style="font-size:25px;color:Orange">Word Anlysis</summary>
+
+    -   **Resources/Assets**:
+        -   `Resources` can refer to any data or helper files used by the software, including dynamic or localized content, configuration files, and external dependencies — and sometimes even compute/storage/network capacity in cloud-native environments. Exmples: `.json`, `.xml`, `.properties`, `.env`, `.yaml`, `Templates`.
+        -   `Assets` are usually static files or content that are packaged with your application or deployed alongside it. Examples: Images (.png, .svg), Fonts (.ttf, .woff), Videos, CSS files, JavaScript files, Favicon
+    -   **Cadence/Frequency**:
+
+        -   `Cadence`:
+        -   `Frequency`:
+
+    -   **Integration/Incorporation**:
+
+        -   `Integration`:
+        -   `Incorporation`:
+
+    -   **compliction/complexity**:
+
+        -   `compliction`:
+        -   `complexity`:
+
+    -   **Privition**/**Provide**:
+
+    -   **setup**/**config**:
+
+    -   **impact**/**effect**:
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">Idioms</summary>
 
     -   **beat around the bush** means to **avoid saying something directly**—usually because it’s uncomfortable, awkward, or hard to say. It’s often used when someone is taking too long to get to the point.
 
@@ -526,41 +612,11 @@
 
 ---
 
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Word Anlysis</summary>
+-   <details><summary style="font-size:25px;color:Orange">Common Technical Vocabulary</summary>
 
-    -   based off/in/out
-    -   call out/off/in/over
-    -   push out/off
-    -   cutover
-    -   wirte-off
-    -   hand off / handoffs
-    -   Span/Embad/Encompass
-    -   vigilant/deligent
-    -   rundown
-    -   scale up/down/in/out
-    -   ideal
-    -   redact
-    -   carve out
-    -   exploit
-    -   **Resources/Assets**:
-        -   `Resources` can refer to any data or helper files used by the software, including dynamic or localized content, configuration files, and external dependencies — and sometimes even compute/storage/network capacity in cloud-native environments. Exmples: `.json`, `.xml`, `.properties`, `.env`, `.yaml`, `Templates`.
-        -   `Assets` are usually static files or content that are packaged with your application or deployed alongside it. Examples: Images (.png, .svg), Fonts (.ttf, .woff), Videos, CSS files, JavaScript files, Favicon
-    -   **Cadence/Frequency**:
-
-        -   `Cadence`:
-        -   `Frequency`:
-
-    -   **Integration/Incorporation**:
-        -   `Integration`:
-        -   `Incorporation`:
-    -
-
-    </details>
-
----
-
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Common Technical Vocabulary</summary>
-
+    -   Streamline
+    -   Sluggish
+    -   seamless
     -   ephemeral
     -   breach
     -   abstrus
@@ -587,7 +643,6 @@
     -   hurtle
     -   tentative
     -   tungsten
-    -   breach
     -   facet
     -   debunk
     -   atrocity
@@ -676,34 +731,164 @@
 
 ---
 
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Common Technical Adverbs</summary>
+-   <details><summary style="font-size:25px;color:Orange">Common Technical Adverbs</summary>
 
     -   supposedly
     -   intentionaly
     -   deliberately
+    -   Ironicly
+    -   Idealy
 
     </details>
 
 ---
 
--   <details><summary style="font-size:22px;color:Orange;text-align:left">Hearing</summary>
+-   <details><summary style="font-size:25px;color:Orange">Useful Phrase</summary>
 
-    You can politely and professionally inform others about your hearing difficulty in a way that encourages understanding and cooperation. Here’s a polite way to say it in a conference room setting:
+    #### Commonly used English phrases that are useful in professional settings
 
-    -   `Option 1`: Before the Meeting Starts (Proactive Approach)
+    -   **Starting Conversations**
 
-        -   _"Hey everyone, I just wanted to mention that I have some difficulty hearing, especially in crowded settings or when voices come through speakers. If I ask for clarification or repetition, I appreciate your patience. It really helps if people speak clearly and directly. Thanks for your understanding!"_
+        -   "I hope this email/message finds you well."
+        -   "Thank you for taking the time to meet with me."
+        -   "I’d like to follow up on…"
+        -   "Could we schedule a time to discuss this further?"
+        -   "I wanted to touch base on…"
 
-    -   `Option 2`: If You’re Struggling During the Meeting
+    -   **Collaborating**
 
-        -   "Sorry, I’m having a little trouble hearing. Could you please speak up or repeat that? I sometimes struggle with voices through speakers or in large groups."
+        -   "Let’s align on our next steps."
+        -   "How can I support you with this?"
+        -   "Do you have the bandwidth to take this on?"
+        -   "Let’s circle back to this later."
+        -   "Can we brainstorm some ideas together?"
 
-    -   `Option 3`: If You’re Addressing the Host/Facilitator Privately
-        -   "Hey [Facilitator’s Name], just a quick note—I have some difficulty hearing, especially with speakers or in a crowd. If possible, I’d appreciate it if people could speak clearly or if key points could be repeated when needed. Thanks for understanding!"
+    -   **In Meetings**
 
-    These approaches keep the tone professional, clear, and considerate, while ensuring that others are aware of your needs. Let me know if you’d like to adjust the phrasing!
+        -   "Can everyone hear me okay?"
+        -   "Let’s do a quick round of introductions."
+        -   "Could you elaborate on that?"
+        -   "What are the key takeaways from this discussion?"
+        -   "Let’s table this topic for now and revisit it later."
 
-    -   **Example Explanation**: _"I wanted to share that I have some hearing difficulties. Specifically, I often hear sounds at a lower volume than they actually are, and sometimes the sounds are distorted or noisy, making it harder for me to understand speech. This can be especially difficult when there’s background noise or when voices come through speakers. I may ask for clarification or repetition from time to time, and I really appreciate your understanding and patience."_
+    -   **Requesting Help or Information**
+
+        -   "Could you provide more details on this?"
+        -   "I’d appreciate it if you could clarify..."
+        -   "Would you mind taking a look at this?"
+        -   "Do you have any insights on this matter?"
+        -   "Can you point me in the right direction?"
+
+    -   **Providing Feedback**
+
+        -   "I’d like to share some constructive feedback."
+        -   "What worked well here was..."
+        -   "One area for improvement could be..."
+        -   "This is great, but we might want to consider..."
+        -   "Have you thought about approaching it this way?"
+
+    -   **Acknowledging and Appreciating**
+
+        -   "Thank you for your hard work on this."
+        -   "I really appreciate your input."
+        -   "Great job on completing this ahead of schedule!"
+        -   "Your insights made a big difference."
+        -   "I value your perspective on this."
+
+    -   **Problem-Solving**
+
+        -   "Let’s identify the root cause of this issue."
+        -   "How can we prevent this from happening again?"
+        -   "What are our options here?"
+        -   "Let’s prioritize the most urgent tasks."
+        -   "Is there a way to simplify this process?"
+
+    -   **Making Suggestions**
+
+        -   "May I propose an alternative approach?"
+        -   "Here’s a potential solution to consider."
+        -   "What if we tried it this way instead?"
+        -   "This might be worth exploring further."
+        -   "Would it make sense to…?"
+
+    -   **Ending Conversations**
+
+        -   "Thank you for your time and input."
+        -   "Let’s reconnect on this next week."
+        -   "Please don’t hesitate to reach out if you have questions."
+        -   "Looking forward to our next discussion."
+        -   "I’ll follow up with you by [specific date/time]."
+
+    -   **Handling Disagreements**
+
+        -   "I see your point, but here’s another perspective..."
+        -   "Let’s focus on finding a common ground."
+        -   "I understand where you’re coming from, and here’s my thought process..."
+        -   "Could we revisit this with more data?"
+        -   "Let’s agree to disagree and move forward."
+
+    -   **Professional Etiquette**
+
+        -   "Excuse me, may I add something here?"
+        -   "Let me know if this time works for you."
+        -   "I’ll keep you updated on any changes."
+        -   "Can we revisit this once I have more information?"
+        -   "I appreciate your patience on this matter."
+
+    This phrase helps you sound focused, purposeful, and structured in your communication!
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">MISC</summary>
+
+    -   **False Positive** | **True Positive** | **False Negative** | **True Negative**: are commonly used in the context of classification, machine learning, cybersecurity, medical testing, etc. They describe the outcomes of a binary classification (yes/no, positive/negative) and help evaluate how accurate a system is.
+
+    -   ✅ 1. **True Positive (TP)**
+
+        -   The system **correctly identifies** a positive condition.
+
+        -   Example:
+
+            -   **Medical Test**: A patient **has a disease**, and the test correctly says **positive**.
+            -   **Security (WAF)**: An attack occurs, and the WAF **correctly blocks** it as a threat.
+
+    -   ❌ 2. **False Positive (FP)**
+
+        -   The system **incorrectly identifies** a negative condition as positive.
+
+        -   Example:
+
+            -   **Medical Test**: A patient is **healthy**, but the test wrongly says **positive**.
+            -   **Security (WAF)**: A normal user request is **blocked** by WAF thinking it’s an attack (but it's not).
+            -   **Spam Filter**: A legitimate email goes to the **spam folder**.
+
+    -   ❌ 3. **False Negative (FN)**
+
+        -   The system **misses** a positive condition — fails to detect it.
+
+        -   Example:
+
+            -   **Medical Test**: A patient **has a disease**, but the test wrongly says **negative**.
+            -   **Security (WAF)**: A malicious request **passes through** the WAF undetected.
+            -   **Email Security**: A phishing email is marked as **safe** and lands in the inbox.
+
+    -   ✅ 4. **True Negative (TN)**
+
+        -   The system **correctly identifies** a negative condition.
+
+        -   Example:
+
+            -   **Medical Test**: A patient is **healthy**, and the test correctly says **negative**.
+            -   **Security (WAF)**: A normal request is **allowed** through (correctly classified as safe).
+
+    -   🧠 Quick Visual (Confusion Matrix Perspective):
+
+        |                        | **Actual Positive**    | **Actual Negative**    |
+        | ---------------------- | ---------------------- | ---------------------- |
+        | **Predicted Positive** | ✅ True Positive (TP)  | ❌ False Positive (FP) |
+        | **Predicted Negative** | ❌ False Negative (FN) | ✅ True Negative (TN)  |
 
     </details>
 

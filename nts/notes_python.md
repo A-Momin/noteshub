@@ -1,7 +1,7 @@
 <details><summary style="font-size:30px;color:White;text-align:center">Python Terminology</summary>
 
 -   **PYTHONPATH**:
-    -   PYTHONPATH is an environment variable in Python that tells the interpreter where to locate the module files imported into a program. It is a colon-separated list of directories that the Python interpreter searches for modules when executing your code.
+    -   `PYTHONPATH` is an environment variable in Python that tells the interpreter where to locate the module files imported into a program. It is a colon-separated list of directories that the Python interpreter searches for modules when executing your code.
     -   When you try to import a module, Python looks for the module in the directories listed in sys.path. The PYTHONPATH environment variable allows you to customize this search path.
 -   **sys.path**: In your Python script, you can modify the sys.path list to include the directories containing your Python modules.
 
@@ -12,702 +12,773 @@
     import your_module
     ```
 
-<details><summary style="font-size:25px;color:Orange;text-align:left">Scope and Namespace</summary>
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Analyze Different Import Errors</summary>
 
--   [Scope and Execution Context](https://realpython.com/python-scope-legb-rule/)
--   [What Are Python Namespaces](https://code.tutsplus.com/tutorials/what-are-python-namespaces-and-why-are-they-needed--cms-28598)
+    -   **Absolute Import Errors**
 
-```python
-def check_namespace():
-    # Define a variable in the local (function) namespace
-    local_var = "I am in the local (function) namespace"
+        ```python
+        import mymodule
+        ```
 
-    # Use globals() to get a list of names in the global namespace
-    global_namespace = list(globals().keys())
+        -   When `mymodule.py` is in the Python path or the same directory.
+        -   **`ModuleNotFoundError: No module named 'mymodule'`**
+        -   Caused when `mymodule` is not in `sys.path`.
+        -   ✅ Fix: Ensure the module is in the working directory or use `PYTHONPATH`.
 
-    # Use locals() to get a list of names in the global namespace
-    local_namespace = list(locals().keys())
+    -   **Relative Import Errors**
 
-    # Use dir(__builtins__) to get a list of names in the built-in namespace
-    built_in_namespace = dir(__builtins__)
+        ```python
+        from ..utils import helper
+        ```
 
-    print(f"Local Namespace: \n\t{local_namespace}")
-    print(f"Global Namespace: \n\t{global_namespace}")
-    print(f"Built-in Namespace: \n\t{built_in_namespace}")
+        -   Only inside a **package** run using `python -m package.module`.
+        -   **`ImportError: attempted relative import with no known parent package`**
+        -   Caused when running a module as a script directly.
+        -   ✅ Fix: Run using the `-m` flag:
+        -   `python -m package.module`
 
-# Call the function to check namespaces
-check_namespace()
-```
+    -   **Circular Import Errors**
 
-##### What is Namespace in Python?
+        ```python
+        # a.py
+        from b import func_b
 
-A namespace is a container that holds a set of names and their corresponding objects, such as variables, functions, classes, etc. Namespaces are used to organize and manage the names used in a Python program to avoid naming conflicts.
+        # b.py
+        from a import func_a
+        ```
 
-There are several namespaces, which are essentially mappings from names to objects. These namespaces help organize and manage the names used in a Python program. Here are the main namespaces in Python:
+        -   **`ImportError` or `AttributeError: partially initialized module`**
+        -   Occurs when two modules import each other directly or indirectly.
+        -   ✅ Fix: Move imports inside functions or restructure the code.
 
--   **Built-in Namespace**:
+    -   **Wildcard Import Errors**
 
-    -   Contains built-in functions, exceptions, and types like print(), TypeError, int, etc.
-    -   Automatically available in all Python programs without needing to import anything.
+        ```python
+        from mymodule import *
+        ```
 
--   **Global Namespace**:
+        -   May import unintended names.
+        -   **Namespace pollution.**
+        -   **Cannot be used inside functions** (in Python 3+).
+        -   ✅ Fix: Avoid `*` imports. Use explicit imports.
 
-    -   Contains names defined at the top level of a module or script.
-    -   Variables, functions, classes, and other objects defined at the module level belong to the global namespace.
-    -   Accessible from anywhere within the module or script.
+    -   **File Name Conflicts**
 
--   **Local Namespace**:
+        ```python
+        import json
+        ```
 
-    -   Created when a function is called and destroyed when the function exits.
-    -   Contains names defined within the function.
-    -   Variables, parameters, and other objects defined inside a function belong to the local namespace.
-    -   Accessible only within the function where they are defined.
+        -   Having a local file named `json.py`.
 
--   **Enclosing Namespace (or Nonlocal Namespace)**:
+        > 🔥 Error: **`AttributeError: module 'json' has no attribute 'loads'`**
+        > ✅ Fix: Rename your file to avoid standard library conflicts.
 
-    -   Introduced by nested functions (functions defined inside other functions).
-    -   Contains names from the enclosing function's local namespace that are referenced in the nested function.
-    -   Allows nested functions to access variables from the enclosing scope.
+    -   **Missing `__init__.py` in Packages**
 
--   **Class Namespace**:
+        -   Trying to import from a subdirectory without `__init__.py` can fail (especially in older Python versions).
+            > ✅ Fix: Add `__init__.py` files to define a package structure.
 
-    -   Contains attributes (variables and methods) defined within a class.
-    -   Each class has its own namespace.
-    -   Class-level variables and methods are defined in this namespace.
-
--   **Instance Namespace**:
-
-    -   Created when an instance of a class is created.
-    -   Contains attributes specific to each instance of the class.
-    -   Instance variables are defined in this namespace and are unique to each instance.
-
--   **Module Namespace**:
-
-    -   Contains names defined within a module.
-    -   Similar to the global namespace but specific to individual modules.
-    -   All names defined in a module become attributes of the module object.
-
-These namespaces help Python manage the names used in a program, prevent naming conflicts, and provide scoping rules for variable access and resolution. Understanding namespaces is essential for writing clear, maintainable, and efficient Python code.
-
-When you use a name in your Python code, the interpreter looks for that name in the local namespace first, then in the enclosing namespace (if applicable), followed by the global namespace, and finally in the built-in namespace. This order is known as the LEGB rule (Local, Enclosing, Global, Built-in).
-
-##### What is Scope in Python?
-
-A scope is a block of code where an object in Python remains relevant. Every object in Python rvesides in a scope. The concept of scope rules how variables and names are looked up in your code. It determines the visibility of a variable within the code. The scope of a name or variable depends on the place in your code where you create that variable.
-
-In Python, scope refers to the region of a program where a particular variable is accessible and can be referenced. It defines the visibility and lifetime of a variable within a program. Python has four main types of scope:
-
--   `Local Scope` (Function Scope):
-
-    -   Variables defined within a function have a local scope.
-    -   Local variables can only be accessed within the function where they are defined.
-    -   The lifetime of local variables is limited to the execution of the function. Once the function completes its execution, the local variables are destroyed.
-    -   If a variable with the same name exists in both the local and global scope, the local variable takes precedence inside the function.
-
--   `Enclosing Scope` (Nested Function Scope):
-
-    -   When functions are defined within other functions (nested functions), they create an enclosing scope.
-    -   Variables in the enclosing scope are accessible to the nested function, but not to the outermost (global) scope.
-    -   The enclosing scope allows inner functions to access variables from outer functions, but not vice versa.
-
--   `Global Scope`:
-
-    -   Variables defined at the top level of a Python program or in a module have a global scope.
-    -   Global variables can be accessed from any part of the code, including inside functions.
-    -   The lifetime of global variables lasts throughout the entire program's execution.
-    -   To modify a global variable from within a function, you need to use the global keyword to indicate that you are referring to the global variable and not creating a new local variable.
-
--   `Built-in Scope`:
-    -   The built-in scope contains all the names of Python's built-in functions, such as print(), len(), etc.
-    -   These built-in names are available globally in any part of the code without the need to import anything.
-
-Note: Local scope objects can be synced with global scope objects using keywords such as `global`.
-
--   Names and Scopes in Python
-
-    -   Since Python is a dynamically-typed language, variables in Python come into existence when you first assign them a value. On the other hand, functions and classes are available after you define them using `def` or `class`, respectively. Finally, modules exist after you import them. As a summary, you can create Python names through one of the following operations:
-
-    -   Assignments, Import operations, Function definitions, Argument definitions in the context of functions, Class definitions.
-
--   Python Scope vs Namespace
-
-    -   In Python, the concept of scope is closely related to the concept of the namespace. As you’ve learned so far, a Python scope determines where in your program a name is visible. Python scopes are implemented as dictionaries that map names to objects. These dictionaries are commonly called namespaces. These are the concrete mechanisms that Python uses to store names. They’re stored in a special attribute called `.__dict__`.
-
-    -   Names at the top level of a module are stored in the module’s namespace. In other words, they’re stored in the module’s `.__dict__` attribute.
-
-```python
-for a in range(2):
-    x = 'global {}'.format(a)
-
-
-def outer():
-    global global_var
-    global_var = 'Global variable is accessable everywhere'
-
-    for b in range(6):
-        x = randint(0, 10)
-        x = 'x = {}, this value is from {}'.format(x, 'outer(...)')
-        y1 = 'from the first for loop'
-
-    def inner():
-        x = 4
-        x = 'x = 4, this value is from {}'.format('inner(...)')
-        y2 = 'form the second for loop'
-
-        print(x, y1, y2, global_var, sep='\n')
-    print(x)
-    inner()
-
-outer()
-```
-
-#### Name Mangling in Python
-
-Name mangling in Python is a mechanism for making class attributes more "private" and for avoiding name clashes when subclassing. It involves adding a prefix to an attribute's name to make it harder to access or accidentally override from outside the class. It's a way to provide some level of "name privacy" within a class, although it's not a security feature and can still be bypassed if necessary. Here are the gory details of Python name mangling:
-
--   `Double Underscore Prefix (__)`: Name mangling begins when an attribute name in a class is prefixed with a double underscore (e.g., \_\_attribute_name). This is a convention, and it signals to developers that this attribute is intended to be "private" to the class.
-
--   `Name Transformation`: When Python encounters an attribute with a double underscore prefix, it transforms the attribute's name. Specifically, it adds a prefix to the attribute name, consisting of an underscore and the name of the class where the attribute is defined. For example, if you have a class called MyClass with a double underscore attribute **\_\_private_var_2**, Python internally renames it to **\_MyClass\_\_private_var_2**.
-
-    ```python
-    class MyClass:
-        def __init__(self):
-            self._private_var_1 = 42
-            self.__private_var_2 = 420
-    ```
-
--   `Accessing Mangled Attributes`: To access a name-mangled attribute from outside the class, you need to use the mangled name, which includes the class name as a prefix:
-
-    ```python
-    obj = MyClass()
-    print(obj._MyClass__private_var_2)  # Accesses the name-mangled attribute.
-    ```
-
-    -   This helps avoid naming conflicts between attributes in different classes and subclasses.
-
--   `Name Mangling Is Not Strict Encapsulation`: It's important to note that name mangling is a convention rather than a strict security feature. It does make it less likely for developers to accidentally override or access "private" attributes, but it can still be bypassed. If you know the mangled name, you can access or modify the attribute:
-
-    ```python
-    obj._MyClass__private_var_2 = 100 # Modifies the mangled attribute.
-    ```
-
--   `Use Cases`: Name mangling is often used to indicate to other developers that an attribute is intended to be private and should not be accessed directly from outside the class. It is also used to prevent accidental name clashes when subclassing. It's especially useful when creating library code, where you want to provide a level of encapsulation without preventing users of your library from accessing or modifying attributes when necessary.
-
-In summary, name mangling in Python involves transforming attribute names with double underscores into names that include the class name as a prefix to avoid naming conflicts. However, it's a convention rather than a strict enforcement of privacy, and developers can still access mangled attributes if they know the mangled names.
-
-</details>
+    </details>
 
 ---
 
-<details><summary style="font-size:25px;color:Orange;text-align:left">Arguments <b style="color:red"> * args </b> and <b style="color:red"> ** kwargs </b></summary>
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Scope and Namespace</summary>
 
-In Python, unpacking operators allow you to expand elements from iterable objects, such as lists, tuples, or dictionaries, into individual elements or variables. There are three main unpacking operators: `*` for iterable unpacking, `**` for dictionary unpacking, and `*` in function arguments.
-
--   **Iterable Unpacking** (`*`):
-
-    -   Used to unpack elements from an iterable (e.g., list or tuple).
-    -   The `*` operator is placed before an iterable variable to unpack its elements.
+    -   [Scope and Execution Context](https://realpython.com/python-scope-legb-rule/)
+    -   [What Are Python Namespaces](https://code.tutsplus.com/tutorials/what-are-python-namespaces-and-why-are-they-needed--cms-28598)
 
     ```python
-    # Example of iterable unpacking
-    original_list = [1, 2, 3]
-    unpacked_list = [*original_list, 4, 5]
-    print(unpacked_list)  # Output: [1, 2, 3, 4, 5]
+    def check_namespace():
+        # Define a variable in the local (function) namespace
+        local_var = "I am in the local (function) namespace"
 
-    # Unpacking a list into variables
-    first, *rest = [1, 2, 3, 4, 5]
-    print(first)  # Output: 1
-    print(rest)   # Output: [2, 3, 4, 5]
+        # Use globals() to get a list of names in the global namespace
+        global_namespace = list(globals().keys())
+
+        # Use locals() to get a list of names in the global namespace
+        local_namespace = list(locals().keys())
+
+        # Use dir(__builtins__) to get a list of names in the built-in namespace
+        built_in_namespace = dir(__builtins__)
+
+        print(f"Local Namespace: \n\t{local_namespace}")
+        print(f"Global Namespace: \n\t{global_namespace}")
+        print(f"Built-in Namespace: \n\t{built_in_namespace}")
+
+    # Call the function to check namespaces
+    check_namespace()
     ```
 
--   **Dictionary Unpacking** (`**`):
+    ##### What is Namespace in Python?
 
-    -   Used to unpack key-value pairs from a dictionary.
-    -   The `**` operator is placed before a dictionary variable to unpack its key-value pairs.
+    A namespace is a container that holds a set of names and their corresponding objects, such as variables, functions, classes, etc. Namespaces are used to organize and manage the names used in a Python program to avoid naming conflicts.
+
+    There are several namespaces, which are essentially mappings from names to objects. These namespaces help organize and manage the names used in a Python program. Here are the main namespaces in Python:
+
+    -   **Built-in Namespace**:
+
+        -   Contains built-in functions, exceptions, and types like print(), TypeError, int, etc.
+        -   Automatically available in all Python programs without needing to import anything.
+
+    -   **Global Namespace**:
+
+        -   Contains names defined at the top level of a module or script.
+        -   Variables, functions, classes, and other objects defined at the module level belong to the global namespace.
+        -   Accessible from anywhere within the module or script.
+
+    -   **Local Namespace**:
+
+        -   Created when a function is called and destroyed when the function exits.
+        -   Contains names defined within the function.
+        -   Variables, parameters, and other objects defined inside a function belong to the local namespace.
+        -   Accessible only within the function where they are defined.
+
+    -   **Enclosing Namespace (or Nonlocal Namespace)**:
+
+        -   Introduced by nested functions (functions defined inside other functions).
+        -   Contains names from the enclosing function's local namespace that are referenced in the nested function.
+        -   Allows nested functions to access variables from the enclosing scope.
+
+    -   **Class Namespace**:
+
+        -   Contains attributes (variables and methods) defined within a class.
+        -   Each class has its own namespace.
+        -   Class-level variables and methods are defined in this namespace.
+
+    -   **Instance Namespace**:
+
+        -   Created when an instance of a class is created.
+        -   Contains attributes specific to each instance of the class.
+        -   Instance variables are defined in this namespace and are unique to each instance.
+
+    -   **Module Namespace**:
+
+        -   Contains names defined within a module.
+        -   Similar to the global namespace but specific to individual modules.
+        -   All names defined in a module become attributes of the module object.
+
+    These namespaces help Python manage the names used in a program, prevent naming conflicts, and provide scoping rules for variable access and resolution. Understanding namespaces is essential for writing clear, maintainable, and efficient Python code.
+
+    When you use a name in your Python code, the interpreter looks for that name in the local namespace first, then in the enclosing namespace (if applicable), followed by the global namespace, and finally in the built-in namespace. This order is known as the LEGB rule (Local, Enclosing, Global, Built-in).
+
+    ##### What is Scope in Python?
+
+    A scope is a block of code where an object in Python remains relevant. Every object in Python rvesides in a scope. The concept of scope rules how variables and names are looked up in your code. It determines the visibility of a variable within the code. The scope of a name or variable depends on the place in your code where you create that variable.
+
+    In Python, scope refers to the region of a program where a particular variable is accessible and can be referenced. It defines the visibility and lifetime of a variable within a program. Python has four main types of scope:
+
+    -   `Local Scope` (Function Scope):
+
+        -   Variables defined within a function have a local scope.
+        -   Local variables can only be accessed within the function where they are defined.
+        -   The lifetime of local variables is limited to the execution of the function. Once the function completes its execution, the local variables are destroyed.
+        -   If a variable with the same name exists in both the local and global scope, the local variable takes precedence inside the function.
+
+    -   `Enclosing Scope` (Nested Function Scope):
+
+        -   When functions are defined within other functions (nested functions), they create an enclosing scope.
+        -   Variables in the enclosing scope are accessible to the nested function, but not to the outermost (global) scope.
+        -   The enclosing scope allows inner functions to access variables from outer functions, but not vice versa.
+
+    -   `Global Scope`:
+
+        -   Variables defined at the top level of a Python program or in a module have a global scope.
+        -   Global variables can be accessed from any part of the code, including inside functions.
+        -   The lifetime of global variables lasts throughout the entire program's execution.
+        -   To modify a global variable from within a function, you need to use the global keyword to indicate that you are referring to the global variable and not creating a new local variable.
+
+    -   `Built-in Scope`:
+        -   The built-in scope contains all the names of Python's built-in functions, such as print(), len(), etc.
+        -   These built-in names are available globally in any part of the code without the need to import anything.
+
+    Note: Local scope objects can be synced with global scope objects using keywords such as `global`.
+
+    -   Names and Scopes in Python
+
+        -   Since Python is a dynamically-typed language, variables in Python come into existence when you first assign them a value. On the other hand, functions and classes are available after you define them using `def` or `class`, respectively. Finally, modules exist after you import them. As a summary, you can create Python names through one of the following operations:
+
+        -   Assignments, Import operations, Function definitions, Argument definitions in the context of functions, Class definitions.
+
+    -   Python Scope vs Namespace
+
+        -   In Python, the concept of scope is closely related to the concept of the namespace. As you’ve learned so far, a Python scope determines where in your program a name is visible. Python scopes are implemented as dictionaries that map names to objects. These dictionaries are commonly called namespaces. These are the concrete mechanisms that Python uses to store names. They’re stored in a special attribute called `.__dict__`.
+
+        -   Names at the top level of a module are stored in the module’s namespace. In other words, they’re stored in the module’s `.__dict__` attribute.
 
     ```python
-    # Example of dictionary unpacking
-    original_dict = {'a': 1, 'b': 2}
-    unpacked_dict = {**original_dict, 'c': 3}
-    print(unpacked_dict)  # Output: {'a': 1, 'b': 2, 'c': 3}
+    for a in range(2):
+        x = 'global {}'.format(a)
 
-    # Unpacking elements for a function call
-    values = [1, 2, 3, 4, 5]
-    print(*values)  # Output: 1 2 3 4 5
 
-    # Unpacking a dictionary's keys and values into a function
-    person = {'name': 'John', 'age': 30, 'city': 'New York'}
-    print(**person)  # Output: name=John age=30 city=New York
+    def outer():
+        global global_var
+        global_var = 'Global variable is accessable everywhere'
+
+        for b in range(6):
+            x = randint(0, 10)
+            x = 'x = {}, this value is from {}'.format(x, 'outer(...)')
+            y1 = 'from the first for loop'
+
+        def inner():
+            x = 4
+            x = 'x = 4, this value is from {}'.format('inner(...)')
+            y2 = 'form the second for loop'
+
+            print(x, y1, y2, global_var, sep='\n')
+        print(x)
+        inner()
+
+    outer()
     ```
 
--   **Function Arguments** (`*`):
+    #### Name Mangling in Python
 
-    -   Used in function definitions and calls to handle variable numbers of arguments.
-    -   The `*` operator in a function definition collects positional arguments into a tuple.
-    -   The `*` operator in a function call unpacks elements from an iterable into positional arguments.
+    Name mangling in Python is a mechanism for making class attributes more "private" and for avoiding name clashes when subclassing. It involves adding a prefix to an attribute's name to make it harder to access or accidentally override from outside the class. It's a way to provide some level of "name privacy" within a class, although it's not a security feature and can still be bypassed if necessary. Here are the gory details of Python name mangling:
+
+    -   `Double Underscore Prefix (__)`: Name mangling begins when an attribute name in a class is prefixed with a double underscore (e.g., \_\_attribute_name). This is a convention, and it signals to developers that this attribute is intended to be "private" to the class.
+
+    -   `Name Transformation`: When Python encounters an attribute with a double underscore prefix, it transforms the attribute's name. Specifically, it adds a prefix to the attribute name, consisting of an underscore and the name of the class where the attribute is defined. For example, if you have a class called MyClass with a double underscore attribute **\_\_private_var_2**, Python internally renames it to **\_MyClass\_\_private_var_2**.
+
+        ```python
+        class MyClass:
+            def __init__(self):
+                self._private_var_1 = 42
+                self.__private_var_2 = 420
+        ```
+
+    -   `Accessing Mangled Attributes`: To access a name-mangled attribute from outside the class, you need to use the mangled name, which includes the class name as a prefix:
+
+        ```python
+        obj = MyClass()
+        print(obj._MyClass__private_var_2)  # Accesses the name-mangled attribute.
+        ```
+
+        -   This helps avoid naming conflicts between attributes in different classes and subclasses.
+
+    -   `Name Mangling Is Not Strict Encapsulation`: It's important to note that name mangling is a convention rather than a strict security feature. It does make it less likely for developers to accidentally override or access "private" attributes, but it can still be bypassed. If you know the mangled name, you can access or modify the attribute:
+
+        ```python
+        obj._MyClass__private_var_2 = 100 # Modifies the mangled attribute.
+        ```
+
+    -   `Use Cases`: Name mangling is often used to indicate to other developers that an attribute is intended to be private and should not be accessed directly from outside the class. It is also used to prevent accidental name clashes when subclassing. It's especially useful when creating library code, where you want to provide a level of encapsulation without preventing users of your library from accessing or modifying attributes when necessary.
+
+    In summary, name mangling in Python involves transforming attribute names with double underscores into names that include the class name as a prefix to avoid naming conflicts. However, it's a convention rather than a strict enforcement of privacy, and developers can still access mangled attributes if they know the mangled names.
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Arguments <b style="color:red"> * args </b> and <b style="color:red"> ** kwargs </b></summary>
+
+    In Python, unpacking operators allow you to expand elements from iterable objects, such as lists, tuples, or dictionaries, into individual elements or variables. There are three main unpacking operators: `*` for iterable unpacking, `**` for dictionary unpacking, and `*` in function arguments.
+
+    -   **Iterable Unpacking** (`*`):
+
+        -   Used to unpack elements from an iterable (e.g., list or tuple).
+        -   The `*` operator is placed before an iterable variable to unpack its elements.
+
+        ```python
+        # Example of iterable unpacking
+        original_list = [1, 2, 3]
+        unpacked_list = [*original_list, 4, 5]
+        print(unpacked_list)  # Output: [1, 2, 3, 4, 5]
+
+        # Unpacking a list into variables
+        first, *rest = [1, 2, 3, 4, 5]
+        print(first)  # Output: 1
+        print(rest)   # Output: [2, 3, 4, 5]
+        ```
+
+    -   **Dictionary Unpacking** (`**`):
+
+        -   Used to unpack key-value pairs from a dictionary.
+        -   The `**` operator is placed before a dictionary variable to unpack its key-value pairs.
+
+        ```python
+        # Example of dictionary unpacking
+        original_dict = {'a': 1, 'b': 2}
+        unpacked_dict = {**original_dict, 'c': 3}
+        print(unpacked_dict)  # Output: {'a': 1, 'b': 2, 'c': 3}
+
+        # Unpacking elements for a function call
+        values = [1, 2, 3, 4, 5]
+        print(*values)  # Output: 1 2 3 4 5
+
+        # Unpacking a dictionary's keys and values into a function
+        person = {'name': 'John', 'age': 30, 'city': 'New York'}
+        print(**person)  # Output: name=John age=30 city=New York
+        ```
+
+    -   **Function Arguments** (`*`):
+
+        -   Used in function definitions and calls to handle variable numbers of arguments.
+        -   The `*` operator in a function definition collects positional arguments into a tuple.
+        -   The `*` operator in a function call unpacks elements from an iterable into positional arguments.
+
+        ```python
+        # Example of function arguments unpacking
+        def example_function(*args):
+            print(args)
+
+        elements_to_unpack = [1, 2, 3]
+        example_function(*elements_to_unpack)  # Output: (1, 2, 3)
+        ```
+
+        -   In this example, *args in the function definition collects the positional arguments into a tuple, and *elements_to_unpack in the function call unpacks the elements from the list into positional arguments.
+
+    Unpacking operators provide a concise and flexible way to work with iterable objects and function arguments in Python.
+
+    #### Variable-Length Arguments and Key-word Arguments
+
+    ##### What does `*args` and `**kwargs` mean?
+
+    `*args` and `**kwargs` are used to pass a variable number of arguments to a function. They provide flexibility when defining functions, allowing them to accept an arbitrary number of positional and keyword arguments, respectively.
+
+    -   **\*args**:
+
+        -   `*args` is a special syntax used in the function definition to pass variable-length arguments.
+        -   `*` means variable length and `args` is the name used by convention. You can use any other.
+
+    -   **\*\*kwargs**:
+
+        -   `**kwargs` is a special syntax used in the function definition to pass variable-length keyworded arguments.
+        -   Here, also, `kwargs` is used just by convention. You can use any other name.
+        -   Keyworded argument means a variable that has a name when passed to a function.
+        -   It is actually a dictionary of the variable names and its value.
+
+        ```python
+        def test_args(first_arg, *args, **kwargs):
+            kwargs = {"_int": 100, **kwargs}
+            args = (*args,50)
+            print(args[-1])
+
+            if kwargs.get('_int'): kwargs['_int'] = kwargs['_int'] + 10
+            if kwargs.get('my_int2'): kwargs['my_int'] = kwargs['my_int'] + 20
+
+            print(first_arg, args, kwargs, sep='\n')
+
+
+        test_args('test_arg1', 'first_arg', [2]*3, 'test_arg2', _str="kwarg#2", _int=30)
+        ```
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Decorator</summary>
+
+    A decorator is a design pattern that allows you to extend or modify the behavior of a callable object (functions, methods, or classes) without modifying its source code. Decorators are applied using the `@decorator` syntax, where decorator is a function or a class that takes a function as an argument and returns a new function.
+
+    Decorators are commonly used for various purposes, such as logging, authorization, caching, and code instrumentation. They provide a clean and reusable way to extend the functionality of functions or methods. Additionally, Python has some built-in decorators (e.g., `@staticmethod`, `@classmethod`, `@property`) and third-party libraries offer many more for different use cases.
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Iterator</summary>
+
+
+    ##### What are **Iterators** in Python?
+
+    An iterator is an object that provide the mechanics to iterate over a stream of data. Iterators are used to traverse through a sequence of elements, one at a time, and they implement two main methods:
+
+    **\_\_iter\_\_**: This method returns the iterator object itself. It is required for an object to be considered an iterator.
+
+    **\_\_next\_\_**: This method returns the next element from the iterator. When there are no more elements, it should raise the **StopIteration** exception to signal the end of the iteration.
+
+    To create an iterator in Python, you can define a class with the **\_\_iter\_\_** and **\_\_next\_\_** methods. Alternatively, you can use the **iter()** and **next()** functions to create and interact with iterators.
+
+    **Notes**:
+
+    -   It remembers its state i.e., where it is during iteration (see code below to see how)
+    -   It is also self-iterable.
+    -   Iterators are objects with which we can iterate over iterable objects like lists, strings, etc.
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Generator</summary>
+
+    Generators are iterable Python object, like lists or tuples, but they generate values on-the-fly instead of storing them in memory. They are implemented using functions that contain one or more `yield` statements. When a generator function is called, it doesn't get executed immediately. Instead, it returns a generator object, which can be iterated over using a for loop or by using the `next()` function. The key characteristics of generators are:
+
+    -   `Lazy Evaluation`: Generators get lazyly evaluated, meaning they produce values only when requested. Each time a value is requested from the generator, the function execution resumes from where it left off, continuing until it hits the next `yield` statement.
+
+    -   `Memory Efficiency`: Since generators do not store all the values in memory at once, they are memory-efficient, especially when dealing with large datasets or infinite sequences.
+
+    -   `Iteration`: Generators are iterable, and you can loop over them using a for loop. They produce values one at a time during iteration.
+
+    -   `Stateless`: Generators are stateless; they do not retain any information between iterations. Each time you iterate over a generator, it starts execution from the beginning of the iteration.
+
+    -   `Infinite Sequences`: Generators can be used to create infinite sequences or streams of data, where the values are generated on-the-fly as needed.
 
     ```python
-    # Example of function arguments unpacking
-    def example_function(*args):
-        print(args)
-
-    elements_to_unpack = [1, 2, 3]
-    example_function(*elements_to_unpack)  # Output: (1, 2, 3)
+    def fib(n):
+        """ Return all the fibonacci numbers less than or equal to n (a given number)"""
+        p, q = 0, 1
+        while (p <= n):
+            yield p
+            p, q = q, p + q
     ```
 
-    -   In this example, *args in the function definition collects the positional arguments into a tuple, and *elements_to_unpack in the function call unpacks the elements from the list into positional arguments.
+    ##### What is **Generator expression** in Python?
 
-Unpacking operators provide a concise and flexible way to work with iterable objects and function arguments in Python.
-
-#### Variable-Length Arguments and Key-word Arguments
-
-##### What does `*args` and `**kwargs` mean?
-
-`*args` and `**kwargs` are used to pass a variable number of arguments to a function. They provide flexibility when defining functions, allowing them to accept an arbitrary number of positional and keyword arguments, respectively.
-
--   **\*args**:
-
-    -   `*args` is a special syntax used in the function definition to pass variable-length arguments.
-    -   `*` means variable length and `args` is the name used by convention. You can use any other.
-
--   **\*\*kwargs**:
-
-    -   `**kwargs` is a special syntax used in the function definition to pass variable-length keyworded arguments.
-    -   Here, also, `kwargs` is used just by convention. You can use any other name.
-    -   Keyworded argument means a variable that has a name when passed to a function.
-    -   It is actually a dictionary of the variable names and its value.
+    A **generator expression** is a concise and memory-efficient way to create a generator on-the-fly. It has a similar syntax to a list comprehension, but it returns a generator object instead of a list. Generator expressions are denoted by parentheses `()` instead of square brackets `[]`, which are used for list comprehensions.
+    a generator expression is a concise way to create a generator on-the-fly, similar to how list comprehensions create lists. Generator expressions are more memory efficient than list comprehensions because they produce values lazily, only when needed, instead of storing the entire sequence in memory.
 
     ```python
-    def test_args(first_arg, *args, **kwargs):
-        kwargs = {"_int": 100, **kwargs}
-        args = (*args,50)
-        print(args[-1])
 
-        if kwargs.get('_int'): kwargs['_int'] = kwargs['_int'] + 10
-        if kwargs.get('my_int2'): kwargs['my_int'] = kwargs['my_int'] + 20
+    def squares_generator(n):
+        for i in range(n): yield i**2
 
-        print(first_arg, args, kwargs, sep='\n')
+    # Print the generator object
+    print(squares_generator)  # Output: <function squares_generator at 0x10f0913a0>
 
+    # print(next(squares_generator)) # TypeError: 'function' object is not an iterator
 
-    test_args('test_arg1', 'first_arg', [2]*3, 'test_arg2', _str="kwarg#2", _int=30)
+    for square in squares_generator(10): print(square)
     ```
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange;text-align:left">Decorator</summary>
-
-A decorator is a design pattern that allows you to extend or modify the behavior of a callable object (functions, methods, or classes) without modifying its source code. Decorators are applied using the `@decorator` syntax, where decorator is a function or a class that takes a function as an argument and returns a new function.
-
-Decorators are commonly used for various purposes, such as logging, authorization, caching, and code instrumentation. They provide a clean and reusable way to extend the functionality of functions or methods. Additionally, Python has some built-in decorators (e.g., `@staticmethod`, `@classmethod`, `@property`) and third-party libraries offer many more for different use cases.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange;text-align:left">Iterator</summary>
-
-##### What are **Iterators** in Python?
-
-An iterator is an object that provide the mechanics to iterate over a stream of data. Iterators are used to traverse through a sequence of elements, one at a time, and they implement two main methods:
-
-**\_\_iter\_\_**: This method returns the iterator object itself. It is required for an object to be considered an iterator.
-
-**\_\_next\_\_**: This method returns the next element from the iterator. When there are no more elements, it should raise the **StopIteration** exception to signal the end of the iteration.
-
-To create an iterator in Python, you can define a class with the **\_\_iter\_\_** and **\_\_next\_\_** methods. Alternatively, you can use the **iter()** and **next()** functions to create and interact with iterators.
-
-**Notes**:
-
--   It remembers its state i.e., where it is during iteration (see code below to see how)
--   It is also self-iterable.
--   Iterators are objects with which we can iterate over iterable objects like lists, strings, etc.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange;text-align:left">Generator</summary>
-
-Generators are iterable Python object, like lists or tuples, but they generate values on-the-fly instead of storing them in memory. They are implemented using functions that contain one or more `yield` statements. When a generator function is called, it doesn't get executed immediately. Instead, it returns a generator object, which can be iterated over using a for loop or by using the `next()` function. The key characteristics of generators are:
-
--   `Lazy Evaluation`: Generators get lazyly evaluated, meaning they produce values only when requested. Each time a value is requested from the generator, the function execution resumes from where it left off, continuing until it hits the next `yield` statement.
-
--   `Memory Efficiency`: Since generators do not store all the values in memory at once, they are memory-efficient, especially when dealing with large datasets or infinite sequences.
-
--   `Iteration`: Generators are iterable, and you can loop over them using a for loop. They produce values one at a time during iteration.
-
--   `Stateless`: Generators are stateless; they do not retain any information between iterations. Each time you iterate over a generator, it starts execution from the beginning of the iteration.
-
--   `Infinite Sequences`: Generators can be used to create infinite sequences or streams of data, where the values are generated on-the-fly as needed.
-
-```python
-def fib(n):
-    """ Return all the fibonacci numbers less than or equal to n (a given number)"""
-    p, q = 0, 1
-    while (p <= n):
-        yield p
-        p, q = q, p + q
-```
-
-##### What is **Generator expression** in Python?
-
-A **generator expression** is a concise and memory-efficient way to create a generator on-the-fly. It has a similar syntax to a list comprehension, but it returns a generator object instead of a list. Generator expressions are denoted by parentheses `()` instead of square brackets `[]`, which are used for list comprehensions.
-a generator expression is a concise way to create a generator on-the-fly, similar to how list comprehensions create lists. Generator expressions are more memory efficient than list comprehensions because they produce values lazily, only when needed, instead of storing the entire sequence in memory.
-
-```python
-
-def squares_generator(n):
-    for i in range(n): yield i**2
-
-# Print the generator object
-print(squares_generator)  # Output: <function squares_generator at 0x10f0913a0>
-
-# print(next(squares_generator)) # TypeError: 'function' object is not an iterator
-
-for square in squares_generator(10): print(square)
-```
-
-```python
-# Create a generator expression to generate squares of numbers from 1 to 5
-squares_generator = (x ** 2 for x in range(1, 6))
-
-# Print the generator object
-print(squares_generator)  # Output: <generator object <genexpr> at 0x7f0fe5c2e7b0>
-
-print(next(squares_generator))
-
-# Iterate over the generator and print each value
-for square in squares_generator: print(square)
-```
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange;text-align:left">Context Manager</summary>
-
-A context manager in Python is an object that is designed to be used with the **with** statement to <b style="color:green">set up</b> and <b style="color:green">tear down</b> resources, such as opening and closing a file, acquiring and releasing a lock, or connecting and disconnecting from a database. Context managers ensure that certain actions are taken before and after a block of code is executed. It defines two methods `__enter__()` and `__exit__()`. When the **with**-statement is executed, it calls the `__enter__()` method of the context manager, which initializes the setup process of the resources and return it. Then, the block of code inside the **with**-statement is executed. Finally, when the block is exited, the `__exit__()` method is called, which ensures the tear down process of the resources, even if an exception occurred within the block.
-
-The **with** statement provides a convenient and readable way to work with resources, and it guarantees that the resources are properly acquired and released even if an exception occurs within the block.
-
-```python
-with open('file.txt', 'r') as file:
-    content = file.read()
-    # Perform operations with the file
-
-# After the block, the file is automatically closed
-```
-
-In this example, the `open()` function returns a context manager object that represents the opened file. When the with-statement is executed, it calls the `__enter__()` method of the context manager, which initializes the file and returns it. Then, the block of code inside the with-statement is executed. Finally, when the block is exited, the `__exit__()` method is called, which ensures that the file is closed properly, even if an exception occurred within the block.
-
-The `contextlib` module provides a decorator `contextmanager` that simplifies the creation of context managers. It allows you to define a generator function with a single **yield** statement, where everything before the **yield** serves as the `__enter__` method, and everything after the **yield** serves as the `__exit__` method.
-
-```python
-from contextlib import contextmanager
-
-@contextmanager
-def open_db(file_name: str):
-    conn = sqlite3.connect(file_name)
-    try:
-        logging.info("Creating connection")
-        yield conn.cursor()
-    finally:
-        logging.info("Closing connection")
-        conn.commit()
-        conn.close()
-
-# ====================================================
-def main_decorator_version():
-    logging.basicConfig(level=logging.INFO)
-    with open_db(file_name=path+"/application.db") as cursor:
-        cursor.execute("SELECT * FROM blogs")
-        logging.info(cursor.fetchall())
-# =====================================================
-main_decorator_version()
-```
-
-#### Asynchronous Context Manager
-
-An Asynchronous Context Manager in Python is an object that supports asynchronous context management protocol. It allows you to define asynchronous resource management logic using the `async with` statement within asynchronous code (coroutines). Asynchronous context managers are used to acquire and release resources in an asynchronous manner, typically in scenarios where resource acquisition or release involves I/O-bound operations.
-
--   An asynchronous context manager is an object that implements `__aenter__()` and `__aexit__()` methods, similar to regular context managers (`__enter__()` and `__exit__()` methods).
--   When the `async with` statement is encountered, it calls the `__aenter__()` method of the asynchronous context manager object to acquire the resource asynchronously.
--   The result of `__aenter__()` (if any) is assigned to the <variable> specified in the `async with` statement.
--   The <statements> within the `async with` block are executed asynchronously.
--   After the <statements> are executed or if an exception occurs within the block, the `__aexit__()` method of the asynchronous context manager is called to release the acquired resource asynchronously.
-
-```python
-import asyncio
-
-class AsyncResource:
-    async def __aenter__(self):
-        print("Acquiring resource asynchronously")
-        await asyncio.sleep(1)  # Simulating asynchronous resource acquisition
-        return "Resource"
-
-    async def __aexit__(self, exc_type, exc_value, traceback):
-        print("Releasing resource asynchronously")
-        await asyncio.sleep(1)  # Simulating asynchronous resource release
-
-async def main():
-    async with AsyncResource() as resource:
-        print("Using resource:", resource)
-        # Perform asynchronous operations with resource
-
-asyncio.run(main())
-```
-
-Asynchronous context managers is particularly useful in asynchronous programming when working with resources that need to be acquired and released in an asynchronous manner, such as database connections, network sockets, or file I/O operations. It helps manage resources efficiently while ensuring proper cleanup even in the presence of exceptions.
-
-</details>
-
----
-
-<details><summary style="font-size:25px;color:Orange;text-align:left">Metaclass</summary>
-
-Metaclasses in Python are a powerful feature that allows you to customize the creation of classes and modify their attributes, methods, and behavior dynamically.
-
--   **Class of Classes**:
-    -   A metaclass is a class whose instances are themselves classes.
-    -   It defines how classes behave, just like classes define how instances of those classes behave.
--   **Customizing Class Creation**:
-    -   Metaclasses allow you to customize the creation of classes in Python.
-    -   By defining a metaclass, you can control aspects of class creation such as initialization, attribute handling, and method generation.
--   **Advanced Features**:
-    -   Metaclasses are often used for advanced Python features like singleton patterns, method interception, and class validation.
-    -   They provide a powerful mechanism for modifying and extending the behavior of classes in Python.
--   **Use Cases**: Metaclasses are often used for advanced customization and introspection tasks, such as:
-
-    -   Implementing class-level validation or enforcement of constraints.
-    -   Automatically generating methods or attributes based on class definitions.
-    -   Adding additional behavior or functionality to classes at creation time.
-    -   Implementing declarative programming patterns (e.g., defining database models).
-
--   **Example**: Enforcing Attribute Presence
 
     ```python
-    class AttributeEnforcer(type):
-        def __new__(cls, name, bases, dct):
-            print("Creating class:", name)
-            dct['created_by'] = 'AttributeEnforcer'
-            if 'required_attribute' not in dct:
-                raise TypeError(f"{name} is missing the required 'required_attribute' attribute")
-            return super().__new__(cls, name, bases, dct)
+    # Create a generator expression to generate squares of numbers from 1 to 5
+    squares_generator = (x ** 2 for x in range(1, 6))
 
-    # Use the metaclass to create a new class
-    class MyClassEnforced(metaclass=AttributeEnforcer):
-        required_attribute = "This is required"
+    # Print the generator object
+    print(squares_generator)  # Output: <generator object <genexpr> at 0x7f0fe5c2e7b0>
 
-    # This will raise an error
-    class MyInvalidClass(metaclass=AttributeEnforcer):
-        pass  # Missing 'required_attribute'
+    print(next(squares_generator))
+
+    # Iterate over the generator and print each value
+    for square in squares_generator: print(square)
     ```
 
--   **Dynamic Class Creation**:
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Context Manager</summary>
+
+    A context manager in Python is an object that is designed to be used with the **with** statement to <b style="color:green">set up</b> and <b style="color:green">tear down</b> resources, such as opening and closing a file, acquiring and releasing a lock, or connecting and disconnecting from a database. Context managers ensure that certain actions are taken before and after a block of code is executed. It defines two methods `__enter__()` and `__exit__()`. When the **with**-statement is executed, it calls the `__enter__()` method of the context manager, which initializes the setup process of the resources and return it. Then, the block of code inside the **with**-statement is executed. Finally, when the block is exited, the `__exit__()` method is called, which ensures the tear down process of the resources, even if an exception occurred within the block.
+
+    The **with** statement provides a convenient and readable way to work with resources, and it guarantees that the resources are properly acquired and released even if an exception occurs within the block.
 
     ```python
-    # Step 1: Define the class name, base classes, and attributes/methods
-    class_name = "Person"
-    base_classes = (object,)  # Using `object` as the base class
+    with open('file.txt', 'r') as file:
+        content = file.read()
+        # Perform operations with the file
 
-    # Define the class attributes and methods, including __init__
-    class_attributes = {
-        '__init__': lambda self, name, age: setattr(self, 'name', name) or setattr(self, 'age', age),
-        'greet': lambda self: f'Hello, my name is {self.name} and I am {self.age} years old.'
-    }
-
-    # Step 2: Create the class dynamically using `type()`
-    Person = type(class_name, base_classes, class_attributes)
-
-    # Step 3: Instantiate the class and access attributes/methods
-    person1 = Person("Alice", 30)
-    person2 = Person("Bob", 40)
-
-    print(person1.name)       # Output: Alice
-    print(person2.age)        # Output: 40
-    print(person1.greet())    # Output: Hello, my name is Alice and I am 30 years old.
+    # After the block, the file is automatically closed
     ```
 
-</details>
+    In this example, the `open()` function returns a context manager object that represents the opened file. When the with-statement is executed, it calls the `__enter__()` method of the context manager, which initializes the file and returns it. Then, the block of code inside the with-statement is executed. Finally, when the block is exited, the `__exit__()` method is called, which ensures that the file is closed properly, even if an exception occurred within the block.
+
+    The `contextlib` module provides a decorator `contextmanager` that simplifies the creation of context managers. It allows you to define a generator function with a single **yield** statement, where everything before the **yield** serves as the `__enter__` method, and everything after the **yield** serves as the `__exit__` method.
+
+    ```python
+    from contextlib import contextmanager
+
+    @contextmanager
+    def open_db(file_name: str):
+        conn = sqlite3.connect(file_name)
+        try:
+            logging.info("Creating connection")
+            yield conn.cursor()
+        finally:
+            logging.info("Closing connection")
+            conn.commit()
+            conn.close()
+
+    # ====================================================
+    def main_decorator_version():
+        logging.basicConfig(level=logging.INFO)
+        with open_db(file_name=path+"/application.db") as cursor:
+            cursor.execute("SELECT * FROM blogs")
+            logging.info(cursor.fetchall())
+    # =====================================================
+    main_decorator_version()
+    ```
+
+    #### Asynchronous Context Manager
+
+    An Asynchronous Context Manager in Python is an object that supports asynchronous context management protocol. It allows you to define asynchronous resource management logic using the `async with` statement within asynchronous code (coroutines). Asynchronous context managers are used to acquire and release resources in an asynchronous manner, typically in scenarios where resource acquisition or release involves I/O-bound operations.
+
+    -   An asynchronous context manager is an object that implements `__aenter__()` and `__aexit__()` methods, similar to regular context managers (`__enter__()` and `__exit__()` methods).
+    -   When the `async with` statement is encountered, it calls the `__aenter__()` method of the asynchronous context manager object to acquire the resource asynchronously.
+    -   The result of `__aenter__()` (if any) is assigned to the <variable> specified in the `async with` statement.
+    -   The <statements> within the `async with` block are executed asynchronously.
+    -   After the <statements> are executed or if an exception occurs within the block, the `__aexit__()` method of the asynchronous context manager is called to release the acquired resource asynchronously.
+
+    ```python
+    import asyncio
+
+    class AsyncResource:
+        async def __aenter__(self):
+            print("Acquiring resource asynchronously")
+            await asyncio.sleep(1)  # Simulating asynchronous resource acquisition
+            return "Resource"
+
+        async def __aexit__(self, exc_type, exc_value, traceback):
+            print("Releasing resource asynchronously")
+            await asyncio.sleep(1)  # Simulating asynchronous resource release
+
+    async def main():
+        async with AsyncResource() as resource:
+            print("Using resource:", resource)
+            # Perform asynchronous operations with resource
+
+    asyncio.run(main())
+    ```
+
+    Asynchronous context managers is particularly useful in asynchronous programming when working with resources that need to be acquired and released in an asynchronous manner, such as database connections, network sockets, or file I/O operations. It helps manage resources efficiently while ensuring proper cleanup even in the presence of exceptions.
+
+    </details>
 
 ---
 
-<details><summary style="font-size:25px;color:Orange;text-align:left">Module and Function</summary>
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Metaclass</summary>
 
-#### Built-in attributes of Python Module.
+    Metaclasses in Python are a powerful feature that allows you to customize the creation of classes and modify their attributes, methods, and behavior dynamically.
 
-In Python, modules are a way to organize code into reusable files. While modules can have various attributes and functions, there are a few built-in attributes that are commonly associated with modules.
+    -   **Class of Classes**:
+        -   A metaclass is a class whose instances are themselves classes.
+        -   It defines how classes behave, just like classes define how instances of those classes behave.
+    -   **Customizing Class Creation**:
+        -   Metaclasses allow you to customize the creation of classes in Python.
+        -   By defining a metaclass, you can control aspects of class creation such as initialization, attribute handling, and method generation.
+    -   **Advanced Features**:
+        -   Metaclasses are often used for advanced Python features like singleton patterns, method interception, and class validation.
+        -   They provide a powerful mechanism for modifying and extending the behavior of classes in Python.
+    -   **Use Cases**: Metaclasses are often used for advanced customization and introspection tasks, such as:
 
-Here are some of the key built-in attributes of a Python module:
+        -   Implementing class-level validation or enforcement of constraints.
+        -   Automatically generating methods or attributes based on class definitions.
+        -   Adding additional behavior or functionality to classes at creation time.
+        -   Implementing declarative programming patterns (e.g., defining database models).
 
--   `__name__`: This attribute holds the name of the module. If the module is the main program being executed, `__name__` is set to `__main__`. Otherwise, it is set to the module's name.
--   `__file__`: This attribute holds the path to the source file of the module, if available. It is None for built-in modules and modules that are dynamically generated.
--   `__dict__`: This attribute holds the dictionary that defines the module's namespace. It maps attribute names to their corresponding values.
--   `__builtins__`: This attribute holds a reference to the built-in namespace, which contains all the built-in functions, objects, and exceptions.
--   `__doc__`: This attribute holds the module's documentation (docstring), which is a string containing information about the module's purpose, usage, and more.
--   `__package__`: This attribute holds the name of the package that the module belongs to. It is None for top-level modules.
--   `__loader__`: This attribute holds a reference to the module's loader, which is responsible for loading the module. It is used for modules loaded using the importlib machinery.
--   `__spec__`: This attribute holds a reference to the module's specification, which is an object that encapsulates information about how the module is to be imported. It is used for modules loaded using the importlib machinery.
--   `__cached__`: This attribute holds the path to the compiled bytecode file of the module, if available. It is used to speed up subsequent imports by avoiding recompilation.
--   `__package__`: This attribute holds the name of the package that the module belongs to. It is set to None if the module is not part of a package.
--   `__cached__`: This attribute holds the path to the cached bytecode file associated with the module, if available.
--   `__path__`: This attribute is a list containing the paths to subdirectories within a package. It is set for packages, not individual modules.
+    -   **Example**: Enforcing Attribute Presence
 
-These built-in attributes provide information about the module's metadata, source file, and other properties. You can access them like any other attribute of the module. Keep in mind that some of these attributes might not be present in all modules, especially in built-in modules or dynamically generated modules.
+        ```python
+        class AttributeEnforcer(type):
+            def __new__(cls, name, bases, dct):
+                print("Creating class:", name)
+                dct['created_by'] = 'AttributeEnforcer'
+                if 'required_attribute' not in dct:
+                    raise TypeError(f"{name} is missing the required 'required_attribute' attribute")
+                return super().__new__(cls, name, bases, dct)
 
-```python
-def dir_help():
-    L = []
-    print(dir(object))
-    print(dir(L))
-    print(dir(dict))
+        # Use the metaclass to create a new class
+        class MyClassEnforced(metaclass=AttributeEnforcer):
+            required_attribute = "This is required"
 
-# print(__package__)
-# print(__builtins__)
-# print(__file__)
-# print(__name__)
-# print(__doc__)
-# dir_help()
-```
+        # This will raise an error
+        class MyInvalidClass(metaclass=AttributeEnforcer):
+            pass  # Missing 'required_attribute'
+        ```
 
-#### Built-in attributes of Python Functions.
+    -   **Dynamic Class Creation**:
 
-In Python, functions are first-class objects, which means they have special built-in attributes that provide information about the function itself. These attributes are prefixed and suffixed with double underscores (`__`).
+        ```python
+        # Step 1: Define the class name, base classes, and attributes/methods
+        class_name = "Person"
+        base_classes = (object,)  # Using `object` as the base class
 
-Here are some of the key special built-in attributes of a Python function:
+        # Define the class attributes and methods, including __init__
+        class_attributes = {
+            '__init__': lambda self, name, age: setattr(self, 'name', name) or setattr(self, 'age', age),
+            'greet': lambda self: f'Hello, my name is {self.name} and I am {self.age} years old.'
+        }
 
--   `__name__`: This attribute holds the name of the function as a string.
--   `__annotations__`: This attribute holds a dictionary containing function annotations, which provide additional information about function parameters and return values.
--   `__dict__`: This attribute holds the function's attribute dictionary, mapping attribute names to their corresponding values.
--   `__globals__`: This attribute holds a reference to the dictionary representing the global namespace in which the function was defined.
--   `__call__`: This attribute defines the behavior of the function when it is called. It allows the function to be callable like any other object.
--   `__defaults__`: This attribute holds a tuple containing default argument values for the function's parameters. If a parameter has no default value, its corresponding entry in the tuple is set to None.
--   `__module__`: This attribute holds the name of the module in which the function was defined. If the function is defined in the main program, it is set to "**main**".
--   `__doc__`: This attribute holds the function's documentation string (docstring), which provides information about the function's purpose, usage, and more.
--   `__code__`: This attribute holds the code object that represents the compiled function's bytecode.
--   `__closure__`: This attribute holds a tuple of cell objects representing the closed-over variables used by nested functions. It is None for functions that don't close over any variables.
--   `__kwdefaults__`: This attribute holds a dictionary containing keyword-only default values for function parameters.
--   `__qualname__`: This attribute holds the qualified name of the function, including the full module path.
+        # Step 2: Create the class dynamically using `type()`
+        Person = type(class_name, base_classes, class_attributes)
 
-These special attributes provide introspection capabilities, allowing you to inspect and interact with functions programmatically. They are useful for various purposes, such as creating decorators, documenting functions, and understanding their behavior and context.
+        # Step 3: Instantiate the class and access attributes/methods
+        person1 = Person("Alice", 30)
+        person2 = Person("Bob", 40)
 
-</details>
+        print(person1.name)       # Output: Alice
+        print(person2.age)        # Output: 40
+        print(person1.greet())    # Output: Hello, my name is Alice and I am 30 years old.
+        ```
+
+    </details>
 
 ---
 
-<details><summary style="font-size:25px;color:Orange;text-align:left">Memory Management and Garbage Collection</summary>
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Module and Function</summary>
 
-Memory management and garbage collection are essential aspects of Python's runtime environment, ensuring efficient utilization of system resources and automatic cleanup of unused objects.
+    #### Built-in attributes of Python Module.
 
-**Memory Management**:
+    In Python, modules are a way to organize code into reusable files. While modules can have various attributes and functions, there are a few built-in attributes that are commonly associated with modules.
 
-Python's memory management is based on a private heap space, managed by the Python memory manager. This heap space contains all the Python objects and data structures.
+    Here are some of the key built-in attributes of a Python module:
 
-Python uses a technique called "dynamic memory allocation" to allocate memory for objects during runtime. When you create an object (e.g., variables, lists, dictionaries), Python dynamically allocates memory for it on the heap.
+    -   `__name__`: This attribute holds the name of the module. If the module is the main program being executed, `__name__` is set to `__main__`. Otherwise, it is set to the module's name.
+    -   `__file__`: This attribute holds the path to the source file of the module, if available. It is None for built-in modules and modules that are dynamically generated.
+    -   `__dict__`: This attribute holds the dictionary that defines the module's namespace. It maps attribute names to their corresponding values.
+    -   `__builtins__`: This attribute holds a reference to the built-in namespace, which contains all the built-in functions, objects, and exceptions.
+    -   `__doc__`: This attribute holds the module's documentation (docstring), which is a string containing information about the module's purpose, usage, and more.
+    -   `__package__`: This attribute holds the name of the package that the module belongs to. It is None for top-level modules.
+    -   `__loader__`: This attribute holds a reference to the module's loader, which is responsible for loading the module. It is used for modules loaded using the importlib machinery.
+    -   `__spec__`: This attribute holds a reference to the module's specification, which is an object that encapsulates information about how the module is to be imported. It is used for modules loaded using the importlib machinery.
+    -   `__cached__`: This attribute holds the path to the compiled bytecode file of the module, if available. It is used to speed up subsequent imports by avoiding recompilation.
+    -   `__package__`: This attribute holds the name of the package that the module belongs to. It is set to None if the module is not part of a package.
+    -   `__cached__`: This attribute holds the path to the cached bytecode file associated with the module, if available.
+    -   `__path__`: This attribute is a list containing the paths to subdirectories within a package. It is set for packages, not individual modules.
 
-Python's memory manager keeps track of all allocated memory blocks, including the ones that are currently in use and those that have become unused.
+    These built-in attributes provide information about the module's metadata, source file, and other properties. You can access them like any other attribute of the module. Keep in mind that some of these attributes might not be present in all modules, especially in built-in modules or dynamically generated modules.
 
-Memory management in Python is automatic and transparent to the programmer. Python handles memory allocation and deallocation internally without explicit intervention from the developer.
+    ```python
+    def dir_help():
+        L = []
+        print(dir(object))
+        print(dir(L))
+        print(dir(dict))
 
-Memory management in Python is primarily handled by the Python memory manager, which is responsible for allocating and deallocating memory for objects, as well as managing memory usage efficiently. Here's how memory management works in Python:
+    # print(__package__)
+    # print(__builtins__)
+    # print(__file__)
+    # print(__name__)
+    # print(__doc__)
+    # dir_help()
+    ```
 
--   `Object Allocation`: When a new object is created in Python, the memory manager allocates memory to store the object's data and metadata. Each object's memory layout includes space for the object's type information, reference count, and actual data.
--   `Reference Counting`: Python uses reference counting as its primary mechanism for automatic memory management. Each object in memory has a reference count, which tracks the number of references pointing to it. Whenever an object is referenced by another object, its reference count is incremented. Conversely, when a reference to an object is removed or goes out of scope, its reference count is decremented. When an object's reference count drops to zero, meaning there are no more references to it, the memory manager deallocates the object's memory and frees it up for reuse.
--   `Garbage Collection`: While reference counting is effective for most cases, it cannot detect and reclaim cyclic garbage, where objects reference each other in a cycle. To handle cyclic garbage, Python employs a secondary garbage collection mechanism called cyclic garbage collection. This mechanism identifies and breaks cyclic references by traversing object graphs and marking objects as garbage if they are part of a cycle.
--   `Memory Pools`: Python's memory manager utilizes memory pools to improve memory allocation performance. Memory pools preallocate fixed-size blocks of memory for objects of a certain size range, reducing the overhead of allocating and deallocating memory for individual objects. Memory pools are managed by the memory manager and are shared among Python objects.
--   `Optimizations`: Python's memory manager includes various optimizations to improve memory usage and performance, such as reuse of freed memory blocks, memory compaction to reduce fragmentation, and caching of frequently used objects.
+    #### Built-in attributes of Python Functions.
 
-#### Heap Space in Python
+    In Python, functions are first-class objects, which means they have special built-in attributes that provide information about the function itself. These attributes are prefixed and suffixed with double underscores (`__`).
 
-**Heap Space** refers to the memory area used for dynamic memory allocation. Objects and data structures like lists, dictionaries, and user-defined objects are stored in the heap. The Python memory manager handles this space, allocating and deallocating memory automatically through garbage collection.
+    Here are some of the key special built-in attributes of a Python function:
 
-In Python, the "heap" generally refers to the private heap space managed by the Python memory manager. This is where Python objects are allocated and managed during program execution. Understanding the Python heap is crucial for understanding memory management in Python. Here's a detailed explanation:
+    -   `__name__`: This attribute holds the name of the function as a string.
+    -   `__annotations__`: This attribute holds a dictionary containing function annotations, which provide additional information about function parameters and return values.
+    -   `__dict__`: This attribute holds the function's attribute dictionary, mapping attribute names to their corresponding values.
+    -   `__globals__`: This attribute holds a reference to the dictionary representing the global namespace in which the function was defined.
+    -   `__call__`: This attribute defines the behavior of the function when it is called. It allows the function to be callable like any other object.
+    -   `__defaults__`: This attribute holds a tuple containing default argument values for the function's parameters. If a parameter has no default value, its corresponding entry in the tuple is set to None.
+    -   `__module__`: This attribute holds the name of the module in which the function was defined. If the function is defined in the main program, it is set to "**main**".
+    -   `__doc__`: This attribute holds the function's documentation string (docstring), which provides information about the function's purpose, usage, and more.
+    -   `__code__`: This attribute holds the code object that represents the compiled function's bytecode.
+    -   `__closure__`: This attribute holds a tuple of cell objects representing the closed-over variables used by nested functions. It is None for functions that don't close over any variables.
+    -   `__kwdefaults__`: This attribute holds a dictionary containing keyword-only default values for function parameters.
+    -   `__qualname__`: This attribute holds the qualified name of the function, including the full module path.
 
--   `Dynamic Memory Allocation`: In Python, memory allocation is dynamic, meaning that memory for objects is allocated as needed during program execution. When you create a new object, such as a variable, list, or class instance, Python allocates memory for that object on the heap.
--   `Reference Counting`: Python uses a technique called reference counting to manage memory. Each object on the heap has a reference count, which tracks how many references (pointers) exist to that object. When an object's reference count drops to zero, meaning there are no more references to it, the memory occupied by the object is reclaimed.
--   `Garbage Collection`: In addition to reference counting, Python also employs a garbage collector to reclaim memory for objects with cyclic references or when reference counting alone is insufficient. The garbage collector periodically scans the heap to identify and reclaim unreachable objects, freeing up memory for reuse.
--   `Memory Fragmentation`: As objects are allocated and deallocated on the heap, memory fragmentation can occur. This is when the heap becomes fragmented with small chunks of memory scattered throughout, making it challenging to allocate contiguous blocks of memory for new objects. Python's memory manager includes mechanisms to address fragmentation and optimize memory allocation.
--   `Global vs. Per-Thread Heap`: Python's memory manager maintains separate heaps for global objects and per-thread objects. Global objects are accessible from any thread in the program and are stored in the global heap. Per-thread objects, such as thread-local variables, are stored in per-thread heaps, which are managed separately.
--   `Memory Profiling and Optimization`: Understanding how memory is allocated and managed on the heap is essential for optimizing memory usage and performance in Python programs. Techniques such as memory profiling, identifying memory leaks, minimizing object creation, and optimizing data structures can help improve memory efficiency and performance.
--   `C Extensions and Memory Management`: When working with C extensions or interacting with external libraries, it's important to be mindful of memory management. Python's memory management system may interact with memory management mechanisms in C code, and improper memory management can lead to memory leaks or undefined behavior.
+    These special attributes provide introspection capabilities, allowing you to inspect and interact with functions programmatically. They are useful for various purposes, such as creating decorators, documenting functions, and understanding their behavior and context.
 
-**Garbage Collection**:
+    </details>
 
-Garbage collection is the process of reclaiming memory occupied by objects that are no longer in use, freeing it up for future allocation.
+---
 
-Python uses a built-in garbage collector to perform automatic memory management. The garbage collector identifies and collects unused objects, which are then deallocated from memory.
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Memory Management and Garbage Collection</summary>
 
-Python's garbage collector uses a reference counting mechanism to track the number of references to each object. When the reference count of an object drops to zero, it means that the object is no longer in use and can be safely deallocated.
+    Memory management and garbage collection are essential aspects of Python's runtime environment, ensuring efficient utilization of system resources and automatic cleanup of unused objects.
 
-In addition to reference counting, Python's garbage collector also employs a cycle-detecting algorithm to handle more complex scenarios where objects reference each other in circular patterns (e.g., cyclic references).
+    **Memory Management**:
 
-The garbage collector runs periodically in the background, scanning the heap for unreachable objects and reclaiming their memory. The frequency and behavior of garbage collection can be influenced by various factors, such as the size of the heap, memory pressure, and the number of objects being created and destroyed.
+    Python's memory management is based on a private heap space, managed by the Python memory manager. This heap space contains all the Python objects and data structures.
 
-Garbage collection is an automated memory management mechanism in Python. It automatically identifies and reclaims memory occupied by objects that are no longer referenced by your program, preventing memory leaks and ensuring efficient memory utilization.
+    Python uses a technique called "dynamic memory allocation" to allocate memory for objects during runtime. When you create an object (e.g., variables, lists, dictionaries), Python dynamically allocates memory for it on the heap.
 
--   **How Garbage Collection Works in Python**: CPython, the most popular Python implementation, primarily relies on a technique called reference counting for garbage collection. Here's a breakdown of the process:
+    Python's memory manager keeps track of all allocated memory blocks, including the ones that are currently in use and those that have become unused.
 
-    -   `Object Creation and Reference Counting`:
+    Memory management in Python is automatic and transparent to the programmer. Python handles memory allocation and deallocation internally without explicit intervention from the developer.
 
-        -   Whenever you create an object in Python (e.g., a list, string, or custom class instance), the underlying C object has both a Python type (like list) and a reference count initialized to 1.
-        -   This reference count indicates how many different places in your program's code are currently referencing that object.
+    Memory management in Python is primarily handled by the Python memory manager, which is responsible for allocating and deallocating memory for objects, as well as managing memory usage efficiently. Here's how memory management works in Python:
 
-    -   `Reference Increments and Decrements`:
+    -   `Object Allocation`: When a new object is created in Python, the memory manager allocates memory to store the object's data and metadata. Each object's memory layout includes space for the object's type information, reference count, and actual data.
+    -   `Reference Counting`: Python uses reference counting as its primary mechanism for automatic memory management. Each object in memory has a reference count, which tracks the number of references pointing to it. Whenever an object is referenced by another object, its reference count is incremented. Conversely, when a reference to an object is removed or goes out of scope, its reference count is decremented. When an object's reference count drops to zero, meaning there are no more references to it, the memory manager deallocates the object's memory and frees it up for reuse.
+    -   `Garbage Collection`: While reference counting is effective for most cases, it cannot detect and reclaim cyclic garbage, where objects reference each other in a cycle. To handle cyclic garbage, Python employs a secondary garbage collection mechanism called cyclic garbage collection. This mechanism identifies and breaks cyclic references by traversing object graphs and marking objects as garbage if they are part of a cycle.
+    -   `Memory Pools`: Python's memory manager utilizes memory pools to improve memory allocation performance. Memory pools preallocate fixed-size blocks of memory for objects of a certain size range, reducing the overhead of allocating and deallocating memory for individual objects. Memory pools are managed by the memory manager and are shared among Python objects.
+    -   `Optimizations`: Python's memory manager includes various optimizations to improve memory usage and performance, such as reuse of freed memory blocks, memory compaction to reduce fragmentation, and caching of frequently used objects.
 
-        -   When you assign an object to a variable or pass it as an argument to a function, the reference count is incremented by 1, signifying another reference to the object exists.
-        -   Conversely, when a variable referencing an object goes out of scope (e.g., the function containing the variable finishes execution), or you explicitly delete a reference (using del), the reference count is decremented by 1.
+    #### Heap Space in Python
 
-    -   `Garbage Collection Cycle`:
+    **Heap Space** refers to the memory area used for dynamic memory allocation. Objects and data structures like lists, dictionaries, and user-defined objects are stored in the heap. The Python memory manager handles this space, allocating and deallocating memory automatically through garbage collection.
 
-        -   The Python interpreter periodically runs a garbage collection cycle in the background. During this cycle, it identifies objects with a reference count of 0. These objects are considered unreachable as there are no active references to them in your program.
+    In Python, the "heap" generally refers to the private heap space managed by the Python memory manager. This is where Python objects are allocated and managed during program execution. Understanding the Python heap is crucial for understanding memory management in Python. Here's a detailed explanation:
 
-    -   `Memory Reclamation`:
+    -   `Dynamic Memory Allocation`: In Python, memory allocation is dynamic, meaning that memory for objects is allocated as needed during program execution. When you create a new object, such as a variable, list, or class instance, Python allocates memory for that object on the heap.
+    -   `Reference Counting`: Python uses a technique called reference counting to manage memory. Each object on the heap has a reference count, which tracks how many references (pointers) exist to that object. When an object's reference count drops to zero, meaning there are no more references to it, the memory occupied by the object is reclaimed.
+    -   `Garbage Collection`: In addition to reference counting, Python also employs a garbage collector to reclaim memory for objects with cyclic references or when reference counting alone is insufficient. The garbage collector periodically scans the heap to identify and reclaim unreachable objects, freeing up memory for reuse.
+    -   `Memory Fragmentation`: As objects are allocated and deallocated on the heap, memory fragmentation can occur. This is when the heap becomes fragmented with small chunks of memory scattered throughout, making it challenging to allocate contiguous blocks of memory for new objects. Python's memory manager includes mechanisms to address fragmentation and optimize memory allocation.
+    -   `Global vs. Per-Thread Heap`: Python's memory manager maintains separate heaps for global objects and per-thread objects. Global objects are accessible from any thread in the program and are stored in the global heap. Per-thread objects, such as thread-local variables, are stored in per-thread heaps, which are managed separately.
+    -   `Memory Profiling and Optimization`: Understanding how memory is allocated and managed on the heap is essential for optimizing memory usage and performance in Python programs. Techniques such as memory profiling, identifying memory leaks, minimizing object creation, and optimizing data structures can help improve memory efficiency and performance.
+    -   `C Extensions and Memory Management`: When working with C extensions or interacting with external libraries, it's important to be mindful of memory management. Python's memory management system may interact with memory management mechanisms in C code, and improper memory management can lead to memory leaks or undefined behavior.
 
-        -   Once an object is identified as unreachable, the garbage collector reclaims the memory occupied by that object, making it available for future object allocations.
+    **Garbage Collection**:
 
--   **Limitations of Reference Counting**:
+    Garbage collection is the process of reclaiming memory occupied by objects that are no longer in use, freeing it up for future allocation.
 
-    -   `Cyclic References`: Reference counting can't handle cyclic references, where two or more objects reference each other indefinitely. Even though no code directly references these objects anymore, their reference counts remain above 0, preventing garbage collection.
-    -   `Hidden References`: In some cases, objects might be indirectly referenced through hidden mechanisms like closures or event listeners, leading to unreachable objects not being collected.
+    Python uses a built-in garbage collector to perform automatic memory management. The garbage collector identifies and collects unused objects, which are then deallocated from memory.
 
--   **Additional Considerations**:
+    Python's garbage collector uses a reference counting mechanism to track the number of references to each object. When the reference count of an object drops to zero, it means that the object is no longer in use and can be safely deallocated.
 
-    -   Python's garbage collector is not deterministic. The exact timing of garbage collection cycles can vary depending on memory usage and other factors.
-    -   While reference counting is the primary mechanism, CPython might also employ other techniques like generational garbage collection for better efficiency, especially for long-running applications.
+    In addition to reference counting, Python's garbage collector also employs a cycle-detecting algorithm to handle more complex scenarios where objects reference each other in circular patterns (e.g., cyclic references).
 
-#### Core API functions to work upon the garbage collection in Python?
+    The garbage collector runs periodically in the background, scanning the heap for unreachable objects and reclaiming their memory. The frequency and behavior of garbage collection can be influenced by various factors, such as the size of the heap, memory pressure, and the number of objects being created and destroyed.
 
-Python provides several core API functions and modules for working with garbage collection, allowing you to control and manage the process of reclaiming memory occupied by objects that are no longer referenced. Here are some of the core API functions and modules related to garbage collection in Python:
+    Garbage collection is an automated memory management mechanism in Python. It automatically identifies and reclaims memory occupied by objects that are no longer referenced by your program, preventing memory leaks and ensuring efficient memory utilization.
 
--   **gc Module**: The gc module provides a high-level interface to Python's garbage collection mechanism. It includes functions for manual garbage collection control, as well as utilities for inspecting the garbage collector's behavior and statistics.
+    -   **How Garbage Collection Works in Python**: CPython, the most popular Python implementation, primarily relies on a technique called reference counting for garbage collection. Here's a breakdown of the process:
 
-    -   `gc.collect([generation])`: Manually triggers garbage collection. By default, it collects all generations, but you can specify a generation to collect (0 for the youngest generation, 2 for the oldest).
-    -   `gc.get_count()`: Returns a tuple containing the current collection counts for each generation. These counts represent the number of objects that have been allocated since the last collection.
-    -   `gc.get_stats()`: Returns a list of dictionaries containing information about the garbage collector's behavior and statistics, including the number of collections, memory usage, and more.
-    -   `gc.set_debug(flags)`: Enables or disables debugging output from the garbage collector. The flags argument is a bitmask representing the debugging options to enable.
-    -   `gc.get_objects()`: Returns a list of all objects tracked by the garbage collector. This can be useful for debugging and profiling purposes, but it's not recommended for general use due to potential performance overhead.
-    -   `gc.get_referents(obj)`: Returns a list of objects that directly reference the given object obj. This function can be used to inspect the references to a specific object in the heap.
+        -   `Object Creation and Reference Counting`:
 
--   **sys** Module: The `sys` module provides access to system-specific parameters and functions, including functions related to memory management. For example, `sys.getsizeof()` can be used to determine the size of an object in memory, and `sys.getrefcount()` can be used to get the reference count of an object.
--   **resource** Module: On Unix-based systems, the `resource` module provides functions for querying and modifying system resource limits, including memory limits. Functions like `resource.getrusage()` can be used to get information about resource usage, including memory usage.
--   **tracemalloc** Module: The `tracemalloc` module allows tracing memory allocations and retrieving information about memory blocks allocated by Python. Functions like `tracemalloc.start()` and `tracemalloc.stop()` can be used to start and stop tracing, and `tracemalloc.get_traced_memory()` can be used to retrieve information about traced memory allocations.
+            -   Whenever you create an object in Python (e.g., a list, string, or custom class instance), the underlying C object has both a Python type (like list) and a reference count initialized to 1.
+            -   This reference count indicates how many different places in your program's code are currently referencing that object.
 
-In summary, garbage collection in Python is an essential feature that helps manage memory automatically. Understanding how it works can be beneficial for writing memory-efficient Python code and avoiding potential memory-related issues. However, it's generally not necessary to directly interfere with the garbage collector. Focus on writing clean code and avoiding unnecessary object references for optimal performance.
+        -   `Reference Increments and Decrements`:
 
-**Memory Optimization Techniques**:
+            -   When you assign an object to a variable or pass it as an argument to a function, the reference count is incremented by 1, signifying another reference to the object exists.
+            -   Conversely, when a variable referencing an object goes out of scope (e.g., the function containing the variable finishes execution), or you explicitly delete a reference (using del), the reference count is decremented by 1.
 
--   While Python's automatic memory management and garbage collection are convenient, they may not always be optimal for certain use cases.
--   Developers can optimize memory usage in Python by:
-    -   Minimizing the creation of unnecessary objects, especially in performance-critical code.
-    -   Reusing objects whenever possible to reduce memory churn.
-    -   Using data structures and algorithms that are memory-efficient.
-    -   Explicitly deleting references to objects when they are no longer needed, although this is generally unnecessary due to Python's garbage collection mechanism.
+        -   `Garbage Collection Cycle`:
 
-Overall, Python's memory management and garbage collection mechanisms provide a balance between convenience and performance, allowing developers to focus on writing high-level code without worrying too much about memory management details. However, understanding how memory management works under the hood can help developers write more efficient and optimized Python code.
+            -   The Python interpreter periodically runs a garbage collection cycle in the background. During this cycle, it identifies objects with a reference count of 0. These objects are considered unreachable as there are no active references to them in your program.
 
-</details>
+        -   `Memory Reclamation`:
+
+            -   Once an object is identified as unreachable, the garbage collector reclaims the memory occupied by that object, making it available for future object allocations.
+
+    -   **Limitations of Reference Counting**:
+
+        -   `Cyclic References`: Reference counting can't handle cyclic references, where two or more objects reference each other indefinitely. Even though no code directly references these objects anymore, their reference counts remain above 0, preventing garbage collection.
+        -   `Hidden References`: In some cases, objects might be indirectly referenced through hidden mechanisms like closures or event listeners, leading to unreachable objects not being collected.
+
+    -   **Additional Considerations**:
+
+        -   Python's garbage collector is not deterministic. The exact timing of garbage collection cycles can vary depending on memory usage and other factors.
+        -   While reference counting is the primary mechanism, CPython might also employ other techniques like generational garbage collection for better efficiency, especially for long-running applications.
+
+    #### Core API functions to work upon the garbage collection in Python?
+
+    Python provides several core API functions and modules for working with garbage collection, allowing you to control and manage the process of reclaiming memory occupied by objects that are no longer referenced. Here are some of the core API functions and modules related to garbage collection in Python:
+
+    -   **gc Module**: The gc module provides a high-level interface to Python's garbage collection mechanism. It includes functions for manual garbage collection control, as well as utilities for inspecting the garbage collector's behavior and statistics.
+
+        -   `gc.collect([generation])`: Manually triggers garbage collection. By default, it collects all generations, but you can specify a generation to collect (0 for the youngest generation, 2 for the oldest).
+        -   `gc.get_count()`: Returns a tuple containing the current collection counts for each generation. These counts represent the number of objects that have been allocated since the last collection.
+        -   `gc.get_stats()`: Returns a list of dictionaries containing information about the garbage collector's behavior and statistics, including the number of collections, memory usage, and more.
+        -   `gc.set_debug(flags)`: Enables or disables debugging output from the garbage collector. The flags argument is a bitmask representing the debugging options to enable.
+        -   `gc.get_objects()`: Returns a list of all objects tracked by the garbage collector. This can be useful for debugging and profiling purposes, but it's not recommended for general use due to potential performance overhead.
+        -   `gc.get_referents(obj)`: Returns a list of objects that directly reference the given object obj. This function can be used to inspect the references to a specific object in the heap.
+
+    -   **sys** Module: The `sys` module provides access to system-specific parameters and functions, including functions related to memory management. For example, `sys.getsizeof()` can be used to determine the size of an object in memory, and `sys.getrefcount()` can be used to get the reference count of an object.
+    -   **resource** Module: On Unix-based systems, the `resource` module provides functions for querying and modifying system resource limits, including memory limits. Functions like `resource.getrusage()` can be used to get information about resource usage, including memory usage.
+    -   **tracemalloc** Module: The `tracemalloc` module allows tracing memory allocations and retrieving information about memory blocks allocated by Python. Functions like `tracemalloc.start()` and `tracemalloc.stop()` can be used to start and stop tracing, and `tracemalloc.get_traced_memory()` can be used to retrieve information about traced memory allocations.
+
+    In summary, garbage collection in Python is an essential feature that helps manage memory automatically. Understanding how it works can be beneficial for writing memory-efficient Python code and avoiding potential memory-related issues. However, it's generally not necessary to directly interfere with the garbage collector. Focus on writing clean code and avoiding unnecessary object references for optimal performance.
+
+    **Memory Optimization Techniques**:
+
+    -   While Python's automatic memory management and garbage collection are convenient, they may not always be optimal for certain use cases.
+    -   Developers can optimize memory usage in Python by:
+        -   Minimizing the creation of unnecessary objects, especially in performance-critical code.
+        -   Reusing objects whenever possible to reduce memory churn.
+        -   Using data structures and algorithms that are memory-efficient.
+        -   Explicitly deleting references to objects when they are no longer needed, although this is generally unnecessary due to Python's garbage collection mechanism.
+
+    Overall, Python's memory management and garbage collection mechanisms provide a balance between convenience and performance, allowing developers to focus on writing high-level code without worrying too much about memory management details. However, understanding how memory management works under the hood can help developers write more efficient and optimized Python code.
+
+    </details>
 
 </details>
 

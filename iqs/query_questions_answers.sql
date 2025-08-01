@@ -21,7 +21,7 @@ select count(*) from employee where department = 'Admin';
 select * from employee;
 
 select department, count(*) as employeecount 
-from employee
+from IQ.employee
 group by department
 order by employeecount desc;
 
@@ -111,17 +111,16 @@ select department, sum(salary) as 'Total Salary' from employee group by departme
 select first_name, last_name from employee where salary = (select max(salary) from employee);
 
 -- ----------------------------------------------------------------------------------
--- 23>     Write an SQL query that makes recommendations using the  pages that your friends liked. 
+-- 23> Write an SQL query that makes recommendations using the  pages that your friends liked. 
 -- Assume you have two tables: a two-column table of users and their friends, and a two-column table of 
 -- users and the pages they liked. It should not recommend pages you already like.
 
 -- ----------------------------------------------------------------------------------
 -- 24> write a SQL query to find employee (first name, last name, department and bonus) with highest bonus.
-select first_name, last_name, department, max(bonus_amount) from employee e
+select first_name, last_name, department, bonus_amount from employee e
 join bonus b
 on e.employee_id = b.employee_ref_id
-group by department
-order by max(bonus_amount) desc limit 1;
+where bonus_amount = select max(bonus_amount) from b;
 
 -- ----------------------------------------------------------------------------------
 -- 25> write a SQL query to find employees with same salary

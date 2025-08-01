@@ -126,7 +126,7 @@
 
     6. **Certificate Transparency (CT)**: A Google initiative to detect fraudulent SSL certificates.
 
-    #### **How to Obtain and Install an SSL/TLS Certificate**
+    #### How to Obtain and Install an SSL/TLS Certificate
 
     1.  **Generate a Certificate Signing Request (CSR)**:
 
@@ -164,6 +164,45 @@
     4.  **Verify the SSL/TLS Installation**:
 
         -   Test using an SSL checker like [SSL Labs](https://www.ssllabs.com/ssltest/).
+
+    #### Certificate Pinning
+
+    **Certificate pinning** is a security technique used in applications to **prevent man-in-the-middle (MITM) attacks** by **associating a host with a specific certificate or public key**.
+
+    -   **What It Does**: Instead of trusting any certificate issued by a trusted Certificate Authority (CA), certificate pinning tells your application to **only trust a specific certificate** (or public key) when connecting to a server.
+
+    -   **How It Works**:
+
+        -   When an app (or client) connects to a server (like an API or a website), it receives the server’s SSL/TLS certificate.
+        -   Normally, the client checks if this certificate is trusted by verifying it against the CA chain.
+        -   With **pinning**, the client compares the server’s certificate or public key **against a hardcoded “pinned” value**.
+        -   If they match → the connection proceeds.
+        -   If not → the connection is rejected, even if the certificate is otherwise valid.
+
+    -   **Types of Pinning**:
+
+        1. **Public Key Pinning:** Pins the server’s public key.
+        2. **Certificate Pinning:** Pins the exact certificate.
+        3. **SPKI Pinning:** Pins the Subject Public Key Info (used in many mobile apps).
+
+    -   **Where It's Used**:
+
+        -   **Mobile apps** (iOS, Android)
+        -   **Browsers** (though HTTP Public Key Pinning (HPKP) is deprecated)
+        -   **API clients** to ensure they’re talking to the correct server
+
+    -   **Benefits**:
+
+        -   Protects against:
+
+        -   Compromised Certificate Authorities
+        -   Fake certificates
+        -   MITM attacks
+
+    -   **Risks**:
+
+        -   If the pinned certificate changes (e.g., server rotated certs) and the app isn’t updated, it will **fail to connect**.
+        -   So it requires careful lifecycle and key management.
 
     </details>
 
@@ -218,5 +257,8 @@
     -   `$ openssl pkcs12 -in certificate.pfx -nocerts -out private_key.pem` -> Extract a private key from a PKCS12 (PFX) file
 
     -   `$ openssl pkcs12 -in certificate.pfx -clcerts -nokeys -out certificate.crt` -> Extract a certificate from a PKCS12 (PFX) file
+
+    -   `$ openssl s_client -connect twitter.com:443` ->
+    -   `$ openssl s_client -connect twitter.com:443 -showcerts -servername twitter.com` ->
 
     </details>

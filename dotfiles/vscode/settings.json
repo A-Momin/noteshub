@@ -47,11 +47,24 @@
     "editor.cursorBlinking": "expand",
     "editor.suggestSelection": "first",
     "editor.inlineSuggest.enabled": true,
+    // Controls whether suggestions should automatically show up while typing. This can be controlled for typing in comments, strings, and other code. Quick suggestion can be configured to show as ghost text or with the suggest widget. Also be aware of the `editor.suggestOnTriggerCharacters`-setting which controls if suggestions are triggered by special characters.
+    "editor.quickSuggestions": {
+        "other": "on",
+        "comments": "off",
+        "strings": "off"
+    },
+    // Controls whether suggestions should automatically show up when typing trigger characters.
+    "editor.suggestOnTriggerCharacters": false,
     "debug.console.fontSize": 14,
     "[json]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    // Configure settings to be overridden for yaml.
     "[yaml]": {
+        "editor.tabSize": 4,
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
@@ -65,7 +78,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[python]": {
-        "editor.formatOnType": true
+        // "editor.formatOnType": true
         // "editor.defaultFormatter": "remimarsal.prettier-now"
     },
     "[markdown]": {
@@ -75,9 +88,6 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode",
         "editor.wordWrapColumn": 80
     },
-    "markdown-preview-enhanced.hideDefaultVSCodeMarkdownPreviewButtons": false,
-    // "markdown-preview-enhanced.previewTheme": "none.css",
-    "markdown-preview-enhanced.codeBlockTheme": "one-dark.css",
     // "markdown.extension.print.absoluteImgPath": false,
     "markdown.extension.print.theme": "dark",
     "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
@@ -131,11 +141,6 @@
     "git.openRepositoryInParentFolders": "never",
     "chatgpt.gpt3.apiKey": "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",
     "markdown.extension.toc.omittedFromToc": {},
-    "markdown-preview-enhanced.previewTheme": "atom-dark.css",
-    "markdown-preview-enhanced.revealjsTheme": "blood.css",
-    "[jsonc]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
     "workbench.editorAssociations": {
         "*.db": "default"
     },
@@ -147,7 +152,21 @@
         "editor.indentSize": 4,
         "editor.insertSpaces": true
     },
-    "python.defaultInterpreterPath": "/Users/am/.pyenv/versions/3.9.6/envs/dsnb",
+    "python.defaultInterpreterPath": "/Users/am/.pyenv/shims/python",
     "notebook.output.textLineLimit": 50,
-    "markdown-preview-enhanced.enablePreviewZenMode": false
+    "markdown-preview-enhanced.hideDefaultVSCodeMarkdownPreviewButtons": false,
+    // "markdown-preview-enhanced.previewTheme": "none.css",
+    "markdown-preview-enhanced.codeBlockTheme": "one-dark.css",
+    "markdown-preview-enhanced.previewTheme": "atom-dark.css",
+    "markdown-preview-enhanced.revealjsTheme": "blood.css",
+    "markdown-preview-enhanced.enablePreviewZenMode": false,
+    "docker.extension.enableComposeLanguageServer": false,
+    "database-client.autoSync": true,
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": false,
+        "markdown": false,
+        "scminput": false
+    },
+    "jupyter.disableJupyterAutoStart": true,
 }

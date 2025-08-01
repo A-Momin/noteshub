@@ -11,76 +11,6 @@
 
     #### KEY WORDS:
 
-    -   **Divergent Branch**: A **divergent branch** situation arises when both your local branch and its corresponding remote branch have progressed independently since their last common commit. This means that new commits have been added to both branches, leading to separate lines of development. Here are the Causes of Divergence:
-
-        -   `Local Commits`: You've made commits on your local branch that haven't been pushed to the remote repository.
-
-        -   `Remote Commits`: Other collaborators have pushed commits to the remote branch that you haven't yet incorporated into your local branch.
-
-        -   When you attempt to synchronize these branches using commands like `git pull` or `git push`, Git detects the divergence and requires guidance on how to reconcile the differences. citeturn0search0
-
-        -   **Resolving Divergent Branches**: To address this situation, you can choose from several strategies:
-
-            1. `Merge (Default Strategy)`: Combines the remote changes with your local commits, creating a new merge commit.
-
-                ```bash
-                git pull --no-rebase
-                ```
-
-                ```bash
-                # Set Merge as Default
-                git config pull.rebase false
-                ```
-
-            2. `Rebase`: Reapplies your local commits on top of the remote branch, resulting in a linear commit history.
-
-                ```bash
-                git pull --rebase
-                ```
-
-                ```bash
-                # Set Rebase as Default
-                git config pull.rebase true
-                ```
-
-            3. `Fast-Forward Only`: Updates your branch only if it can be fast-forwarded; otherwise, it aborts to prevent unintended merges.
-
-                ```bash
-                git pull --ff-only
-                ```
-
-                ```bash
-                # Set Fast-Forward Only as Default
-                git config pull.ff only
-                ```
-
-    -   **Checkout**:
-
-        -   Checkout: Switching between different commit, branches or tags.
-        -   Checkout a Branch means changing Head Pointer from current branch to the branch to be checkedout.
-
-    -   **HEAD**:
-
-        -   `HEAD`: Git’s way of referring to the current snapshot. Internally, the ‘git checkout’ command simply updates the HEAD to point to either the specified branch or commit. When it points to a branch, Git doesn’t complain, but when you check out a commit, it switches into a “detached HEAD” state.
-        -   Head Pointer always points to the Active Branch. When it points to a branch, Git doesn’t complain, but when you check out a commit, it switches into a “detached HEAD” state.
-        -   Detached Head
-
-    -   **Remote**:
-
-        -   In Git, a `remote` typically refers to a repository that is hosted on a separate server or location from your local repository. `Remote`s allow you to connect and interact with repositories that may be located on the internet or on another machine.
-        -   `Remote`s can be repositories you contribute to, collaborate with, or simply synchronize your local repository with to stay up-to-date. Examples of popular `remote` hosting services include GitHub, GitLab, and Bitbucket.
-
-        -   When you add a `remote` repository to your local Git configuration, you give it a name. Common names include "origin," "upstream," "fork," or any other descriptive name you choose.
-
-    -   **Origin**:
-
-        -   `Origin` is a specific name that is commonly used as the default `remote` repository name when you clone a repository or when you push to a repository. It's a convention, not a Git keyword.
-        -   When you clone a repository from a `remote` location, Git sets up a `remote` called `origin` by default to point to the repository you cloned from. So, when you push changes, it knows where to send them.
-
-    -   **Master**:
-
-        -   The default branch name in Git is master. For both `remote` and local repository.
-
     -   **Repository (Repo)**:
 
         -   A Git repository is a collection of files and directories along with the version history of those files.
@@ -96,11 +26,37 @@
         -   The staging area, also known as the index or cache, is an intermediate area where you prepare changes for the next commit.
         -   Files are added to the staging area using the git add command before they are committed to the repository.
 
+    -   **HEAD**:
+
+        -   `HEAD`: Git’s way of referring to the current snapshot. Internally, the ‘git checkout’ command simply updates the HEAD to point to either the specified branch or commit. When it points to a branch, Git doesn’t complain, but when you check out a commit, it switches into a “detached HEAD” state.
+        -   Head Pointer always points to the Active Branch. When it points to a branch, Git doesn’t complain, but when you check out a commit, it switches into a “detached HEAD” state.
+        -   Detached Head
+
+    -   **Remote**:
+
+        -   In Git, a `remote` typically refers to a repository that is hosted on a separate server or location from your local repository. `Remote`s allow you to connect and interact with repositories that may be located on the internet or on another machine.
+        -   `Remote`s can be repositories you contribute to, collaborate with, or simply synchronize your local repository with to stay up-to-date. Examples of popular `remote` hosting services include GitHub, GitLab, and Bitbucket.
+        -   When you add a `remote` repository to your local Git configuration, you give it a name. Common names include "origin," "upstream," "fork," or any other descriptive name you choose.
+
+    -   **`origin` vs `upstream`**
+
+        -   **origin** is the **default name** for the remote repository that you cloned from. It’s where you typically **push your changes** and **pull updates** from.
+        -   **upstream** is A **second remote** name typically used to point to the **original repository** when you’ve forked one. It’s where you **pull the latest changes from the main project** so your fork stays updated.
+
+    -   **Master**:
+
+        -   The default branch name in Git is master. For both `remote` and local repository.
+
     -   **Commit**:
 
         -   A commit is a snapshot of the project's state at a particular point in time.
         -   Each commit has a unique identifier (a hash) and includes changes made to files since the last commit.
-        -   Commits create a chronological history of your project.
+        -   Commits create a chronological history of your project. - `$ git pull --ff-only` - `$ git config pull.ff only` → Set Fast-Forward Only as Default
+
+    -   **Clone**:
+
+        -   Cloning is the process of creating a copy of a `remote` repository on your local machine.
+        -   It sets up a connection between your local repository and the `remote` repository, enabling you to fetch and push changes.
 
     -   **Branch**:
 
@@ -108,21 +64,10 @@
         -   Branches allow multiple users to work on different features or fixes simultaneously without affecting each other's work.
         -   The default branch is usually called master or main.
 
-    -   **HEAD**:
+    -   **Checkout**:
 
-        -   HEAD is a reference to the latest commit in the currently checked-out branch.
-        -   It represents the snapshot of your project that is currently being worked on.
-
-    -   **Remote Repository**:
-
-        -   A `remote` repository is a copy of your project hosted on a server or another machine.
-        -   It allows multiple developers to collaborate on the same project.
-        -   Common `remote` repository hosting services include GitHub, GitLab, and Bitbucket.
-
-    -   **Clone**:
-
-        -   Cloning is the process of creating a copy of a `remote` repository on your local machine.
-        -   It sets up a connection between your local repository and the `remote` repository, enabling you to fetch and push changes.
+        -   Checkout: Switching between different commit, branches or tags.
+        -   Checkout a Branch means changing Head Pointer from current branch to the branch to be checkedout.
 
     -   **Pull**:
 
@@ -159,7 +104,86 @@
         -   A tag is a reference to a specific commit.
         -   It is often used to mark significant milestones or releases in a project's history.
 
-    -   **NOTES**:
+    #### KEY Terminology:
+
+    -   **ISO (International Organization for Standardization)**:
+
+        -   It's an independent, non-governmental international organization that develops and publishes standards to ensure quality, safety, efficiency, and interoperability.
+        -   These standards are developed by experts from industry, government, and academia.
+
+        -   **ISO Standards for Software Projects**: Some GitHub repositories, especially those focused on **security, compliance, or enterprise software**, might claim or work toward compliance with certain ISO standards.
+
+            | ISO Standard      | Purpose                         | Relevance                                                    |
+            | ----------------- | ------------------------------- | ------------------------------------------------------------ |
+            | **ISO/IEC 27001** | Information Security Management | Used for security-focused projects or companies.             |
+            | **ISO/IEC 9001**  | Quality Management              | Related to software QA and consistent delivery.              |
+            | **ISO/IEC 25010** | Software Quality Model          | Defines characteristics like maintainability, security, etc. |
+            | **ISO/IEC 12207** | Software Lifecycle Processes    | Describes software development processes.                    |
+
+            These are typically mentioned in **README files**, **project documentation**, or **compliance badges**.
+
+    -   **Divergent Branch**: A **divergent branch** situation arises when both your local branch and its corresponding remote branch have progressed independently since their last common commit. This means that new commits have been added to both branches, leading to separate lines of development. Here are the Causes of Divergence:
+
+        -   `Local Commits`: You've made commits on your local branch that haven't been pushed to the remote repository.
+
+        -   `Remote Commits`: Other collaborators have pushed commits to the remote branch that you haven't yet incorporated into your local branch.
+
+        -   When you attempt to synchronize these branches using commands like `git pull` or `git push`, Git detects the divergence and requires guidance on how to reconcile the differences. citeturn0search0
+
+        -   **Resolving Divergent Branches**: To address this situation, you can choose from several strategies:
+
+            1. `Merge (Default Strategy)`: Combines the remote changes with your local commits, creating a new merge commit.
+
+                - `$ git pull --no-rebase`
+                - `$ git config pull.rebase false` → Set Merge as Default
+
+            2. `Rebase`: Reapplies your local commits on top of the remote branch, resulting in a linear commit history.
+
+                - `$ git pull --rebase`
+                - `$ git pull --rebase origin cpecs-12147`
+                - `$ git config pull.rebase true` → Set Rebase as Default
+
+            3. `Fast-Forward Only`: Updates your branch only if it can be fast-forwarded; otherwise, it aborts to prevent unintended merges.
+
+    -   **SHA**: SHA stands for Secure Hash Algorithm, usually referring to the SHA-1 hash Git uses to identify each object uniquely.
+
+        -   Git stores everything (commits, trees, blobs, tags) as content-addressed objects.
+        -   Each object is identified by a 40-character SHA-1 hash (e.g., 6a1c7ed6e0b8f64b32681d264c37df3e57b8d2fc).
+        -   The commit SHA is used to refer to this specific commit uniquely.
+        -   This hash is referred to as the commit SHA when talking about commits.
+
+    -   **ref**: ref in Git is a human-readable pointer to a Git object, typically a commit. Refs include:
+
+        -   Branches (e.g., refs/heads/main)
+        -   Tags (e.g., refs/tags/v1.0)
+        -   Remote branches (e.g., refs/remotes/origin/main)
+        -   Special refs like `HEAD`
+        -   These refs point to commit SHAs behind the scenes.
+        -   When you run `git checkout main`, Git uses `refs/heads/main` to locate the corresponding SHA and check out the commit.
+        -   On GitHub API:
+
+            -   GitHub API endpoints often return or require ref and sha:
+
+                ```json
+                {
+                    "ref": "refs/heads/main",
+                    "node_id": "MDM6UmVmMTIzNDU6bWFzdGVy",
+                    "url": "https://api.github.com/repos/user/repo/git/refs/heads/main",
+                    "object": {
+                        "sha": "6a1c7ed6e0b8f64b32681d264c37df3e57b8d2fc",
+                        "type": "commit",
+                        "url": "https://api.github.com/repos/user/repo/git/commits/6a1c7ed..."
+                    }
+                }
+                ```
+
+        </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Git Commands</summary>
+
+    -   🔥**NOTES**:
 
         -   There generally are at least three copies of a project on your workstation:
 
@@ -172,27 +196,21 @@
         -   ![Git Push/Pull Cycle](/assets/git/git_cycle.png)
         -   ![Git Workflow](/assets/git/git_workflow.gif)
 
-    </details>
+    -   🔥**HELP**:
 
----
-
--   <details><summary style="font-size:25px;color:Orange;text-align:left">Git Commands</summary>
-
-    🔥 HELP:
-
-    -   `$ git --help`
-    -   `$ git help -a`
-    -   `$ git help -g`
-    -   `$ git help <command> -->> Ex: git help add, git help reset, git help rm`
-    -   `$ git help <concept>`
-    -   `$ git help git`
-    -   `$ git [options] commands [<args>]`
+        -   `$ git --help`
+        -   `$ git help -a`
+        -   `$ git help -g`
+        -   `$ git help <command>` -->> Ex: `git help add`, `git help reset`, `git help rm`
+        -   `$ git help <concept>`
+        -   `$ git help git`
+        -   `$ git [options] commands [<args>]`
 
     ## Initialize/Clone Git Repository
 
     -   There are two methods to start a git projects:
 
-        1. Cloning an Existing Repository from www.github.com using git command, (`$ git clone`)
+        1. Cloning an Existing Repository from `www.github.com` using git command, (`$ git clone`)
         2. Initializing a Git Repository skeleton in the local machin using git command, (`$ git init`) then push it into a remote location such as `www.github.com` after establishing a link to the remote repository ,
 
     -   `$ git clone https://github.com/repoName` → It creates a repository named “repoName”, initializes a .git directory inside it, pulls down all the data from that repository, and checks out a working copy of the latest version.
@@ -219,19 +237,15 @@
     -   🔥 <bold style="color:orange">NOTES</bold>: When reading, the values are read from the system, global and repository local configuration files by default, and options `--system`, `--global`, `--local`, `--worktree` and `--file <filename>` can be used to tell the command to read from only that location (see FILES).
     -   `$ git config --get user.name` → Returns name of the current git user.
     -   `$ git config --get user.email` → Returns the email address of current git user.
-    -   `$ git config --global core.editor code –wait [“subl –n -w”, emacs, “atom-wait”]`
-        -   → Set globaly VisualStudioCode (`code`) as your code editor.
+    -   `$ git config --global core.editor code –wait [“subl –n -w”, emacs, “atom-wait”]` → Set globaly VisualStudioCode (`code`) as your code editor.
     -   `$ git config --global color.ui auto`
     -   `$ git config --local user.name 'Aminul Momin'` → Set localy user name configuration parameter. (`--local` can only be used inside a git repository)
     -   `$ git config --local user.email "bbcredcap3@gmail.com"`
     -   [Git and Vimdiff](https://medium.com/usevim/git-and-vimdiff-a762d72ced86)
-        <!-- To tell Git to always use Vimdiff, issue the following commands: -->
-
-    -   `$ git config --global diff.tool vimdiff`
-    -   `$ git config --global merge.tool vimdiff`
+    -   `$ git config --global diff.tool vimdiff` → Sets **`vimdiff`** as the **default tool for viewing diffs** globally (across all repositories). When you run `git difftool`, it will use `vimdiff` to show file differences.
+    -   `$ git config --global merge.tool vimdiff` → Sets **`vimdiff`** as the **default tool for resolving merge conflicts** globally. When you run `git mergetool`, it will launch `vimdiff` for conflict resolution.
     -   `$ git config --local [user.email | author.name | author.email | committer.name | committer.email]`
-    -   `$ git config user.name [author.name | author.email | committer.name | committer.email]`
-        -   Returns a specific key’s value ( here, key = user.name).
+    -   `$ git config user.name [author.name | author.email | committer.name | committer.email]` → Returns a specific key’s value ( here, key = user.name).
 
     <details open><summary style="font-size:20px;color:red;text-align:left">Troubleshoot Github Authenticatios</summary>
 
@@ -262,11 +276,11 @@
     -   `$ git diff --cached` → Show the difference between the index and the last commit.
     -   `$ git diff branch` → Show a diff between the current working directory and the named branch.
     -   `$ git diff --staged` → Difference between Staging Area and Repository.
-    -   `$ git diff <commit_id1 commit_id2>` → Difference between two commits.
     -   `$ git diff --stat` → Shows an overview of changes.
-    -   `$ git log --pretty=format:"[%h] %ae, %ar: %s" --stat` → Shows commit history with the files that were changed.
+    -   `$ git diff <commit_id1 commit_id2>` → Difference between two commits.
     -   `$ git show <commit_id>` → Show the changes in commits compared to it’s parrents
     -   `$ git log <command>`
+    -   `$ git log --pretty=format:"[%h] %ae, %ar: %s" --stat` → Shows commit history with the files that were changed.
     -   `$ git log --help`
     -   `$ git log --statq`
     -   `$ git log --oneline`
@@ -278,17 +292,18 @@
 
     ##### [git stash](https://www.youtube.com/watch?v=fXGug4itlTk)
 
-    -   git stash temporarily shelves (or stashes) changes you've made to your working copy so you can work on something else, and then come back and re-apply them later on. Stashing is handy if you need to quickly switch context and work on something else, but you're mid-way through a code change and aren't quite ready to commit.
-
+    -   `git stash` temporarily shelves (or stashes) changes you've made to your working copy so you can work on something else, and then come back and re-apply them later on. Stashing is handy if you need to quickly switch context and work on something else, but you're mid-way through a code change and aren't quite ready to commit.
+    -   You cannot directly apply a stash by its name — Git identifies stashes by their index (like stash@{0}), even if you gave them a custom message.
     -   `$ git stash show` → show the content of your most recent stash.
     -   `$ git stash list` → List out all your repository's stashes.
-        -   `git stash show stash@{index}`
+    -   `git stash show stash@{index}`
     -   `$ git stash` → stash uncommited local changes
-    -   `$ git stash push -m stashname` → name and retrieve a Git stash by the name?
+    -   `$ git stash push -m stash_name` → name and retrieve a Git stash by the name?
     -   `$ git stash save "my_stash_name"` → name and retrieve a Git stash by the name? (deprecated since v2.16)
     -   `$ git stash pop` → Popping your stash removes the changes from your stash and reapplies them to your working copy.
+    -   `$ git stash pop stash@{n}` → pop specified stash - see `git stash list` (`n` is a integer and specefying index)
+    -   `$ git stash apply stash@{0}` →
     -   `$ git stash drop stash@{n}` → drop specific stash - see `git stash list` (`n` is a integer)
-    -   `$ git stash pop stash@{n}` → pop specific stash - see `git stash list` (`n` is a integer)
     -
 
     ##### [Resetting, Reverting, and Checking Out](https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting)
@@ -316,9 +331,13 @@
         -   **$ git reset --hard** → It is used to reset the current commit or branch and the staging area to it's initial state or to a given commit. It moves the HEAD and the current branch pointer to the specified commit if given any.
         -   `$ git reset --hard HEAD~2`
         -   <font color="orange">How do I unstage changes?</font>
-        -   `$ git restore .`
+
+        -   `$ git checkout .` → discards all local changes in the working directory and resets the files to the latest committed state (HEAD); this does not affect untracked files.
+        -   `$ git restore .` → restores all files in the current directory and subdirectories to their last committed state, effectively discarding all local changes; this is the modern replacement for `git checkout .`.
+
             -   It can be used to undo the effects of `git add` and unstage changes you have previously added to the Staging Area.
             -   It can also be used to discard local changes in a file, thereby restoring its last committed state.
+
         -   `$ git restore path/to/file/to/revert` → Unstage the given file from Staging Area into Working Directory.
         -   `$ git clean -f` → Remove untracked files from the working tree.
         -   `$ git rm --cached <file_name>` → Unstage the specified file (`file_name`) from Staging Area.
@@ -364,26 +383,19 @@
         -   `$ git rebase`
 
     -   🔥 PUSH/PULL/FETCH:
+
         -   `$ git remote set-url origin git@github.com:Aminul-Momin/Algorithms_and_Data_Structures.git` → to set remote origin url
-        -   `$ git remote show origin` → get the remote origin URL
-        -   `$ git remote add upstream <URL>`
-        -   `$ git push origin master`
-            -   `origin` is master branch of remote repository
-            -   `master` is master branch of local repository
-            -   Pushes the master branch of local repository to master branch of remote repository.
+        -   `$ git remote show origin` → Displays detailed information about the remote named `origin`, including its fetch and push URLs, tracking branches, and status.
+        -   `$ git remote add upstream <URL>` → Adds a new remote named `upstream` pointing to the given `<URL>`, typically used to track the original repository if you’ve forked it.
+        -   `$ git push origin master` → Pushes the master branch of local repository to master branch of remote repository.
         -   `$ git push -u origin master` → Push the commits from my local master branch to the master branch on the remote repository named origin, and set up tracking information for the master branch on the remote repository.
+        -   `$ git push origin cpecs-12147 --force` → force-pushes the local `cpecs-12147` branch to the `origin` remote, overwriting any conflicts on the remote branch.
+        -   `$ git pull --rebase origin cpecs-12147` → fetches the latest changes from `origin/cpecs-12147` and rebases your local branch on top of it (instead of merging).
         -   `$ git push origin` → push all the branches to origin
-        -   `$ git fetch` is the command that tells your local git to retrieve the latest meta-data info from the original (yet doesn’t do any file transferring. It’s more like just checking to see if there are any changes available).
-        -   `$ git pull` on the other hand does that AND brings (copy) those changes from the remote repository.
-        -   `$ git pull origin master`
-            -   `origin` is master branch of remote repository
-            -   `master` is master branch of local repository
-            -   pulls the master branch of remote repository into master branch of local repository.
-            -   It's equivalent to `$ git fetch origin && git merge origin master`
-        -   `$ git pull upstream Master`
-        -   `$ git fetch`
-        -   `$ git fetch origin`
-        -   `$ git fetch origin/master master`
+        -   `$ git fetch` → retrieves the latest commits, branches, and tags from the remote repository **without merging** them into your current branch; updates your local view of the remote.
+        -   `$ git pull` → does everything `git fetch` does, **plus it merges** the fetched changes from the remote branch into your current branch (equivalent to `git fetch` followed by `git merge`).
+        -   `$ git pull origin master` → fetches the latest changes from the `master` branch on the remote named `origin` and **merges** them into your current local branch.
+        -   `$ git pull upstream Master` → fetches and merges the `Master` branch from the `upstream` remote into your current local branch. - `$ git pull upstream Master` →
 
     </details>
 

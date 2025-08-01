@@ -1,3 +1,11 @@
+-   <details><summary style="font-size:25px;color:Orange">Notes</a></summary>
+
+    -   To find the XPath of an <iframe> (or any element) within a #shadow-root (Shadow DOM), you need to understand that XPath in browser devtools does not cross shadow DOM boundaries directly
+
+    </details>
+
+---
+
 -   <details><summary style="font-size:25px;color:Orange">Selenium Components</a></summary>
 
     #### 1.1 Selenium WebDriver
@@ -305,15 +313,20 @@
 -   <details><summary style="font-size:25px;color:Orange;text-align:left">Questions</summary>
 
     -   What is a locator in context of Selenium?
+    -   What is a Shadow DOM? How can I identify a Shadow DOM element in a browser devtool?
+        -   Shadow DOM is a web standard that enables encapsulation of a component's internal DOM structure and styling. It's part of the Web Components spec and allows developers to keep a component’s logic isolated from the main DOM.
+        -   To find the XPath of an <iframe> (or any element) within a #shadow-root (Shadow DOM), you need to understand that XPath in browser devtools does not cross shadow DOM boundaries directly
 
     </details>
 
 ---
 
 -   <details><summary style="font-size:25px;color:Orange;text-align:left">Config and Troublshooting</summary>
+
     -   `$ chrome://version/` -> Check out the version of Google Chrome is being used.
     -   `$ pip show selenium` -> Check out the version of Selenium is being used.
     -   `$ /Users/am/.cache/selenium/chromedriver/mac-x64/135.0.7049.114 --version` -> Check out the version of chromedriver is being used.
     -   `$ `
     -   `$ `
+
     </detsils>
