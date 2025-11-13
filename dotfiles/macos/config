@@ -13,35 +13,11 @@ StrictHostKeyChecking no
 # ============================================================================
 
 # General Purpose AWS EC2 instance
-Host gp
-HostName 23.22.210.165
+Host ec2devenv
+HostName 3.226.199.213
 StrictHostKeyChecking no
 User ec2-user
-IdentityFile ~/.ssh/AMShah.pem
-
-Host jmaster
-HostName 34.196.43.193
-StrictHostKeyChecking no
-User ubuntu
-IdentityFile ~/.ssh/AMShah.pem
-
-Host jagent
-HostName 3.224.245.94
-StrictHostKeyChecking no
-User ubuntu
-IdentityFile ~/.ssh/AMShah.pem
-
-Host jagent1
-HostName 3.224.245.94
-StrictHostKeyChecking no
-User ubuntu
-IdentityFile ~/.ssh/AMShah.pem
-
-Host spark
-HostName 34.239.253.210
-StrictHostKeyChecking no
-User ubuntu
-IdentityFile ~/.ssh/AMShah.pem
+IdentityFile ~/.ssh/general_purpose.pem
 
 Host ubun
 HostName 54.197.179.12
@@ -49,16 +25,6 @@ StrictHostKeyChecking no
 User ubuntu
 IdentityFile ~/.ssh/AMShah.pem
 
-Host amazon_linux
-HostName 54.90.206.152
-StrictHostKeyChecking no
-User ec2-user
-IdentityFile ~/.ssh/AMShah.pem
-
-Host ds_tmp
-HostName 34.139.107.187
-User a.momin
-IdentityFile ~/.ssh/gcp
 
 # ============================================================================
 
@@ -85,13 +51,3 @@ UseKeychain no
 IdentityFile ~/.ssh/ghub_amomin
 
 # ============================================================================
-
-Host awsdn1
-HostName ec2-34-193-196-2.compute-1.amazonaws.com
-User ubuntu
-IdentityFile ~/.ssh/hadoop_cluster.pem
-
-Host main-node
-HostName 104.197.237.10
-User bbcredcap3
-IdentityFile ~/.ssh/gcp-nds-key

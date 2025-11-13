@@ -163,3 +163,25 @@ alias reload="exec $SHELL -l"
 # Print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'
 
+###############################################################################
+###############################################################################
+
+alias rgh="code $HOME/rough.md"
+
+
+alias bp="code $HOME/.bash_profile"                    # bp ==> Bash Profile
+alias bu="code $HOME/.bash_utils.bash"
+alias aliases="code $HOME/.aliases"
+alias galiases="code $HOME/.git-aliases.bash"
+alias sshconfig="code $HOME/.ssh/config"
+alias ae="deactivate &> /dev/null; source .venv/bin/activate"
+alias de="deactivate"
+alias pae="pyenv activate $1"
+alias pde="pyenv deactivate"
+# alias uae="source $UV/$1/bin/activate"
+uae() {
+    source "$UV/$1/bin/activate" && echo -e "Activated \033[0;32m$1\033[0m Virual Environment, which is located in $UV"
+}
+alias ude="pyenv deactivate"
+alias cae="conda activate $1"
+alias cde="conda deactivate"

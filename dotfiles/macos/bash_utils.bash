@@ -57,8 +57,6 @@ pvt_symbolic_links(){
         
     ln -sf $NTHUB/nts/notes_django.md \
         $HOME/mydocs/Software_Development/Web_Development/django-courses/notes_django.md
-    ln -sf $NTHUB/nts/notes_aws.md \
-        $HOME/mydocs/Software_Development/Web_Development/aws/notes_aws.md
     ln -sf $NTHUB/nts/notes_docker.md \
         $HOME/mydocs/Software_Development/Web_Development/cicd/dockers/notes_docker.md
     ln -sf $NTHUB/nts/notes_fastapi.md \
@@ -66,7 +64,7 @@ pvt_symbolic_links(){
     ln -sf $NTHUB/nts/notes_flask.md \
         $HOME/mydocs/Software_Development/Web_Development/flask-course/notes_flask.md
     ln -sf $NTHUB/nts/notes_terraform.md \
-        $HOME/mydocs/Software_Development/Web_Development/cicd/terraforms/notes_terraform.md
+        $HOME/mydocs/Software_Development/DEDS/terraform_aws/notes_terraform.md
     ln -sf $NTHUB/nts/notes_ansible.md \
         $HOME/mydocs/Software_Development/Web_Development/cicd/ansible/notes_ansible.md
     ln -sf $NTHUB/nts/notes_networking.md \
@@ -560,4 +558,10 @@ setup_noteshub_on_c1(){
 proxyon(){
 
     cofproxy on
+}
+
+git_push_regular(){
+    git add .
+    git commit -m "regular update"
+    git push origin $1
 }
