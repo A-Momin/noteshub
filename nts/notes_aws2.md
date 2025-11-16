@@ -106,12 +106,12 @@
 
     10. **Function Code Configuration**
 
-    -   **Deployment Package**:
-        -   A Lambda function’s deployment package contains the function code and dependencies, packaged in a `.zip` file or container image.
-        -   **Layers**: Lambda layers let you share code, libraries, or binaries across multiple Lambda functions without including them in each function’s deployment package. Up to 5 layers can be used per function, reducing package size and simplifying maintenance.
-    -   **Container Images**:
-        -   Lambda supports container images up to 10 GB, allowing you to package code and dependencies in Docker images for more complex applications or specific runtime requirements.
-        -   Images are stored in Amazon ECR and provide a way to deploy large applications with custom runtimes or dependencies.
+        - **Deployment Package**:
+            - A Lambda function’s deployment package contains the function code and dependencies, packaged in a `.zip` file or container image.
+            - **Layers**: Lambda layers let you share code, libraries, or binaries across multiple Lambda functions without including them in each function’s deployment package. Up to 5 layers can be used per function, reducing package size and simplifying maintenance.
+        - **Container Images**:
+            - Lambda supports container images up to 10 GB, allowing you to package code and dependencies in Docker images for more complex applications or specific runtime requirements.
+            - Images are stored in Amazon ECR and provide a way to deploy large applications with custom runtimes or dependencies.
 
     11. **Aliases and Versions**
 
@@ -345,23 +345,19 @@
 
 -   <details><summary style="font-size:25px;color:Orange">ECS</summary>
 
-    Amazon Elastic Container Service (ECS) is a fully managed container orchestration service that makes it easy for you to deploy, manage, and scale Docker containers on AWS. It abstracts away the complexity of managing the underlying infrastructure, allowing you to focus on building and running your applications. ECS eliminates the need to install, operate, and scale your own container management infrastructure.
-
-    #### Classifications of AWS ECS
+    Amazon Elastic Container Service (**ECS**) is a fully managed container orchestration service that makes it easy for you to deploy, manage, and scale Docker containers on AWS. It abstracts away the complexity of managing the underlying infrastructure, allowing you to focus on building and running your applications. ECS eliminates the need to install, operate, and scale your own container management infrastructure.
 
     AWS ECS offers different ways to run your containers, catering to various needs and levels of control:
 
-    1.  **Launch Types:** This is the primary classification that determines the underlying compute infrastructure for your containers:
+    -   <details><summary style="font-size: 25px;color:#C71585">Launch Types</summary>
+
+        **Launch Types** is the primary classification that determines the underlying compute infrastructure for your containers:
 
         -   **EC2 Launch Type:** You provision and manage the Amazon EC2 instances that run your containers. This gives you more control over the underlying infrastructure, including instance types, operating systems, and networking configurations. You are responsible for scaling and patching these instances.
         -   **Fargate Launch Type:** AWS manages the underlying infrastructure for you. You specify the CPU and memory requirements for your containers, and Fargate automatically provisions and scales the compute resources. This is a serverless option, reducing operational overhead.
         -   **External Launch Type (ECS Anywhere):** This allows you to register external instances (like on-premises servers or VMs) with your ECS clusters. This provides a consistent way to manage container workloads across hybrid environments.
 
-    2.  **Networking Modes:** ECS tasks can be configured with different networking modes, which determine how containers within a task are networked:
-        -   **awsVpc:** Each task gets its own elastic network interface (ENI) with a private IP address in your VPC. This provides network isolation and allows you to use standard AWS networking features like security groups and network ACLs at the task level. This is the recommended mode for most use cases.
-        -   **host:** Tasks directly use the network of the EC2 instance they are running on. Containers within the same task share the host's network interfaces and ports. This offers high performance but can lead to port conflicts if multiple tasks on the same instance need the same ports.
-        -   **bridge:** ECS creates a Linux bridge on the EC2 instance, and containers within a task are connected to this bridge. They get IP addresses from a Docker-internal network, and port mappings are used to expose container ports to the host instance's network. This is the default mode for EC2 launch type but is less isolated than `awsVpc`.
-        -   **none:** The task has no external networking.
+        </details>
 
     -   <details><summary style="font-size: 25px;color:#C71585">Networking Mode</summary>
 
@@ -378,6 +374,9 @@
             | **Use Case**     | **Microservices, Load Balancing, and Fargate.** Ideal for applications requiring robust network isolation, simplified networking, and where every task needs a unique, identifiable IP within the VPC. |
             | **Limitation**   | For EC2-backed clusters, the number of tasks on a single instance is limited by the maximum number of ENIs (and secondary IPs) the EC2 instance type supports.                                         |
 
+            - `awsvpc` mode + `ip` target type allows the ECS Service to automatically handle load balancing without tying the target group to the underlying EC2 instance ASG.
+            - Your `aws_ecs_service` contains a `network_configuration` block, which is designed to assign Task-level security groups and subnets, which only works with awsvpc network mode.
+
         2. **`bridge` Network Mode (EC2 Launch Type Only)**: The `bridge` mode uses the Docker daemon's built-in virtual network to facilitate communication.
 
             | Aspect           | Details                                                                                                                                                                                                                                                                                                                                    |
@@ -388,6 +387,8 @@
             | **Security**     | All tasks on the EC2 instance share the EC2 host's **single security group**. Security rules are applied at the EC2 instance level, not the task level.                                                                                                                                                                                    |
             | **Use Case**     | Traditional Docker deployments, high container density (not limited by ENI count), and situations where the infrastructure layer (EC2) manages security.                                                                                                                                                                                   |
             | **Limitation**   | Only one task on the same host can use the same static host port, and security control is less granular.                                                                                                                                                                                                                                   |
+
+            - When using bridge mode, the task's networking is handled entirely by the host's EC2 instance and Docker, so you cannot specify task-level subnets or security groups in the service definition.
 
         3. **`host` Network Mode (EC2 Launch Type Only)**: The `host` mode provides the least isolation and gives the container direct access to the host's networking stack.
 
@@ -454,28 +455,6 @@
             -   **Zero Downtime Deployment:** Dynamic port mapping, combined with an ALB, facilitates rolling updates and blue/green deployments by allowing new tasks to launch on the same instance as old tasks (on a new dynamic port) before the old ones are terminated.
 
         </details>
-
-    #### Components of AWS ECS
-
-    Understanding the core components of ECS is crucial for working with the service:
-
-    1.  **Cluster:** A logical grouping of container instances (EC2 instances or Fargate infrastructure). Clusters are region-specific.
-    2.  **Container Instance:** An EC2 instance that has the ECS container agent running on it and is registered to an ECS cluster. For Fargate, this is the underlying compute resource managed by AWS. For ECS Anywhere, this is your registered on-premises instance.
-    3.  **Task Definition:** A JSON file that describes one or more containers (up to 10) that form your application. It specifies details like:
-        -   Docker image to use
-        -   CPU and memory requirements for each container
-        -   Port mappings
-        -   Environment variables
-        -   Mount points for volumes
-        -   Networking mode
-        -   IAM roles for tasks and task execution
-        -   Health checks
-    4.  **Task:** An instantiation of a task definition. It's a running container or a group of co-located containers defined in a task definition.
-    5.  **Service:** A configuration that allows you to run and maintain a specified number of instances of a task definition simultaneously in a cluster. The ECS service scheduler ensures that the desired number of tasks is running and handles task failures by launching new tasks. Services can optionally be integrated with Elastic Load Balancing (ELB) to distribute traffic across the tasks.
-    6.  **Container Agent:** Software that runs on each container instance (for EC2 and ECS Anywhere launch types). It communicates with the ECS control plane to manage containers and tasks.
-    7.  **ECS Registry (ECR):** A fully managed Docker container registry that makes it easy for developers to store, manage, and deploy Docker container images. ECS can directly pull images from ECR.
-    8.  **Task Placement Strategies and Constraints:** These rules determine how ECS places tasks across the container instances within a cluster. Strategies include `spread` (distribute tasks evenly), `binpack` (place tasks densely to minimize instance usage), and `random`. Constraints allow you to place tasks based on instance attributes, custom attributes, or Availability Zones.
-    9.  **Capacity Providers (for EC2 Launch Type):** Allow you to manage the underlying EC2 instance capacity for your ECS clusters. You can define how ECS should scale the instances in response to task demands, integrating with Auto Scaling Groups.
 
     -   <details><summary style="font-size: 25px;color:#C71585">Task Definition (The Blueprint)</summary>
 
@@ -2484,6 +2463,55 @@
 
 ---
 
+-   <details><summary style="font-size:25px;color:Orange">Amazon Kinosis</summary>
+
+    The main difference between Kinesis Data Streams, Kinesis Data Firehose, and Amazon Managed Service for Apache Flink lies in their primary function, level of management, and real-time processing capabilities within the AWS streaming data ecosystem.
+
+    -   **Kinesis Services**:
+
+        | Feature                | **Kinesis Data Streams (KDS)**                                                                                                                          | **Kinesis Data Firehose (KDF)**                                                                                                         | **Managed Service for Apache Flink**                                                                                    |
+        | :--------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+        | **Primary Function**   | **Data Transport/Storage** - A persistent, real-time data ingestion and storage layer.                                                                  | **Data Delivery** - An automated, fully managed service for loading data to a destination.                                              | **Data Processing/Analysis** - A fully managed platform for processing streaming data in real-time.                     |
+        | **Data Flow/Control**  | **Producers PUSH** data. **Consumers PULL** data. You build the consumer application.                                                                   | **Producers PUSH** data. **Firehose PUSHES** to the destination. Fully managed delivery.                                                | Consumes from Kinesis Streams/Firehose/MSK, **processes**, and outputs to a destination.                                |
+        | **Real-time Latency**  | **Real-time** (milliseconds). Best for time-sensitive applications.                                                                                     | **Near Real-time** (depends on buffering configuration, minimum buffer time is 60 seconds).                                             | **Real-time** (sub-second latency for complex analysis).                                                                |
+        | **Scalability & Mgmt** | Requires **manual provisioning and management of Shards** (though **On-Demand** mode is available).                                                     | **Fully Managed** and **auto-scaling** (serverless).                                                                                    | **Fully Managed** and **serverless** processing engine.                                                                 |
+        | **Data Retention**     | Stores data for **24 hours by default**, configurable up to **365 days**. Allows for data replay.                                                       | **No internal data storage**; data is delivered to the destination. Uses S3 for backup of failed deliveries.                            | Applications are **stateful**, but the service does not function as long-term data storage.                             |
+        | **Typical Use Cases**  | Building **custom real-time applications**, complex event processing, real-time dashboards, or when multiple applications need to read the same stream. | **Loading streaming data** into destinations like Amazon S3, Redshift, OpenSearch Service, or Splunk with minimal operational overhead. | **Complex streaming analytics** (windowing, joins, aggregates) using SQL or Java/Scala/Python (Apache Flink framework). |
+
+    -   <details><summary style="font-size: 25px;color:#C71585">Amazon Kinesis Data Streams (KDS)</summary>
+
+        KDS is the **core transport layer** for streaming data. It functions like a durable, scalable log for data records.
+
+        -   **Role:** Acts as an intermediary buffer for real-time data, allowing multiple consumers to read the same data concurrently.
+        -   **Key Feature:** **High control and flexibility**. You manage the throughput capacity by managing **shards**, and you must build or configure your own consumer applications (e.g., using AWS Lambda, KCL, or EC2 instances) to read the data.
+        -   **Ideal for:** Any scenario requiring **custom processing logic**, **multiple independent consumers** reading the same data, or when **data needs to be replayed** for historical processing.
+
+        </details>
+
+    -   <details><summary style="font-size: 25px;color:#C71585">Amazon Kinesis Data Firehose (KDF)</summary>
+
+        KDF is the **simplified, serverless delivery service** for streaming data.
+
+        -   **Role:** Automatically captures, transforms (optionally using AWS Lambda), and loads streaming data into a supported destination.
+        -   **Key Feature:** **Fully managed and easiest to use**. It focuses on the **Near Real-time** delivery of data to specific AWS data stores (S3, Redshift, OpenSearch, etc.). It manages scaling, backups, and retries automatically.
+        -   **Ideal for:** Creating **simple data pipelines** for long-term storage or near real-time BI/analytics without needing to develop and manage a custom consumer application.
+
+        </details>
+
+    -   <details><summary style="font-size: 25px;color:#C71585">Amazon Managed Service for Apache Flink (previously Kinesis Data Analytics)</summary>
+
+        This is the **compute/processing layer** of the Kinesis suite.
+
+        -   **Role:** Provides a fully managed platform to run sophisticated analytical applications on streaming data using the open-source **Apache Flink** framework.
+        -   **Key Feature:** Enables **stateful stream processing** (e.g., aggregating data over time windows, joining streams) with low latency using either Flink's APIs (Java/Scala/Python) or standard SQL.
+        -   **Ideal for:** Building **complex, real-time stream processing applications** like fraud detection, real-time ETL, or advanced sessionization and time-series analysis. It often consumes data from Kinesis Data Streams or Kinesis Data Firehose.
+
+        </details>
+
+    </details>
+
+---
+
 -   <details><summary style="font-size:25px;color:Orange">Lake Formation</summary>
 
     AWS Lake Formation is a managed service that simplifies and automates the process of setting up, securing, and managing a data lake. A data lake is a centralized repository that allows you to store all your structured and unstructured data at any scale. You can store your data as-is, without having to first structure the data, and run different types of analytics—from dashboards and visualizations to big data processing, real-time analytics, and machine learning.
@@ -2529,78 +2557,78 @@
 
     #### Key Terms and Concepts
 
-    1. **Data Lake Administrator**
+    6. **Data Lake Administrator**
 
         - A role with comprehensive control over the data lake.
         - Setting up the data lake, managing security, and configuring policies.
 
-    2. **Data Lake**
+    7. **Data Lake**
 
         - A centralized repository for storing large volumes of diverse data, both structured and unstructured.
         - Allows storage of data in its native format until needed for analysis.
 
-    3. **Data Catalog**
+    8. **Data Catalog**
 
         - A central repository to store metadata about the data stored in your data lake.
         - Helps in discovering and managing data within the data lake. The catalog contains information about data locations, schemas, and classifications.
 
-    4. **Blueprints**
+    9. **Blueprints**
 
         - Predefined workflows for common data ingestion and transformation tasks.
         - Simplify the process of importing data from various sources into the data lake.
 
-    5. **Data Locations** refer to the individual S3 buckets or prefixes where your raw and processed data resides. These are the specific paths within Amazon S3 that you designate as sources for data ingestion and storage. For example, you might have different S3 buckets for various types of data like logs, transactions, or user data.
+    10. **Data Locations** refer to the individual S3 buckets or prefixes where your raw and processed data resides. These are the specific paths within Amazon S3 that you designate as sources for data ingestion and storage. For example, you might have different S3 buckets for various types of data like logs, transactions, or user data.
 
-    6. **Data Lake Location** is the overarching S3 bucket or prefix designated as the central repository for your data lake. It is the primary location that AWS Lake Formation manages and secures. All data ingested into the data lake will ultimately reside within this location, and it serves as the central hub for data storage, access control, and governance.
+    11. **Data Lake Location** is the overarching S3 bucket or prefix designated as the central repository for your data lake. It is the primary location that AWS Lake Formation manages and secures. All data ingested into the data lake will ultimately reside within this location, and it serves as the central hub for data storage, access control, and governance.
 
-    7. **registering a location** involves specifying and adding Amazon S3 paths that will be managed by Lake Formation. It enables Lake Formation to manage access control, audit logging, and data cataloging for the specified S3 data. This process allows Lake Formation to apply data governance and security controls over these data sources.
+    12. **registering a location** involves specifying and adding Amazon S3 paths that will be managed by Lake Formation. It enables Lake Formation to manage access control, audit logging, and data cataloging for the specified S3 data. This process allows Lake Formation to apply data governance and security controls over these data sources.
 
         - `Choose S3 Path`: Select the S3 bucket or specific prefix within a bucket where your data resides.
         - `Register in Lake Formation`: Use the Lake Formation console, AWS CLI, or API to register this S3 path.
         - `Assign Permissions`: Define which IAM users and roles can access this data and what permissions they have (e.g., read, write, data location permissions).
         - `Data Governance`: Ensures that data stored in registered locations is secure and accessible only to authorized users.
 
-    8. **Table**
+    13. **Table**
 
         - A logical structure that describes the schema of the data stored in the data lake.
         - Provides structure and schema information for the stored data.
 
-    9. **Column**
+    14. **Column**
 
         - Represents an attribute or field within a table.
         - Defines the data type and nature of the stored data.
 
-    10. **Crawler**
+    15. **Crawler**
 
         - A tool that scans data in the data lake and automatically identifies the schema, data types, and other metadata.
         - Automates the process of cataloging data.
 
-    11. **Fine-Grained Access Control**
+    16. **Fine-Grained Access Control**
 
         - Controls that allow permissions to be set at a granular level, such as on specific columns or rows of a table.
         - Enhances data security by limiting access to sensitive data.
 
-    12. **Tag-Based Access Control (TBAC)**
+    17. **Tag-Based Access Control (TBAC)**
 
         - Uses tags to define and enforce access policies.
         - Simplifies management of access control by using metadata tags.
 
-    13. **Federated Query**
+    18. **Federated Query**
 
         - A query that accesses and combines data across different data sources.
         - Allows analysis of data across multiple sources without data movement.
 
-    14. **Workflow**
+    19. **Workflow**
 
         - A sequence of operations defined to perform tasks such as data ingestion, transformation, and loading.
         - Automates complex data processing tasks.
 
-    15. **Data Encryption**
+    20. **Data Encryption**
 
         - The process of encoding data to prevent unauthorized access.
         - Protects data at rest and in transit within the data lake.
 
-    16. **Lake Formation Permissions**
+    21. **Lake Formation Permissions**
         - Policies that control access to data resources within the data lake.
         - Manage who can access data and what operations they can perform.
 

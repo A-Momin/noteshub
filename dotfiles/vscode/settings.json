@@ -163,10 +163,12 @@
     "docker.extension.enableComposeLanguageServer": false,
     "database-client.autoSync": true,
     "github.copilot.enable": {
-        "*": false,
+        "*": true,
         "plaintext": false,
         "markdown": false,
         "scminput": false
     },
     "jupyter.disableJupyterAutoStart": true,
+    // Enable validating the currently open file on save
+    "terraform.experimentalFeatures.validateOnSave": true
 }

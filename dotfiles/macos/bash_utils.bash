@@ -306,6 +306,7 @@ up_ec2(){
     
     local INSTANCE_ID=$(eval "echo \$$INSTANCE")
 
+    echo "Starting instance with ID: $INSTANCE_ID"
     # Start the EC2 instance
     aws ec2 start-instances --instance-ids "$INSTANCE_ID"
     sleep 30
@@ -560,7 +561,7 @@ proxyon(){
     cofproxy on
 }
 
-git_push_regular(){
+git_add_comit_push(){
     git add .
     git commit -m "regular update"
     git push origin $1
