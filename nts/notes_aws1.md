@@ -1026,7 +1026,9 @@
 
         -   `Network Prefix`: A network prefix refers to the part of an IP address that identifies the network or subnet itself. It is specified by a `CIDR` (Classless Inter-Domain Routing) notation, which consists of an IP address followed by a slash (`/`) and a number (the prefix length). The prefix length defines how many bits of the IP address are dedicated to identifying the network. For example, in the `CIDR` block `192.168.1.0/24`, the `/24` is the network prefix length, meaning the first 24 bits (or the first three octets) of the IP address represent the network itself, and the remaining bits are available for host addresses within that network. The first 24 bits (or the first three octets) are reffered as the `Network Prefix`.
 
-    -   **Route Table**: A Route Table in AWS VPC is a set of rules that controls how network traffic is directed within the VPC. It determines where traffic from your subnets is routed, such as to the internet, other VPCs, or within the same VPC. **Each subnet in a VPC must be associated with a route table**, and the table specifies the paths traffic can take, like sending internet-bound traffic through an internet gateway or directing traffic to other private resources.
+    -   <details><summary style="font-size:20px;color:Magenta">Route Table</summary>
+
+        A Route Table in AWS VPC is a set of rules that controls how network traffic is directed within the VPC. It determines where traffic from your subnets is routed, such as to the internet, other VPCs, or within the same VPC. **Each subnet in a VPC must be associated with a route table**, and the table specifies the paths traffic can take, like sending internet-bound traffic through an internet gateway or directing traffic to other private resources.
 
         -   `Main Route Table`: The default route table that is automatically created when a VPC is set up. All subnets not explicitly associated with a custom route table use this table.
 
@@ -1051,6 +1053,8 @@
         -   `Prioritization`: Routes in a Route Table are evaluated in priority order, with more specific routes taking precedence over less specific routes. If multiple routes match a destination CIDR block, the most specific route (i.e., the route with the longest prefix length) is chosen.
         -   `Multi-Subnet Routing`: In a multi-subnet VPC architecture, different subnets can be associated with different Route Tables, allowing you to implement distinct routing policies based on subnet requirements. This enables you to enforce security policies, direct traffic to specific gateways, or implement advanced networking configurations.
 
+        </details>
+
     -   **Internet Gateway**: An AWS Internet Gateway (IGW) is a horizontally scaled, redundant, and highly available VPC component that allows communication between instances within your VPC and the internet. It serves as a gateway to facilitate inbound and outbound internet traffic for resources within your VPC. Here are the key points to understand about AWS Internet Gateways:
 
         -   `Public Subnets`: Internet Gateways are typically associated with public subnets within your VPC. Public subnets have routes to the Internet Gateway in their route tables, enabling instances within those subnets to communicate directly with the internet.
@@ -1070,7 +1074,9 @@
         -   `Usage Costs`: While there is no charge for creating a NAT Gateway, you are billed for the data processing and data transfer fees associated with outbound traffic routed through the NAT Gateway. Pricing is based on the volume of data processed and the AWS region where the NAT Gateway is deployed.
         -   `Automatic Failover`: AWS NAT Gateway automatically detects failures and redirects traffic to healthy instances. This ensures continuous availability and minimizes disruption to outbound internet connectivity.
 
-    -   **Network Access Control List (NACL)**: AWS Network Access Control Lists (NACLs) are stateless, optional security layers that control inbound and outbound traffic at the subnet level in an Amazon VPC. They act as a firewall for controlling traffic entering and leaving one or more subnets within a VPC. Here's an explanation of the key aspects of AWS NACLs:
+    -   <details><summary style="font-size:20px;color:Magenta">Network Access Control List (NACL)</summary>
+
+        AWS Network Access Control Lists (NACLs) are stateless, optional security layers that control inbound and outbound traffic at the subnet level in an Amazon VPC. They act as a firewall for controlling traffic entering and leaving one or more subnets within a VPC. Here's an explanation of the key aspects of AWS NACLs:
 
         -   `Subnet-Level Security`: NACLs are associated with individual subnets within a VPC. Each subnet can have its own NACL, which allows you to customize the network security policies for different parts of your VPC.
         -   `Stateless Inspection`: Unlike security groups, which are stateful, NACLs are stateless. This means that they evaluate each network packet independently, without considering the state of previous packets. As a result, you must explicitly configure rules for both inbound and outbound traffic in both directions.
@@ -1099,6 +1105,8 @@
         -   `Association`: Each subnet in a VPC must be associated with one NACL for inbound traffic and one NACL for outbound traffic. If no custom NACLs are explicitly associated with a subnet, the default NACL is applied automatically.
         -   `Logging`: You can enable logging for a NACL to capture information about the traffic that matches the rules. This can be helpful for troubleshooting network connectivity issues, monitoring traffic patterns, and auditing security configurations.
 
+        </details>
+
     -   **Network Interface**: An AWS network interface is a virtual network interface that represents a network interface card (NIC) in a traditional server and can be attached to an EC2 instance in a VPC. It acts as a network interface for an EC2 instance, providing connectivity to the network and allowing the instance to communicate with other resources within the VPC and the internet. Here are some key points about AWS network interfaces:
 
         -   `Flexible Attachment`: Network interfaces can be attached to or detached from EC2 instances as needed. This allows for flexibility in networking configurations, such as adding additional network interfaces for specific purposes like high availability or security.
@@ -1108,7 +1116,9 @@
         -   `Security Groups`: Network interfaces can be associated with one or more security groups, which act as virtual firewalls, controlling the traffic allowed to and from the instance.
         -   `Traffic Monitoring and Control`: AWS provides tools for monitoring and controlling traffic through network interfaces, such as VPC Flow Logs, which capture information about the IP traffic going to and from network interfaces.
 
-    -   **VPC Endpoint**: An `VPC Endpoint` allows you to privately connect your VPC to supported AWS services and VPC endpoint services, without using an internet gateway, NAT device, VPN connection, or AWS Direct Connect. These endpoints provide secure access to services by keeping traffic within the AWS network, avoiding exposure to the public internet.
+    -   <details><summary style="font-size:20px;color:Magenta">VPC Endpoint</summary>
+
+        An `VPC Endpoint` allows you to privately connect your VPC to supported AWS services and VPC endpoint services, without using an internet gateway, NAT device, VPN connection, or AWS Direct Connect. These endpoints provide secure access to services by keeping traffic within the AWS network, avoiding exposure to the public internet.
 
         1. **Interface Endpoints**: Elastic Network Interfaces (ENI) with private IP addresses that act as entry points to services such as S3, DynamoDB, SNS, or your own AWS-hosted services.
 
@@ -1122,7 +1132,11 @@
             - `Supported Services`: Currently, only Amazon S3 and DynamoDB are supported.
             - `Cost`: Free to use, but only available for a limited set of services.
 
-    -   **PrivateLink**: AWS PrivateLink is a networking service that enables secure, **private connectivity** between Virtual Private Clouds (VPCs), AWS services, and on-premises networks without exposing traffic to the public internet. It simplifies network architecture by allowing **direct communication** between services while maintaining security and reducing the need for complex VPC peering or NAT gateways.
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">PrivateLink</summary>
+
+        AWS PrivateLink is a networking service that enables secure, **private connectivity** between Virtual Private Clouds (VPCs), AWS services, and on-premises networks without exposing traffic to the public internet. It simplifies network architecture by allowing **direct communication** between services while maintaining security and reducing the need for complex VPC peering or NAT gateways.
 
         -   **How AWS PrivateLink Works**:
 
@@ -1138,45 +1152,37 @@
 
         -   **Components of AWS PrivateLink**:
 
-            1. `Interface VPC Endpoints`: Allows private connectivity to AWS services or PrivateLink-enabled services from a VPC.
+                1. `Interface VPC Endpoints`: Allows private connectivity to AWS services or PrivateLink-enabled services from a VPC.
 
-                - Creates an **ENI** in the VPC consumer subnet.
-                - The ENI gets a **private IP address** and serves as the entry point to the service.
-                - The endpoint is reachable **only within the consumer's VPC**.
-                - Connecting to AWS services like **S3, DynamoDB, SNS, SQS, Lambda, KMS, and API Gateway** privately.
-                - Accessing **third-party SaaS applications** privately via AWS Marketplace.
+                    - Creates an **ENI** in the VPC consumer subnet.
+                    - The ENI gets a **private IP address** and serves as the entry point to the service.
+                    - The endpoint is reachable **only within the consumer's VPC**.
+                    - Connecting to AWS services like **S3, DynamoDB, SNS, SQS, Lambda, KMS, and API Gateway** privately.
+                    - Accessing **third-party SaaS applications** privately via AWS Marketplace.
 
-            2. `VPC Endpoint Services (PrivateLink Services)`: Enables a VPC to **offer services privately** to other VPCs using PrivateLink.
+                2. `VPC Endpoint Services (PrivateLink Services)`: Enables a VPC to **offer services privately** to other VPCs using PrivateLink.
 
-                - The **service provider** creates a **VPC endpoint service**.
-                - The **service consumer** requests a connection to that service.
-                - Once accepted, the consumer can access the service **via a private endpoint**.
-                - Private access to **AWS services like Amazon RDS, Amazon S3, or custom applications**.
-                - Secure connectivity between **multi-account AWS environments**.
+                    - The **service provider** creates a **VPC endpoint service**.
+                    - The **service consumer** requests a connection to that service.
+                    - Once accepted, the consumer can access the service **via a private endpoint**.
+                    - Private access to **AWS services like Amazon RDS, Amazon S3, or custom applications**.
+                    - Secure connectivity between **multi-account AWS environments**.
 
-            3. `NLB (Network Load Balancer) Integration`:
+                3. `NLB (Network Load Balancer) Integration`:
 
-                - PrivateLink services **must be exposed via a Network Load Balancer (NLB)**.
-                - The NLB forwards traffic from the service consumer’s VPC to the **backend instances, containers, or Lambda functions**.
+                    - PrivateLink services **must be exposed via a Network Load Balancer (NLB)**.
+                    - The NLB forwards traffic from the service consumer’s VPC to the **backend instances, containers, or Lambda functions**.
 
-            4. `AWS PrivateLink for On-Premises`:
+                4. `AWS PrivateLink for On-Premises`:
 
-                - **Direct Connect or VPN** can be used to route **on-premises traffic to AWS PrivateLink** services.
-                - Allows **hybrid cloud** architectures with **secure, low-latency** connectivity.
+                    - **Direct Connect or VPN** can be used to route **on-premises traffic to AWS PrivateLink** services.
+                    - Allows **hybrid cloud** architectures with **secure, low-latency** connectivity.
 
-    -   **Elastic IP Address**: In AWS, a Elastic IP (EIP) usually refers to an Static IP address is a public, static IPv4 address that you can allocate and associate with AWS resources, most commonly EC2 instances or Network Interfaces.
+        </details>
 
-        -   A Static IP is an IP address that does not change over time. It's ideal for services where DNS caching or firewall whitelisting is required (e.g., APIs, external integrations, webhooks, etc.).
-        -   Web servers that need a stable IP for DNS A-records.
-        -   Whitelisting in external firewalls, partners, or SaaS integrations.
-        -   Failover/HA designs where you want to move the IP between instances.
-        -   Outbound NAT gateways using Elastic IPs for fixed egress traffic.
-        -   VPNs, APIs, or reverse proxies with static IP requirements.
-        -   Elastic IPs are region-specific.
-        -   Only 5 EIPs per region by default (can request more).
-        -   Idle EIPs cost money. (When not attached to a running resource.)
+    -   <details><summary style="font-size:20px;color:Magenta">Peering</summary>
 
-    -   **Peering**: VPC Peering is a network connection between two VPCs that enables you to route traffic privately between them using private IP addresses.
+        VPC Peering is a network connection between two VPCs that enables you to route traffic privately between them using private IP addresses.
 
         -   Works within a region or across regions (inter-region peering).
         -   Traffic stays within AWS's backbone network — no public internet involved.
@@ -1210,6 +1216,115 @@
             | **Scale**              | 1:1 connections     | 1000s of VPCs      | Limited               |
             | **Use Case**           | Small-medium setups | Large/multi-region | Hybrid cloud          |
 
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">VPN</summary>
+
+        A Virtual Private Network (VPN) on Amazon Web Services (AWS) is a service that provides a secure, encrypted connection for transmitting data over the public internet. This allows you to securely connect your on-premises networks or remote users to your Amazon Virtual Private Cloud (Amazon VPC) resources, creating a **hybrid cloud architecture**. AWS offers two primary VPN solutions: **AWS Site-to-Site VPN** and **AWS Client VPN**.
+
+        -   **AWS Site-to-Site VPN**: AWS Site-to-Site VPN is designed to create a secure connection between your entire **on-premises network (a "site")** and your **Amazon VPC**. It's primarily used for connecting corporate data centers, branch offices, or other remote network locations to your cloud resources.
+
+            -   **Key Components**:
+
+                -   **Virtual Private Gateway (VGW):** This is the **AWS side** of the VPN connection. It's a logically redundant component attached to your Amazon VPC or an AWS Transit Gateway. It's the termination point for the VPN tunnels on the AWS side.
+                -   **Customer Gateway (CGW):** This is the **customer side** resource in AWS that represents your physical or software VPN appliance (e.g., a firewall or router) in your on-premises data center. When you configure the CGW, you provide AWS with the internet-routable IP address of your appliance.
+                -   **VPN Connection:** This is the AWS resource that establishes the secure link between the Virtual Private Gateway (VGW) and the Customer Gateway (CGW).
+                    -   **High Availability:** Each VPN Connection automatically provisions **two separate IPSec VPN tunnels** running concurrently. This provides redundancy and high availability. If one tunnel fails, network traffic automatically routes to the second tunnel, ensuring continuous connectivity.
+                    -   **IPSec Tunnels:** The tunnels use the **IP Security (IPSec)** protocol suite to provide encryption, confidentiality, and integrity for the data in transit over the public internet.
+
+            -   **Routing Options**:
+
+                -   **Static Routing:** You manually specify the IP address prefixes (CIDR blocks) for your on-premises network and for the VPC/Transit Gateway on both the Customer Gateway and the AWS side.
+                -   **Dynamic Routing (BGP):** This uses the **Border Gateway Protocol (BGP)** to automatically exchange route information between the Customer Gateway and the Virtual Private Gateway/Transit Gateway. This is generally preferred as it simplifies network management and provides quicker adaptation to network changes.
+
+            -   **Use Cases**:
+
+                -   **Hybrid Cloud:** Integrating your existing on-premises infrastructure with AWS cloud services.
+                -   **Disaster Recovery:** Setting up replication and failover between your data center and a recovery VPC on AWS.
+                -   **AWS Direct Connect Backup:** Using the Site-to-Site VPN as a lower-cost, redundant backup path for your dedicated AWS Direct Connect link.
+
+        -   **AWS Client VPN**: AWS Client VPN is a managed, client-based VPN service that enables **individual remote users** (like employees working from home or traveling) to securely access your AWS resources and any connected on-premises networks. It is a modern replacement for traditional self-managed remote access VPN solutions.
+
+            -   **Key Components**:
+
+                -   **Client VPN Endpoint:** This is the regional AWS resource that you create and configure. It is the termination point for all client VPN sessions, handling authentication, encryption, and session management.
+                -   **Target Network Association:** You associate one or more subnets in your VPC with the Client VPN Endpoint. This allows the VPN to inject traffic directly into the VPC.
+                -   **VPN Client:** Users connect to the endpoint using an **OpenVPN-based software client** (including the AWS provided desktop client) installed on their laptop or mobile device.
+                -   **Client CIDR Range:** An IP address range (e.g., $10.10.0.0/16$) that is separate from your VPC CIDR, from which the Client VPN Endpoint assigns a unique, temporary IP address to each connected user.
+
+            -   **Authentication and Authorization**: Client VPN is more focused on user identity management and supports several authentication methods:
+
+                -   **Active Directory:** Integrate with AWS Directory Service to authenticate users against your corporate AD.
+                -   **Mutual Authentication:** Uses both a server certificate (uploaded to AWS) and a client certificate (installed on the user's device) for verification.
+                -   **Federated Authentication (SAML 2.0):** Use an identity provider (IdP) for single sign-on.
+                -   **Authorization Rules:** After successful authentication, you configure rules that specify which users (or Active Directory groups) are allowed to access which target networks (e.g., VPC CIDRs).
+
+            -   **Use Cases**:
+
+                -   **Remote Work Access:** Allowing employees secure access to internal applications and resources hosted in AWS.
+                -   **Administrative Access:** Providing secure access for administrators and developers to manage AWS instances in a private subnet.
+
+        -   **Site-to-Site vs. Client VPN Summary**:
+
+            | Feature                | AWS Site-to-Site VPN                                     | AWS Client VPN                                            |
+            | :--------------------- | :------------------------------------------------------- | :-------------------------------------------------------- |
+            | **Primary Use**        | Network-to-Network connection (e.g., Data Center to VPC) | User-to-Network connection (e.g., Remote Employee to VPC) |
+            | **Connectivity Model** | Always-on, fixed link                                    | On-demand, user-initiated session                         |
+            | **Protocols**          | IPSec                                                    | OpenVPN-based (TLS)                                       |
+            | **User Management**    | None (It connects _networks_)                            | Centralized access control (AD, SAML, Certificates)       |
+            | **AWS Endpoint**       | Virtual Private Gateway (VGW) or Transit Gateway         | Client VPN Endpoint                                       |
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">AWS Transit Gateway: The Central Hub</summary>
+
+        Absolutely! The **AWS Transit Gateway (TGW)** is a powerful networking service that dramatically improves how you handle connectivity, especially when integrating multiple Virtual Private Clouds (VPCs) and Site-to-Site VPN connections.
+
+        The Transit Gateway acts as a highly scalable **cloud router** that functions as a central hub in a **hub-and-spoke** network model. Instead of having many individual point-to-point connections (like a mesh of VPC peering links), all your network connections (VPCs, VPNs, and Direct Connect) attach to the single TGW hub.
+
+        -   **How TGW Enhances VPN Architecture**: When using AWS Site-to-Site VPN, you can choose the Transit Gateway instead of a Virtual Private Gateway (VGW) as the AWS-side endpoint.
+
+            1.  **Centralized Connectivity:** With a VGW, your VPN connection is tied to **one single VPC**. If you have 10 VPCs that need access to your on-premises data center, you would need to either set up 10 separate VGW/VPN connections, or use complex VPC peering with the single VPC attached to the VGW.
+
+                -   **TGW Solution:** You create **one Site-to-Site VPN connection** and attach it to the Transit Gateway. Then, you attach all your VPCs to the same Transit Gateway. Traffic can now be routed from your on-premises network, through the single VPN connection, to _any_ attached VPC.
+
+            2.  **Simplified Routing (Hub-and-Spoke):**
+
+                -   The TGW manages routing between all its attachments. You define **Transit Gateway Route Tables** to control which spoke (VPC, VPN, etc.) can talk to which other spoke.
+                -   This eliminates the complex, transitive routing problems that arise from a VPC peering mesh.
+
+            3.  **Scalability:** TGW supports thousands of VPCs and up to 5000 attachments per gateway, allowing your hybrid cloud architecture to scale seamlessly as your organization grows and adds new AWS accounts or regions.
+
+            4.  **High-Performance VPN (ECMP and High Bandwidth):**
+
+                -   **Equal-Cost Multi-Path (ECMP):** With a Transit Gateway, you can terminate **multiple Site-to-Site VPN connections** (e.g., from different Customer Gateways) and enable ECMP routing. If all connections advertise the same routes with the same cost, the TGW can use all tunnels concurrently to **load balance** traffic across the multiple VPN connections, effectively increasing the total bandwidth available for your on-premises connection.
+                -   **High Bandwidth Tunnels:** TGW supports higher-bandwidth VPN tunnels (up to $5 \text{ Gbps}$ per tunnel), which are not available on a standard VGW connection. Combining multiple of these high-bandwidth tunnels with ECMP allows for a very robust and high-throughput connection.
+
+            5.  **Inter-Region Communication:** TGWs can be peered together across different AWS regions. This means a single VPN connection terminated in one region's TGW can be used to route traffic to resources in a different region, leveraging the secure and high-speed **AWS Global Network** backbone.
+
+        -   **Key Transit Gateway Components for VPN**
+
+            | Component           | Description                                                                                                                                                                  |
+            | :------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+            | **TGW Attachment**  | The connection point on the Transit Gateway. This is where you link your VPCs, your Site-to-Site VPN, or your Direct Connect Gateway.                                        |
+            | **TGW Route Table** | A table of rules that determines the next hop for a network packet, based on its destination IP address. You can have multiple tables for fine-grained network segmentation. |
+            | **Association**     | Links an attachment (VPC, VPN) to a specific TGW Route Table, determining _how_ incoming traffic from that attachment is routed.                                             |
+            | **Propagation**     | Automatically adds the routes for a connected resource (like a VPC CIDR or on-premises routes learned over VPN) into a TGW Route Table.                                      |
+
+        </details>
+
+    -   **Elastic IP Address**: In AWS, a Elastic IP (EIP) usually refers to an Static IP address is a public, static IPv4 address that you can allocate and associate with AWS resources, most commonly EC2 instances or Network Interfaces.
+
+        -   A Static IP is an IP address that does not change over time. It's ideal for services where DNS caching or firewall whitelisting is required (e.g., APIs, external integrations, webhooks, etc.).
+        -   Web servers that need a stable IP for DNS A-records.
+        -   Whitelisting in external firewalls, partners, or SaaS integrations.
+        -   Failover/HA designs where you want to move the IP between instances.
+        -   Outbound NAT gateways using Elastic IPs for fixed egress traffic.
+        -   VPNs, APIs, or reverse proxies with static IP requirements.
+        -   Elastic IPs are region-specific.
+        -   Only 5 EIPs per region by default (can request more).
+        -   Idle EIPs cost money. (When not attached to a running resource.)
+
     -   **VPN**: Virtual Private Network, a connection between your on-premises network and your VPC that enables secure communication.
     -   **AWS Direct Connect**: A dedicated network connection between your on-premises data center and your VPC.
     -   **VPC Flow Logs**: A feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC.
@@ -1219,44 +1334,46 @@
     -   **Virtual Private Gateway**:
     -   **Customer Gateway**:
 
-    #### Availability Zone
+    -   <details><summary style="font-size:20px;color:Magenta">Availability Zone</summary>
 
-    An **Availability Zone (AZ)** in Amazon Web Services (AWS) is a distinct, isolated location within an AWS Region. Each AZ is a fully independent data center (or a cluster of data centers) with its own power, cooling, and networking infrastructure. However, Availability Zones within a region are connected to each other through low-latency, high-speed private networking.
+        An **Availability Zone (AZ)** in Amazon Web Services (AWS) is a distinct, isolated location within an AWS Region. Each AZ is a fully independent data center (or a cluster of data centers) with its own power, cooling, and networking infrastructure. However, Availability Zones within a region are connected to each other through low-latency, high-speed private networking.
 
-    -   **Key Features of Availability Zones**
+        -   **Key Features of Availability Zones**
 
-        1. `Isolation`: Each AZ is physically separated from others in the same region, reducing the likelihood of a single point of failure affecting multiple AZs.
+            1. `Isolation`: Each AZ is physically separated from others in the same region, reducing the likelihood of a single point of failure affecting multiple AZs.
 
-        2. `Low Latency`: The network connections between AZs within a region are designed to have very low latency, making it possible to build high-availability applications across multiple AZs.
+            2. `Low Latency`: The network connections between AZs within a region are designed to have very low latency, making it possible to build high-availability applications across multiple AZs.
 
-        3. `Redundancy`: By using multiple AZs, you can design fault-tolerant applications. If one AZ goes down, your application can continue running from another AZ.
+            3. `Redundancy`: By using multiple AZs, you can design fault-tolerant applications. If one AZ goes down, your application can continue running from another AZ.
 
-        4. `Proximity`: AZs are located close enough to ensure fast data transfer between them but far enough to avoid being impacted by the same physical disasters.
+            4. `Proximity`: AZs are located close enough to ensure fast data transfer between them but far enough to avoid being impacted by the same physical disasters.
 
-    -   **Use Cases of Availability Zones**
+        -   **Use Cases of Availability Zones**
 
-        1. `High Availability`: Deploy resources (like EC2 instances, RDS databases, etc.) in multiple AZs to ensure high availability and disaster recovery.
+            1. `High Availability`: Deploy resources (like EC2 instances, RDS databases, etc.) in multiple AZs to ensure high availability and disaster recovery.
 
-        2. `Scalability`: Distribute workloads across multiple AZs to scale applications and balance traffic.
+            2. `Scalability`: Distribute workloads across multiple AZs to scale applications and balance traffic.
 
-        3. `Disaster Recovery`: In case of an AZ failure, applications can fail over to another AZ in the same region.
+            3. `Disaster Recovery`: In case of an AZ failure, applications can fail over to another AZ in the same region.
 
-        4. `Fault Tolerance`: Applications designed with redundancy across AZs can remain operational even if one AZ experiences issues.
+            4. `Fault Tolerance`: Applications designed with redundancy across AZs can remain operational even if one AZ experiences issues.
 
-    -   **Availability Zones vs. Regions**
+        -   **Availability Zones vs. Regions**
 
-        | **Feature**    | **Region**                            | **Availability Zone (AZ)**               |
-        | -------------- | ------------------------------------- | ---------------------------------------- |
-        | **Definition** | Geographical location (e.g., US East) | Isolated data center(s) within a region  |
-        | **Scope**      | Contains multiple AZs                 | Subset of a region                       |
-        | **Redundancy** | Achieved across AZs within the region | Achieved across resources in the same AZ |
-        | **Examples**   | `us-east-1`, `ap-south-1`             | `us-east-1a`, `ap-south-1b`              |
+            | **Feature**    | **Region**                            | **Availability Zone (AZ)**               |
+            | -------------- | ------------------------------------- | ---------------------------------------- |
+            | **Definition** | Geographical location (e.g., US East) | Isolated data center(s) within a region  |
+            | **Scope**      | Contains multiple AZs                 | Subset of a region                       |
+            | **Redundancy** | Achieved across AZs within the region | Achieved across resources in the same AZ |
+            | **Examples**   | `us-east-1`, `ap-south-1`             | `us-east-1a`, `ap-south-1b`              |
 
-    -   **Why Use Multiple AZs?**
+        -   **Why Use Multiple AZs?**
 
-        -   `Fault tolerance`: Your app can survive an AZ failure.
-        -   `Improved latency`: Load balancers can distribute traffic across AZs.
-        -   `Better disaster recovery`: Resources in one AZ can back up those in another.
+            -   `Fault tolerance`: Your app can survive an AZ failure.
+            -   `Improved latency`: Load balancers can distribute traffic across AZs.
+            -   `Better disaster recovery`: Resources in one AZ can back up those in another.
+
+        </details>
 
     </details>
 

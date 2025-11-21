@@ -213,7 +213,8 @@
         1. Cloning an Existing Repository from `www.github.com` using git command, (`$ git clone`)
         2. Initializing a Git Repository skeleton in the local machin using git command, (`$ git init`) then push it into a remote location such as `www.github.com` after establishing a link to the remote repository ,
 
-    -   `$ git clone https://github.com/repoName` → It creates a repository named “repoName”, initializes a .git directory inside it, pulls down all the data from that repository, and checks out a working copy of the latest version.
+    -   `$ git clone -b feature/development-2.0 https://github.com/user/my-repo.git` → To clone a repository named `my-repo` and immediately check out the branch named `feature/development-2.0`.
+    -   `$ git clone https://github.com/repoName` → It creates a repository named `repoName`, initializes a `.git` directory inside it, pulls down all the data from that `main`/`master` branch of repository, and checks out a working copy of the latest version.
     -   `$ git init` → It creates a new subdirectory named .git that contains all of your necessary repository files – a Git repository skeleton.
     -   `$ git init <folder_name>` → It creates a new directory named folder_name in current directory and initialize a git repository – a Git Repository Skeleton - in it.
     -   `$ git remote add origin <URL>` → Add the repository, named ‘origin’, from the remote (GitHub) to the local machin through given ‘url’. Conventionaly the word ‘origin’ is used as the name of remote repository, but the link between the locally initialized git repository and the remote(GitHub) get established through the provided URL, not through the name of remote repository, ‘origin’
@@ -320,20 +321,10 @@
 
     -   🔥 [git reset]()
 
-        -   <span style="color:orange">How to discard committed files? Extra care should be given using the reset command?</span>
-
-        -   `$ git reset` → Removes all files from the staging area, but keeps the changes in your working directory. It effectively "unstages" all changes.
-        -   `$ git reset HEAD <file_name>` → Unstage the specified file from Staging Area.
-        -   `$ git reset HEAD */.` → Unstage all the file from Staging Area
-        -   `$ git reset HEAD~1` → Discard the LAST commit from Local Repository (Committing Area). Discarted file kept in Working Area
-        -   `$ git reset HEAD~3` → Discard the LAST THREE commit from Local Repository (Committing Area). Discarted file kept in Working Area
-        -   `$ git reset --soft HEAD~3` → Discard the first three commit from Local Repository (Committing Area). Discarted file kept in Staging Area
-        -   **$ git reset --hard** → It is used to reset the current commit or branch and the staging area to it's initial state or to a given commit. It moves the HEAD and the current branch pointer to the specified commit if given any.
-        -   `$ git reset --hard HEAD~2`
         -   <font color="orange">How do I unstage changes?</font>
 
-        -   `$ git checkout .` → discards all local changes in the working directory and resets the files to the latest committed state (HEAD); this does not affect untracked files.
-        -   `$ git restore .` → restores all files in the current directory and subdirectories to their last committed state, effectively discarding all local changes; this is the modern replacement for `git checkout .`.
+            -   `$ git checkout .` → discards all local changes in the working directory and resets the files to the latest committed state (HEAD); this does not affect untracked files.
+            -   `$ git restore .` → restores all files in the current directory and subdirectories to their last committed state, effectively discarding all local changes; this is the modern replacement for `git checkout .`.
 
             -   It can be used to undo the effects of `git add` and unstage changes you have previously added to the Staging Area.
             -   It can also be used to discard local changes in a file, thereby restoring its last committed state.
@@ -343,11 +334,22 @@
         -   `$ git rm --cached <file_name>` → Unstage the specified file (`file_name`) from Staging Area.
         -   `$ git rm --cached *_initial.py` → Unstage all the files name ended with `_initial.py` from Staging Area.
         -   `$ git rm -r --cached */migrations/` → Unstage all (`migrations/*`) files recursively from Staging Area.
+
             -   NOTE: `--cached` option tells Git to only remove the folder from the Git repository's index (staging area) and not from the file system. The files in the folder will no longer be tracked by Git, but they will remain on your local disk.
-        -   `$ git revert` → it's better to use `git revert` to create a new commit that undoes the changes made in the previous commit.
-        -   <span style="color:orange">How to remove a commit from remote repository:</span>
-            1. git reset <commit_id>
-            2. git push origin master -f
+
+        -   <span style="color:orange">How to discard committed files? Extra care should be given using the reset command?</span>
+            -   `$ git reset` → Removes all files from the staging area, but keeps the changes in your working directory. It effectively "unstages" all changes.
+            -   `$ git reset HEAD <file_name>` → Unstage the specified file from Staging Area.
+            -   `$ git reset HEAD */.` → Unstage all the file from Staging Area
+            -   `$ git reset HEAD~1` → Discard the LAST commit from Local Repository (Committing Area). Discarted file kept in Working Area
+            -   `$ git reset HEAD~3` → Discard the LAST THREE commit from Local Repository (Committing Area). Discarted file kept in Working Area
+            -   `$ git reset --soft HEAD~3` → Discard the first three commit from Local Repository (Committing Area). Discarted file kept in Staging Area
+            -   **$ git reset --hard** → It is used to reset the current commit or branch and the staging area to it's initial state or to a given commit. It moves the HEAD and the current branch pointer to the specified commit if given any.
+            -   `$ git reset --hard HEAD~2`
+            -   `$ git revert` → it's better to use `git revert` to create a new commit that undoes the changes made in the previous commit.
+            -   <span style="color:orange">How to remove a commit from remote repository:</span>
+                1. git reset <commit_id>
+                2. git push origin master -f
 
     ## GIT BRANCHING & MEARGING FILES
 
