@@ -146,6 +146,8 @@ sync_to_volume() {
         --exclude '*.egg-info' \
         --exclude '*.pyc' \
         --exclude '*.class' \
+        --exclude '*.terraform' \
+        --exclude '*.git' \
         --exclude '.tmp.drivedownload' \
         --exclude '.tmp.driveupload' \
         --exclude '*.DS_Store' \

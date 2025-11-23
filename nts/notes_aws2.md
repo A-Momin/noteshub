@@ -4,6 +4,70 @@
     AWS Lambda is a serverless computing service that automatically runs code in response to events, managing the underlying compute infrastructure. It allows you to execute your code without provisioning or managing servers, enabling you to focus solely on your application logic. Here are the main concepts and components of AWS Lambda:
     A **Lambda function** is the core concept of AWS Lambda. It is a piece of code that you write and deploy, which AWS Lambda automatically executes in response to events or triggers.
 
+    -   **Lambda Definition in Terraform**:
+
+        ```ini
+        resource "aws_lambda_function" "sqs_processor" {
+            function_name    = "sqs-processor"
+            description      = "Processes messages from SQS and performs analysis tasks"
+            runtime          = "python3.9"
+            role             = aws_iam_role.lfn_analysis_role.arn
+            handler          = "lambda_handler.sqs_processor_handler"
+            filename         = data.archive_file.lambda_zip.output_path
+            source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
+            memory_size = 512 # Default is 128 MB, can be set between 128 MB and 10,240 MB
+            timeout     = 120 # Default is 3 seconds, can be set up to 900 seconds (15 minutes)
+
+            architectures = ["x86_64"] # Default is "x86_64", other option is "arm64"
+
+            ## Reserved Concurrency (max limit)
+            #   reserved_concurrent_executions = 9
+
+            # Whether to publish creation/change as new Lambda Function Version. Defaults to false.
+            publish = false
+
+            layers = [aws_lambda_layer_version.lfn_layer.arn]
+            vpc_config {
+                # subnet_ids         = [for s in aws_subnet.detf_subnets : s.id]
+                subnet_ids         = values(var.subnets)
+                security_group_ids = [aws_security_group.lambda_analysis_sg.id]
+            }
+
+            file_system_config {
+                arn              = aws_efs_access_point.lfn_analysis_file_access_point.arn
+                local_mount_path = "/mnt/efs"
+            }
+
+            # Increase `/tmp` storage to 5GB
+            ephemeral_storage {
+                size = 512 # Default is 512 MB, can be set up to 10,240 MB (10 GB)
+            }
+
+            # Enable SnapStart for faster cold starts
+            snap_start {
+                apply_on = "None" # Default is "None"; other option is "PublishedVersions"
+            }
+
+            environment {
+                variables = {
+                INPUT_QUEUE_URL   = aws_sqs_queue.input_queue.id
+                FAILURE_QUEUE_URL = aws_sqs_queue.failure_queue.id
+                SUCCESS_TOPIC_ARN = aws_sns_topic.success_topic.arn
+                PROJECT           = "Lambda Analysis"
+                }
+            }
+
+            tags = {
+                Name    = "sqs-processor"
+                Project = "${var.project}-sqs-processor"
+            }
+
+            depends_on = [aws_efs_mount_target.lfn_analysis_efs_mnt_target]
+        }
+
+        ```
+
     -   **Components**:
 
         -   **Code**: Written in supported languages (Python, Node.js, Java, Go, Ruby, C#, etc.).
@@ -72,6 +136,18 @@
         An **AWS Lambda Event Source Mapping (ESM)** is a Lambda resource that acts as a **managed poller** to connect stream-based and queue-based event sources to a Lambda function.
 
         It is a key component in Lambda's architecture that enables the **"Pull" model** for certain services, relieving you of the burden of writing and managing your own polling or consumption logic.
+
+        ```ini
+        resource "aws_lambda_event_source_mapping" "sqs_trigger" {
+            function_name    = aws_lambda_function.sqs_processor.arn
+            event_source_arn = aws_sqs_queue.input_queue.arn
+            batch_size       = 10
+            enabled          = true
+            # 👉 Together, they define the retry policy: Lambda retries until either retry attempts are exhausted OR record age expires, whichever comes first.
+            maximum_retry_attempts        = 0  # How many times to retry failed batches
+            maximum_record_age_in_seconds = 60 # Maximum age of a record that Lambda sends to a function for processing; default is 60 seconds
+        }
+        ```
 
         ##### The Pull Model vs. Push Model
 
@@ -174,6 +250,21 @@
     -   <details><summary style="font-size:20px;color:Magenta">AWS Lambda Destinations</summary>
 
         AWS Lambda Destinations is a powerful feature that provides **visibility, routing, and control** over the results of a Lambda function's **asynchronous invocation**. It allows you to automatically send a detailed **execution record** to a downstream service based on whether the function invocation was successful or failed, all without writing extra code in your function.
+
+        ```ini
+        resource "aws_lambda_function_event_invoke_config" "lambda_destinations" {
+            function_name = aws_lambda_function.gpc_cuckoo.function_name
+
+            # 👉 Together, they define the retry policy: Lambda retries until either retry attempts are exhausted OR event age expires, whichever comes first.
+            maximum_event_age_in_seconds = 21600 # Event age (in seconds) after which Lambda discards the event. Default is 6 hours (21600 seconds)
+            maximum_retry_attempts       = 0     # Retry attempts (0 means no retry) on failure
+
+            destination_config {
+                on_failure { destination = aws_sqs_queue.failure_queue.arn }
+                on_success { destination = aws_sns_topic.success_topic.arn }
+            }
+        }
+        ```
 
         ##### Primary Purpose and Scope
 
@@ -319,19 +410,19 @@
 
     -   <details><summary style="font-size:20px;color:Magenta">Terms & Concepts</summary>
 
-        5. **Dead Letter Queue (DLQ)**
+        1. **Dead Letter Queue (DLQ)**
 
             - Specifies an Amazon SQS queue or an Amazon SNS topic as a **Dead Letter Queue** for asynchronous invocation errors.
             - When a Lambda function cannot process an event after a certain number of retries, the event is sent to the DLQ for later analysis or reprocessing.
             - Useful for handling errors gracefully, ensuring events aren’t lost.
 
-        6. **Error Handling and Retry Policies**
+        2. **Error Handling and Retry Policies**
 
             - **Asynchronous Invocation**: Lambda automatically retries asynchronous invocations (e.g., from S3, SNS, CloudWatch) up to two times if there’s an error. You can configure the retry attempts to 0, 1, or 2.
             - **Event Source Mapping**: For sources like SQS, Kinesis, and DynamoDB streams, Lambda retries until the message expires, is processed successfully, or is moved to a **destination** or **DLQ** after a set number of attempts.
             - **Destinations**: With **AWS Lambda destinations**, you can route successful or failed asynchronous invocations to an SNS topic, SQS queue, EventBridge, or another Lambda function, which allows for advanced error handling and processing workflows.
 
-        7. **Logging and Monitoring**: AWS Lambda integrates with **Amazon CloudWatch** for logging, monitoring, and observability.
+        3. **Logging and Monitoring**: AWS Lambda integrates with **Amazon CloudWatch** for logging, monitoring, and observability.
 
             - `CloudWatch Logs`: Every function invocation produces logs, which can be viewed and monitored through CloudWatch. Lambda sends logs of function execution (including errors, timeouts, and custom logs) to Amazon CloudWatch by default. These logs are useful for debugging, monitoring, and performance tuning.
             - `X-Ray Tracing`: AWS X-Ray provides insights into function performance and latency by tracing requests as they pass through the application. It helps pinpoint bottlenecks, understand dependencies, and monitor overall performance.
@@ -341,13 +432,13 @@
             - `Duration`: The time it took for the function to execute.
             - `Throttles`: The number of times the function was throttled due to reaching the concurrency limit.
 
-        8. **File System (EFS) Configuration**
+        4. **File System (EFS) Configuration**
 
             - **Amazon EFS (Elastic File System)**:
                 - Allows Lambda functions to access a persistent file system across function invocations. This is helpful for functions that require shared storage, such as large models or datasets.
                 - EFS can be mounted on Lambda functions configured within a VPC, and it’s useful for stateful workloads or functions with large code dependencies that exceed Lambda’s 10 GB limit.
 
-        9. **Function Code Configuration**
+        5. **Function Code Configuration**
 
             - **Deployment Package**:
                 - A Lambda function’s deployment package contains the function code and dependencies, packaged in a `.zip` file or container image.
@@ -356,12 +447,12 @@
                 - Lambda supports container images up to 10 GB, allowing you to package code and dependencies in Docker images for more complex applications or specific runtime requirements.
                 - Images are stored in Amazon ECR and provide a way to deploy large applications with custom runtimes or dependencies.
 
-        10. **Aliases and Versions**
+        6. **Aliases and Versions**
 
             - **Versions**: Lambda functions can be versioned, with each published version being immutable. Versions allow you to reference specific function code and configuration states, providing stability for production applications.
             - **Aliases**: An alias is a pointer to a specific function version, often used to manage different environments (e.g., `dev`, `test`, `prod`). Aliases allow routing traffic between versions and enable canary deployments by splitting traffic to different versions.
 
-        11. **Event Sources / Triggers**: **Event sources** are AWS services or external systems that generate events that can trigger a Lambda function to execute. These triggers define when and how Lambda functions are invoked.
+        7. **Event Sources / Triggers**: **Event sources** are AWS services or external systems that generate events that can trigger a Lambda function to execute. These triggers define when and how Lambda functions are invoked.
 
             - **Common Event Sources**:
                 - **S3**: Lambda can trigger when an object is created or deleted in an S3 bucket.
@@ -371,27 +462,27 @@
                 - **CloudWatch Events**: Lambda can trigger on scheduled events or based on system events (e.g., EC2 instance state change).
                 - **DynamoDB Streams**: Lambda can trigger on changes in DynamoDB tables.
 
-        12. **Lambda Execution Environment**: The **execution environment** is the runtime in which Lambda functions run. AWS Lambda automatically manages the environment that runs your code, scaling it based on demand.
+        8. **Lambda Execution Environment**: The **execution environment** is the runtime in which Lambda functions run. AWS Lambda automatically manages the environment that runs your code, scaling it based on demand.
 
             - **Features**:
                 - **Isolated environment**: Functions run in isolated environments to ensure security.
                 - **Runtime management**: AWS manages the language runtime and updates it.
                 - **Environment variables**: Allows the use of environment variables for dynamic configuration.
 
-        13. **Lambda Layers**: **Lambda layers** allow you to package external libraries, dependencies, or configuration files separately from your function code. These layers can be shared across multiple Lambda functions, reducing code duplication and improving maintainability.
+        9. **Lambda Layers**: **Lambda layers** allow you to package external libraries, dependencies, or configuration files separately from your function code. These layers can be shared across multiple Lambda functions, reducing code duplication and improving maintainability.
 
             - **Features**:
                 - You can include libraries, custom runtimes, or configuration data.
                 - You can use up to 5 layers per Lambda function.
                 - Layers can be reused by multiple Lambda functions or shared across accounts.
 
-        14. **Lambda Pricing Model**: AWS Lambda follows a pay-per-use model, where you're charged based on the number of function invocations and the compute time used.
+        10. **Lambda Pricing Model**: AWS Lambda follows a pay-per-use model, where you're charged based on the number of function invocations and the compute time used.
 
             - **Pricing Factors**:
                 - **Number of invocations**: Charged for every request.
                 - **Compute time**: Charged based on the function's memory and execution duration, measured in milliseconds.
 
-        15. **AWS Lambda@Edge**: **Lambda@Edge** is an extension of AWS Lambda that allows you to run code closer to users (at Amazon CloudFront edge locations), reducing latency for global users.
+        11. **AWS Lambda@Edge**: **Lambda@Edge** is an extension of AWS Lambda that allows you to run code closer to users (at Amazon CloudFront edge locations), reducing latency for global users.
 
             - **Features**:
                 - Modify content delivery and customize responses for users.
@@ -808,6 +899,158 @@
 
     AWS Step Functions is a serverless orchestration service that lets you coordinate multiple AWS services into automated workflows. It helps break complex processes into a series of steps that can run in sequence or parallel. You define each step in the process using a state machine, and Step Functions automatically triggers each step, handles failures, and retries if needed, all while visualizing the flow for easier monitoring and debugging.. Below are the key terms and concepts of AWS Step Functions explained in detail:
 
+    AWS Step Functions is a **serverless orchestration service** that lets you create robust, multi-step application workflows as visual diagrams called **State Machines**. It manages the sequencing, logging, error handling, and state management between the components (microservices, Lambda functions, etc.) of your application.
+
+    -   <details><summary style="font-size:20px;color:Magenta">Core Concepts and Components</summary>
+
+        1. **State Machine (Workflow)**: A State Machine is the central component of Step Functions. It's the definition of your entire workflow, expressed in the **Amazon States Language (ASL)**, a structured JSON-based language.
+
+            - **Definition:** The ASL defines the sequence of steps (called **States**), the rules for transitioning between them, and the error handling logic.
+            - **Visual Editor:** Step Functions provides **Workflow Studio**, a graphical console that allows you to design, arrange, and visualize the workflow without manually writing ASL.
+
+        2. **State**: A **State** is a single element in your workflow—a step that performs a unit of work, makes a decision, or controls the flow. Every step in the workflow is a state.
+
+        3. **Execution**: An **Execution** is a running instance of a State Machine. When you start a State Machine, a unique execution is created, and Step Functions automatically tracks its progress, managing the transitions from one state to the next.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Workflow Types</summary>
+
+        Step Functions offers two distinct workflow types, catering to different performance and duration needs:
+
+        | Feature                 | Standard Workflows                                                            | Express Workflows                                                                         |
+        | :---------------------- | :---------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- |
+        | **Duration**            | Up to **one year**                                                            | Up to **five minutes**                                                                    |
+        | **Execution Semantics** | **Exactly-once** (each step executes precisely once)                          | **At-least-once** (a step may execute more than once)                                     |
+        | **Use Case**            | Long-running processes, auditing, human-in-the-loop, payment processing.      | High-volume, short-duration, event-rate workloads, IoT data ingestion, stream processing. |
+        | **Pricing**             | Based on the number of **State Transitions**.                                 | Based on the number of requests, duration, and memory used.                               |
+        | **History**             | Detailed, durable execution history is logged and viewable for up to 90 days. | History is logged to CloudWatch Logs (less detailed, but higher throughput).              |
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">State Types (Building Blocks)</summary>
+
+        States are categorized into two main groups: **Task States** (work performing) and **Flow States** (flow control).
+
+        1. **Task States**: These perform the actual work by integrating with other services.
+
+            - **Task State (`Task`):** Executes a unit of work. This is the most common state, used to call AWS services like **AWS Lambda** functions.
+                - Optimized integrations with over 220 AWS services (DynamoDB, ECS, SNS, SQS, SageMaker, etc.)
+                - External HTTPS endpoints (**HTTP Task**).
+                - **Activities:** A mechanism for external applications (Activity Workers) to poll Step Functions for work, perform it, and send the result back.
+
+        2. **Flow States**: These control the structure and flow of the execution.
+
+            - **Choice State (`Choice`):** Adds **conditional branching** to the workflow (like an `if/else` statement) based on the input data.
+            - **Parallel State (`Parallel`):** Executes multiple branches of states **concurrently** and waits for all of them to complete before moving to the next state.
+            - **Map State (`Map`):** Used for **dynamic parallelism**. It executes a set of steps for _each item_ in an input array.
+                - **Inline Map:** Executes concurrently within the main workflow execution (limited to 40 concurrent iterations).
+                - **Distributed Map:** Launches thousands of independent child workflows (executions) for massive parallel processing, ideal for large data sets (e.g., millions of S3 objects).
+            - **Wait State (`Wait`):** Pauses the execution for a specified amount of time or until a specific date/time.
+            - **Pass State (`Pass`):** Simply passes its input to its output, performing no work. Useful for data manipulation or debugging.
+            - **Succeed State (`Succeed`):** Stops an execution successfully, trimming the execution path.
+            - **Fail State (`Fail`):** Stops an execution and marks it as a failure.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Service Integration Patterns</summary>
+
+        -   **Request Response (Default):** Step Functions calls the service and immediately moves to the next state upon receiving an HTTP response. The workflow does **not** wait for the job to complete.
+        -   **Run a Job (`.sync`):** Step Functions starts a long-running job (e.g., AWS Batch, ECS Task, SageMaker Training Job) and **pauses** until the job is complete. This is supported only by **Standard Workflows**.
+        -   **Wait for Callback (`.waitForTaskToken`):** Step Functions sends a unique **Task Token** to the integrated service (like SQS or SNS) and **pauses** indefinitely until an external process returns the token with a result. This is used for "human-in-the-loop" or integration with external systems. Supported only by **Standard Workflows**.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Data Flow and Transformation</summary>
+
+        **Data Flow and Transformation**: Data between states is passed as a **JSON payload**.
+
+        The **Data Flow and Transformation** capabilities within AWS Step Functions are essential for managing and manipulating the JSON data (the **payload**) that moves between the individual steps (States) of your workflow. The primary tool for this is **JSONPath**.
+
+        JSONPath allows you to select, filter, and extract specific elements from the input or output JSON payload, ensuring that each state only receives the necessary information and passes on only the relevant results.
+
+        -   **The Data Flow Cycle**: In a Step Functions execution, data flows through each state in a predictable cycle using four key properties, all of which leverage JSONPath expressions (paths starting with `$`):
+
+            1. **State Input**: When a state begins, it receives its **Input Payload**, which is usually the **Output** of the previous state.
+
+            2. **InputPath (Input Filtering)**: The first operation is to filter the incoming payload using the `InputPath` property.
+
+                - **Purpose:** To select a specific subset of the State Input to be used as the **Effective Input** for the state's task logic. This prevents the state from dealing with irrelevant data.
+                - **Default:** If `InputPath` is omitted, the entire input payload (`$`) is passed to the state.
+                - **Example:** If the input is `{"user_id": 123, "order_details": {...}}`, and you only need the order details, you set `"InputPath": "$.order_details"`. The state's task (e.g., a Lambda function) only sees the order details.
+
+            3. **Parameters (Input Transformation)**: After filtering, the `Parameters` property (if present) allows you to perform **structural and value transformations** on the Effective Input before the task is executed.
+
+                - **Purpose:** To create a new, well-formed JSON object that the integrated service (like a Lambda function or a DynamoDB API call) expects.
+                - **Mechanism:** You define a JSON object where keys are the expected parameters, and values can be static text or dynamically sourced using JSONPath from the Effective Input.
+                - **Example:** To rename a field for a Lambda function:
+                    ```json
+                    "Parameters": {
+                    "customer_id.$": "$.user_id",
+                    "timestamp": "2025-01-01T00:00:00Z"
+                    }
+                    ```
+                    (Note the `.$` suffix, which tells Step Functions to evaluate the value as a JSONPath.)
+
+            4. **ResultPath (Output Integration)**: Once the state's task (e.g., a Lambda function) completes, it produces a **Result**. The `ResultPath` determines how this result is integrated into the original state input payload.
+
+                - **Purpose:** To combine the new result with the data that was passed into the state, preserving context from earlier steps.
+                - **Mechanism:** You specify a JSONPath where the result should be placed.
+                    - `"ResultPath": "$.new_field"`: The result is inserted into the payload under the key `new_field`.
+                    - `"ResultPath": "$"`: The result completely **replaces** the entire State Input payload.
+                    - Omit or `"ResultPath": null`: The result is **discarded**, and the original State Input becomes the State Output.
+
+            5. **OutputPath (Output Filtering)**: The final step is to filter the data resulting from step 4 (the integrated input and result) using the `OutputPath` property.
+
+                - **Purpose:** To select a subset of the integrated JSON payload to be passed as the **State Output** to the next state in the workflow.
+                - **Default:** If `OutputPath` is omitted, the entire integrated payload (`$`) is passed.
+                - **Example:** If the integrated payload is `{"user_id": 123, "task_result": "Success"}`, and you only want to pass the `task_result` to the next state, you set `"OutputPath": "$.task_result"`.
+
+        -   **JSONPath and JSONata**:
+
+            1. **JSONPath Fundamentals**: JSONPath expressions start with `$` and are used within the State Machine definition to reference data.
+
+                | Expression     | Description                        | Example Input: `{"a": 1, "b": {"c": 2}}` | Result                    |
+                | :------------- | :--------------------------------- | :--------------------------------------- | :------------------------ |
+                | `$`            | The root object/element.           | `$`                                      | `{"a": 1, "b": {"c": 2}}` |
+                | `$.name`       | Selects a child element by name.   | `$.a`                                    | `1`                       |
+                | `$.name.child` | Selects a nested element.          | `$.b.c`                                  | `2`                       |
+                | `$[0]`         | Selects an array element by index. | `$.array[0]` (if `array` is `[10, 20]`)  | `10`                      |
+
+            2. **JSONata for Advanced Transformation (Using `Parameters`)**: While JSONPath is limited to selection, Step Functions leverages **JSONata** for complex transformations within the `Parameters` property. This allows you to perform operations like mapping, filtering, and aggregation.
+
+                - **Example (JSONPath Selection):**
+                    ```json
+                    "Parameters": {
+                        "userId.$": "$.detail.id"
+                    }
+                    ```
+                - **Example (JSONata Transformation):**
+                    ```json
+                    "Parameters": {
+                        "statusMessage.$": "States.Format('Order {} complete for user {}', $.order.id, $.user.id)",
+                        "itemsTotal.$": "$.items[].price | $sum($)"
+                    }
+                    ```
+                    The `States.Format` function is an intrinsic function provided by Step Functions that uses JSONata to build a string dynamically. This ability to perform logic within the data flow greatly enhances the workflow's flexibility.
+
+        -   **Context Object (`$$`)**:Separate from the execution data, the **Context Object** (`$$`) is an internal, read-only JSON structure that Step Functions makes available to every state.
+
+            -   **Purpose:** Provides metadata about the running execution, independent of the input/output data.
+            -   **Contents:** Includes details like the execution ARN, state machine ARN, state name, retry counts, and the **Task Token** (crucial for `.waitForTaskToken` integration).
+            -   **Usage:** You access context data by prefixing the path with `$$` (e.g., `"ARN.$": "$$.Execution.Id"`).
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Built-in Error Handling</summary>
+
+        Step Functions automatically handles errors using declarative logic defined in ASL:
+
+        -   **Retries (`Retry`):** You can define a policy to automatically retry a failed `Task` state a specified number of times, often using an **exponential backoff** strategy.
+        -   **Catchers (`Catch`):** You can define a fallback state to transition to if a specific error is caught, allowing you to implement graceful degradation or alternative cleanup logic.
+
+        </details>
+
     #### Terminology, Concepts and Components
 
     -   **State Machine**:
@@ -834,7 +1077,7 @@
 
     -   **[Amazon States Language (ASL)](https://states-language.net/)**: ASL is the JSON-based and structured language used to define state machines. It includes the syntax for defining states, transitions, and error handling. Detailed Explanation of Common Fields:
 
-        -   `Type`: Defines the type of state (Task, Choice, Succeed, Fail, etc.).
+        -   `Type`: Defines the type of state (`Task`, `Choice`, `Succeed`, `Fail`, etc.).
         -   `Resource`: Specifies the ARN of the resource to be executed (e.g., Lambda function ARN).
         -   `Next`: Specifies the next state to transition to after the current state completes.
         -   `End`: If set to true, designates the state as the final state.
