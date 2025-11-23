@@ -1784,9 +1784,7 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange">SNS, SQS & EventBridge</summary>
-
-    #### SNS
+-   <details><summary style="font-size:25px;color:Orange">SNS</summary>
 
     Amazon Simple Notification Service (SNS) is a messaging service provided by Amazon Web Services (AWS) that enables the publishing and delivery of messages to multiple subscribers or endpoints. Here are some important terms and concepts related to AWS SNS:
 
@@ -1815,28 +1813,104 @@
     -   `Access policies`: SNS allows you to control access to topics and subscriptions using access policies. Access policies define which AWS accounts or users are authorized to perform specific actions on a topic or subscription.
     -   `SNS Mobile Push`: SNS provides a mobile push service that enables you to send push notifications to iOS, Android, and Kindle Fire devices. SNS Mobile Push supports Apple Push Notification Service (APNS), Google Cloud Messaging (GCM), Firebase Cloud Messaging (FCM), and Amazon Device Messaging (ADM).
 
-    #### SQS:
+    </details>
 
-    Amazon Simple Queue Service (SQS) is a fully managed message queuing service provided by Amazon Web Services (AWS) that enables you to decouple and scale microservices, distributed systems, and serverless applications. Here are some important terms and concepts related to AWS SQS:
+---
+
+-   <details><summary style="font-size:25px;color:Orange">SQS</summary>
 
     ![sqs](../assets/aws/sqs.png)
 
-    -   `Queue`: A queue is a container for messages in SQS. Queues allow messages to be stored and retrieved asynchronously between components or services.
+    AWS Simple Queue Service (SQS) is a fully managed message queuing service that enables you to **decouple and scale** microservices, distributed systems, and serverless applications. It acts as a buffer between the component that sends the message (**producer**) and the component that processes the message (**consumer**), allowing them to operate asynchronously and independently.
 
-    -   `Message`: A message is the information being sent between components or services. Messages can contain up to 256KB of text in any format.
-    -   `Producer`: A producer is a system or application that sends messages to a queue.
-    -   `Consumer`: A consumer is a system or application that receives messages from a queue.
-    -   `Visibility timeout`: When a consumer retrieves a message from a queue, the message becomes "invisible" to other consumers for a specified period of time known as the visibility timeout. This allows the consumer time to process the message without the risk of another consumer processing the same message.
-    -   `Long polling`: Long polling is a method of retrieving messages from a queue where the request to retrieve messages stays open for an extended period of time, waiting for new messages to arrive. This reduces the number of empty responses and can improve the efficiency of message retrieval.
-    -   `Dead-letter queue`: A dead-letter queue is a queue where messages are sent if they cannot be processed successfully by a consumer. SQS provides support for dead-letter queues to help you troubleshoot message processing issues.
-    -   `FIFO queue`: A FIFO queue is a queue that supports "first-in, first-out" ordering of messages. FIFO queues are designed for applications that require the exact order of messages to be preserved.
-    -   `Standard queue`: A standard queue is a queue that provides at-least-once delivery of messages. Standard queues are designed for applications that can handle the possibility of duplicate messages or messages that are not delivered in the exact order they were sent.
-    -   `Message attributes`: SQS allows you to add custom attributes to messages, which can be used for filtering and routing messages to specific consumers.
-    -   `Access policies`: SQS allows you to control access to queues using access policies. Access policies define which AWS accounts or users are authorized to perform specific actions on a queue.
-    -   `Batch operations`: SQS supports batch operations that allow you to send, delete, or change the visibility timeout of multiple messages in a single API call.
-    -   `Delay queues`: Delay queues allow you to delay the delivery of messages for a specified amount of time, up to 15 minutes. This can be useful for scenarios where messages need to be delayed until certain conditions are met.
+    -   <details><summary style="font-size:20px;color:Magenta">Core Components and Concepts</summary>
 
-    #### EventBridge:
+        1. **Queue**: The **Queue** is the temporary repository for messages. It is distributed across multiple AWS servers for high availability and durability.
+
+        2. **Message**: A **Message** is the unit of communication sent to the queue by a producer and retrieved by a consumer.
+
+            - **Maximum Size:** Up to **256 KB** of text in any format (e.g., JSON, XML). For larger messages (up to 2 GB), you can use the SQS Extended Client Library for Java, which stores the payload in Amazon S3 and sends a reference via SQS.
+            - **Message Retention Period:** The amount of time SQS keeps a message in the queue. It ranges from 1 minute to 14 days, with a default of 4 days.
+
+        3. **Producer (Sending Component)**: An application component that sends messages to the SQS queue. The producer does not need to know if the consumer is available or how many consumers there are. The primary API action is `SendMessage`.
+
+        4. **Consumer (Receiving Component)**: An application component that polls the queue to retrieve and process messages. Once processed, the consumer must delete the message from the queue. The primary API actions are `ReceiveMessage` and `DeleteMessage`.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Queue Types</summary>
+
+        AWS SQS offers two main queue types, catering to different application requirements:
+
+        1. **Standard Queues**:
+
+            - **Throughput:** Support a nearly **unlimited number of transactions per second (TPS)**.
+            - **Ordering:** Provide **best-effort ordering**. Messages are generally delivered in the order they were sent, but the exact order is not guaranteed.
+            - **Delivery:** Provide **At-Least-Once Delivery**. A message is delivered at least once, but occasionally, more than one copy of a message may be delivered (duplicates can occur). They are suitable for scenarios where duplicates and out-of-order processing can be tolerated.
+
+        2. **FIFO (First-In-First-Out) Queues**:
+
+            - **Ordering:** Guarantee **strict message ordering** (First-In-First-Out).
+            - **Delivery:** Guarantee **Exactly-Once Processing**. A message is delivered once and remains available until a consumer processes and deletes it, preventing duplicates.
+            - **Throughput:** Support a lower, but still high, throughput (up to 3,000 messages per second with batching).
+            - **Message Group ID:** Required for all messages in a FIFO queue. It specifies the group the message belongs to, and ordering is maintained **strictly within that group**. This allows for multiple ordered groups within a single queue, enabling parallel processing while preserving order for related messages.
+            - **Message Deduplication ID:** Used to ensure exactly-once processing. It can be provided explicitly or enabled automatically via **Content-Based Deduplication** (based on the message body).
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Key Features and Configuration</summary>
+
+        1. **Message Lifecycle and Visibility Timeout**: The **Visibility Timeout** is a critical concept in the SQS message lifecycle.
+
+            - When a consumer retrieves a message using `ReceiveMessage`, the message remains in the queue but becomes **temporarily invisible** to other consumers. This is often referred to as "message locking."
+            - The **Visibility Timeout** defines the duration of this invisibility (default is 30 seconds, configurable from 0 seconds to 12 hours).
+            - If the consumer successfully processes the message before the timeout expires, it calls `DeleteMessage` to remove it permanently.
+            - If the consumer fails to process or delete the message within the timeout, the message becomes **visible again** and can be retrieved by another consumer, potentially leading to duplicate processing (in Standard Queues) or a re-attempt (in FIFO Queues). Consumers can also extend the timeout programmatically using `ChangeMessageVisibility`.
+
+        2. **Polling**: The method consumers use to retrieve messages.
+
+            - **Short Polling:** The default behavior. It queries only a subset of SQS servers, returning immediately, even if the queue is empty. This can lead to more empty responses and higher costs.
+            - **Long Polling:** The `ReceiveMessage` API call waits for a specified time (up to 20 seconds, the **Receive Message Wait Time**) for a message to arrive before returning a response. This reduces the number of empty responses, minimizes extraneous polling, and lowers costs.
+
+        3. **Dead-Letter Queues (DLQ)**: A separate, designated queue for messages that a consumer has failed to process successfully after a specified number of attempts (the **Maximum Receive Count** defined in the **Redrive Policy**). DLQs help isolate problematic messages for debugging without blocking the main queue. DLQs must be the same type as the source queue (Standard or FIFO).
+
+        4. **Delay Queues / Delivery Delay**:
+
+            - **Delivery Delay (per message):** An attribute set on an individual message that determines the amount of time (0 seconds to 15 minutes) the message will be hidden before it is made available to a consumer.
+            - **Delay Queue (per queue):** A setting that applies a delay to _all_ messages sent to the queue. This is useful for delaying processing of newly written messages by a fixed time.
+
+        5. **Batch Operations**: You can perform `SendMessage`, `DeleteMessage`, and `ReceiveMessage` operations in batches of up to **10 messages** or **256 KB** of data in a single API request. This reduces costs by consolidating requests.
+
+        6. **Security**:
+
+            - **Server-Side Encryption (SSE):** Protects the contents of messages using encryption keys managed by the **AWS Key Management Service (AWS KMS)**. Messages are encrypted at rest and decrypted only when sent to an authorized consumer.
+            - **Access Control:** Integration with **AWS Identity and Access Management (IAM)** and **Queue Access Policies** to control which users or AWS accounts can send or receive messages from the queue.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Terms & Concepts</summary>
+
+        -   `Queue`: A queue is a container for messages in SQS. Queues allow messages to be stored and retrieved asynchronously between components or services.
+        -   `Message`: A message is the information being sent between components or services. Messages can contain up to 256KB of text in any format.
+        -   `Producer`: A producer is a system or application that sends messages to a queue.
+        -   `Consumer`: A consumer is a system or application that receives messages from a queue.
+        -   `Visibility timeout`: When a consumer retrieves a message from a queue, the message becomes "invisible" to other consumers for a specified period of time known as the visibility timeout. This allows the consumer time to process the message without the risk of another consumer processing the same message.
+        -   `Long polling`: Long polling is a method of retrieving messages from a queue where the request to retrieve messages stays open for an extended period of time, waiting for new messages to arrive. This reduces the number of empty responses and can improve the efficiency of message retrieval.
+        -   `Dead-letter queue`: A dead-letter queue is a queue where messages are sent if they cannot be processed successfully by a consumer. SQS provides support for dead-letter queues to help you troubleshoot message processing issues.
+        -   `FIFO queue`: A FIFO queue is a queue that supports "first-in, first-out" ordering of messages. FIFO queues are designed for applications that require the exact order of messages to be preserved.
+        -   `Standard queue`: A standard queue is a queue that provides at-least-once delivery of messages. Standard queues are designed for applications that can handle the possibility of duplicate messages or messages that are not delivered in the exact order they were sent.
+        -   `Message attributes`: SQS allows you to add custom attributes to messages, which can be used for filtering and routing messages to specific consumers.
+        -   `Access policies`: SQS allows you to control access to queues using access policies. Access policies define which AWS accounts or users are authorized to perform specific actions on a queue.
+        -   `Batch operations`: SQS supports batch operations that allow you to send, delete, or change the visibility timeout of multiple messages in a single API call.
+        -   `Delay queues`: Delay queues allow you to delay the delivery of messages for a specified amount of time, up to 15 minutes. This can be useful for scenarios where messages need to be delayed until certain conditions are met.
+
+        </details>
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">EventBridge</summary>
 
     ![event_bridge](../assets/aws/event_bridge.png)
 
@@ -2324,13 +2398,13 @@
 
         > Used when you want to **verify client identity** with certificates (e.g., B2B APIs, internal systems).
 
-        2. **AWS Verified Access**: In AWS Verified Access (used to provide secure access to internal apps without VPN), a **Trust Provider** can use a **Trust Store** to validate device or user certificates.
+        1. **AWS Verified Access**: In AWS Verified Access (used to provide secure access to internal apps without VPN), a **Trust Provider** can use a **Trust Store** to validate device or user certificates.
 
             - This helps ensure that only devices/users with valid certificates from a trusted CA can access resources.
 
-        3. **Custom Applications on EC2, ELB, or NLB**: If you’re running a service on EC2 behind an **Elastic Load Balancer (ELB)** with mTLS enabled, you may need to configure your backend with a **trust store** to validate incoming client certificates.
+        2. **Custom Applications on EC2, ELB, or NLB**: If you’re running a service on EC2 behind an **Elastic Load Balancer (ELB)** with mTLS enabled, you may need to configure your backend with a **trust store** to validate incoming client certificates.
 
-        4. **Private Certificate Authority (CA)**: While not called a "trust store" directly, AWS Private CA can issue certificates, and the certificates issued by a trusted CA (internal or external) would be included in the **Trust Store** of clients/servers that validate those certs.
+        3. **Private Certificate Authority (CA)**: While not called a "trust store" directly, AWS Private CA can issue certificates, and the certificates issued by a trusted CA (internal or external) would be included in the **Trust Store** of clients/servers that validate those certs.
 
     -   **How it Works: Mutual TLS & Trust Store**
 
@@ -2774,8 +2848,8 @@
 
                 - `Criteria`: Rules can be based on various criteria.
 
-                    - _Path_: Route traffic based on the path of the incoming request (e.g., /api, /images).
-                    - _Host Header_: Route traffic based on the host header in the request (e.g., www.example.com).
+                    - _Path_: Route traffic based on the path of the incoming request (e.g., `/api`, `/images`).
+                    - _Host Header_: Route traffic based on the host header in the request (e.g., `www.example.com`).
                     - _HTTP Headers_: Route traffic based on specific HTTP headers in the request.
                     - _Query Parameters_: Route traffic based on query parameters in the request URL.
 
@@ -2792,7 +2866,6 @@
                 - **Instances**: Routes traffic to specific EC2 instances.
                 - **IP Addresses**: Targets specific IP addresses. Useful for hybrid architectures.
                 - **Lambda Functions**: ALB supports invoking Lambda functions for serverless applications.
-                - **ECS**:
 
             - **Port**
 

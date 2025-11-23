@@ -1255,9 +1255,34 @@
     The **REST API** in API Gateway allows developers to create RESTful web services that can interact with a wide range of backend services. API Gateway acts as an intermediary between the client and the backend.
 
     -   **Components**:
+        -   **Stages**: Different deployment environments (e.g., dev, test, prod) with unique URLs.
         -   **Resources**: Logical endpoints in your API that represent entities or operations.
         -   **Methods**: HTTP methods (e.g., GET, POST, PUT, DELETE) applied to resources.
-        -   **Stages**: Different deployment environments (e.g., dev, test, prod) with unique URLs.
+
+    #### Terms & Concepts:
+
+    -   **API**: An API (Application Programming Interface) is a set of rules and protocols that allows different software applications to communicate with each other. In the context of AWS API Gateway, an API is a collection of resources and methods that can be accessed through a unique endpoint URL.
+    -   **Endpoint**: An endpoint is a URL that represents the location of an API or a specific resource within an API. It typically includes the base URL of the API, the resource path, and any query parameters or request headers that are needed to access the resource.
+    -   **Integration**: An integration is a way to connect an API Gateway method to a back-end service, such as an AWS Lambda function, an Amazon EC2 instance, or a third-party service. API Gateway supports multiple types of integrations, such as Lambda, HTTP, and WebSocket.
+    -   **Authorization**: Authorization is the process of controlling access to an API by requiring clients to provide valid credentials, such as an **API key** or an **OAuth token**. API Gateway supports several types of authorization, including IAM, Lambda, and custom authorizers.
+    -   **Throttling**: Throttling is the process of limiting the rate at which API clients can make requests to an API. API Gateway supports several types of throttling, including **rate limiting** and **burst limiting**, to prevent overloading back-end services or unauthorized access.
+    -   **API proxying**: It's also known as API gateway or API proxy, is a technique used to route requests from clients to backend services through an intermediary server, known as the proxy or gateway. It acts as an intermediary between the client and the actual API endpoint, providing various benefits such as security, scalability, and flexibility. Here's how API proxying works:
+
+        -   `Routing`: The API proxy receives requests from clients and forwards them to the appropriate backend service based on predefined routing rules. These rules can be configured to direct requests based on paths, headers, or other criteria.
+        -   `Security`: API proxies often implement security measures such as authentication, authorization, and rate limiting to protect backend services from unauthorized access or abuse. They can handle tasks like API key management, OAuth integration, and encryption of sensitive data.
+        -   `Monitoring and Analytics`: API proxies typically offer monitoring and analytics capabilities to track the usage and performance of APIs. They can collect metrics such as request/response times, error rates, and traffic volume, providing valuable insights for troubleshooting and optimization.
+        -   `Caching`: Proxies may cache responses from backend services to improve performance and reduce latency. By caching frequently accessed data, they can serve subsequent requests without hitting the backend, resulting in faster response times and reduced server load.
+        -   `Transformation`: API proxies can perform data transformation and manipulation on requests and responses. They may modify headers, transform payloads between different data formats (e.g., JSON to XML), or add/remove elements from the request or response body.
+        -   `Load Balancing`: In cases where multiple backend services are available to handle requests, API proxies can perform load balancing to distribute traffic evenly across the servers. This ensures optimal resource utilization and prevents overloading of individual servers.
+
+    #### Stages:
+
+    A **stage** in API Gateway is a logical separation of your API for different environments such as development, testing, or production.
+
+    -   **Features**:
+
+        -   **Stage Variables**: Similar to environment variables, used to define values specific to the stage (e.g., `api_key`, backend endpoint).
+        -   **Stage URLs**: Each stage has a unique URL, for example, `https://api-id.execute-api.aws-region.amazonaws.com/prod/`.
 
     #### Resources:
 
@@ -1274,15 +1299,6 @@
 
     -   **Integration with Backends**: Methods define how the API Gateway interacts with backend services, such as AWS Lambda functions, Amazon EC2, or HTTP endpoints.
     -   **Input/Output Mapping**: Request and response payloads can be transformed or mapped to fit the backend’s format using **mapping templates**.
-
-    #### Stages:
-
-    A **stage** in API Gateway is a logical separation of your API for different environments such as development, testing, or production.
-
-    -   **Features**:
-
-        -   **Stage Variables**: Similar to environment variables, used to define values specific to the stage (e.g., `api_key`, backend endpoint).
-        -   **Stage URLs**: Each stage has a unique URL, for example, `https://api-id.execute-api.aws-region.amazonaws.com/prod/`.
 
     #### Proxy Integration
 
@@ -1392,187 +1408,6 @@
             }
             ```
 
-    #### Terms & Concepts:
-
-    -   **API**: An API (Application Programming Interface) is a set of rules and protocols that allows different software applications to communicate with each other. In the context of AWS API Gateway, an API is a collection of resources and methods that can be accessed through a unique endpoint URL.
-    -   **Endpoint**: An endpoint is a URL that represents the location of an API or a specific resource within an API. It typically includes the base URL of the API, the resource path, and any query parameters or request headers that are needed to access the resource.
-    -   **Integration**: An integration is a way to connect an API Gateway method to a back-end service, such as an AWS Lambda function, an Amazon EC2 instance, or a third-party service. API Gateway supports multiple types of integrations, such as Lambda, HTTP, and WebSocket.
-    -   **Authorization**: Authorization is the process of controlling access to an API by requiring clients to provide valid credentials, such as an API key or an OAuth token. API Gateway supports several types of authorization, including IAM, Lambda, and custom authorizers.
-    -   **Throttling**: Throttling is the process of limiting the rate at which API clients can make requests to an API. API Gateway supports several types of throttling, including rate limiting and burst limiting, to prevent overloading back-end services or unauthorized access.
-    -   **API proxying**: It, also known as API gateway or API proxy, is a technique used to route requests from clients to backend services through an intermediary server, known as the proxy or gateway. It acts as an intermediary between the client and the actual API endpoint, providing various benefits such as security, scalability, and flexibility. Here's how API proxying works:
-        -   `Routing`: The API proxy receives requests from clients and forwards them to the appropriate backend service based on predefined routing rules. These rules can be configured to direct requests based on paths, headers, or other criteria.
-        -   `Security`: API proxies often implement security measures such as authentication, authorization, and rate limiting to protect backend services from unauthorized access or abuse. They can handle tasks like API key management, OAuth integration, and encryption of sensitive data.
-        -   `Monitoring and Analytics`: API proxies typically offer monitoring and analytics capabilities to track the usage and performance of APIs. They can collect metrics such as request/response times, error rates, and traffic volume, providing valuable insights for troubleshooting and optimization.
-        -   `Caching`: Proxies may cache responses from backend services to improve performance and reduce latency. By caching frequently accessed data, they can serve subsequent requests without hitting the backend, resulting in faster response times and reduced server load.
-        -   `Transformation`: API proxies can perform data transformation and manipulation on requests and responses. They may modify headers, transform payloads between different data formats (e.g., JSON to XML), or add/remove elements from the request or response body.
-        -   `Load Balancing`: In cases where multiple backend services are available to handle requests, API proxies can perform load balancing to distribute traffic evenly across the servers. This ensures optimal resource utilization and prevents overloading of individual servers.
-
-    <details open><summary style="font-size:20px;color:Tomato">RESTful APIs:</summary>
-
-    RESTful APIs in AWS API Gateway allow you to build, deploy, and manage RESTful APIs at scale. They adhere to the principles of REST (Representational State Transfer) architecture.
-
-    -   `Resource-Based Architecture`: RESTful APIs in AWS API Gateway follow a resource-based architecture where resources (e.g., objects, data) are exposed as endpoints (e.g., URLs) and support standard CRUD operations (Create, Read, Update, Delete) on these resources.
-    -   `HTTP Methods`: You can define HTTP methods (e.g., GET, POST, PUT, DELETE) for each resource, allowing clients to interact with the API through these methods.
-    -   `Integration`: RESTful APIs can integrate with backend services such as AWS Lambda functions, AWS Elastic Beanstalk applications, or HTTP endpoints. Integration options include Lambda functions, HTTP endpoints, AWS services, and AWS Lambda Proxy integration.
-    -   `Security`: API Gateway provides features like AWS IAM authorization, resource policies, and usage plans to secure and control access to your RESTful APIs. You can configure API keys, IAM roles, and resource policies for authentication and authorization.
-    -   `Monitoring and Analytics`: You can monitor API usage, performance metrics, and logs using Amazon CloudWatch and Amazon API Gateway's built-in logging and monitoring features. API Gateway provides detailed metrics, access logs, and execution logs for monitoring and troubleshooting.
-    -   `Use Cases`: RESTful APIs are suitable for building web services, microservices, and mobile backends where resources need to be exposed and accessed via standard HTTP methods. They are ideal for building CRUD-based applications and adhering to REST architectural principles.
-
-    #### RESTful APIs Features:
-
-    -   `Protocol Support`:
-        -   REST APIs provide comprehensive support for building RESTful APIs according to the principles of Representational State Transfer (REST).
-        -   They support HTTP/1.1 and HTTPS protocols.
-    -   `Custom Domain Names`:
-        -   REST APIs support custom domain names, allowing you to provide a branded API endpoint with your own domain name.
-        -   You can configure custom domain names directly within API Gateway without additional mappings.
-    -   `Resource-Based Routing`:
-        -   REST APIs offer resource-based routing, allowing you to define hierarchical resource structures using paths and HTTP methods (e.g., GET /users, POST /users/{id}).
-        -   They follow RESTful design principles, making it easy to organize and expose your API resources.
-    -   `Integration Types`:
-        -   REST APIs support a variety of integration types, including Lambda functions, HTTP endpoints, AWS services, and AWS Step Functions.
-        -   You can choose the integration type that best fits your use case, allowing you to integrate with various backend systems and services.
-    -   `API Keys and IAM Roles`:
-        -   REST APIs support API keys and AWS Identity and Access Management (IAM) roles for controlling access to your APIs.
-        -   You can use API keys to throttle and monitor API usage, and IAM roles to grant fine-grained access permissions to API resources.
-
-    #### RESTful APIs Limitations:
-
-    While REST APIs in AWS API Gateway offer a wide range of features for building RESTful APIs, they also have some limitations to consider. Here are some of the key limitations of REST APIs in AWS API Gateway:
-
-    -   `Cold Start Latency`: Like other serverless architectures, REST APIs using Lambda functions may experience cold start latency, where the initial invocation of a function takes longer due to resource provisioning. This latency can impact the responsiveness of the API.
-    -   `Integration Limits`: REST APIs have integration limits, such as a maximum of 30 integration responses per method, a maximum of 10 authorizers per method, and a maximum payload size of 10 MB for request and response bodies. These limits may impact the complexity and scalability of your API design.
-    -   `Rate Limiting Constraints`: While API Gateway supports rate limiting for controlling access to APIs, there are limitations on the granularity of rate limiting configurations. For example, you cannot specify rate limits based on specific API keys or client IPs, and the default rate limit is applied globally to all clients.
-    -   `API Gateway Throttling`: API Gateway imposes throttling limits on API requests to prevent abuse and ensure system stability. While throttling is necessary for protecting backend resources, it can lead to temporary service interruptions if request rates exceed the configured limits.
-    -   `Payload Transformations`: API Gateway supports payload transformations for modifying request and response payloads using mapping templates. However, these transformations are limited in functionality compared to dedicated transformation services, and complex transformations may require additional processing.
-    -   `CORS Configuration`: Cross-Origin Resource Sharing (CORS) configuration in API Gateway has limitations, such as a maximum of 30 CORS configurations per API and restrictions on wildcard (\*) usage. This may impact the flexibility of CORS policies for enabling cross-origin requests.
-    -   `Monitoring and Logging Limits`: While API Gateway provides monitoring and logging capabilities for tracking API usage and performance, there are limits on the volume of logs and metrics that can be stored and retained. This may require additional monitoring solutions for long-term data retention and analysis.
-    -   `Integration Timeout`: API Gateway imposes integration timeouts for API requests to backend services. If the backend service does not respond within the specified timeout period, the request may fail with a timeout error. Configuring appropriate timeout values is important for handling varying backend response times.
-    -   `Integration Response Mapping`: Mapping integration responses to HTTP status codes and headers in API Gateway can be complex, especially for APIs with multiple integration responses. Managing response mappings and error handling logic may require careful configuration and testing.
-
-    </details>
-
-    <details open><summary style="font-size:20px;color:Tomato">HTTP APIs:</summary>
-
-    HTTP APIs in AWS API Gateway offer a more lightweight and cost-effective alternative to traditional RESTful APIs. They are optimized for serverless workloads and provide features tailored to modern web applications.
-
-    -   `Simplified Configuration`: HTTP APIs in AWS API Gateway offer a more lightweight and cost-effective alternative to traditional RESTful APIs. They provide simplified configuration options for defining routes, methods, and integrations, making it easier to build and manage APIs.
-    -   `Built-in CORS Support`: HTTP APIs provide built-in Cross-Origin Resource Sharing (CORS) support, allowing you to define CORS policies to control access from web browsers. CORS settings can be configured at the API level or the route level.
-    -   `JWT Authorizers`: HTTP APIs support JWT (JSON Web Token) authorizers for authentication and authorization. You can use JWT tokens to authenticate and authorize requests, simplifying the implementation of authentication in serverless applications.
-    -   `Payload Validation`: HTTP APIs support payload validation, allowing you to validate request and response payloads against JSON schemas or OpenAPI definitions. You can define request and response models and validate incoming and outgoing payloads against these models.
-    -   `Cost-Effective`: HTTP APIs offer a lower cost structure compared to RESTful APIs, making them suitable for serverless applications with high traffic volume. They provide a cost-effective option for building modern web applications and serverless microservices.
-    -   `Use Cases`: HTTP APIs are well-suited for building modern web applications, single-page applications (SPAs), and serverless microservices where simplicity, scalability, and cost-effectiveness are priorities. They are ideal for scenarios where traditional RESTful APIs may be too complex or costly to manage.
-
-    #### HTTP APIs Features:
-
-    -   `Protocol Support`:
-        -   HTTP APIs are designed to provide a low-latency and low-cost option for building HTTP-based APIs.
-        -   They support HTTP/1.1 and HTTP/2 protocols.
-    -   `API Mapping`:
-        -   HTTP APIs offer simplified API mapping, allowing you to map multiple custom domain names to a single API endpoint.
-        -   They do not support custom domain names directly; instead, you configure API mappings using API Gateway stages.
-    -   `WebSocket Support`:
-        -   HTTP APIs support WebSocket connections, making it easy to build real-time, bidirectional communication applications such as chat apps, gaming platforms, and IoT applications.
-        -   They provide native WebSocket support, allowing you to handle WebSocket connections without the need for additional services.
-    -   `Lambda Proxy Integration`:
-        -   HTTP APIs support Lambda proxy integration, where the integration request and response payloads are passed directly to and from Lambda functions.
-        -   This simplifies the integration setup and enables you to build serverless applications with Lambda functions as the backend.
-    -   `OAuth 2.0 and JWT Authorizers`:
-
-        -   HTTP APIs support OAuth 2.0 and JSON Web Token (JWT) authorizers for authenticating and authorizing API requests.
-        -   You can use OAuth 2.0 or JWT tokens to protect your APIs and control access based on user identities or custom claims.
-
-    #### HTTP APIs Limitations:
-
-    -   `Limited Protocol Support`: HTTP APIs support HTTP/1.1 and HTTP/2 protocols but do not support older protocols such as HTTP/1.0. This may limit compatibility with some legacy systems or clients.
-    -   `Limited Integration Options`: HTTP APIs have limited integration options compared to REST APIs. They primarily support Lambda functions and HTTP endpoints as backend integrations. While Lambda proxy integration is convenient for serverless architectures, it may not be suitable for complex integration scenarios.
-    -   `Limited Deployment Options`: HTTP APIs are only available in the API Gateway version 2.0, which means they do not support the previous version 1.0 deployment options. This may impact migration efforts or compatibility with existing API Gateway features.
-    -   `Limited Customization`: HTTP APIs offer fewer customization options compared to REST APIs. For example, they do not support custom domain names directly; instead, you must use API mappings to map custom domain names to API endpoints.
-    -   `No Stage Variables`: HTTP APIs do not support stage variables, which are commonly used in REST APIs to define environment-specific configuration values. This may require alternative approaches for managing environment-specific settings.
-    -   `No Resource Policies`: HTTP APIs do not support resource policies, which are used in REST APIs to control access to API resources based on IP address or VPC endpoint. This may limit security controls for certain use cases.
-    -   `Limited Monitoring and Logging`: HTTP APIs offer basic monitoring and logging capabilities compared to REST APIs. While you can enable logging and monitoring for HTTP APIs, the available metrics and logs may be limited compared to REST APIs.
-    -   `Limited API Gateway Features`: Some advanced API Gateway features, such as AWS WAF integration, caching, and request/response transformations, are not fully supported or may have limitations when using HTTP APIs.
-
-    </details>
-
-    <details open><summary style="font-size:20px;color:Tomato">WebSocket APIs:</summary>
-
-    WebSocket APIs in AWS API Gateway enable real-time, bidirectional communication between clients and servers over a single TCP connection. They provide full-duplex communication channels.
-
-    -   `Real-time Communication`: WebSocket APIs support low-latency, real-time communication between clients and servers, making them ideal for applications requiring real-time updates and notifications.
-    -   `Persistent Connection`: WebSocket APIs establish a persistent connection between clients and servers, allowing both parties to send messages to each other asynchronously.
-    -   `Serverless Integration`: You can integrate WebSocket APIs with AWS Lambda functions to handle WebSocket messages and execute business logic in a serverless environment.
-    -   `Security`: WebSocket APIs support authentication and authorization mechanisms to secure connections and control access to resources.
-    -   `Scalability`: AWS API Gateway automatically scales WebSocket APIs to handle high volumes of concurrent connections and messages.
-    -   `Use Cases`: WebSocket APIs are commonly used in applications such as chat applications, multiplayer games, real-time collaboration tools, and financial trading platforms.
-    </details>
-
-    <details open><summary style="font-size:20px;color:#FF1493">Use Cases of API Gateway</summary>
-
-    AWS API Gateway has several practical use cases in data engineering, especially in creating and managing APIs that interface with various data pipelines and processes. Here are some common use cases:
-
-    1. **Exposing Data Processing Pipelines as APIs**
-
-        - **Use Case**: Create APIs for external or internal users to submit data for processing.
-        - **Example**: An API that receives data from clients and triggers an AWS Lambda function, which preprocesses and loads the data into AWS S3, DynamoDB, or RDS. This can be used in ETL pipelines.
-
-    2. **Real-Time Data Ingestion for Streaming Pipelines**
-
-        - **Use Case**: Provide a scalable, low-latency endpoint for ingesting streaming data.
-        - **Example**: API Gateway can front Amazon Kinesis to ingest real-time event data, such as IoT sensor data, which can then be processed and analyzed in real time.
-
-    3. **Orchestrating Data Jobs via API**
-
-        - **Use Case**: Expose APIs to trigger specific data engineering jobs or workflows.
-        - **Example**: Use API Gateway to trigger AWS Step Functions, which orchestrate complex ETL pipelines involving services like Lambda, Glue, or EMR for data processing and transformations.
-
-    4. **Data Enrichment as a Service**
-
-        - **Use Case**: Provide an API to enhance datasets with additional data from external or internal sources.
-        - **Example**: An API Gateway that fronts a Lambda function to enrich customer records by calling external APIs (e.g., validating address details or credit scores).
-
-    5. **Secure Data Access for Analytics**
-
-        - **Use Case**: Securely expose APIs to provide controlled access to datasets stored in S3, DynamoDB, or RDS.
-        - **Example**: An internal API that returns filtered data from S3 buckets or a database (PostgreSQL/MySQL) based on user roles or other security constraints using AWS Identity and Access Management (IAM) and API Gateway custom authorizers.
-
-    6. **Serverless Microservices for Data Transformation**
-
-        - **Use Case**: Enable microservices architecture for data transformation logic.
-        - **Example**: API Gateway can be used to invoke Lambda functions that handle data transformations (e.g., format conversion, aggregations) before persisting the data into a data lake or a data warehouse.
-
-    7. **REST API for Querying and Fetching Data**
-
-        - **Use Case**: Create APIs for querying datasets for downstream applications.
-        - **Example**: Use API Gateway to expose a REST API for querying a dataset stored in Amazon Redshift or DynamoDB, enabling data retrieval for dashboards or analytics apps.
-
-    8. **Data Validation and Preprocessing Layer**
-
-        - **Use Case**: Validate incoming data before ingestion into the data pipeline.
-        - **Example**: API Gateway can expose an API that receives raw data, performs basic validation (via Lambda), and then forwards the valid data to S3 or a Kinesis stream.
-
-    9. **Monitoring and Logging of Data APIs**
-
-        - **Use Case**: Implement monitoring and logging for data ingestion and processing APIs.
-        - **Example**: API Gateway can be used with AWS CloudWatch to monitor API performance, logging, and error tracking for APIs that ingest and process data in real-time systems.
-
-    10. **API Gateway as Proxy for Third-Party Data Sources**
-
-        - **Use Case**: Use API Gateway as a proxy to fetch or send data to third-party APIs.
-        - **Example**: API Gateway can proxy requests to external services (e.g., payment processors, data providers) and integrate their data into internal pipelines.
-
-    11. **Public Data APIs for External Partners or Customers**
-
-        - **Use Case**: Expose specific datasets or aggregated data as APIs for external customers or partners.
-        - **Example**: A data product that exposes aggregated reports or analytics data via API Gateway to allow external partners to query specific metrics or KPIs.
-
-    12. **Rate Limiting and Throttling for Ingestion APIs**
-
-        - **Use Case**: Control the flow of data ingestion by applying rate limits or throttling.
-        - **Example**: API Gateway allows you to set up throttling policies to control the number of requests per second to prevent overloading downstream services like Kinesis, S3, or RDS.
-
-    </details>
-
     #### Endpoints and Custom Domain Names:
 
     API Gateway provides default **API endpoints** but also allows you to associate your API with a **custom domain name**.
@@ -1590,15 +1425,6 @@
     -   **HTTP/HTTP_PROXY Integration**: API Gateway can route requests to HTTP-based backends such as web servers or third-party APIs.
     -   **AWS Service Integration**: Integrate with other AWS services like DynamoDB, SNS, or SQS directly, without requiring Lambda.
 
-    #### Mapping Templates (Velocity Templates):
-
-    **Mapping templates** are used to transform incoming requests before passing them to the backend or to transform the responses before sending them back to the client. This is done using the **Velocity Template Language (VTL)**.
-
-    -   **Features**:
-        -   Modify the request format (e.g., JSON to XML).
-        -   Map query parameters, headers, and body to backend-specific formats.
-        -   Extract and modify response data.
-
     #### Authorization:
 
     API Gateway supports several types of authorization to secure access to your APIs:
@@ -1610,7 +1436,7 @@
 
     #### Caching:
 
-    API Gateway provides **caching** at the stage level to reduce the latency of your API and improve performance.
+    API Gateway provides **caching** at the **stage level** to reduce the latency of your API and improve performance.
 
     -   **Features**:
         -   Store responses from your backend services in an API Gateway cache.
@@ -1703,10 +1529,241 @@
     API Gateway provides **detailed access logs** to monitor API usage and analyze performance.
 
     -   **Features**:
+
         -   Logs include detailed information such as request timestamps, IP addresses, request/response payloads, and latency.
         -   Access logs can be stored in CloudWatch Logs for long-term analysis.
 
-    AWS API Gateway provides a range of features and capabilities for creating and managing APIs, making it a powerful tool for building modern, scalable applications. Understanding these key concepts and terms is essential for effectively using and configuring the service.
+    -   <details open><summary style="font-size:20px;color:#FF1493">RESTful APIs:</summary>
+
+        RESTful APIs in AWS API Gateway allow you to build, deploy, and manage RESTful APIs at scale. They adhere to the principles of REST (Representational State Transfer) architecture.
+
+        AWS API Gateway is a fully managed service that allows developers to **create, publish, maintain, monitor, and secure REST, HTTP, and WebSocket APIs at any scale**. A RESTful API in API Gateway acts as the "front door" for client applications to access backend services like AWS Lambda, EC2, or other public web services.
+
+        The REST API type in API Gateway is the feature-rich, low-latency option that provides granular control over the API lifecycle.
+
+        -   **Core Concepts and Components**:A REST API in API Gateway is fundamentally structured as a collection of **Resources** and **Methods**.
+
+            1. **API (The Container)**: The top-level entity that contains all the resources and methods for your web service. It is deployed to a specific **Stage** and uses an **Endpoint Type**.
+
+            2. **Resource**: A **Resource** is a logical entity that is accessible via a path and typically maps to a data model (e.g., `/users`, `/products/{id}`).
+
+                - **Resource Path:** The URI component used to access the resource (e.g., `/products`).
+                - **Path Parameters:** Variables embedded in the resource path (e.g., `{id}` in `/products/{id}`). These are extracted by API Gateway and passed to the backend.
+
+            3. **Method**: A **Method** is a request handler attached to a **Resource** that corresponds to a standard HTTP verb (**GET, POST, PUT, DELETE, PATCH**). It defines the entry point for a client request and the contract for the response.
+
+            4. **Integration (The Communication Layer)**: The most critical part of the Method, the **Integration** defines how API Gateway communicates with the backend service. It is composed of two main phases:
+
+                | Component                | Description                                                                                                                                                                                                        |
+                | :----------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+                | **Method Request**       | The **client-facing interface**. Defines the data expected from the client (path params, query strings, headers, body) and includes **Authorization** and **Request Validation** settings.                         |
+                | **Integration Request**  | The **backend-facing configuration**. This is the request API Gateway sends to the backend. It includes data **transformation** using VTL (Velocity Template Language) and specifies the backend endpoint.         |
+                | **Integration Response** | The **backend response configuration**. Defines how the response from the backend is handled, including mapping backend status codes to API Gateway status codes and performing **response transformation** (VTL). |
+                | **Method Response**      | The **client-facing response**. Defines the expected HTTP status codes, headers, and body models returned to the client.                                                                                           |
+
+        -   **Integration Types**:API Gateway offers several ways to integrate with a backend, giving you flexibility over control and development speed.
+
+            | Integration Type  | Description                                                                                                                                                                                                       | Granular Control? | Use Case                                                                                      |
+            | :---------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------- | :-------------------------------------------------------------------------------------------- |
+            | **Lambda Proxy**  | A simplified, recommended approach for AWS Lambda. API Gateway sends the entire client request as a single JSON object to Lambda and expects a specific JSON structure in return.                                 | No (Simplified)   | Standard serverless applications (e.g., reading from DynamoDB).                               |
+            | **Lambda Custom** | Gives you **full control** over the request and response mapping using **VTL**. API Gateway transforms the request before invoking Lambda and transforms the response before sending it back to the client.       | Yes (Granular)    | Advanced scenarios where you need to integrate with legacy systems or non-standard protocols. |
+            | **HTTP Proxy**    | API Gateway acts as a simple pass-through proxy to any **HTTP endpoint** (e.g., a server on EC2, an external third-party API). The client request is forwarded as-is, and the backend response is returned as-is. | No (Pass-Through) | Integrating with existing web services or microservices.                                      |
+            | **AWS Service**   | Allows API Gateway to directly call an AWS service action (e.g., DynamoDB's `PutItem`, SQS's `SendMessage`) without needing an intermediary Lambda function. Requires VTL mapping.                                | Yes (Granular)    | Directly interacting with AWS infrastructure to optimize latency and remove Lambda overhead.  |
+            | **Mock**          | API Gateway responds immediately without forwarding the request to any backend.                                                                                                                                   | N/A               | Testing, returning static data, or implementing temporary error responses.                    |
+            | **Private**       | Used with a **VPC Link** to securely integrate with resources in your Amazon VPC, such as Application Load Balancers (ALBs) or Network Load Balancers (NLBs).                                                     | Yes/No            | Internal APIs for corporate or private applications.                                          |
+
+        -   **Key Features and Advanced Concepts**:
+
+            1. **Deployment and Stages**: An API must be **deployed** to a **Stage** before it can be invoked.
+
+                - **Stage:** A logical reference to a lifecycle state of your API (e.g., `prod`, `dev`, `beta`).
+                - **Stage Variables:** Key-value pairs defined in a Stage that can be referenced in the Integration configuration (e.g., to point a `dev` stage to a `DevLambda` function and a `prod` stage to a `ProdLambda` function).
+
+            2. **Authorization and Authentication**: API Gateway offers robust security mechanisms:
+
+                - **IAM Authorization:** Uses AWS Identity and Access Management (IAM) permissions for authenticated calls, typically for clients within the AWS ecosystem.
+                - **Lambda Authorizers (Custom Authorizers):** A Lambda function you write to execute authorization logic (e.g., validating custom tokens or session IDs) and return an IAM policy to API Gateway.
+                - **Cognito User Pool Authorizer:** Integrates directly with an Amazon Cognito User Pool to manage authentication (signing in users) and authorize API access using tokens (ID and Access Tokens).
+                - **API Keys & Usage Plans:** Used for metering, throttling, and controlling access to your APIs.
+
+            3. **Traffic Management**
+
+                - **Throttling:** Limits the number of requests per second for the entire API or for individual methods to protect the backend service from being overwhelmed.
+                - **Caching:** Enables caching of API responses to improve latency and reduce the load on your backend. You configure the Time-To-Live (TTL) for cached responses.
+
+            4. **Transformation and Validation**
+
+                - **Mapping Templates (VTL):** Used in the Integration Request and Integration Response to transform the request body/parameters between the client's format and the backend's required format. This is where you can manually map, extract, or compute data.
+                - **Request Validation:** Allows you to define JSON Schemas (**Models**) for the request body and validate incoming client requests before they hit the backend. This offloads input validation from your backend service.
+
+            5. **Endpoint Types**: Defines the client-facing public address of your API:
+                - **Edge-Optimized (Default):** The API requests are routed through the **Amazon CloudFront** content delivery network (CDN) to minimize latency for geographically dispersed clients.
+                - **Regional:** The API is deployed only in the current AWS region. Best for clients primarily in the same region, or when you use your own CDN.
+                - **Private:** The API is accessible only from within your Amazon VPC using an **Interface VPC Endpoint**. Best for internal-only applications.
+
+        ##### Terms & Concepts:
+
+        -   `Resource-Based Architecture`: RESTful APIs in AWS API Gateway follow a resource-based architecture where resources (e.g., objects, data) are exposed as endpoints (e.g., URLs) and support standard CRUD operations (Create, Read, Update, Delete) on these resources.
+        -   `HTTP Methods`: You can define HTTP methods (e.g., GET, POST, PUT, DELETE) for each resource, allowing clients to interact with the API through these methods.
+        -   `Integration`: RESTful APIs can integrate with backend services such as AWS Lambda functions, AWS Elastic Beanstalk applications, or HTTP endpoints. Integration options include Lambda functions, HTTP endpoints, AWS services, and AWS Lambda Proxy integration.
+        -   `Security`: API Gateway provides features like AWS IAM authorization, resource policies, and usage plans to secure and control access to your RESTful APIs. You can configure API keys, IAM roles, and resource policies for authentication and authorization.
+        -   `Monitoring and Analytics`: You can monitor API usage, performance metrics, and logs using Amazon CloudWatch and Amazon API Gateway's built-in logging and monitoring features. API Gateway provides detailed metrics, access logs, and execution logs for monitoring and troubleshooting.
+        -   `Use Cases`: RESTful APIs are suitable for building web services, microservices, and mobile backends where resources need to be exposed and accessed via standard HTTP methods. They are ideal for building CRUD-based applications and adhering to REST architectural principles.
+
+        ##### RESTful APIs Features:
+
+        -   `Protocol Support`:
+            -   REST APIs provide comprehensive support for building RESTful APIs according to the principles of Representational State Transfer (REST).
+            -   They support HTTP/1.1 and HTTPS protocols.
+        -   `Custom Domain Names`:
+            -   REST APIs support custom domain names, allowing you to provide a branded API endpoint with your own domain name.
+            -   You can configure custom domain names directly within API Gateway without additional mappings.
+        -   `Resource-Based Routing`:
+            -   REST APIs offer resource-based routing, allowing you to define hierarchical resource structures using paths and HTTP methods (e.g., GET /users, POST /users/{id}).
+            -   They follow RESTful design principles, making it easy to organize and expose your API resources.
+        -   `Integration Types`:
+            -   REST APIs support a variety of integration types, including Lambda functions, HTTP endpoints, AWS services, and AWS Step Functions.
+            -   You can choose the integration type that best fits your use case, allowing you to integrate with various backend systems and services.
+        -   `API Keys and IAM Roles`:
+            -   REST APIs support API keys and AWS Identity and Access Management (IAM) roles for controlling access to your APIs.
+            -   You can use API keys to throttle and monitor API usage, and IAM roles to grant fine-grained access permissions to API resources.
+
+        ##### RESTful APIs Limitations:
+
+        While REST APIs in AWS API Gateway offer a wide range of features for building RESTful APIs, they also have some limitations to consider. Here are some of the key limitations of REST APIs in AWS API Gateway:
+
+        -   `Cold Start Latency`: Like other serverless architectures, REST APIs using Lambda functions may experience cold start latency, where the initial invocation of a function takes longer due to resource provisioning. This latency can impact the responsiveness of the API.
+        -   `Integration Limits`: REST APIs have integration limits, such as a maximum of 30 integration responses per method, a maximum of 10 authorizers per method, and a maximum payload size of 10 MB for request and response bodies. These limits may impact the complexity and scalability of your API design.
+        -   `Rate Limiting Constraints`: While API Gateway supports rate limiting for controlling access to APIs, there are limitations on the granularity of rate limiting configurations. For example, you cannot specify rate limits based on specific API keys or client IPs, and the default rate limit is applied globally to all clients.
+        -   `API Gateway Throttling`: API Gateway imposes throttling limits on API requests to prevent abuse and ensure system stability. While throttling is necessary for protecting backend resources, it can lead to temporary service interruptions if request rates exceed the configured limits.
+        -   `Payload Transformations`: API Gateway supports payload transformations for modifying request and response payloads using mapping templates. However, these transformations are limited in functionality compared to dedicated transformation services, and complex transformations may require additional processing.
+        -   `CORS Configuration`: Cross-Origin Resource Sharing (CORS) configuration in API Gateway has limitations, such as a maximum of 30 CORS configurations per API and restrictions on wildcard (\*) usage. This may impact the flexibility of CORS policies for enabling cross-origin requests.
+        -   `Monitoring and Logging Limits`: While API Gateway provides monitoring and logging capabilities for tracking API usage and performance, there are limits on the volume of logs and metrics that can be stored and retained. This may require additional monitoring solutions for long-term data retention and analysis.
+        -   `Integration Timeout`: API Gateway imposes integration timeouts for API requests to backend services. If the backend service does not respond within the specified timeout period, the request may fail with a timeout error. Configuring appropriate timeout values is important for handling varying backend response times.
+        -   `Integration Response Mapping`: Mapping integration responses to HTTP status codes and headers in API Gateway can be complex, especially for APIs with multiple integration responses. Managing response mappings and error handling logic may require careful configuration and testing.
+
+        </details>
+
+    -   <details open><summary style="font-size:20px;color:#FF1493">HTTP APIs:</summary>
+
+        HTTP APIs in AWS API Gateway offer a more lightweight and cost-effective alternative to traditional RESTful APIs. They are optimized for serverless workloads and provide features tailored to modern web applications.
+
+        -   `Simplified Configuration`: HTTP APIs in AWS API Gateway offer a more lightweight and cost-effective alternative to traditional RESTful APIs. They provide simplified configuration options for defining routes, methods, and integrations, making it easier to build and manage APIs.
+        -   `Built-in CORS Support`: HTTP APIs provide built-in Cross-Origin Resource Sharing (CORS) support, allowing you to define CORS policies to control access from web browsers. CORS settings can be configured at the API level or the route level.
+        -   `JWT Authorizers`: HTTP APIs support JWT (JSON Web Token) authorizers for authentication and authorization. You can use JWT tokens to authenticate and authorize requests, simplifying the implementation of authentication in serverless applications.
+        -   `Payload Validation`: HTTP APIs support payload validation, allowing you to validate request and response payloads against JSON schemas or OpenAPI definitions. You can define request and response models and validate incoming and outgoing payloads against these models.
+        -   `Cost-Effective`: HTTP APIs offer a lower cost structure compared to RESTful APIs, making them suitable for serverless applications with high traffic volume. They provide a cost-effective option for building modern web applications and serverless microservices.
+        -   `Use Cases`: HTTP APIs are well-suited for building modern web applications, single-page applications (SPAs), and serverless microservices where simplicity, scalability, and cost-effectiveness are priorities. They are ideal for scenarios where traditional RESTful APIs may be too complex or costly to manage.
+
+        #### HTTP APIs Features:
+
+        -   `Protocol Support`:
+            -   HTTP APIs are designed to provide a low-latency and low-cost option for building HTTP-based APIs.
+            -   They support HTTP/1.1 and HTTP/2 protocols.
+        -   `API Mapping`:
+            -   HTTP APIs offer simplified API mapping, allowing you to map multiple custom domain names to a single API endpoint.
+            -   They do not support custom domain names directly; instead, you configure API mappings using API Gateway stages.
+        -   `WebSocket Support`:
+            -   HTTP APIs support WebSocket connections, making it easy to build real-time, bidirectional communication applications such as chat apps, gaming platforms, and IoT applications.
+            -   They provide native WebSocket support, allowing you to handle WebSocket connections without the need for additional services.
+        -   `Lambda Proxy Integration`:
+            -   HTTP APIs support Lambda proxy integration, where the integration request and response payloads are passed directly to and from Lambda functions.
+            -   This simplifies the integration setup and enables you to build serverless applications with Lambda functions as the backend.
+        -   `OAuth 2.0 and JWT Authorizers`:
+
+            -   HTTP APIs support OAuth 2.0 and JSON Web Token (JWT) authorizers for authenticating and authorizing API requests.
+            -   You can use OAuth 2.0 or JWT tokens to protect your APIs and control access based on user identities or custom claims.
+
+        #### HTTP APIs Limitations:
+
+        -   `Limited Protocol Support`: HTTP APIs support HTTP/1.1 and HTTP/2 protocols but do not support older protocols such as HTTP/1.0. This may limit compatibility with some legacy systems or clients.
+        -   `Limited Integration Options`: HTTP APIs have limited integration options compared to REST APIs. They primarily support Lambda functions and HTTP endpoints as backend integrations. While Lambda proxy integration is convenient for serverless architectures, it may not be suitable for complex integration scenarios.
+        -   `Limited Deployment Options`: HTTP APIs are only available in the API Gateway version 2.0, which means they do not support the previous version 1.0 deployment options. This may impact migration efforts or compatibility with existing API Gateway features.
+        -   `Limited Customization`: HTTP APIs offer fewer customization options compared to REST APIs. For example, they do not support custom domain names directly; instead, you must use API mappings to map custom domain names to API endpoints.
+        -   `No Stage Variables`: HTTP APIs do not support stage variables, which are commonly used in REST APIs to define environment-specific configuration values. This may require alternative approaches for managing environment-specific settings.
+        -   `No Resource Policies`: HTTP APIs do not support resource policies, which are used in REST APIs to control access to API resources based on IP address or VPC endpoint. This may limit security controls for certain use cases.
+        -   `Limited Monitoring and Logging`: HTTP APIs offer basic monitoring and logging capabilities compared to REST APIs. While you can enable logging and monitoring for HTTP APIs, the available metrics and logs may be limited compared to REST APIs.
+        -   `Limited API Gateway Features`: Some advanced API Gateway features, such as AWS WAF integration, caching, and request/response transformations, are not fully supported or may have limitations when using HTTP APIs.
+
+        </details>
+
+    -   <details open><summary style="font-size:20px;color:#FF1493">WebSocket APIs:</summary>
+
+        WebSocket APIs in AWS API Gateway enable real-time, bidirectional communication between clients and servers over a single TCP connection. They provide full-duplex communication channels.
+
+        -   `Real-time Communication`: WebSocket APIs support low-latency, real-time communication between clients and servers, making them ideal for applications requiring real-time updates and notifications.
+        -   `Persistent Connection`: WebSocket APIs establish a persistent connection between clients and servers, allowing both parties to send messages to each other asynchronously.
+        -   `Serverless Integration`: You can integrate WebSocket APIs with AWS Lambda functions to handle WebSocket messages and execute business logic in a serverless environment.
+        -   `Security`: WebSocket APIs support authentication and authorization mechanisms to secure connections and control access to resources.
+        -   `Scalability`: AWS API Gateway automatically scales WebSocket APIs to handle high volumes of concurrent connections and messages.
+        -   `Use Cases`: WebSocket APIs are commonly used in applications such as chat applications, multiplayer games, real-time collaboration tools, and financial trading platforms.
+        </details>
+
+    -   <details open><summary style="font-size:20px;color:#FF1493">Use Cases of API Gateway</summary>
+
+        AWS API Gateway has several practical use cases in data engineering, especially in creating and managing APIs that interface with various data pipelines and processes. Here are some common use cases:
+
+        1. **Exposing Data Processing Pipelines as APIs**
+
+            - **Use Case**: Create APIs for external or internal users to submit data for processing.
+            - **Example**: An API that receives data from clients and triggers an AWS Lambda function, which preprocesses and loads the data into AWS S3, DynamoDB, or RDS. This can be used in ETL pipelines.
+
+        2. **Real-Time Data Ingestion for Streaming Pipelines**
+
+            - **Use Case**: Provide a scalable, low-latency endpoint for ingesting streaming data.
+            - **Example**: API Gateway can front Amazon Kinesis to ingest real-time event data, such as IoT sensor data, which can then be processed and analyzed in real time.
+
+        3. **Orchestrating Data Jobs via API**
+
+            - **Use Case**: Expose APIs to trigger specific data engineering jobs or workflows.
+            - **Example**: Use API Gateway to trigger AWS Step Functions, which orchestrate complex ETL pipelines involving services like Lambda, Glue, or EMR for data processing and transformations.
+
+        4. **Data Enrichment as a Service**
+
+            - **Use Case**: Provide an API to enhance datasets with additional data from external or internal sources.
+            - **Example**: An API Gateway that fronts a Lambda function to enrich customer records by calling external APIs (e.g., validating address details or credit scores).
+
+        5. **Secure Data Access for Analytics**
+
+            - **Use Case**: Securely expose APIs to provide controlled access to datasets stored in S3, DynamoDB, or RDS.
+            - **Example**: An internal API that returns filtered data from S3 buckets or a database (PostgreSQL/MySQL) based on user roles or other security constraints using AWS Identity and Access Management (IAM) and API Gateway custom authorizers.
+
+        6. **Serverless Microservices for Data Transformation**
+
+            - **Use Case**: Enable microservices architecture for data transformation logic.
+            - **Example**: API Gateway can be used to invoke Lambda functions that handle data transformations (e.g., format conversion, aggregations) before persisting the data into a data lake or a data warehouse.
+
+        7. **REST API for Querying and Fetching Data**
+
+            - **Use Case**: Create APIs for querying datasets for downstream applications.
+            - **Example**: Use API Gateway to expose a REST API for querying a dataset stored in Amazon Redshift or DynamoDB, enabling data retrieval for dashboards or analytics apps.
+
+        8. **Data Validation and Preprocessing Layer**
+
+            - **Use Case**: Validate incoming data before ingestion into the data pipeline.
+            - **Example**: API Gateway can expose an API that receives raw data, performs basic validation (via Lambda), and then forwards the valid data to S3 or a Kinesis stream.
+
+        9. **Monitoring and Logging of Data APIs**
+
+            - **Use Case**: Implement monitoring and logging for data ingestion and processing APIs.
+            - **Example**: API Gateway can be used with AWS CloudWatch to monitor API performance, logging, and error tracking for APIs that ingest and process data in real-time systems.
+
+        10. **API Gateway as Proxy for Third-Party Data Sources**
+
+            - **Use Case**: Use API Gateway as a proxy to fetch or send data to third-party APIs.
+            - **Example**: API Gateway can proxy requests to external services (e.g., payment processors, data providers) and integrate their data into internal pipelines.
+
+        11. **Public Data APIs for External Partners or Customers**
+
+            - **Use Case**: Expose specific datasets or aggregated data as APIs for external customers or partners.
+            - **Example**: A data product that exposes aggregated reports or analytics data via API Gateway to allow external partners to query specific metrics or KPIs.
+
+        12. **Rate Limiting and Throttling for Ingestion APIs**
+
+            - **Use Case**: Control the flow of data ingestion by applying rate limits or throttling.
+            - **Example**: API Gateway allows you to set up throttling policies to control the number of requests per second to prevent overloading downstream services like Kinesis, S3, or RDS.
+
+        </details>
 
     </details>
 

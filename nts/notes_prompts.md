@@ -1,6 +1,4 @@
-without restracturring and rephrasing, correct grammatical errors in the following sentence:
-
-"write a very poor review of an item i bought on temu.com. also mention it's very common for the items purchased from temu.com to get lost if it ships through USPS and never get your refund."
+I like to be an expert in RESTfull API of AWS APIGateway. Design an real-world and practical AWS APIGateway project using Terraform to demonstrate all components and features with Cognito Authorizers.
 
 ---
 

@@ -13,8 +13,8 @@ StrictHostKeyChecking no
 # ============================================================================
 
 # General Purpose AWS EC2 instance
-Host ec2devenv
-HostName 3.226.199.213
+Host devenv
+HostName 98.89.163.242
 StrictHostKeyChecking no
 User ec2-user
 IdentityFile ~/.ssh/general_purpose.pem
