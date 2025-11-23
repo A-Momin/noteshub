@@ -10,334 +10,452 @@
         -   **Handler**: The entry point of the Lambda function, where the execution begins.
         -   **Deployment Package**: Includes your code and any dependencies in a zip file or a container image (if using container-based Lambda).
 
-    #### Function Configuration
+    -   <details><summary style="font-size:20px;color:Magenta">Function Configuration</summary>
 
-    Each Lambda function has a set of configurations that define how it behaves, including memory, timeout, and concurrency settings.
+        Each Lambda function has a set of configurations that define how it behaves, including memory, timeout, and concurrency settings.
 
-    1. **Basic Settings**
+        1. **Basic Settings**
 
-        - **Function Name**:
+            - **Function Name**:
 
-            - The name assigned to the function, which must be unique within an AWS Region and account.
+                - The name assigned to the function, which must be unique within an AWS Region and account.
 
-        - **Runtime**:
+            - **Runtime**:
 
-            - Specifies the programming language and version that the Lambda function will use (e.g., Python 3.9, Node.js 18.x, Java 11).
-            - AWS Lambda manages and updates runtimes, but deprecated versions eventually lose support, so updating periodically is crucial.
+                - Specifies the programming language and version that the Lambda function will use (e.g., Python 3.9, Node.js 18.x, Java 11).
+                - AWS Lambda manages and updates runtimes, but deprecated versions eventually lose support, so updating periodically is crucial.
 
-        - **Execution Role & Policies**:
+            - **Execution Role & Policies**:
 
-            - Lambda functions require an **Identity and Access Management (IAM) role** with permissions to interact with AWS resources.
-            - The role grants the function access to resources such as S3 buckets, DynamoDB tables, or the CloudWatch Logs service where function logs are stored.
-            - Following the principle of least privilege, the role should have the minimum permissions needed.
-            - `Resource-Based Policies`: Lambda functions can have resource-based policies to control which AWS accounts or services can invoke the function. This is especially useful for cross-account or cross-service access, like allowing an S3 bucket from another account to trigger a Lambda function.
+                - Lambda functions require an **Identity and Access Management (IAM) role** with permissions to interact with AWS resources.
+                - The role grants the function access to resources such as S3 buckets, DynamoDB tables, or the CloudWatch Logs service where function logs are stored.
+                - Following the principle of least privilege, the role should have the minimum permissions needed.
+                - `Resource-Based Policies`: Lambda functions can have resource-based policies to control which AWS accounts or services can invoke the function. This is especially useful for cross-account or cross-service access, like allowing an S3 bucket from another account to trigger a Lambda function.
 
-        - **Handler**:
-            - Defines the entry point of the function. The handler is a function within your code that AWS Lambda calls to start execution.
-            - The format is typically `filename.method_name` (e.g., `lambda_function.lambda_handler`), where `lambda_function` is the filename and `lambda_handler` is the method name.
+            - **Handler**:
+                - Defines the entry point of the function. The handler is a function within your code that AWS Lambda calls to start execution.
+                - The format is typically `filename.method_name` (e.g., `lambda_function.lambda_handler`), where `lambda_function` is the filename and `lambda_handler` is the method name.
 
-    2. **Memory and Timeout**
+        2. **Memory and Timeout**
 
-        - **Memory Allocation**:
+            - **Memory Allocation**:
 
-            - The memory (in MB) allocated to a Lambda function can range from 128 MB to 10 GB, in increments of 1 MB.
-            - More memory usually results in more **CPU** and **network bandwidth** allocation, which can speed up execution but also increase costs.
-            - Lambda pricing is based on memory and execution time, so optimizing memory for performance and cost balance is essential.
+                - The memory (in MB) allocated to a Lambda function can range from 128 MB to 10 GB, in increments of 1 MB.
+                - More memory usually results in more **CPU** and **network bandwidth** allocation, which can speed up execution but also increase costs.
+                - Lambda pricing is based on memory and execution time, so optimizing memory for performance and cost balance is essential.
 
-        - **Timeout**:
+            - **Timeout**:
 
-            - The maximum time that a Lambda function can run per invocation, with a range from 1 second to 15 minutes (900 seconds).
-            - If the function exceeds the timeout, it is terminated, so setting an appropriate timeout based on expected execution duration is critical to prevent early termination.
-            - Specifies the maximum duration for function execution. Lambda terminates the function if it exceeds this time, ensuring resource cleanup and preventing long-running executions.
+                - The maximum time that a Lambda function can run per invocation, with a range from 1 second to 15 minutes (900 seconds).
+                - If the function exceeds the timeout, it is terminated, so setting an appropriate timeout based on expected execution duration is critical to prevent early termination.
+                - Specifies the maximum duration for function execution. Lambda terminates the function if it exceeds this time, ensuring resource cleanup and preventing long-running executions.
 
-        - **Retry Policies**:
-            - You can configure retry policies for asynchronous invocations and event source mappings. These are useful for automatically handling transient failures, allowing your function more opportunities to complete.
+            - **Retry Policies**:
+                - You can configure retry policies for asynchronous invocations and event source mappings. These are useful for automatically handling transient failures, allowing your function more opportunities to complete.
 
-    3. **Concurrency and Scaling**
+        3. **Environment Variables**
 
-        - **Reserved Concurrency**:
+            - Key-value pairs used to store configuration data or secrets needed by the function, such as API keys, database credentials, or resource configurations.
+            - **Environment Variable Encryption**: By default, Lambda encrypts environment variables using AWS Key Management Service (KMS). You can also specify a custom KMS key for added security.
 
-            - Allows reserving a portion of account-level concurrency for the function. It ensures that the function has dedicated capacity but limits the maximum concurrent executions it can have.
-            - Useful for protecting other resources from being overwhelmed by excessive function executions.
+        4. **Networking**: AWS Lambda can be configured to run inside a **Virtual Private Cloud (VPC)**, allowing your function to access private resources like RDS or EC2 instances.
 
-        - **Provisioned Concurrency**:
-            - Keeps a pre-warmed pool of instances ready to handle requests, reducing cold starts and improving response times for latency-sensitive applications.
-            - This is ideal for API backends, interactive applications, or high-traffic functions where fast execution is critical.
+            - When you configure a Lambda function to connect to a VPC, you specify subnets and security groups to control network access.
+            - Note that adding VPC connectivity may impact Lambda’s cold start time because it requires additional network setup.
+            - `VPC Subnets`: Functions running in VPC can interact with private subnets and on-premises resources through a VPN or Direct Connect.
+            - `VPC Endpoints`: Can be used to access AWS services privately without internet access.
 
-    4. **Environment Variables**
+        </details>
 
-        - Key-value pairs used to store configuration data or secrets needed by the function, such as API keys, database credentials, or resource configurations.
-        - **Environment Variable Encryption**: By default, Lambda encrypts environment variables using AWS Key Management Service (KMS). You can also specify a custom KMS key for added security.
+    -   <details><summary style="font-size:20px;color:Magenta">Event Source Mapping</summary>
 
-    5. **Networking**: AWS Lambda can be configured to run inside a **Virtual Private Cloud (VPC)**, allowing your function to access private resources like RDS or EC2 instances.
+        An **AWS Lambda Event Source Mapping (ESM)** is a Lambda resource that acts as a **managed poller** to connect stream-based and queue-based event sources to a Lambda function.
 
-        - When you configure a Lambda function to connect to a VPC, you specify subnets and security groups to control network access.
-        - Note that adding VPC connectivity may impact Lambda’s cold start time because it requires additional network setup.
-        - `VPC Subnets`: Functions running in VPC can interact with private subnets and on-premises resources through a VPN or Direct Connect.
-        - `VPC Endpoints`: Can be used to access AWS services privately without internet access.
+        It is a key component in Lambda's architecture that enables the **"Pull" model** for certain services, relieving you of the burden of writing and managing your own polling or consumption logic.
 
-    6. **Dead Letter Queue (DLQ)**
+        ##### The Pull Model vs. Push Model
 
-        - Specifies an Amazon SQS queue or an Amazon SNS topic as a **Dead Letter Queue** for asynchronous invocation errors.
-        - When a Lambda function cannot process an event after a certain number of retries, the event is sent to the DLQ for later analysis or reprocessing.
-        - Useful for handling errors gracefully, ensuring events aren’t lost.
+        The concept of the Event Source Mapping is best understood in the context of Lambda's two fundamental event invocation models:
 
-    7. **Error Handling and Retry Policies**
+        1. The Push Model (Direct Invocation): In this model, the AWS service itself is configured to **directly invoke** your Lambda function when an event occurs. The service "pushes" the event to Lambda.
 
-        - **Asynchronous Invocation**: Lambda automatically retries asynchronous invocations (e.g., from S3, SNS, CloudWatch) up to two times if there’s an error. You can configure the retry attempts to 0, 1, or 2.
-        - **Event Source Mapping**: For sources like SQS, Kinesis, and DynamoDB streams, Lambda retries until the message expires, is processed successfully, or is moved to a **destination** or **DLQ** after a set number of attempts.
-        - **Destinations**: With **AWS Lambda destinations**, you can route successful or failed asynchronous invocations to an SNS topic, SQS queue, EventBridge, or another Lambda function, which allows for advanced error handling and processing workflows.
+            - **Examples:** Amazon S3 (on file upload), Amazon SNS, Amazon API Gateway, Amazon EventBridge.
+            - **Role:** The invoking service is responsible for sending the event and handling invocation details (synchronous or asynchronous).
 
-    8. **Logging and Monitoring**: AWS Lambda integrates with **Amazon CloudWatch** for logging, monitoring, and observability.
+        2. The Pull Model (Event Source Mapping): In this model, the **Lambda service** is responsible for actively **reading (polling)** records or messages from the source and then invoking your function. The Event Source Mapping is the resource that defines this polling connection.
+            - **Event Source Mapping:** This is the AWS resource you create. It tells the Lambda service:
+                - _Where_ to poll (e.g., an SQS queue ARN or Kinesis Stream ARN).
+                - _Which_ Lambda function to invoke with the records.
+                - _How_ to handle the records (e.g., batch size, filtering, error handling).
+            - **Examples:** Amazon DynamoDB Streams, Amazon Kinesis Data Streams (KDS), Amazon Simple Queue Service (SQS), Amazon Managed Streaming for Apache Kafka (Amazon MSK), Amazon MQ.
 
-        - `CloudWatch Logs`: Every function invocation produces logs, which can be viewed and monitored through CloudWatch. Lambda sends logs of function execution (including errors, timeouts, and custom logs) to Amazon CloudWatch by default. These logs are useful for debugging, monitoring, and performance tuning.
-        - `X-Ray Tracing`: AWS X-Ray provides insights into function performance and latency by tracing requests as they pass through the application. It helps pinpoint bottlenecks, understand dependencies, and monitor overall performance.
+        ##### How Event Source Mapping Works
 
-        - `Invocations`: The number of times a function is called.
-        - `Errors`: The number of errors that occurred during function execution.
-        - `Duration`: The time it took for the function to execute.
-        - `Throttles`: The number of times the function was throttled due to reaching the concurrency limit.
+        For services that use the Pull Model, the ESM manages the following internal process:
 
-    9. **File System (EFS) Configuration**
+        3.  **Polling:** The Lambda service creates dedicated **event pollers** (highly available and auto-scaling resources) that continuously poll the configured stream or queue for new records/messages.
+        4.  **Batching and Filtering:** The pollers collect the messages into a **batch** based on your configured settings. Before invoking the function, you can optionally apply **filter criteria** to the batch payload to discard records that don't match your rules, which can reduce cost and complexity.
+            -   **Batch Size:** The maximum number of records to include in a single invocation (e.g., up to 10,000 for SQS).
+            -   **Batching Window:** The maximum amount of time Lambda waits to collect records before invoking the function (up to 300 seconds).
+        5.  **Invocation:** Once a batch is ready (either the maximum size is reached, the batching window expires, or the payload size reaches 6 MB), the Lambda service **synchronously invokes** your Lambda function with the batch of records as the input event.
+        6.  **Checkpointing/Deletion:**
+            -   For **Streams** (Kinesis/DynamoDB), Lambda automatically manages the **iterator/checkpoint** for the stream shard. If processing is successful, the checkpoint is advanced.
+            -   For **Queues** (SQS), if the function returns successfully (no error), Lambda automatically **deletes** the messages from the queue.
 
-        - **Amazon EFS (Elastic File System)**:
-            - Allows Lambda functions to access a persistent file system across function invocations. This is helpful for functions that require shared storage, such as large models or datasets.
-            - EFS can be mounted on Lambda functions configured within a VPC, and it’s useful for stateful workloads or functions with large code dependencies that exceed Lambda’s 10 GB limit.
+        ##### Error Handling and Control
 
-    10. **Function Code Configuration**
+        A major benefit of the ESM is its built-in error handling and flow control for the pull model sources:
 
-        - **Deployment Package**:
-            - A Lambda function’s deployment package contains the function code and dependencies, packaged in a `.zip` file or container image.
-            - **Layers**: Lambda layers let you share code, libraries, or binaries across multiple Lambda functions without including them in each function’s deployment package. Up to 5 layers can be used per function, reducing package size and simplifying maintenance.
-        - **Container Images**:
-            - Lambda supports container images up to 10 GB, allowing you to package code and dependencies in Docker images for more complex applications or specific runtime requirements.
-            - Images are stored in Amazon ECR and provide a way to deploy large applications with custom runtimes or dependencies.
+        -   **Retries:** For streams (KDS/DynamoDB), if a function fails, the ESM automatically **retries** the batch. You can configure the number of retries (`MaximumRetryAttempts`) and whether to split the batch (`BisectBatchOnFunctionError`).
+        -   **Maximum Age:** For streams, you can set the `MaximumRecordAgeInSeconds` to discard records that are too old, preventing a single bad record from blocking the processing of newer records (a "poison pill").
+        -   **Concurrency Control:** You can control the number of concurrent batches processed from each shard (for streams) using the `ParallelizationFactor`.
+        -   **Destinations:** For certain services (Kinesis, DynamoDB, SQS), you can configure an **on-failure destination** (e.g., an SNS topic or SQS queue) where the entire failed batch record is sent after all retries are exhausted.
 
-    11. **Aliases and Versions**
+        </details>
 
-    -   **Versions**: Lambda functions can be versioned, with each published version being immutable. Versions allow you to reference specific function code and configuration states, providing stability for production applications.
-    -   **Aliases**: An alias is a pointer to a specific function version, often used to manage different environments (e.g., `dev`, `test`, `prod`). Aliases allow routing traffic between versions and enable canary deployments by splitting traffic to different versions.
+    -   <details><summary style="font-size:20px;color:Magenta">Synchronous Invocation & Asynchronous Invocation</summary>
 
-    #### Concurrency and Scaling
+        AWS Lambda functions can be invoked in two fundamental ways: **Synchronously** and **Asynchronously**. The choice between the two depends heavily on the application's requirements for response time, error handling, and whether an immediate response is required by the caller.
 
-    **Concurrency** in AWS Lambda refers to the number of instances (or executions) of a function that can run simultaneously. AWS Lambda is inherently scalable and can handle multiple invocations in parallel, but understanding how concurrency works is crucial for ensuring predictable scaling behavior. You can manage concurrency to control costs and limit resource usage. AWS Lambda’s concurrency and scaling capabilities are essential for building scalable, serverless applications. Here’s a breakdown of key terms and concepts related to concurrency and scaling in AWS Lambda:
+        ##### Synchronous Invocation
 
-    1. **Concurrency Limit**:
+        In a **synchronous** invocation, the caller makes a request, the function is executed immediately, and the caller **waits** for the function to complete and return a response. This is the default invocation type.
 
-        - AWS Lambda has default concurrency limits, which can be adjusted within AWS account settings. This limit is important for managing the maximum number of concurrent executions your account can have across all Lambda functions.
-        - Concurrency settings help ensure that Lambda functions don't overwhelm downstream services, databases, or other resources by invoking too many instances at once.
+        -   **How it Works**:
 
-    2. **Reserved Concurrency**:
+            1.  **Caller Sends Request:** The client (e.g., API Gateway, AWS CLI, AWS SDK, or another Lambda function) calls the Lambda `Invoke` API with `InvocationType` set to `RequestResponse` (the default).
+            2.  **Immediate Execution:** AWS Lambda executes the function's code immediately.
+            3.  **Caller Waits:** The calling client's connection remains open until the function finishes execution or times out.
+            4.  **Response/Error:** When the function completes, Lambda returns the function's response payload (including the result or any error details) directly back to the caller. The API response HTTP status code is typically $\mathbf{200}$ for a successful invocation, regardless of errors within the function's code.
 
-        - Reserved concurrency is the maximum number of concurrent executions that a specific Lambda function can handle. This is an optional configuration that isolates a portion of account-wide concurrency for a specific Lambda function.
-        - For example, if you reserve concurrency of `50` for one Lambda function, AWS guarantees that up to 50 concurrent executions of that function will run, while preventing it from using more than 50 concurrent executions and consuming resources that other functions need.
+        -   **Key Characteristics**:
 
-    3. **Provisioned Concurrency**:
+            -   **Response Time:** You get an **immediate** response with the result.
+            -   **Error Handling:** The **caller is responsible** for handling function errors and implementing any necessary retry logic.
+            -   **Payload Size:** Maximum input payload is **6 MB**.
+            -   **Common Integrations:** AWS services that require an immediate response often use synchronous invocation, such as **Amazon API Gateway** (for REST APIs), **Elastic Load Balancers (ELB)**, and **AWS Step Functions**.
+            -   **Use Case:** Ideal for real-time, user-facing operations like web APIs, data transformations where the result is immediately needed, or request-response style workflows.
 
-        - Provisioned concurrency is a feature designed to reduce the latency of Lambda functions. It pre-warms a specific number of instances to ensure they are immediately available when requests arrive, preventing cold starts (the delay from initializing resources when a function is first invoked).
-        - This is particularly useful for applications where low latency is critical, such as interactive applications or APIs that require consistent response times.
+        ##### Asynchronous Invocation
 
-    4. **Cold Start**
+        In an **asynchronous** invocation, the caller makes a request, and the Lambda service takes the event, queues it for processing, and **returns an immediate acceptance response** without waiting for the function to execute. The function runs in the background.
 
-        - A **cold start** occurs when AWS Lambda needs to initialize a new environment for an incoming request. When a Lambda function is invoked, AWS must set up resources such as the execution environment, runtime, and dependencies.
-        - Cold starts can lead to latency in the initial request. For functions that require low latency, cold starts can be mitigated by using **Provisioned Concurrency** or by periodically invoking the function to keep it "warm."
+        -   **How it Works**:
 
-    5. **Auto Scaling**
+            1.  **Caller Sends Request:** The client calls the Lambda `Invoke` API with `InvocationType` set to `Event`.
+            2.  **Lambda Queues Event:** The Lambda service immediately places the event onto an **internal, managed queue**.
+            3.  **Immediate Response:** The caller receives an immediate $\mathbf{202}$ **ACCEPTED** status code, confirming the event was successfully queued, but containing no information about the function's execution result.
+            4.  **Background Processing:** A separate Lambda process reads the event from the queue and invokes the function.
+            5.  **Error Handling (Retries):** If the function fails (e.g., returns an error or times out), the Lambda service automatically **retries** the invocation **up to two more times** by default.
+            6.  **Destinations:** For both successful and failed asynchronous executions (after all retries), you can configure **Lambda Destinations** (e.g., SQS, SNS, EventBridge, or another Lambda function) to receive an **invocation record** detailing the outcome.
 
-        - AWS Lambda automatically scales based on the number of incoming requests and concurrency limits. When more requests arrive than existing Lambda instances can handle, AWS Lambda automatically scales up by creating new instances.
-        - This process is automatic and can handle bursts of traffic efficiently, but scaling is limited by **concurrency configurations**, **reserved concurrency**, and **account-wide concurrency quotas**.
+        -   **Key Characteristics**:
 
-    6. **Burst Concurrency**
+            -   **Response Time:** The caller receives an **immediate** $\mathbf{202}$ status code; execution happens in the background.
+            -   **Error Handling:** The **Lambda service manages retries**. Failed events can be sent to a **Dead-Letter Queue (DLQ)** or an **on-failure Destination** after retries are exhausted.
+            -   **Payload Size:** Maximum input payload is **1 MB**.
+            -   **Common Integrations:** AWS services that inherently operate in an event-driven, fire-and-forget manner, such as **Amazon S3** (on object creation), **Amazon SNS**, and **Amazon EventBridge**.
+            -   **Use Case:** Perfect for background jobs, long-running processes (up to 15-minute timeout), non-critical tasks like sending emails, processing log files, or data aggregation where the caller doesn't need an immediate result.
 
-        - **Burst concurrency** is the initial scaling capacity that AWS Lambda provides within a short time for functions within a particular AWS Region.
-        - AWS Lambda can initially handle a burst of 500 to 3000 concurrent requests per second (depending on the Region). After this burst, Lambda gradually scales up at a rate of 500 additional concurrent invocations per minute until it reaches the maximum concurrency limit of the AWS account.
+        ##### Summary Comparison Table 📊
 
-    7. **Throttling**
+        | Feature                  | Synchronous Invocation                                  | Asynchronous Invocation                                                   |
+        | :----------------------- | :------------------------------------------------------ | :------------------------------------------------------------------------ |
+        | **Invocation Type**      | `RequestResponse` (Default)                             | `Event`                                                                   |
+        | **Caller Waits**         | **Yes** (Blocks until execution finishes or times out)  | **No** (Returns immediately)                                              |
+        | **Response Code**        | $\mathbf{200}$ (Includes function result/error details) | $\mathbf{202}$ (Accepted/Queued)                                          |
+        | **Retry Responsibility** | **Caller** must implement retries                       | **Lambda Service** manages retries (up to 2 attempts for function errors) |
+        | **Intermediary**         | None (Direct Call)                                      | **Internal Queue** managed by Lambda                                      |
+        | **Max Payload Size**     | 6 MB                                                    | 1 MB                                                                      |
+        | **Recommended For**      | Real-time APIs, user-facing requests                    | Background tasks, event-driven workflows, long-running processes          |
 
-        - Throttling occurs when AWS Lambda exceeds its maximum concurrency limit (either at the account level or at the function level through reserved concurrency).
-        - When throttling happens, additional requests to a Lambda function are rejected with a `429 TooManyRequests` error. To handle this, the calling service (like API Gateway or SQS) can implement retry logic, or you can increase concurrency limits if throttling is frequent.
+        </details>
 
-    8. **Scaling Behavior and Invocation Model**
+    -   <details><summary style="font-size:20px;color:Magenta">AWS Lambda Destinations</summary>
 
-        - **Synchronous Invocations**:
-            - In synchronous invocations (like those triggered by API Gateway, AWS SDK, or application integrations), Lambda returns the response immediately after execution, and the caller waits for the function to complete.
-            - When the request rate exceeds the function’s concurrency limit, new synchronous invocations are throttled.
-        - **Asynchronous Invocations**: For asynchronous invocations (like those triggered by S3 or CloudWatch Events), Lambda queues the events. It then retries these events if they fail or are throttled until they succeed or until Lambda exhausts the retry limit.
-        - **Event Source Mapping**: When integrating Lambda with services like Amazon SQS or Kinesis (stream-based services), Lambda reads and processes events as they arrive in the source. The scaling of Lambda for these integrations is determined by the event source's processing characteristics and partitioning.
+        AWS Lambda Destinations is a powerful feature that provides **visibility, routing, and control** over the results of a Lambda function's **asynchronous invocation**. It allows you to automatically send a detailed **execution record** to a downstream service based on whether the function invocation was successful or failed, all without writing extra code in your function.
 
-    9. **Lambda Scaling with Event Sources**
+        ##### Primary Purpose and Scope
 
-        - **Amazon SQS**: Lambda can process up to 10 messages at a time from a single Amazon SQS queue and scales horizontally as the number of messages increases, limited by concurrency.
-        - **Amazon Kinesis and DynamoDB Streams**:
-            - Lambda scaling with Kinesis or DynamoDB streams is partitioned. AWS Lambda processes records from each shard or partition concurrently, but only one Lambda instance can process data from a specific shard at a time.
-            - The number of shards defines the maximum concurrency Lambda can achieve with these sources, so you may need to increase the shard count if the function requires greater concurrency.
+        The core function of Lambda Destinations is to simplify the building of **event-driven workflows** and enhance **error handling** for non-real-time applications.
 
-    10. **Concurrency Scaling Considerations**: Concurrency affects costs, latency, and performance, so configuring concurrency properly is key to balancing efficiency and cost in AWS Lambda:
+        -   **Applicable Invocations:** Destinations are primarily for **asynchronous invocations** (when using `InvocationType: Event`), where the caller doesn't wait for the result (e.g., from SNS, S3, or a direct asynchronous invoke).
+        -   **Execution Record:** Instead of just sending the original event, the destination receives a full **invocation record** which is a JSON document containing:
+            -   The **request payload** (the original event).
+            -   The **response payload** (the function's return value on success, or error details like stack traces on failure).
+            -   Contextual information (source ARN, destination ARN, Request ID, function version).
+        -   **Zero Code Integration:** The routing is configured entirely on the Lambda function itself, decoupling the post-execution logic from the function's business logic.
 
-        - **Cost**: Each instance adds cost, so unbounded concurrency can lead to high expenses. Reserved and provisioned concurrency options give finer control over costs.
-        - **Latency**: Low-latency applications may need provisioned concurrency to avoid cold starts.
-        - **Throttling Impact**: Throttling at peak times can cause delays or errors in applications, making it important to monitor concurrency usage and plan capacity according to traffic patterns.
+        ##### Configuration and Targets
 
-    11. **Monitoring and Scaling Metrics**: AWS provides metrics in CloudWatch that help in monitoring and tuning Lambda function scaling:
-        - **ConcurrentExecutions**: Shows the total concurrent executions in the account.
-        - **UnreservedConcurrentExecutions**: Reflects concurrency left after reserved concurrency allocations.
-        - **Throttles**: Indicates throttling events due to exceeded concurrency limits, helping identify scaling needs.
+        You can configure two separate destinations for a single Lambda function:
 
-    #### Lambda Throttling:
+        1. **On Success (`OnSuccess`)**: If the function is invoked asynchronously and successfully completes (returns without an exception) after all retries are exhausted, the execution record is sent to this destination.
 
-    Lambda throttling is a mechanism used in AWS Lambda to limit the rate at which function executions can occur. This mechanism helps protect your resources and ensures the smooth operation of your AWS infrastructure by preventing a Lambda function from being overwhelmed with excessive requests. AWS Lambda provides two types of throttling:
+            - **Use Cases:** Chaining functions together asynchronously, notifying a successful completion, or logging the final result.
 
-    -   `Concurrent Execution Throttling`:
+        2. **On Failure (`OnFailure`)**: If the function is invoked asynchronously and fails (throws an exception or times out) after exhausting the configured retry attempts or exceeding the maximum event age, the failure record is sent to this destination.
 
-        -   Concurrent execution throttling limits the number of function executions that can run simultaneously. AWS imposes a default concurrency limit on your AWS account and can adjust this limit upon request.
-        -   When the limit is reached, AWS will queue any additional invocation requests. These queued requests will be processed as soon as existing executions complete and resources become available. Throttled invocations do not result in errors; they are simply delayed.
-        -   You can view and modify the concurrent execution limit for a specific function in the AWS Lambda Management Console.
+            - **Use Cases:** Automated error investigation, sending a notification to an operations team, or triggering a cleanup workflow.
 
-    -   `Invocation Throttling`:
+        -   **Supported Destination Targets**: Lambda Destinations can route the execution record to the following services:
 
-        -   Invocation throttling occurs when you send too many requests to invoke a Lambda function in a short period. This can happen when you repeatedly call the function with a high request rate.
-        -   AWS enforces soft limits on the number of requests per second (RPS) that can be sent to a function. If you exceed these soft limits, AWS may throttle your requests, resulting in delays and retries.
-        -   To mitigate invocation throttling, you can:
-            -   Implement exponential backoff and retries in your code to handle throttled requests gracefully.
-            -   Request a limit increase from AWS Support if your workload requires a higher request rate.
+            | Destination Target          | Data Format                                                          |
+            | :-------------------------- | :------------------------------------------------------------------- |
+            | **Another Lambda Function** | The record is passed as the **payload** to the destination function. |
+            | **Amazon SQS**              | The record is passed as the **message body** to the queue.           |
+            | **Amazon SNS**              | The record is passed as the **message** to the topic.                |
+            | **Amazon EventBridge**      | The record is passed as the **Detail** in the `PutEvents` call.      |
 
-    -   `Implement Retries`: Build retry logic with exponential backoff into your Lambda client code to handle throttled requests and retries automatically.
-    -   `Error Handling`: Check for error codes in the Lambda response to detect throttled invocations and take appropriate action.
-    -   `Throttle Metrics`: Monitor CloudWatch metrics, such as `Throttles` and `ThrottleCount` to gain insight into the rate of throttled invocations.
-    -   `Limit Increases`: If you anticipate higher traffic, request a concurrency limit increase from AWS Support. Ensure that your architecture and resource usage can handle the increased load.
-    -   `Batch Processing`: If you're processing large numbers of records, consider batch processing to reduce the rate of function invocations.
-    -   `Distributed Workloads`: Distribute workloads across multiple Lambda functions to avoid overwhelming a single function.
-    -   `Provisioned Concurrency`: Consider using AWS Lambda Provisioned Concurrency to pre-warm your functions, ensuring that they can handle surges in traffic without experiencing cold start delays.
+        ##### Destinations vs. Dead Letter Queues (DLQ)
 
-    #### AWS Lambda Destinations
+        Lambda Destinations are generally the **preferred solution** for asynchronous error handling, offering significant advantages over the older Dead Letter Queue (DLQ) mechanism configured directly on the function.
 
-    AWS Lambda Destinations provides a powerful mechanism for handling the asynchronous invocation results of a Lambda function. When a Lambda function is invoked asynchronously (for example, by S3, SNS, or other AWS services), Lambda Destinations can automatically route the outcome (success or failure) to a target destination for further processing.
-    **Destinations** allow you to specify what happens after the execution of a Lambda function, based on success or failure.
+        | Feature              | Lambda Destination (OnFailure)                                                        | Dead Letter Queue (DLQ)                                                 |
+        | :------------------- | :------------------------------------------------------------------------------------ | :---------------------------------------------------------------------- |
+        | **Triggered When**   | Failure after **all retries** are exhausted (or event age is exceeded).               | Failure after **all retries** are exhausted (or event age is exceeded). |
+        | **Targets**          | Lambda Function, SQS, SNS, EventBridge.                                               | SQS or SNS only.                                                        |
+        | **Payload Content**  | **Execution Record** (includes original event **and** function response/stack trace). | **Original Event Payload** only.                                        |
+        | **Success Handling** | **Supported** via `OnSuccess` configuration.                                          | **Not Supported** (Failure only).                                       |
 
-    -   **Lambda Destinations supports two types of routes**:
+        While a DLQ is simpler, a Destination gives you the full context of _why_ the function failed (the stack trace) and _what_ the original request was, enabling much richer error handling and automated recovery.
 
-        -   `OnSuccess`: Defines where to send the successful result of an asynchronous invocation.
-        -   `OnFailure`: Defines where to send the result in case of failure during invocation.
+        </details>
 
-    -   **Key Differences from Dead Letter Queue (DLQ)**
+    -   <details><summary style="font-size:20px;color:Magenta">Concurrency and Scaling</summary>
 
-        -   DLQ captures only failed invocations.
-        -   Destinations captures both successes and failures, and allows more flexibility in routing events.
+        **Concurrency** in AWS Lambda refers to the number of instances (or executions) of a function that can run simultaneously. AWS Lambda is inherently scalable and can handle multiple invocations in parallel, but understanding how concurrency works is crucial for ensuring predictable scaling behavior. You can manage concurrency to control costs and limit resource usage. AWS Lambda’s concurrency and scaling capabilities are essential for building scalable, serverless applications. Here’s a breakdown of key terms and concepts related to concurrency and scaling in AWS Lambda:
 
-    -   **Supported Destination Targets**:
-        -   `SNS`: Notify users or systems of function success/failure.
-        -   `SQS`: Queue events for further processing.
-        -   `EventBridge`: Route events for automation workflows.
-        -   `Another Lambda Function`: Trigger another Lambda function.
+        1.  **Concurrency Limit**:
 
-    #### Event Sources / Triggers
+            -   AWS Lambda has default concurrency limits, which can be adjusted within AWS account settings. This limit is important for managing the maximum number of concurrent executions your account can have across all Lambda functions.
+            -   Concurrency settings help ensure that Lambda functions don't overwhelm downstream services, databases, or other resources by invoking too many instances at once.
 
-    **Event sources** are AWS services or external systems that generate events that can trigger a Lambda function to execute. These triggers define when and how Lambda functions are invoked.
+        2.  **Reserved Concurrency**:
 
-    -   **Common Event Sources**:
-        -   **S3**: Lambda can trigger when an object is created or deleted in an S3 bucket.
-        -   **API Gateway**: Lambda can be invoked via HTTP requests, making it suitable for serverless APIs.
-        -   **SNS (Simple Notification Service)**: Lambda can process messages from SNS.
-        -   **SQS (Simple Queue Service)**: Lambda can process messages from SQS queues.
-        -   **CloudWatch Events**: Lambda can trigger on scheduled events or based on system events (e.g., EC2 instance state change).
-        -   **DynamoDB Streams**: Lambda can trigger on changes in DynamoDB tables.
+            -   Reserved concurrency is the maximum number of concurrent executions that a specific Lambda function can handle. This is an optional configuration that isolates a portion of account-wide concurrency for a specific Lambda function.
+            -   For example, if you reserve concurrency of `50` for one Lambda function, AWS guarantees that up to 50 concurrent executions of that function will run, while preventing it from using more than 50 concurrent executions and consuming resources that other functions need.
 
-    #### Lambda Execution Environment
+        3.  **Provisioned Concurrency**:
 
-    The **execution environment** is the runtime in which Lambda functions run. AWS Lambda automatically manages the environment that runs your code, scaling it based on demand.
+            -   Provisioned concurrency is a feature designed to reduce the latency of Lambda functions. It pre-warms a specific number of instances to ensure they are immediately available when requests arrive, preventing cold starts (the delay from initializing resources when a function is first invoked).
+            -   This is particularly useful for applications where low latency is critical, such as interactive applications or APIs that require consistent response times.
 
-    -   **Features**:
-        -   **Isolated environment**: Functions run in isolated environments to ensure security.
-        -   **Runtime management**: AWS manages the language runtime and updates it.
-        -   **Environment variables**: Allows the use of environment variables for dynamic configuration.
+        4.  **Cold Start**
 
-    #### Lambda Layers
+            -   A **cold start** occurs when AWS Lambda needs to initialize a new environment for an incoming request. When a Lambda function is invoked, AWS must set up resources such as the execution environment, runtime, and dependencies.
+            -   Cold starts can lead to latency in the initial request. For functions that require low latency, cold starts can be mitigated by using **Provisioned Concurrency** or by periodically invoking the function to keep it "warm."
 
-    **Lambda layers** allow you to package external libraries, dependencies, or configuration files separately from your function code. These layers can be shared across multiple Lambda functions, reducing code duplication and improving maintainability.
+        5.  **Auto Scaling**
 
-    -   **Features**:
-        -   You can include libraries, custom runtimes, or configuration data.
-        -   You can use up to 5 layers per Lambda function.
-        -   Layers can be reused by multiple Lambda functions or shared across accounts.
+            -   AWS Lambda automatically scales based on the number of incoming requests and concurrency limits. When more requests arrive than existing Lambda instances can handle, AWS Lambda automatically scales up by creating new instances.
+            -   This process is automatic and can handle bursts of traffic efficiently, but scaling is limited by **concurrency configurations**, **reserved concurrency**, and **account-wide concurrency quotas**.
 
-    #### Lambda Pricing Model
+        6.  **Burst Concurrency**
 
-    AWS Lambda follows a pay-per-use model, where you're charged based on the number of function invocations and the compute time used.
+            -   **Burst concurrency** is the initial scaling capacity that AWS Lambda provides within a short time for functions within a particular AWS Region.
+            -   AWS Lambda can initially handle a burst of 500 to 3000 concurrent requests per second (depending on the Region). After this burst, Lambda gradually scales up at a rate of 500 additional concurrent invocations per minute until it reaches the maximum concurrency limit of the AWS account.
 
-    -   **Pricing Factors**:
-        -   **Number of invocations**: Charged for every request.
-        -   **Compute time**: Charged based on the function's memory and execution duration, measured in milliseconds.
+        7.  **Throttling**
 
-    #### Asynchronous and Synchronous Invocations
+            -   Throttling occurs when AWS Lambda exceeds its maximum concurrency limit (either at the account level or at the function level through reserved concurrency).
+            -   When throttling happens, additional requests to a Lambda function are rejected with a `429 TooManyRequests` error. To handle this, the calling service (like API Gateway or SQS) can implement retry logic, or you can increase concurrency limits if throttling is frequent.
 
-    AWS Lambda supports both **synchronous** and **asynchronous** invocations, depending on how you need the function to interact with other systems.
+        8.  **Scaling Behavior and Invocation Model**
 
-    -   **Synchronous invocation**: The caller waits for the function to complete before continuing (e.g., API Gateway).
-    -   **Asynchronous invocation**: The caller doesn't wait for the function to complete (e.g., S3 event notifications, SNS).
+            -   **Synchronous Invocations**:
+                -   In synchronous invocations (like those triggered by API Gateway, AWS SDK, or application integrations), Lambda returns the response immediately after execution, and the caller waits for the function to complete.
+                -   When the request rate exceeds the function’s concurrency limit, new synchronous invocations are throttled.
+            -   **Asynchronous Invocations**: For asynchronous invocations (like those triggered by S3 or CloudWatch Events), Lambda queues the events. It then retries these events if they fail or are throttled until they succeed or until Lambda exhausts the retry limit.
+            -   **Event Source Mapping**: When integrating Lambda with services like Amazon SQS or Kinesis (stream-based services), Lambda reads and processes events as they arrive in the source. The scaling of Lambda for these integrations is determined by the event source's processing characteristics and partitioning.
 
-    #### AWS Lambda@Edge
+        9.  **Lambda Scaling with Event Sources**
 
-    **Lambda@Edge** is an extension of AWS Lambda that allows you to run code closer to users (at Amazon CloudFront edge locations), reducing latency for global users.
+            -   **Amazon SQS**: Lambda can process up to 10 messages at a time from a single Amazon SQS queue and scales horizontally as the number of messages increases, limited by concurrency.
+            -   **Amazon Kinesis and DynamoDB Streams**:
+                -   Lambda scaling with Kinesis or DynamoDB streams is partitioned. AWS Lambda processes records from each shard or partition concurrently, but only one Lambda instance can process data from a specific shard at a time.
+                -   The number of shards defines the maximum concurrency Lambda can achieve with these sources, so you may need to increase the shard count if the function requires greater concurrency.
 
-    -   **Features**:
-        -   Modify content delivery and customize responses for users.
-        -   Perform operations like URL rewrites, header manipulations, and cache key customizations.
+        10. **Concurrency Scaling Considerations**: Concurrency affects costs, latency, and performance, so configuring concurrency properly is key to balancing efficiency and cost in AWS Lambda:
 
-    ***
+            -   **Cost**: Each instance adds cost, so unbounded concurrency can lead to high expenses. Reserved and provisioned concurrency options give finer control over costs.
+            -   **Latency**: Low-latency applications may need provisioned concurrency to avoid cold starts.
+            -   **Throttling Impact**: Throttling at peak times can cause delays or errors in applications, making it important to monitor concurrency usage and plan capacity according to traffic patterns.
 
-    ***
+        11. **Monitoring and Scaling Metrics**: AWS provides metrics in CloudWatch that help in monitoring and tuning Lambda function scaling:
+            -   **ConcurrentExecutions**: Shows the total concurrent executions in the account.
+            -   **UnreservedConcurrentExecutions**: Reflects concurrency left after reserved concurrency allocations.
+            -   **Throttles**: Indicates throttling events due to exceeded concurrency limits, helping identify scaling needs.
 
-    #### Features of Lambda Function
+        </details>
 
-    -   `Serverless Execution`: AWS Lambda allows you to run your code without managing servers. You upload your code, and AWS Lambda takes care of provisioning and scaling the infrastructure needed to execute it.
-    -   `Event-Driven Execution`: Lambda functions can be triggered by various AWS services or custom events. Examples of triggers include changes to data in an S3 bucket, updates to a DynamoDB table, or HTTP requests through API Gateway.
-    -   `Supported Runtimes`: Lambda supports multiple programming languages, known as runtimes. These include Node.js, Python, Java, Ruby, Go, .NET, and custom runtimes through the use of custom execution environments.
-    -   `Automatic Scaling`: Lambda automatically scales your applications in response to incoming traffic. Each function can scale independently, and you pay only for the compute time consumed.
-    -   `Built-in Fault Tolerance`: AWS Lambda maintains compute capacity, and if a function fails, it automatically retries the execution. If a function execution fails repeatedly, Lambda can be configured to send the event to a Dead Letter Queue (DLQ) for further analysis.
-    -   `Integrated Logging and Monitoring`: Lambda provides built-in logging through Amazon CloudWatch. You can monitor the performance of your functions, view logs, and set up custom CloudWatch Alarms to be notified of specific events or issues.
-    -   `Environment Variables`: Lambda allows you to set environment variables for your functions. These variables can be used to store configuration settings or sensitive information, such as API keys.
-    -   `Execution Role and Permissions`: Each Lambda function is associated with an IAM (Identity and Access Management) role that defines the permissions needed to execute the function and access other AWS resources.
-    -   `Stateless Execution`: Lambda functions are designed to be stateless. However, you can store persistent data using other AWS services like Amazon S3, DynamoDB, or AWS RDS.
-    -   `Cold Starts and Warm Containers`: Cold starts occur when a function is invoked for the first time or when there is a need to scale. Subsequent invocations reuse warm containers, reducing cold start times.
-    -   `VPC Integration`: Lambda functions can be integrated with a VPC, allowing them to access resources inside a VPC, such as databases, and allowing private connectivity.
-    -   `Cross-Region Execution`: You can configure Lambda functions to run in different AWS regions, providing flexibility and redundancy.
-    -   `Versioning and Aliases`: Lambda supports versioning and aliases, allowing you to manage different versions of your functions and direct traffic to specific versions.
-    -   `Maximum Execution Duration`: Each Lambda function has a maximum execution duration (timeout) that can be set. If the function runs longer than the specified duration, it is terminated.
-    -   `Immutable Deployment Packages`: Once a Lambda function is created, its deployment package (code and dependencies) becomes immutable. If you need to make changes, you create a new version of the function.
+    -   <details><summary style="font-size:20px;color:Magenta">Lambda Throttling</summary>
 
-    #### Limitation on Lambda Functions:
+        Lambda throttling is a mechanism used in AWS Lambda to limit the rate at which function executions can occur. This mechanism helps protect your resources and ensures the smooth operation of your AWS infrastructure by preventing a Lambda function from being overwhelmed with excessive requests. AWS Lambda provides two types of throttling:
 
-    -   `Execution timeout`: The maximum execution time for a Lambda function is `900 seconds (15 minutes)`.
-    -   `Concurrent executions`: By default, there is a soft `limit of 1,000 concurrent executions per account per region`. However, you can request a higher limit if you need it.
-    -   `Environment variables`: You can set environment variables for your Lambda function, but `the maximum size of all environment variables combined is 4 KB`.
+        -   `Concurrent Execution Throttling`:
 
-    -   `Deployment package size`: `The maximum compressed deployment package size for a Lambda function is 50 MB`. There are some exceptions for certain runtimes, as outlined in my previous answer.
+            -   Concurrent execution throttling limits the number of function executions that can run simultaneously. AWS imposes a default concurrency limit on your AWS account and can adjust this limit upon request.
+            -   When the limit is reached, AWS will queue any additional invocation requests. These queued requests will be processed as soon as existing executions complete and resources become available. Throttled invocations do not result in errors; they are simply delayed.
+            -   You can view and modify the concurrent execution limit for a specific function in the AWS Lambda Management Console.
 
-        -   Uncompressed code & dependencies < 250 MB
-        -   Compressed function package < 50MB
-        -   Total function packages in a region < 75 GB
-        -   Ephemeral storage < 512 MB
-        -   Maximum execution duration < 900 seconds
-        -   Concurrent Lambda functions < 1000
+        -   `Invocation Throttling`:
 
-    -   `Memory allocation`: Up to 10 GB of memory to a Lambda function. The amount of memory you allocate also determines the amount of CPU and network resources that the function gets.
-        -   `Memory allocation`: Up to 10 GB of memory starting from 128 MB with CPU 3GB.
-    -   `Execution environment`: Lambda functions run in a stateless execution environment, so you can't store data on the local file system. However, you can use other AWS services like S3 or DynamoDB to store data.
-    -   `Function invocations`: You can trigger a Lambda function in several ways, including through `API Gateway`, `S3 events`, `SNS notifications`, and more. However, there may be some limits or quotas on the number of invocations you can make in a given period.
+            -   Invocation throttling occurs when you send too many requests to invoke a Lambda function in a short period. This can happen when you repeatedly call the function with a high request rate.
+            -   AWS enforces soft limits on the number of requests per second (RPS) that can be sent to a function. If you exceed these soft limits, AWS may throttle your requests, resulting in delays and retries.
+            -   To mitigate invocation throttling, you can:
+                -   Implement exponential backoff and retries in your code to handle throttled requests gracefully.
+                -   Request a limit increase from AWS Support if your workload requires a higher request rate.
 
-    #### Usecases of Lambda
+        -   `Implement Retries`: Build retry logic with exponential backoff into your Lambda client code to handle throttled requests and retries automatically.
+        -   `Error Handling`: Check for error codes in the Lambda response to detect throttled invocations and take appropriate action.
+        -   `Throttle Metrics`: Monitor CloudWatch metrics, such as `Throttles` and `ThrottleCount` to gain insight into the rate of throttled invocations.
+        -   `Limit Increases`: If you anticipate higher traffic, request a concurrency limit increase from AWS Support. Ensure that your architecture and resource usage can handle the increased load.
+        -   `Batch Processing`: If you're processing large numbers of records, consider batch processing to reduce the rate of function invocations.
+        -   `Distributed Workloads`: Distribute workloads across multiple Lambda functions to avoid overwhelming a single function.
+        -   `Provisioned Concurrency`: Consider using AWS Lambda Provisioned Concurrency to pre-warm your functions, ensuring that they can handle surges in traffic without experiencing cold start delays.
 
-    AWS Lambda is a serverless compute service that lets you run code without provisioning or managing servers. It's often used for various use cases across different industries. Here are the top five most common use cases for AWS Lambda:
+        </details>
 
-    -   **Event-Driven Processing**: AWS Lambda is frequently used to process events from various AWS services, such as Amazon S3, Amazon DynamoDB, Amazon SNS, Amazon SQS, and more. For example, you can trigger Lambda functions to process new objects uploaded to an S3 bucket, process messages from an SQS queue, or react to changes in a DynamoDB table.
+    -   <details><summary style="font-size:20px;color:Magenta">Terms & Concepts</summary>
 
-    -   **Real-time File Processing**: Lambda functions can be used for real-time processing of data streams. For instance, you can use Lambda to analyze streaming data from Amazon Kinesis Data Streams or process logs from Amazon CloudWatch Logs in real-time.
+        5. **Dead Letter Queue (DLQ)**
 
-    -   **Backend for Web Applications**: Lambda functions can serve as the backend for web applications, providing scalable and cost-effective compute resources. You can build APIs using AWS API Gateway and trigger Lambda functions to handle incoming HTTP requests, allowing you to build serverless web applications without managing infrastructure.
+            - Specifies an Amazon SQS queue or an Amazon SNS topic as a **Dead Letter Queue** for asynchronous invocation errors.
+            - When a Lambda function cannot process an event after a certain number of retries, the event is sent to the DLQ for later analysis or reprocessing.
+            - Useful for handling errors gracefully, ensuring events aren’t lost.
 
-    -   **Scheduled Tasks and Cron Jobs**: Lambda functions can be scheduled to run at specific intervals using AWS CloudWatch Events. This allows you to automate tasks such as data backups, log archiving, or regular data processing jobs without needing to maintain dedicated servers or cron jobs.
+        6. **Error Handling and Retry Policies**
 
-    -   **Data Processing and ETL**: Lambda functions are commonly used for data processing and ETL (Extract, Transform, Load) tasks. You can trigger Lambda functions to process data as soon as it becomes available, perform transformations on the data, and then load it into a data warehouse or database. This approach enables real-time or near-real-time data processing without the need for complex infrastructure.
+            - **Asynchronous Invocation**: Lambda automatically retries asynchronous invocations (e.g., from S3, SNS, CloudWatch) up to two times if there’s an error. You can configure the retry attempts to 0, 1, or 2.
+            - **Event Source Mapping**: For sources like SQS, Kinesis, and DynamoDB streams, Lambda retries until the message expires, is processed successfully, or is moved to a **destination** or **DLQ** after a set number of attempts.
+            - **Destinations**: With **AWS Lambda destinations**, you can route successful or failed asynchronous invocations to an SNS topic, SQS queue, EventBridge, or another Lambda function, which allows for advanced error handling and processing workflows.
+
+        7. **Logging and Monitoring**: AWS Lambda integrates with **Amazon CloudWatch** for logging, monitoring, and observability.
+
+            - `CloudWatch Logs`: Every function invocation produces logs, which can be viewed and monitored through CloudWatch. Lambda sends logs of function execution (including errors, timeouts, and custom logs) to Amazon CloudWatch by default. These logs are useful for debugging, monitoring, and performance tuning.
+            - `X-Ray Tracing`: AWS X-Ray provides insights into function performance and latency by tracing requests as they pass through the application. It helps pinpoint bottlenecks, understand dependencies, and monitor overall performance.
+
+            - `Invocations`: The number of times a function is called.
+            - `Errors`: The number of errors that occurred during function execution.
+            - `Duration`: The time it took for the function to execute.
+            - `Throttles`: The number of times the function was throttled due to reaching the concurrency limit.
+
+        8. **File System (EFS) Configuration**
+
+            - **Amazon EFS (Elastic File System)**:
+                - Allows Lambda functions to access a persistent file system across function invocations. This is helpful for functions that require shared storage, such as large models or datasets.
+                - EFS can be mounted on Lambda functions configured within a VPC, and it’s useful for stateful workloads or functions with large code dependencies that exceed Lambda’s 10 GB limit.
+
+        9. **Function Code Configuration**
+
+            - **Deployment Package**:
+                - A Lambda function’s deployment package contains the function code and dependencies, packaged in a `.zip` file or container image.
+                - **Layers**: Lambda layers let you share code, libraries, or binaries across multiple Lambda functions without including them in each function’s deployment package. Up to 5 layers can be used per function, reducing package size and simplifying maintenance.
+            - **Container Images**:
+                - Lambda supports container images up to 10 GB, allowing you to package code and dependencies in Docker images for more complex applications or specific runtime requirements.
+                - Images are stored in Amazon ECR and provide a way to deploy large applications with custom runtimes or dependencies.
+
+        10. **Aliases and Versions**
+
+            - **Versions**: Lambda functions can be versioned, with each published version being immutable. Versions allow you to reference specific function code and configuration states, providing stability for production applications.
+            - **Aliases**: An alias is a pointer to a specific function version, often used to manage different environments (e.g., `dev`, `test`, `prod`). Aliases allow routing traffic between versions and enable canary deployments by splitting traffic to different versions.
+
+        11. **Event Sources / Triggers**: **Event sources** are AWS services or external systems that generate events that can trigger a Lambda function to execute. These triggers define when and how Lambda functions are invoked.
+
+            - **Common Event Sources**:
+                - **S3**: Lambda can trigger when an object is created or deleted in an S3 bucket.
+                - **API Gateway**: Lambda can be invoked via HTTP requests, making it suitable for serverless APIs.
+                - **SNS (Simple Notification Service)**: Lambda can process messages from SNS.
+                - **SQS (Simple Queue Service)**: Lambda can process messages from SQS queues.
+                - **CloudWatch Events**: Lambda can trigger on scheduled events or based on system events (e.g., EC2 instance state change).
+                - **DynamoDB Streams**: Lambda can trigger on changes in DynamoDB tables.
+
+        12. **Lambda Execution Environment**: The **execution environment** is the runtime in which Lambda functions run. AWS Lambda automatically manages the environment that runs your code, scaling it based on demand.
+
+            - **Features**:
+                - **Isolated environment**: Functions run in isolated environments to ensure security.
+                - **Runtime management**: AWS manages the language runtime and updates it.
+                - **Environment variables**: Allows the use of environment variables for dynamic configuration.
+
+        13. **Lambda Layers**: **Lambda layers** allow you to package external libraries, dependencies, or configuration files separately from your function code. These layers can be shared across multiple Lambda functions, reducing code duplication and improving maintainability.
+
+            - **Features**:
+                - You can include libraries, custom runtimes, or configuration data.
+                - You can use up to 5 layers per Lambda function.
+                - Layers can be reused by multiple Lambda functions or shared across accounts.
+
+        14. **Lambda Pricing Model**: AWS Lambda follows a pay-per-use model, where you're charged based on the number of function invocations and the compute time used.
+
+            - **Pricing Factors**:
+                - **Number of invocations**: Charged for every request.
+                - **Compute time**: Charged based on the function's memory and execution duration, measured in milliseconds.
+
+        15. **AWS Lambda@Edge**: **Lambda@Edge** is an extension of AWS Lambda that allows you to run code closer to users (at Amazon CloudFront edge locations), reducing latency for global users.
+
+            - **Features**:
+                - Modify content delivery and customize responses for users.
+                - Perform operations like URL rewrites, header manipulations, and cache key customizations.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Features of Lambda Function</summary>
+
+        -   `Serverless Execution`: AWS Lambda allows you to run your code without managing servers. You upload your code, and AWS Lambda takes care of provisioning and scaling the infrastructure needed to execute it.
+        -   `Event-Driven Execution`: Lambda functions can be triggered by various AWS services or custom events. Examples of triggers include changes to data in an S3 bucket, updates to a DynamoDB table, or HTTP requests through API Gateway.
+        -   `Supported Runtimes`: Lambda supports multiple programming languages, known as runtimes. These include Node.js, Python, Java, Ruby, Go, .NET, and custom runtimes through the use of custom execution environments.
+        -   `Automatic Scaling`: Lambda automatically scales your applications in response to incoming traffic. Each function can scale independently, and you pay only for the compute time consumed.
+        -   `Built-in Fault Tolerance`: AWS Lambda maintains compute capacity, and if a function fails, it automatically retries the execution. If a function execution fails repeatedly, Lambda can be configured to send the event to a Dead Letter Queue (DLQ) for further analysis.
+        -   `Integrated Logging and Monitoring`: Lambda provides built-in logging through Amazon CloudWatch. You can monitor the performance of your functions, view logs, and set up custom CloudWatch Alarms to be notified of specific events or issues.
+        -   `Environment Variables`: Lambda allows you to set environment variables for your functions. These variables can be used to store configuration settings or sensitive information, such as API keys.
+        -   `Execution Role and Permissions`: Each Lambda function is associated with an IAM (Identity and Access Management) role that defines the permissions needed to execute the function and access other AWS resources.
+        -   `Stateless Execution`: Lambda functions are designed to be stateless. However, you can store persistent data using other AWS services like Amazon S3, DynamoDB, or AWS RDS.
+        -   `Cold Starts and Warm Containers`: Cold starts occur when a function is invoked for the first time or when there is a need to scale. Subsequent invocations reuse warm containers, reducing cold start times.
+        -   `VPC Integration`: Lambda functions can be integrated with a VPC, allowing them to access resources inside a VPC, such as databases, and allowing private connectivity.
+        -   `Cross-Region Execution`: You can configure Lambda functions to run in different AWS regions, providing flexibility and redundancy.
+        -   `Versioning and Aliases`: Lambda supports versioning and aliases, allowing you to manage different versions of your functions and direct traffic to specific versions.
+        -   `Maximum Execution Duration`: Each Lambda function has a maximum execution duration (timeout) that can be set. If the function runs longer than the specified duration, it is terminated.
+        -   `Immutable Deployment Packages`: Once a Lambda function is created, its deployment package (code and dependencies) becomes immutable. If you need to make changes, you create a new version of the function.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Limitation on Lambda Functions</summary>
+
+        -   `Execution timeout`: The maximum execution time for a Lambda function is `900 seconds (15 minutes)`.
+        -   `Concurrent executions`: By default, there is a soft `limit of 1,000 concurrent executions per account per region`. However, you can request a higher limit if you need it.
+        -   `Environment variables`: You can set environment variables for your Lambda function, but `the maximum size of all environment variables combined is 4 KB`.
+
+        -   `Deployment package size`: `The maximum compressed deployment package size for a Lambda function is 50 MB`. There are some exceptions for certain runtimes, as outlined in my previous answer.
+
+            -   Uncompressed code & dependencies < 250 MB
+            -   Compressed function package < 50MB
+            -   Total function packages in a region < 75 GB
+            -   Ephemeral storage < 512 MB
+            -   Maximum execution duration < 900 seconds
+            -   Concurrent Lambda functions < 1000
+
+        -   `Memory allocation`: Up to 10 GB of memory to a Lambda function. The amount of memory you allocate also determines the amount of CPU and network resources that the function gets.
+            -   `Memory allocation`: Up to 10 GB of memory starting from 128 MB with CPU 3GB.
+        -   `Execution environment`: Lambda functions run in a stateless execution environment, so you can't store data on the local file system. However, you can use other AWS services like S3 or DynamoDB to store data.
+        -   `Function invocations`: You can trigger a Lambda function in several ways, including through `API Gateway`, `S3 events`, `SNS notifications`, and more. However, there may be some limits or quotas on the number of invocations you can make in a given period.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Usecases of Lambda</summary>
+
+        AWS Lambda is a serverless compute service that lets you run code without provisioning or managing servers. It's often used for various use cases across different industries. Here are the top five most common use cases for AWS Lambda:
+
+        -   **Event-Driven Processing**: AWS Lambda is frequently used to process events from various AWS services, such as Amazon S3, Amazon DynamoDB, Amazon SNS, Amazon SQS, and more. For example, you can trigger Lambda functions to process new objects uploaded to an S3 bucket, process messages from an SQS queue, or react to changes in a DynamoDB table.
+
+        -   **Real-time File Processing**: Lambda functions can be used for real-time processing of data streams. For instance, you can use Lambda to analyze streaming data from Amazon Kinesis Data Streams or process logs from Amazon CloudWatch Logs in real-time.
+
+        -   **Backend for Web Applications**: Lambda functions can serve as the backend for web applications, providing scalable and cost-effective compute resources. You can build APIs using AWS API Gateway and trigger Lambda functions to handle incoming HTTP requests, allowing you to build serverless web applications without managing infrastructure.
+
+        -   **Scheduled Tasks and Cron Jobs**: Lambda functions can be scheduled to run at specific intervals using AWS CloudWatch Events. This allows you to automate tasks such as data backups, log archiving, or regular data processing jobs without needing to maintain dedicated servers or cron jobs.
+
+        -   **Data Processing and ETL**: Lambda functions are commonly used for data processing and ETL (Extract, Transform, Load) tasks. You can trigger Lambda functions to process data as soon as it becomes available, perform transformations on the data, and then load it into a data warehouse or database. This approach enables real-time or near-real-time data processing without the need for complex infrastructure.
+
+        </details>
 
     </details>
 
@@ -1259,7 +1377,7 @@
         -   **Resources**: Logical endpoints in your API that represent entities or operations.
         -   **Methods**: HTTP methods (e.g., GET, POST, PUT, DELETE) applied to resources.
 
-    #### Terms & Concepts:
+    ##### Terms & Concepts:
 
     -   **API**: An API (Application Programming Interface) is a set of rules and protocols that allows different software applications to communicate with each other. In the context of AWS API Gateway, an API is a collection of resources and methods that can be accessed through a unique endpoint URL.
     -   **Endpoint**: An endpoint is a URL that represents the location of an API or a specific resource within an API. It typically includes the base URL of the API, the resource path, and any query parameters or request headers that are needed to access the resource.
@@ -1275,265 +1393,269 @@
         -   `Transformation`: API proxies can perform data transformation and manipulation on requests and responses. They may modify headers, transform payloads between different data formats (e.g., JSON to XML), or add/remove elements from the request or response body.
         -   `Load Balancing`: In cases where multiple backend services are available to handle requests, API proxies can perform load balancing to distribute traffic evenly across the servers. This ensures optimal resource utilization and prevents overloading of individual servers.
 
-    #### Stages:
+    -   <details><summary style="font-size:20px;color:#FF1493">Terms and Concepts</summary>
 
-    A **stage** in API Gateway is a logical separation of your API for different environments such as development, testing, or production.
+        ##### Stages:
 
-    -   **Features**:
+        A **stage** in API Gateway is a logical separation of your API for different environments such as development, testing, or production.
 
-        -   **Stage Variables**: Similar to environment variables, used to define values specific to the stage (e.g., `api_key`, backend endpoint).
-        -   **Stage URLs**: Each stage has a unique URL, for example, `https://api-id.execute-api.aws-region.amazonaws.com/prod/`.
+        -   **Features**:
 
-    #### Resources:
+            -   **Stage Variables**: Similar to environment variables, used to define values specific to the stage (e.g., `api_key`, backend endpoint).
+            -   **Stage URLs**: Each stage has a unique URL, for example, `https://api-id.execute-api.aws-region.amazonaws.com/prod/`.
 
-    **Resources** represent individual endpoints in your API, which map to a particular functionality or entity in your application.
-    A resource is an object that represents an entity, such as a customer, order, or product, in the context of an API. Each resource is associated with one or more methods, such as GET, POST, PUT, DELETE, that can be used to access or manipulate the resource's data.
+        ##### Resources:
 
-    -   **Path Parameters**: Resources can include path parameters (e.g., `/users/{user_id}`) to pass variables within the URL.
-    -   **Nested Resources**: You can create hierarchical resource paths (e.g., `/users/{user_id}/orders`) to organize related API endpoints.
+        **Resources** represent individual endpoints in your API, which map to a particular functionality or entity in your application.
+        A resource is an object that represents an entity, such as a customer, order, or product, in the context of an API. Each resource is associated with one or more methods, such as GET, POST, PUT, DELETE, that can be used to access or manipulate the resource's data.
 
-    #### Methods:
+        -   **Path Parameters**: Resources can include path parameters (e.g., `/users/{user_id}`) to pass variables within the URL.
+        -   **Nested Resources**: You can create hierarchical resource paths (e.g., `/users/{user_id}/orders`) to organize related API endpoints.
 
-    Each resource in a REST API can have one or more **HTTP methods** associated with it, defining how the resource can be interacted with (e.g., GET, POST, PUT, DELETE).
-    A method is an action that can be performed on a resource, such as retrieving, updating, or deleting data. Each method is associated with an HTTP verb, such as GET, POST, PUT, or DELETE, that indicates the type of action that is being performed.
+        ##### Methods:
 
-    -   **Integration with Backends**: Methods define how the API Gateway interacts with backend services, such as AWS Lambda functions, Amazon EC2, or HTTP endpoints.
-    -   **Input/Output Mapping**: Request and response payloads can be transformed or mapped to fit the backend’s format using **mapping templates**.
+        Each resource in a REST API can have one or more **HTTP methods** associated with it, defining how the resource can be interacted with (e.g., GET, POST, PUT, DELETE).
+        A method is an action that can be performed on a resource, such as retrieving, updating, or deleting data. Each method is associated with an HTTP verb, such as GET, POST, PUT, or DELETE, that indicates the type of action that is being performed.
 
-    #### Proxy Integration
+        -   **Integration with Backends**: Methods define how the API Gateway interacts with backend services, such as AWS Lambda functions, Amazon EC2, or HTTP endpoints.
+        -   **Input/Output Mapping**: Request and response payloads can be transformed or mapped to fit the backend’s format using **mapping templates**.
 
-    In AWS API Gateway, **Proxy Integration** is a feature that allows the API to pass through all HTTP requests directly to an AWS Lambda function or another HTTP endpoint without configuring each method, parameter, or mapping. It creates a streamlined and flexible setup, especially useful for microservices architectures. Followings are the key points of proxy integration with aws lambda
+        ##### Proxy Integration
 
-    1. **Direct Pass-through of Requests**: API Gateway passes the entire request payload to the Lambda function, including the request's headers, query parameters, HTTP method, and body as a JSON object. Lambda receives it in a standard format, making it versatile for different types of requests.
-    2. **Single Lambda Handler for All Requests**: With Proxy Integration, a single Lambda function can handle all endpoints and HTTP methods in the API. This reduces the need for defining individual integrations and mappings for each API resource.
-    3. **Simplified Deployment**: It streamlines the process of setting up APIs because there’s no need to configure API Gateway resources like request/response templates or parameter mappings. This is especially beneficial for quickly deploying microservices.
-    4. **Flexible Response**: The Lambda function returns a response with headers, status codes, and body, which API Gateway then relays back to the client.
-    5. **Reduced Configuration**: Since Proxy Integration requires fewer manual configurations, it’s less prone to configuration errors and is generally easier to manage.
+        In AWS API Gateway, **Proxy Integration** is a feature that allows the API to pass through all HTTP requests directly to an AWS Lambda function or another HTTP endpoint without configuring each method, parameter, or mapping. It creates a streamlined and flexible setup, especially useful for microservices architectures. Followings are the key points of proxy integration with aws lambda
 
-    In contrast, **Non-Proxy Integration** involves more detailed configurations for each endpoint and allows for customized mapping and transformations. However, Proxy Integration is typically preferred for simpler, JSON-based APIs that don’t need intricate transformations.
+        1. **Direct Pass-through of Requests**: API Gateway passes the entire request payload to the Lambda function, including the request's headers, query parameters, HTTP method, and body as a JSON object. Lambda receives it in a standard format, making it versatile for different types of requests.
+        2. **Single Lambda Handler for All Requests**: With Proxy Integration, a single Lambda function can handle all endpoints and HTTP methods in the API. This reduces the need for defining individual integrations and mappings for each API resource.
+        3. **Simplified Deployment**: It streamlines the process of setting up APIs because there’s no need to configure API Gateway resources like request/response templates or parameter mappings. This is especially beneficial for quickly deploying microservices.
+        4. **Flexible Response**: The Lambda function returns a response with headers, status codes, and body, which API Gateway then relays back to the client.
+        5. **Reduced Configuration**: Since Proxy Integration requires fewer manual configurations, it’s less prone to configuration errors and is generally easier to manage.
 
-    #### Method Request
+        In contrast, **Non-Proxy Integration** involves more detailed configurations for each endpoint and allows for customized mapping and transformations. However, Proxy Integration is typically preferred for simpler, JSON-based APIs that don’t need intricate transformations.
 
-    -   **Definition**: The **Method Request** is the initial part of the API Gateway process that handles the incoming request from the client.
-    -   **Purpose**: It sets up and validates client input before passing the request on to the backend integration (e.g., AWS Lambda, HTTP endpoints, or AWS services like Step Functions).
-    -   **Configuration Options**:
-        -   `Request Parameters`: Defines expected query parameters, headers, or path variables.
-        -   `Request Validation`: Allows validation rules to ensure clients send correct data (e.g., required parameters).
-        -   `Authorization`: Enables access control options like AWS IAM permissions, Cognito User Pools, or custom authorizers.
+        ##### Method Request
 
-    #### Integration Request
+        -   **Definition**: The **Method Request** is the initial part of the API Gateway process that handles the incoming request from the client.
+        -   **Purpose**: It sets up and validates client input before passing the request on to the backend integration (e.g., AWS Lambda, HTTP endpoints, or AWS services like Step Functions).
+        -   **Configuration Options**:
+            -   `Request Parameters`: Defines expected query parameters, headers, or path variables.
+            -   `Request Validation`: Allows validation rules to ensure clients send correct data (e.g., required parameters).
+            -   `Authorization`: Enables access control options like AWS IAM permissions, Cognito User Pools, or custom authorizers.
 
-    -   **Definition**: The **Integration Request** defines how the **Method Request** is transformed and routed to the backend.
-    -   **Purpose**: It controls how API Gateway forwards requests to the backend service, including any required transformations or modifications.
-    -   **Configuration Options**:
-        -   `Mapping Templates`: Define how to map and transform incoming request data to match the backend’s expected format.
-        -   `Integration Type`: Specifies the type of backend integration, such as AWS Lambda, HTTP endpoint, AWS service (e.g., Step Functions, DynamoDB).
-        -   `Request Parameters`: Additional parameters or headers to pass along to the backend if required.
+        ##### Integration Request
 
-    #### Integration Response
+        -   **Definition**: The **Integration Request** defines how the **Method Request** is transformed and routed to the backend.
+        -   **Purpose**: It controls how API Gateway forwards requests to the backend service, including any required transformations or modifications.
+        -   **Configuration Options**:
+            -   `Mapping Templates`: Define how to map and transform incoming request data to match the backend’s expected format.
+            -   `Integration Type`: Specifies the type of backend integration, such as AWS Lambda, HTTP endpoint, AWS service (e.g., Step Functions, DynamoDB).
+            -   `Request Parameters`: Additional parameters or headers to pass along to the backend if required.
 
-    -   **Definition**: The **Integration Response** handles the response from the backend service before passing it back to the client.
-    -   **Purpose**: It controls the format and transformation of the backend response, including error handling and data formatting.
-    -   **Configuration Options**:
-        -   `Mapping Templates`: Define transformations to convert backend responses into the desired format.
-        -   `Error Handling`: Specifies conditions (like status codes) to catch errors from the backend and map them to standard responses.
-        -   `Headers and Parameters`: Adds or modifies headers or parameters before sending them back to the client.
+        ##### Integration Response
 
-    #### Method Response
+        -   **Definition**: The **Integration Response** handles the response from the backend service before passing it back to the client.
+        -   **Purpose**: It controls the format and transformation of the backend response, including error handling and data formatting.
+        -   **Configuration Options**:
+            -   `Mapping Templates`: Define transformations to convert backend responses into the desired format.
+            -   `Error Handling`: Specifies conditions (like status codes) to catch errors from the backend and map them to standard responses.
+            -   `Headers and Parameters`: Adds or modifies headers or parameters before sending them back to the client.
 
-    -   **Definition**: The **Method Response** is the final step that defines the structure and format of the response that API Gateway sends to the client.
-    -   **Purpose**: It sets up how the API Gateway should format the response for clients, including defining which HTTP status codes, headers, and data formats are returned.
-    -   **Configuration Options**:
-        -   `Response Models`: Defines a schema for different HTTP status codes and responses, ensuring predictable response formats.
-        -   `Status Codes`: Specifies which status codes the client can expect (e.g., 200 for success, 400 for client errors).
-        -   `Headers and Parameters`: Defines response headers available to the client, like `Content-Type` or custom headers.
+        ##### Method Response
 
-    #### Mapping Template
+        -   **Definition**: The **Method Response** is the final step that defines the structure and format of the response that API Gateway sends to the client.
+        -   **Purpose**: It sets up how the API Gateway should format the response for clients, including defining which HTTP status codes, headers, and data formats are returned.
+        -   **Configuration Options**:
+            -   `Response Models`: Defines a schema for different HTTP status codes and responses, ensuring predictable response formats.
+            -   `Status Codes`: Specifies which status codes the client can expect (e.g., 200 for success, 400 for client errors).
+            -   `Headers and Parameters`: Defines response headers available to the client, like `Content-Type` or custom headers.
 
-    In AWS API Gateway, **Mapping Templates** are used to transform incoming requests before they reach the backend and to modify backend responses before they reach the client. This transformation capability is particularly useful when integrating API Gateway with other AWS services (like AWS Lambda) or external APIs, allowing you to map data formats, handle transformations, and enforce data contracts.
+        ##### Mapping Template
 
-    -   **Key Features of Mapping Templates**
+        In AWS API Gateway, **Mapping Templates** are used to transform incoming requests before they reach the backend and to modify backend responses before they reach the client. This transformation capability is particularly useful when integrating API Gateway with other AWS services (like AWS Lambda) or external APIs, allowing you to map data formats, handle transformations, and enforce data contracts.
 
-        1. `Request Transformation`:
+        -   **Key Features of Mapping Templates**
 
-            - You can configure mapping templates to modify or structure the data that comes from clients before sending it to the backend.
-            - For instance, if a client sends data in a certain JSON format, you can transform it into another format that your backend expects (like XML or another JSON structure).
-            - Mapping templates use **Velocity Template Language (VTL)**, which provides a set of pre-defined objects and functions to handle conditional logic, loops, and data transformation.
+            1. `Request Transformation`:
 
-        2. `Response Transformation`:
+                - You can configure mapping templates to modify or structure the data that comes from clients before sending it to the backend.
+                - For instance, if a client sends data in a certain JSON format, you can transform it into another format that your backend expects (like XML or another JSON structure).
+                - Mapping templates use **Velocity Template Language (VTL)**, which provides a set of pre-defined objects and functions to handle conditional logic, loops, and data transformation.
 
-            - Mapping templates can also be applied to transform the responses from the backend before they are returned to the client.
-            - This is useful if your backend provides data in a certain format, and you need to restructure or filter the data for the client.
+            2. `Response Transformation`:
 
-        3. `Content-Type Handling`:
+                - Mapping templates can also be applied to transform the responses from the backend before they are returned to the client.
+                - This is useful if your backend provides data in a certain format, and you need to restructure or filter the data for the client.
 
-            - Mapping templates are associated with **content types**. You can create different templates based on content types like `application/json` or `application/xml`, allowing you to support multiple client formats.
-            - API Gateway then selects the appropriate mapping template based on the content type specified in the client’s request.
+            3. `Content-Type Handling`:
 
-        4. `Example Use Cases`:
-            - **Path and Query Parameter Mapping**: Transform parameters from a request path or query string into a request body format expected by the backend.
-            - **Error Handling**: Modify error messages from the backend to make them more meaningful to the client by converting error codes or adding context.
-            - **Data Enrichment**: Enrich requests with additional data, such as injecting metadata or headers required by the backend, without requiring the client to provide them.
+                - Mapping templates are associated with **content types**. You can create different templates based on content types like `application/json` or `application/xml`, allowing you to support multiple client formats.
+                - API Gateway then selects the appropriate mapping template based on the content type specified in the client’s request.
 
-    -   **Example of a Simple Mapping Template**
+            4. `Example Use Cases`:
+                - **Path and Query Parameter Mapping**: Transform parameters from a request path or query string into a request body format expected by the backend.
+                - **Error Handling**: Modify error messages from the backend to make them more meaningful to the client by converting error codes or adding context.
+                - **Data Enrichment**: Enrich requests with additional data, such as injecting metadata or headers required by the backend, without requiring the client to provide them.
 
-        -   Suppose you receive a JSON request like this from a client:
+        -   **Example of a Simple Mapping Template**
 
-            ```json
-            {
-                "username": "john_doe",
-                "age": 30
-            }
-            ```
+            -   Suppose you receive a JSON request like this from a client:
 
-        -   If your backend expects the request in this format:
-
-            ```json
-            {
-                "user": {
-                    "name": "john_doe",
+                ```json
+                {
+                    "username": "john_doe",
                     "age": 30
                 }
-            }
-            ```
+                ```
 
-        -   You could create a mapping template like:
+            -   If your backend expects the request in this format:
 
-            ```vtl
-            {
-            "user": {
-                "name": "$input.path('$.username')",
-                "age": "$input.path('$.age')"
-            }
-            }
-            ```
+                ```json
+                {
+                    "user": {
+                        "name": "john_doe",
+                        "age": 30
+                    }
+                }
+                ```
 
-    #### Endpoints and Custom Domain Names:
+            -   You could create a mapping template like:
 
-    API Gateway provides default **API endpoints** but also allows you to associate your API with a **custom domain name**.
+                ```vtl
+                {
+                "user": {
+                    "name": "$input.path('$.username')",
+                    "age": "$input.path('$.age')"
+                }
+                }
+                ```
 
-    -   **Features**:
-        -   **Regional Endpoints**: Serve requests from specific AWS regions.
-        -   **Edge-Optimized Endpoints**: Uses CloudFront to serve requests to globally distributed users.
-        -   **Custom Domain**: Map your custom domain name (e.g., `api.yourdomain.com`) to your API Gateway endpoint.
+        ##### Endpoints and Custom Domain Names:
 
-    #### Integration Types:
+        API Gateway provides default **API endpoints** but also allows you to associate your API with a **custom domain name**.
 
-    API Gateway allows you to integrate the frontend API with various backend services via different integration types:
+        -   **Features**:
+            -   **Regional Endpoints**: Serve requests from specific AWS regions.
+            -   **Edge-Optimized Endpoints**: Uses CloudFront to serve requests to globally distributed users.
+            -   **Custom Domain**: Map your custom domain name (e.g., `api.yourdomain.com`) to your API Gateway endpoint.
 
-    -   **Lambda Integration**: Direct integration with AWS Lambda functions, allowing you to run serverless functions as API endpoints.
-    -   **HTTP/HTTP_PROXY Integration**: API Gateway can route requests to HTTP-based backends such as web servers or third-party APIs.
-    -   **AWS Service Integration**: Integrate with other AWS services like DynamoDB, SNS, or SQS directly, without requiring Lambda.
+        ##### Integration Types:
 
-    #### Authorization:
+        API Gateway allows you to integrate the frontend API with various backend services via different integration types:
 
-    API Gateway supports several types of authorization to secure access to your APIs:
+        -   **Lambda Integration**: Direct integration with AWS Lambda functions, allowing you to run serverless functions as API endpoints.
+        -   **HTTP/HTTP_PROXY Integration**: API Gateway can route requests to HTTP-based backends such as web servers or third-party APIs.
+        -   **AWS Service Integration**: Integrate with other AWS services like DynamoDB, SNS, or SQS directly, without requiring Lambda.
 
-    -   **IAM Roles**: Use AWS IAM roles to authorize access to your API based on user identity and policies.
-    -   **Cognito User Pools**: Use Amazon Cognito to control access via OAuth2 or JWT-based token authentication.
-    -   **Lambda Authorizer**: Use a custom Lambda function to authenticate and authorize requests based on custom logic (e.g., checking API keys, tokens).
-    -   **API Keys**: Restrict access to your API using **API keys**, which are passed in the request headers.
+        ##### Authorization:
 
-    #### Caching:
+        API Gateway supports several types of authorization to secure access to your APIs:
 
-    API Gateway provides **caching** at the **stage level** to reduce the latency of your API and improve performance.
+        -   **IAM Roles**: Use AWS IAM roles to authorize access to your API based on user identity and policies.
+        -   **Cognito User Pools**: Use Amazon Cognito to control access via OAuth2 or JWT-based token authentication.
+        -   **Lambda Authorizer**: Use a custom Lambda function to authenticate and authorize requests based on custom logic (e.g., checking API keys, tokens).
+        -   **API Keys**: Restrict access to your API using **API keys**, which are passed in the request headers.
 
-    -   **Features**:
-        -   Store responses from your backend services in an API Gateway cache.
-        -   Specify TTL (Time to Live) for cache data.
-        -   Cache data per method and per request, based on query strings or headers.
+        ##### Caching:
 
-    #### Monitoring and Metrics:
+        API Gateway provides **caching** at the **stage level** to reduce the latency of your API and improve performance.
 
-    API Gateway integrates with **Amazon CloudWatch** for monitoring, logging, and alerting, giving insights into API performance and usage.
+        -   **Features**:
+            -   Store responses from your backend services in an API Gateway cache.
+            -   Specify TTL (Time to Live) for cache data.
+            -   Cache data per method and per request, based on query strings or headers.
 
-    -   **CloudWatch Metrics**: API Gateway automatically publishes metrics such as **latency**, **error rates**, **cache hits/misses**, and **throttling** counts to CloudWatch.
-    -   **CloudWatch Logs**: API Gateway can be configured to log request/response data and error details for debugging.
+        ##### Monitoring and Metrics:
 
-    #### Throttling and Rate Limiting:
+        API Gateway integrates with **Amazon CloudWatch** for monitoring, logging, and alerting, giving insights into API performance and usage.
 
-    API Gateway allows you to control the rate of incoming requests to prevent overloading your backend services.
+        -   **CloudWatch Metrics**: API Gateway automatically publishes metrics such as **latency**, **error rates**, **cache hits/misses**, and **throttling** counts to CloudWatch.
+        -   **CloudWatch Logs**: API Gateway can be configured to log request/response data and error details for debugging.
 
-    -   **Default Throttling**: Set default limits for request rates and burst limits for your API.
-    -   **Usage Plans**: Use API keys with usage plans to apply throttling rules and quota limits to individual users or applications.
+        ##### Throttling and Rate Limiting:
 
-    #### API Gateway VPC Link:
+        API Gateway allows you to control the rate of incoming requests to prevent overloading your backend services.
 
-    **VPC Link** allows API Gateway to integrate with private resources inside a **VPC**, such as internal web services or databases.
+        -   **Default Throttling**: Set default limits for request rates and burst limits for your API.
+        -   **Usage Plans**: Use API keys with usage plans to apply throttling rules and quota limits to individual users or applications.
 
-    -   **Features**:
-        -   **Private Integration**: Allows API Gateway to access services running in a private VPC without exposing them to the public internet.
-        -   Ideal for accessing backend services like EC2, ECS, or load balancers that are hosted in a private subnet.
+        ##### API Gateway VPC Link:
 
-    #### Mock Integration:
+        **VPC Link** allows API Gateway to integrate with private resources inside a **VPC**, such as internal web services or databases.
 
-    **Mock Integration** is used to return static responses without sending requests to any backend. It’s useful for testing and prototyping.
+        -   **Features**:
+            -   **Private Integration**: Allows API Gateway to access services running in a private VPC without exposing them to the public internet.
+            -   Ideal for accessing backend services like EC2, ECS, or load balancers that are hosted in a private subnet.
 
-    -   **Features**:
-        -   Simulate API responses.
-        -   Set up static responses based on incoming requests.
-        -   No backend services involved.
+        ##### Mock Integration:
 
-    #### Deployment:
+        **Mock Integration** is used to return static responses without sending requests to any backend. It’s useful for testing and prototyping.
 
-    API Gateway provides the ability to **deploy** APIs to various stages (e.g., dev, test, prod) and manage different versions of your APIs.
+        -   **Features**:
+            -   Simulate API responses.
+            -   Set up static responses based on incoming requests.
+            -   No backend services involved.
 
-    -   **Features**:
-        -   **Deployment** creates a snapshot of your API configuration and methods at a specific point in time.
-        -   You can **roll back** to previous versions of the API if needed.
-        -   Each stage has a unique URL for accessing the deployed API.
+        ##### Deployment:
 
-    #### Cross-Origin Resource Sharing (CORS):
+        API Gateway provides the ability to **deploy** APIs to various stages (e.g., dev, test, prod) and manage different versions of your APIs.
 
-    **CORS** is a security feature implemented by browsers to restrict web applications from making requests to a domain different from the one that served the web page.
+        -   **Features**:
+            -   **Deployment** creates a snapshot of your API configuration and methods at a specific point in time.
+            -   You can **roll back** to previous versions of the API if needed.
+            -   Each stage has a unique URL for accessing the deployed API.
 
-    -   **Features**:
-        -   API Gateway supports **CORS** to allow restricted resources to be accessed on a domain different from the origin.
-        -   You can configure **CORS** settings to control which origins and methods are allowed for your API.
+        ##### Cross-Origin Resource Sharing (CORS):
 
-    #### OpenAPI (Swagger) Support:
+        **CORS** is a security feature implemented by browsers to restrict web applications from making requests to a domain different from the one that served the web page.
 
-    API Gateway supports the **OpenAPI Specification (formerly known as Swagger)** for defining your API structure.
+        -   **Features**:
+            -   API Gateway supports **CORS** to allow restricted resources to be accessed on a domain different from the origin.
+            -   You can configure **CORS** settings to control which origins and methods are allowed for your API.
 
-    -   **Features**:
-        -   Import and export your API definitions using OpenAPI/Swagger files.
-        -   Simplifies API development by providing a standard, machine-readable format.
-        -   Use OpenAPI definitions for documentation or collaboration purposes.
+        ##### OpenAPI (Swagger) Support:
 
-    #### API Gateway Policies:
+        API Gateway supports the **OpenAPI Specification (formerly known as Swagger)** for defining your API structure.
 
-    API Gateway supports **resource policies** that allow you to control access to your API at the **resource level**.
+        -   **Features**:
+            -   Import and export your API definitions using OpenAPI/Swagger files.
+            -   Simplifies API development by providing a standard, machine-readable format.
+            -   Use OpenAPI definitions for documentation or collaboration purposes.
 
-    -   **Features**:
-        -   You can restrict access to specific IP ranges, VPCs, or AWS accounts.
-        -   Resource policies are useful for implementing fine-grained access control to APIs.
+        ##### API Gateway Policies:
 
-    #### SDK Generation:
+        API Gateway supports **resource policies** that allow you to control access to your API at the **resource level**.
 
-    API Gateway can automatically generate **SDKs (Software Development Kits)** for various programming languages (e.g., JavaScript, iOS, Android) based on your API definitions.
+        -   **Features**:
+            -   You can restrict access to specific IP ranges, VPCs, or AWS accounts.
+            -   Resource policies are useful for implementing fine-grained access control to APIs.
 
-    -   **Features**:
-        -   Simplifies the integration of APIs into client applications.
-        -   Generates client-side code that can handle API calls, including authentication and request/response handling.
+        ##### SDK Generation:
 
-    #### Error Handling:
+        API Gateway can automatically generate **SDKs (Software Development Kits)** for various programming languages (e.g., JavaScript, iOS, Android) based on your API definitions.
 
-    API Gateway allows you to define custom error responses, enabling better error handling in your API.
+        -   **Features**:
+            -   Simplifies the integration of APIs into client applications.
+            -   Generates client-side code that can handle API calls, including authentication and request/response handling.
 
-    -   **Features**:
-        -   You can set up custom response templates to format error messages.
-        -   Define specific HTTP status codes based on the response from the backend (e.g., 4xx for client errors, 5xx for server errors).
+        ##### Error Handling:
 
-    #### Access Logs:
+        API Gateway allows you to define custom error responses, enabling better error handling in your API.
 
-    API Gateway provides **detailed access logs** to monitor API usage and analyze performance.
+        -   **Features**:
+            -   You can set up custom response templates to format error messages.
+            -   Define specific HTTP status codes based on the response from the backend (e.g., 4xx for client errors, 5xx for server errors).
 
-    -   **Features**:
+        ##### Access Logs:
 
-        -   Logs include detailed information such as request timestamps, IP addresses, request/response payloads, and latency.
-        -   Access logs can be stored in CloudWatch Logs for long-term analysis.
+        API Gateway provides **detailed access logs** to monitor API usage and analyze performance.
 
-    -   <details open><summary style="font-size:20px;color:#FF1493">RESTful APIs:</summary>
+        -   **Features**:
+
+            -   Logs include detailed information such as request timestamps, IP addresses, request/response payloads, and latency.
+            -   Access logs can be stored in CloudWatch Logs for long-term analysis.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">RESTful APIs:</summary>
 
         RESTful APIs in AWS API Gateway allow you to build, deploy, and manage RESTful APIs at scale. They adhere to the principles of REST (Representational State Transfer) architecture.
 
@@ -1644,7 +1766,7 @@
 
         </details>
 
-    -   <details open><summary style="font-size:20px;color:#FF1493">HTTP APIs:</summary>
+    -   <details><summary style="font-size:20px;color:#FF1493">HTTP APIs:</summary>
 
         HTTP APIs in AWS API Gateway offer a more lightweight and cost-effective alternative to traditional RESTful APIs. They are optimized for serverless workloads and provide features tailored to modern web applications.
 
@@ -1687,7 +1809,7 @@
 
         </details>
 
-    -   <details open><summary style="font-size:20px;color:#FF1493">WebSocket APIs:</summary>
+    -   <details><summary style="font-size:20px;color:#FF1493">WebSocket APIs:</summary>
 
         WebSocket APIs in AWS API Gateway enable real-time, bidirectional communication between clients and servers over a single TCP connection. They provide full-duplex communication channels.
 
@@ -1699,7 +1821,7 @@
         -   `Use Cases`: WebSocket APIs are commonly used in applications such as chat applications, multiplayer games, real-time collaboration tools, and financial trading platforms.
         </details>
 
-    -   <details open><summary style="font-size:20px;color:#FF1493">Use Cases of API Gateway</summary>
+    -   <details><summary style="font-size:20px;color:#FF1493">Use Cases of API Gateway</summary>
 
         AWS API Gateway has several practical use cases in data engineering, especially in creating and managing APIs that interface with various data pipelines and processes. Here are some common use cases:
 
