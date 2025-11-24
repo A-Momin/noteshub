@@ -33,32 +33,37 @@
 
 -   <details><summary style="font-size:25px;color:Orange;text-align:left">Commands</summary>
 
-    -   `terraform plane -refresh=false`
-    -   `terraform plane console`
-    -   `terraform plane -out iam.tfplane`
-    -   `terraform apply -var-file=file_name`
-    -   `terraform apply -var="db_user=myuser" -var="db_pass=secretpassword"`
-    -   `$ terraform workspace list`
-    -   `$ terraform workspace new production`
-
     -   `$ terraform init`
+
+    -   `$ terraform plane -refresh=false`
+    -   `$ terraform plane console`
+    -   `$ terraform plane -out iam.tfplane`
     -   `$ terraform plan`
-    -   `$ terraform console`
-    -   `$ terraform apply -refresh=false`
     -   `$ terraform plan -out iam.tfplan`
+    -   `$ terraform plan -refresh=false -var="iam_user_name_prefix=VALUE_FROM_COMMAND_LINE"`
+
+    -   `$ terraform apply -var-file=file_name`
+    -   `$ terraform apply -var="db_user=myuser" -var="db_pass=secretpassword"`
+    -   `$ terraform apply -refresh=false`
     -   `$ terraform apply "iam.tfplan"`
     -   `$ terraform apply -target="aws_iam_user.tf_iam_user"`
+    -   `$ terraform apply -target=aws_default_vpc.default`
+    -   `$ terraform apply -target=data.aws_subnet_ids.default_subnets`
+    -   `$ terraform apply -target=data.aws_ami_ids.aws_linux_2_latest_ids`
+    -   `$ terraform apply -target=data.aws_ami.aws_linux_2_latest`
+
     -   `$ terraform destroy`
+
+    -   `$ terraform console`
+
     -   `$ terraform validate`
     -   `$ terraform fmt`
     -   `$ terraform show`
     -   `$ export TF_VAR_iam_user_name_prefix = FROM_ENV_VARIABLE_IAM_PREFIX`
     -   `$ export TF_VAR_iam_user_name_prefix=FROM_ENV_VARIABLE_IAM_PREFIX`
-    -   `$ terraform plan -refresh=false -var="iam_user_name_prefix=VALUE_FROM_COMMAND_LINE"`
-    -   `$ terraform apply -target=aws_default_vpc.default`
-    -   `$ terraform apply -target=data.aws_subnet_ids.default_subnets`
-    -   `$ terraform apply -target=data.aws_ami_ids.aws_linux_2_latest_ids`
-    -   `$ terraform apply -target=data.aws_ami.aws_linux_2_latest`
+
+    -   `$ terraform workspace list`
+    -   `$ terraform workspace new production`
     -   `$ terraform workspace show`
     -   `$ terraform workspace new prod-env`
     -   `$ terraform workspace select default`
@@ -240,6 +245,128 @@
 
 ---
 
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Multiple Environment Managements</summary>
+
+    Managing multiple environments (such as development, staging, and production) in Terraform is crucial for safety, isolation, and efficiency. The approach you choose depends primarily on how much your environments differ from one another.
+
+    There are three primary methods for environment management in Terraform:
+
+    1. **Separate Directories (Recommended Best Practice)**:This is the most widely recommended and robust solution for managing **long-lived, distinct environments** like `dev`, `staging`, and `prod`.
+
+        Instead of using a single configuration, you create a dedicated root module (a separate folder) for each environment.
+
+        - **File Structure**:
+
+            ```
+            ├── modules/
+            │   ├── vpc/             # Reusable module for VPC resources
+            │   └── database/        # Reusable module for DB resources
+            ├── envs/
+            │   ├── dev/
+            │   │   ├── main.tf      # Calls modules in ../../modules
+            │   │   ├── backend.tf   # Configures a unique, separate state file
+            │   │   └── dev.tfvars   # Small, cheap instance sizes
+            │   ├── staging/
+            │   │   ├── main.tf
+            │   │   ├── backend.tf
+            │   │   └── staging.tfvars # Medium instance sizes
+            │   └── prod/
+            │       ├── main.tf
+            │       ├── backend.tf
+            │       └── prod.tfvars  # Large, highly available instance sizes
+            ```
+
+        * **Maximum Isolation (Best for Production):** Each environment has its own completely separate **state file** and remote backend (e.g., different keys in an S3 bucket or GCS), ensuring that a mistake in `dev` cannot affect `prod`.
+        * **Architectural Flexibility:** Because each folder is an independent configuration, you can deploy different resource types, providers, or even different architectural designs in one environment compared to another.
+        * **Clearer CI/CD Integration:** You can easily restrict who can run `terraform apply` on the `envs/prod` directory and ensure production deploys only run on the `main` branch.
+
+    2. **Terraform Workspaces**:**Workspaces** are designed to manage multiple, separate **state files** within a **single configuration**.
+
+        - You keep one set of `.tf` files and use the built-in `terraform workspace` commands to switch context.
+
+            1. Create a new workspace: `terraform workspace new staging`
+            2. Switch to it: `terraform workspace select staging`
+            3. Run apply: `terraform apply`
+
+        - Workspaces rely on the `terraform.workspace` variable, which you reference in your code to change resource attributes:
+
+            ```terraform
+            # Example: Use the workspace name to set the instance size
+            resource "aws_instance" "app_server" {
+                instance_type = var.instance_sizes[terraform.workspace]
+                # ...
+            }
+            ```
+
+        - **Best Use Case:** Spinning up temporary or **ephemeral environments** (e.g., a "sandbox" for a new team member, or a dedicated environment for a feature branch—like `pr-101`). They are best for configurations that are **nearly identical** except for simple variables (like size or name prefix).
+        - **Caution:** HashiCorp advises **against** using workspaces for managing long-lived, critical environments like `prod` and `staging` because they all share the exact same code base, which increases the risk of deploying a change intended for `dev` to `prod`.
+
+    3. **The Role of Variable Files (`.tfvars`)**:Regardless of whether you choose Separate Directories or Workspaces, you will use **Terraform Variable Definition Files (`.tfvars`)** to manage environment-specific values.
+
+        This is a best practice to keep environment-specific settings—like the number of server instances, the database size, or a tag prefix—out of your main `.tf` files.
+
+        | Variable File | Use Case                   | Command                                 |
+        | :------------ | :------------------------- | :-------------------------------------- |
+        | `dev.tfvars`  | Small, cheap resources     | `terraform apply -var-file=dev.tfvars`  |
+        | `prod.tfvars` | Large, expensive resources | `terraform apply -var-file=prod.tfvars` |
+
+    4. **External Tools (Terragrunt)**:For large-scale infrastructure using the **Separate Directories** approach, you may find yourself repeating backend configuration or module calls in many directories.
+
+        **Terragrunt** is a popular open-source wrapper tool that addresses this repetition by letting you define configurations once and inherit them across all environment directories, keeping your entire infrastructure code **D**on't **R**epeat **Y**ourself (DRY).
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Setting Input variables in order of precedence</summary>
+
+    The order of precedence for setting **Input Variables** in Terraform determines which value is used when multiple sources attempt to define the same variable. Terraform uses the first value it finds, starting from the highest priority source and moving down.
+
+    Here is the complete order of precedence, from **highest priority (1)** to **lowest priority (6)**:
+
+    ## 🥇 Terraform Input Variable Precedence
+
+    1. **The `-var` flag on the CLI (Highest)**: Values passed directly on the command line using the `-var` flag take the highest precedence. This is often used for quick overrides or sensitive values that shouldn't be committed to files.
+
+        - `$ terraform apply -var="instance_type=t2.micro"`
+
+    2. **The `-var-file` flag on the CLI**: Values loaded from a file specified using the `-var-file` flag are the second highest priority. If you use this flag multiple times, files are processed in order, with later files overriding earlier ones.
+
+        - `$ terraform apply -var-file="secrets.tfvars" -var-file="dev.tfvars"`
+          -> Values in `dev.tfvars` would override values in `secrets.tfvars`.
+
+    3. **Environment Variables**: Terraform automatically recognizes environment variables with the prefix `TF_VAR_`. The variable name is everything after the prefix.
+
+        - **Example:** Setting the environment variable `TF_VAR_instance_type` will set the Terraform variable named `instance_type`.
+            ```bash
+            export TF_VAR_region="us-east-1"
+            ```
+
+    4. **Automatically Loaded Variable Definition Files**: Terraform automatically loads variables from files named in the following exact order:
+
+        1. Files named **`terraform.tfvars`** (or `terraform.tfvars.json`)
+        2. Files with names ending in **`.auto.tfvars`** (or `.auto.tfvars.json`)
+
+        If both file types are present, `terraform.tfvars` is processed first, followed by all files matching `*.auto.tfvars` in alphabetical order.
+
+    5. **Variables in the `variables.tf` file (Default Values)**: If a variable block in your configuration (e.g., in `variables.tf`) includes a **`default`** value, that value is used if no value is provided by any of the higher-precedence sources (1 through 4).
+
+        - **Example:**
+            ```terraform
+            variable "instance_type" {
+            type    = string
+            default = "t3.medium" # Used if no value is set elsewhere
+            }
+            ```
+
+    6. **Prompted Input (Lowest)**: If a variable is declared with **no default value** and is not set by any of the higher-precedence sources, Terraform will **prompt the user** to enter a value during execution.
+
+    The primary takeaway is that **command-line arguments and flags always override file-based or environment-based settings.**
+
+    </details>
+
+---
+
 -   <details><summary style="font-size:25px;color:Orange;text-align:left">Terms & Concepts</summary>
 
     -   **Terraform Configuration**:
@@ -265,6 +392,14 @@
                 -   This file is related to Terraform's dependency locking mechanism. It's used to lock down the versions of providers and modules to ensure that subsequent runs use the same versions as the original deployment.
                 -   It's generally used in conjunction with terraform init and is crucial for ensuring consistency in a team or CI/CD environment.
                 -   This file should be version controlled along with your Terraform configuration files. It ensures that everyone working on the project uses the same versions of providers and modules.
+
+    | File Name                      | Short Explanation                                                                                                                                                                                                                                                                                    |
+    | :----------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | **`terraform.tfstate`**        | The primary **State File** and the single source of truth. It maps your configuration to the real-world infrastructure created on your cloud provider, storing the current status and IDs of all managed resources. **Never edit manually.**                                                         |
+    | **`terraform.tfstate.backup`** | A **backup of the state file** created automatically by Terraform whenever a successful operation modifies the primary state file. It serves as a safety mechanism to prevent data loss if the primary state file is corrupted during an operation.                                                  |
+    | **`terraform.lock.hcl`**       | The **Dependency Lock File**. It records the exact versions of the **providers** downloaded and used for the configuration. This ensures that everyone working on the project uses the same provider versions to avoid unexpected changes or state drift. It should be committed to version control. |
+    | **`terraform.tfvars`**         | A **default, manually-loaded variable file**. If present, Terraform automatically loads all variable values defined within it during execution. It's typically used to store common, non-sensitive input variables for a configuration.                                                              |
+    | **`*.auto.tfvars`**            | **Automatically loaded variable files**. Any file ending with `.auto.tfvars` or `.auto.tfvars.json` is automatically loaded by Terraform. This is commonly used for injecting values from external systems or for environment-specific variables (e.g., `prod.auto.tfvars`).                         |
 
     -   **Infrastructure as Code (IaC)**:
 
@@ -590,157 +725,207 @@
 
     #### Terraform Fundamentals
 
-    <details><summary style="font-size:18px;color:#C71585">What is Terraform, and why is it used?</summary>
+    -   <details><summary style="font-size:18px;color:#C71585">What is Terraform State File? How do you manage it?</summary>
 
-    **Terraform** is an open-source **Infrastructure as Code (IaC)** tool developed by HashiCorp that allows users to define, provision, and manage infrastructure resources in a declarative manner. Terraform enables the automation of infrastructure across various cloud platforms, data centers, and other service providers.
+        The Terraform **State File** is a crucial component that acts as the **single source of truth** for your infrastructure managed by Terraform.
 
-    ##### Why Terraform is Used:
+        It is a JSON file (typically named `terraform.tfstate`) that maps the real-world resources (like AWS EC2 instances, Azure VMs, or Google Cloud networks) to your Terraform configuration files.
 
-    1. **Infrastructure as Code (IaC)**:
+        -   **Purpose of the State File**: The state file serves three primary purposes:
 
-        - Terraform enables users to define infrastructure using **declarative configuration files** (written in HashiCorp Configuration Language, HCL, or JSON).
-        - These files describe the desired state of your infrastructure, and Terraform ensures that this state is achieved and maintained.
+            1.  **Mapping and Tracking:** It keeps track of the **metadata** and **current status** of the resources Terraform has created. When you run a command like `terraform plan`, Terraform reads the state file to know which remote resources it should compare against the desired configuration in your `.tf` files.
+            2.  **Performance Improvement:** By storing resource attributes (like IDs, IPs, and dependencies) locally, Terraform can often avoid making unnecessary, repetitive API calls to the cloud provider, speeding up planning and execution.
+            3.  **Dependency Management:** Terraform uses the state file to understand the relationships between resources and correctly determine the order in which they should be created, updated, or destroyed.
 
-    2. **Multi-Cloud and Multi-Provider Support**:
+            > **Example:** If you define an AWS VPC and a Subnet, the state file stores the actual ID of the created VPC, which the Subnet resource then references during its creation.
 
-        - Terraform supports a wide range of cloud providers such as **AWS**, **Azure**, **Google Cloud**, and many others.
-        - It also integrates with services and platforms like Kubernetes, GitHub, Datadog, etc., allowing you to manage diverse infrastructure in a unified way.
+        -   **How to Manage the Terraform State File**: Managing the state file involves two main considerations: **Location** and **Security/Integrity**.
 
-    3. **Declarative and Consistent**:
+            1. **Remote State Storage (Location)**: While Terraform defaults to a local state file, this is only suitable for individual, non-collaborative use. For team environments, you **must** use a **Remote Backend** to store the state file.
 
-        - In a declarative approach, users define the desired outcome (e.g., "I want 3 EC2 instances"), and Terraform takes care of making it happen, rather than writing out step-by-step instructions.
-        - Terraform manages the **dependency graph** of resources, ensuring that resources are created, updated, or destroyed in the correct order.
+                This is configured within the **`terraform` block** of your configuration (e.g., in a file like `backend.tf`).
 
-    4. **Automation and Orchestration**:
+                | Backend Type            | Benefits                                         | Configuration Example (in `backend.tf`)                                                                      |
+                | :---------------------- | :----------------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
+                | **Amazon S3**           | Highly available, durable, inexpensive.          | `backend "s3" { bucket = "my-tf-state"; key = "prod/state"; region = "us-east-1" }`                          |
+                | **Azure Storage**       | Microsoft cloud equivalent.                      | `backend "azurerm" { container_name = "tfstate"; key = "prod.tfstate"; storage_account_name = "mystorage" }` |
+                | **Terraform Cloud/HCP** | Fully managed state, built-in remote operations. | `cloud { organization = "my-org"; workspace = "prod" }`                                                      |
 
-        - Terraform automates the provisioning, scaling, and de-provisioning of infrastructure resources.
-        - It simplifies complex tasks by allowing users to define reusable modules, automatically handling configuration drift, and tracking dependencies across resources.
+            2. **State Locking (Integrity)**: When multiple team members or CI/CD pipelines attempt to modify the infrastructure simultaneously, the state file can become corrupted.
 
-    5. **State Management**:
+                **State locking** prevents this by creating a lock on the state file when an operation (`plan`, `apply`, `destroy`) begins and releasing it only when the operation finishes.
 
-        - Terraform uses a **state file** (`terraform.tfstate`) to track the current state of the infrastructure. This allows Terraform to understand what changes need to be made in the infrastructure to match the desired state defined in the configuration.
-        - This state can be stored locally or remotely (e.g., in S3, Terraform Cloud, etc.) for better collaboration and consistency.
+                - Most **Remote Backends** (like S3, Azure, or GCS) natively support locking by leveraging a secondary service (e.g., DynamoDB for S3).
+                - **Terraform Cloud/HCP** provides state locking inherently as part of its managed service.
 
-    6. **Plan and Apply Workflow**:
+            3. **State Manipulation (Security and Maintenance)**: You should generally avoid manually editing the state file. However, Terraform provides several commands for safe state management:
 
-        - Terraform allows users to **plan** changes before applying them with the `terraform plan` command, giving a detailed view of what actions will be taken (creating, modifying, or destroying resources).
-        - After reviewing the plan, users can apply the changes with the `terraform apply` command, ensuring a controlled and auditable process for modifying infrastructure.
+                | Command                           | Purpose                                                                                                             |
+                | :-------------------------------- | :------------------------------------------------------------------------------------------------------------------ |
+                | `terraform state list`            | Shows all resources tracked in the current state file.                                                              |
+                | `terraform state show <address>`  | Displays the attributes of a specific resource.                                                                     |
+                | `terraform state mv <old> <new>`  | Renames or moves a resource entry in the state without touching the real resource.                                  |
+                | `terraform state rm <address>`    | Removes a resource from the state file **without destroying the real resource** (useful for taking manual control). |
+                | `terraform import <address> <id>` | Adds an existing, unmanaged resource to the state file.                                                             |
 
-    7. **Version Control and Collaboration**:
+        -   **Important Note**:
 
-        - Since infrastructure is defined as code, Terraform files can be stored in version control systems (such as Git), enabling versioning, collaboration, and auditing.
-        - Teams can collaborate on infrastructure changes using pull requests, code reviews, and other version control practices.
+            -   The Terraform state file can contain sensitive information like database passwords, private keys, and API tokens if they are configured directly in your `.tf` files.
+            -   Therefore, you must ensure that your remote backend is configured for **at-rest encryption** (e.g., using S3 bucket encryption or Azure Storage encryption) to protect this sensitive data.
 
-    8. **Modularity and Reusability**:
+        </details>
 
-        - Terraform allows users to create **modules** (collections of resources) that can be reused across different environments, projects, or teams, ensuring consistency and reducing duplication.
+    -   <details><summary style="font-size:18px;color:#C71585">What is Terraform, and why is it used?</summary>
 
-    9. **Provisioning Across Environments**:
+        **Terraform** is an open-source **Infrastructure as Code (IaC)** tool developed by HashiCorp that allows users to define, provision, and manage infrastructure resources in a declarative manner. Terraform enables the automation of infrastructure across various cloud platforms, data centers, and other service providers.
 
-        - Terraform can be used to manage infrastructure for **development**, **staging**, and **production** environments using the same codebase, enabling consistency and reducing configuration drift between environments.
+        ##### Why Terraform is Used:
 
-    10. **Extensibility**:
-        - Terraform supports **custom providers** and can be extended with plugins, making it highly flexible to manage infrastructure across various types of services or custom environments.
+        1. **Infrastructure as Code (IaC)**:
 
-    ##### Example Terraform Use Cases:
+            - Terraform enables users to define infrastructure using **declarative configuration files** (written in HashiCorp Configuration Language, HCL, or JSON).
+            - These files describe the desired state of your infrastructure, and Terraform ensures that this state is achieved and maintained.
 
-    -   **Provisioning cloud resources** like virtual machines, networks, databases, and load balancers.
-    -   **Managing multi-cloud infrastructure** by provisioning resources across AWS, GCP, and Azure in a unified way.
-    -   **Creating and managing Kubernetes clusters** and deploying applications on them.
-    -   **Managing infrastructure as code** for development, testing, and production environments with version control.
-    -   **Automating infrastructure changes** and reducing manual intervention in infrastructure scaling or decommissioning.
+        2. **Multi-Cloud and Multi-Provider Support**:
 
-    ##### Key Benefits of Terraform:
+            - Terraform supports a wide range of cloud providers such as **AWS**, **Azure**, **Google Cloud**, and many others.
+            - It also integrates with services and platforms like Kubernetes, GitHub, Datadog, etc., allowing you to manage diverse infrastructure in a unified way.
 
-    -   **Consistency**: Ensures your infrastructure is always configured the way you want it to be.
-    -   **Scalability**: Manages large-scale infrastructure and automates scaling as your needs grow.
-    -   **Collaborative**: With version control, teams can work together on infrastructure changes, just like application code.
-    -   **Infrastructure Auditing**: Every change is tracked and can be reviewed before being applied, leading to better governance and security.
+        3. **Declarative and Consistent**:
 
-    </details>
+            - In a declarative approach, users define the desired outcome (e.g., "I want 3 EC2 instances"), and Terraform takes care of making it happen, rather than writing out step-by-step instructions.
+            - Terraform manages the **dependency graph** of resources, ensuring that resources are created, updated, or destroyed in the correct order.
 
-    <details><summary style="font-size:18px;color:#C71585">How do you handle dependency management between Terraform resources?</summary>
+        4. **Automation and Orchestration**:
 
-    -   Terraform automatically manages dependencies between resources. It understands the order in which resources need to be created or updated.
+            - Terraform automates the provisioning, scaling, and de-provisioning of infrastructure resources.
+            - It simplifies complex tasks by allowing users to define reusable modules, automatically handling configuration drift, and tracking dependencies across resources.
 
-    </details>
+        5. **State Management**:
 
-    <details><summary style="font-size:18px;color:#C71585">Explain the concept of idempotency in Terraform.</summary>
+            - Terraform uses a **state file** (`terraform.tfstate`) to track the current state of the infrastructure. This allows Terraform to understand what changes need to be made in the infrastructure to match the desired state defined in the configuration.
+            - This state can be stored locally or remotely (e.g., in S3, Terraform Cloud, etc.) for better collaboration and consistency.
 
-    Idempotency ensures that running the same Terraform configuration multiple times results in the same infrastructure state, regardless of the initial state.
+        6. **Plan and Apply Workflow**:
 
-    </details>
+            - Terraform allows users to **plan** changes before applying them with the `terraform plan` command, giving a detailed view of what actions will be taken (creating, modifying, or destroying resources).
+            - After reviewing the plan, users can apply the changes with the `terraform apply` command, ensuring a controlled and auditable process for modifying infrastructure.
 
-    <details><summary style="font-size:18px;color:#C71585">What is the purpose of terraform block in Terraform configuration?</summary>
+        7. **Version Control and Collaboration**:
 
-    The `terraform block` is a top-level configuration block that is used to define settings and configurations for Terraform itself. It is not directly related to the infrastructure being provisioned but rather controls how Terraform operates.
+            - Since infrastructure is defined as code, Terraform files can be stored in version control systems (such as Git), enabling versioning, collaboration, and auditing.
+            - Teams can collaborate on infrastructure changes using pull requests, code reviews, and other version control practices.
 
-    In Terraform, the `terraform` block is a top-level configuration block that is used to define settings and configurations for Terraform itself. It is not directly related to the infrastructure being provisioned but rather controls how Terraform operates.
+        8. **Modularity and Reusability**:
 
-    1. **Specifying Backend Configuration**:
-        - The `backend` section within the `terraform` block defines where Terraform stores the **state file**.
-        - Backends can be local (default) or remote (e.g., S3, Azure Blob Storage, Google Cloud Storage).
-    2. **Defining Required Providers**: The `required_providers` block specifies which providers Terraform will use, including their source and version constraints.
-    3. **Setting Required Terraform Version**: The `required_version` attribute ensures that the Terraform configuration is compatible with a specific version or range of Terraform versions.
-    4. **Enabling Experiments or Features**: Used to enable experimental features or feature flags in Terraform.
-    5. **Using Terraform Cloud or Enterprise**: Configuration to use Terraform Cloud or Enterprise for remote operations and state management.
-    6. **Controlling Dependency Lock Files**: Terraform uses a lock file (`.terraform.lock.hcl`) to record the provider versions being used. The `terraform` block can define settings for this behavior indirectly through provider configuration.
+            - Terraform allows users to create **modules** (collections of resources) that can be reused across different environments, projects, or teams, ensuring consistency and reducing duplication.
 
-    -   **Example Full `terraform` Block**:
+        9. **Provisioning Across Environments**:
 
-        ```ini
-        terraform {
-        required_version = ">= 1.3.0"
+            - Terraform can be used to manage infrastructure for **development**, **staging**, and **production** environments using the same codebase, enabling consistency and reducing configuration drift between environments.
 
-        backend "s3" {
-            bucket         = "my-terraform-state"
-            key            = "state/terraform.tfstate"
-            region         = "us-east-1"
-        }
+        10. **Extensibility**:
+            - Terraform supports **custom providers** and can be extended with plugins, making it highly flexible to manage infrastructure across various types of services or custom environments.
 
-        required_providers {
-            aws = {
-            source  = "hashicorp/aws"
-            version = "~> 4.0"
+        ##### Example Terraform Use Cases:
+
+        -   **Provisioning cloud resources** like virtual machines, networks, databases, and load balancers.
+        -   **Managing multi-cloud infrastructure** by provisioning resources across AWS, GCP, and Azure in a unified way.
+        -   **Creating and managing Kubernetes clusters** and deploying applications on them.
+        -   **Managing infrastructure as code** for development, testing, and production environments with version control.
+        -   **Automating infrastructure changes** and reducing manual intervention in infrastructure scaling or decommissioning.
+
+        ##### Key Benefits of Terraform:
+
+        -   **Consistency**: Ensures your infrastructure is always configured the way you want it to be.
+        -   **Scalability**: Manages large-scale infrastructure and automates scaling as your needs grow.
+        -   **Collaborative**: With version control, teams can work together on infrastructure changes, just like application code.
+        -   **Infrastructure Auditing**: Every change is tracked and can be reviewed before being applied, leading to better governance and security.
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">How do you handle dependency management between Terraform resources?</summary>
+
+        -   Terraform automatically manages dependencies between resources. It understands the order in which resources need to be created or updated.
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">Explain the concept of idempotency in Terraform.</summary>
+
+        Idempotency ensures that running the same Terraform configuration multiple times results in the same infrastructure state, regardless of the initial state.
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">What is the purpose of terraform block in Terraform configuration?</summary>
+
+        The `terraform block` is a top-level configuration block that is used to define settings and configurations for Terraform itself. It is not directly related to the infrastructure being provisioned but rather controls how Terraform operates.
+
+        In Terraform, the `terraform` block is a top-level configuration block that is used to define settings and configurations for Terraform itself. It is not directly related to the infrastructure being provisioned but rather controls how Terraform operates.
+
+        1. **Specifying Backend Configuration**:
+            - The `backend` section within the `terraform` block defines where Terraform stores the **state file**.
+            - Backends can be local (default) or remote (e.g., S3, Azure Blob Storage, Google Cloud Storage).
+        2. **Defining Required Providers**: The `required_providers` block specifies which providers Terraform will use, including their source and version constraints.
+        3. **Setting Required Terraform Version**: The `required_version` attribute ensures that the Terraform configuration is compatible with a specific version or range of Terraform versions.
+        4. **Enabling Experiments or Features**: Used to enable experimental features or feature flags in Terraform.
+        5. **Using Terraform Cloud or Enterprise**: Configuration to use Terraform Cloud or Enterprise for remote operations and state management.
+        6. **Controlling Dependency Lock Files**: Terraform uses a lock file (`.terraform.lock.hcl`) to record the provider versions being used. The `terraform` block can define settings for this behavior indirectly through provider configuration.
+
+        -   **Example Full `terraform` Block**:
+
+            ```ini
+            terraform {
+            required_version = ">= 1.3.0"
+
+            backend "s3" {
+                bucket         = "my-terraform-state"
+                key            = "state/terraform.tfstate"
+                region         = "us-east-1"
             }
-        }
-        }
-        ```
 
-    -   In summary, The `terraform` block is primarily used to:
-        -   Configure backend storage for the state file.
-        -   Define provider dependencies.
-        -   Set version constraints for Terraform.
-        -   Enable features or manage Terraform Cloud/Enterprise settings.
+            required_providers {
+                aws = {
+                source  = "hashicorp/aws"
+                version = "~> 4.0"
+                }
+            }
+            }
+            ```
 
-    </details>
+        -   In summary, The `terraform` block is primarily used to:
+            -   Configure backend storage for the state file.
+            -   Define provider dependencies.
+            -   Set version constraints for Terraform.
+            -   Enable features or manage Terraform Cloud/Enterprise settings.
 
-    <details><summary style="font-size:18px;color:#C71585">What is the purpose of Terraform providers?</summary>
+        </details>
 
-    Providers in Terraform are responsible for understanding and interacting with APIs of specific infrastructure platforms. The "aws" provider, for example, manages resources on AWS.
+    -   <details><summary style="font-size:18px;color:#C71585">What is the purpose of Terraform providers?</summary>
 
-    </details>
+        Providers in Terraform are responsible for understanding and interacting with APIs of specific infrastructure platforms. The "aws" provider, for example, manages resources on AWS.
 
-    <details><summary style="font-size:18px;color:#C71585">What is the Terraform configuration file, and what extension does it have?</summary>
+        </details>
 
-    A Terraform configuration file is a script or a set of files written in HashiCorp Configuration Language (HCL) that defines the infrastructure and resources to be provisioned or managed by Terraform. These files typically have a `*.tf` extension. The configuration specifies the infrastructure components, their relationships, configurations, and other details necessary for provisioning and managing infrastructure.
+    -   <details><summary style="font-size:18px;color:#C71585">What is the Terraform configuration file, and what extension does it have?</summary>
 
-    </details>
+        A Terraform configuration file is a script or a set of files written in HashiCorp Configuration Language (HCL) that defines the infrastructure and resources to be provisioned or managed by Terraform. These files typically have a `*.tf` extension. The configuration specifies the infrastructure components, their relationships, configurations, and other details necessary for provisioning and managing infrastructure.
 
-    <details><summary style="font-size:18px;color:#C71585">Explain the perpose of the <b>terraform init</b>, <b>terraform plan</b>, <b>terraform apply</b>, <b>terraform destroy</b> commands.</summary>
+        </details>
 
-    -   `terraform init`: Initializes the Terraform working directory, downloading necessary provider plugins and configuring the backend.
-    -   `terraform plan`: Creates an execution plan, displaying the changes Terraform will apply to the infrastructure without actually making modifications.
-    -   `terraform apply`: Applies the planned changes to the infrastructure, creating or updating resources according to the Terraform configuration.
-    -   `terraform destroy`: Initiates the destruction of provisioned resources, reverting the infrastructure to its pre-deployment state.
+    -   <details><summary style="font-size:18px;color:#C71585">Explain the perpose of the <b>terraform init</b>, <b>terraform plan</b>, <b>terraform apply</b>, <b>terraform destroy</b> commands.</summary>
 
-    </details>
+        -   `terraform init`: Initializes the Terraform working directory, downloading necessary provider plugins and configuring the backend.
+        -   `terraform plan`: Creates an execution plan, displaying the changes Terraform will apply to the infrastructure without actually making modifications.
+        -   `terraform apply`: Applies the planned changes to the infrastructure, creating or updating resources according to the Terraform configuration.
+        -   `terraform destroy`: Initiates the destruction of provisioned resources, reverting the infrastructure to its pre-deployment state.
 
-    <details><summary style="font-size:18px;color:#C71585">Explain the purpose of the <b>terraform.tfstate</b>, <b>terraform.tfstate.backup</b>, and <b>terraform.lock.hcl</b> file.</summary>
+        </details>
 
-    -   **terraform.tfstate**: It is the default Terraform state file that records the current state of the infrastructure managed by Terraform, including resource metadata, dependencies, and attribute values
-    -   **terraform.tfstate.backup**: A backup of the previous state file (terraform.tfstate) created automatically before each terraform apply, providing a fallback in case of accidental data loss or errors during the apply process.
-    -   **terraform.lock.hcl**: The `terraform.lock.hcl` file is a lock file generated by Terraform when using Terraform 0.14 and later versions. It is used to lock the versions of providers and modules used in a Terraform configuration to ensure reproducibility and consistency across different environments and executions.
+    -   <details><summary style="font-size:18px;color:#C71585">Explain the purpose of the <b>terraform.tfstate</b>, <b>terraform.tfstate.backup</b>, and <b>terraform.lock.hcl</b> file.</summary>
+
+        -   **terraform.tfstate**: It is the default Terraform state file that records the current state of the infrastructure managed by Terraform, including resource metadata, dependencies, and attribute values
+        -   **terraform.tfstate.backup**: A backup of the previous state file (terraform.tfstate) created automatically before each terraform apply, providing a fallback in case of accidental data loss or errors during the apply process.
+        -   **terraform.lock.hcl**: The `terraform.lock.hcl` file is a lock file generated by Terraform when using Terraform 0.14 and later versions. It is used to lock the versions of providers and modules used in a Terraform configuration to ensure reproducibility and consistency across different environments and executions.
 
         -   `Purpose`:
 
@@ -760,324 +945,323 @@
 
         -   By using the `terraform.lock.hcl` file, Terraform users can achieve greater confidence in the consistency and reliability of their infrastructure deployments, as it helps ensure that the same versions of providers and modules are used across different environments and executions.
 
-    </details>
+        </details>
 
-    <details><summary style="font-size:18px;color:#C71585">What is Terraform backend? Explain the purpose of Terraform Backends.</summary>
+    -   <details><summary style="font-size:18px;color:#C71585">What is Terraform backend? Explain the purpose of Terraform Backends.</summary>
 
-    -   Terraform backend is a configuration block that defines where and how Terraform stores its state files. The state file contains information about the infrastructure managed by Terraform, such as resource metadata, dependencies, and attribute values.
-    -   There are various types of backends supported by Terraform, including local, remote, and enhanced backends. Some popular backends include:
+        -   Terraform backend is a configuration block that defines where and how Terraform stores its state files. The state file contains information about the infrastructure managed by Terraform, such as resource metadata, dependencies, and attribute values.
+        -   There are various types of backends supported by Terraform, including local, remote, and enhanced backends. Some popular backends include:
 
         -   `Local Backend`: Stores the state file on the local disk. This is the default if no backend configuration is provided. It is suitable for solo developers working on small projects.
         -   `Remote Backends` (e.g., Amazon S3, Azure Storage, Google Cloud Storage): Store the state file remotely, allowing collaboration and better management of infrastructure. Remote backends often include additional features like state locking to prevent conflicts during concurrent operations.
         -   `Terraform Cloud/Enterprise Backend`: Terraform Cloud and Terraform Enterprise are managed services that provide collaboration features, remote state storage, and other enterprise-level capabilities.
 
-    </details>
+        </details>
 
-    <details><summary style="font-size:18px;color:#C71585">What is Terraform remote state, and why is it used?</summary>
+    -   <details><summary style="font-size:18px;color:#C71585">What is Terraform remote state, and why is it used?</summary>
 
-    **Terraform remote state** refers to storing the state file (`terraform.tfstate`) in a remote location rather than on the local filesystem. This allows multiple users and systems to access and work with the state in a shared environment, facilitating collaboration and improving consistency.
+        **Terraform remote state** refers to storing the state file (`terraform.tfstate`) in a remote location rather than on the local filesystem. This allows multiple users and systems to access and work with the state in a shared environment, facilitating collaboration and improving consistency.
 
-    ##### Why Terraform Remote State is Used:
+        ##### Why Terraform Remote State is Used:
 
-    1. **Collaboration**:
+        1. **Collaboration**:
 
-        - When multiple team members are working on the same infrastructure, having a **shared state** is essential. Local state files are isolated and do not reflect changes made by others, leading to inconsistencies. Remote state allows all team members to work with the same, up-to-date state.
-        - For example, if one user provisions a resource and another user runs Terraform commands locally, the latter might inadvertently overwrite the existing resources. Remote state ensures everyone uses the latest state of the infrastructure.
+            - When multiple team members are working on the same infrastructure, having a **shared state** is essential. Local state files are isolated and do not reflect changes made by others, leading to inconsistencies. Remote state allows all team members to work with the same, up-to-date state.
+            - For example, if one user provisions a resource and another user runs Terraform commands locally, the latter might inadvertently overwrite the existing resources. Remote state ensures everyone uses the latest state of the infrastructure.
 
-    2. **State Locking**:
-        - Remote state storage typically supports **state locking**, which prevents multiple users from modifying the state file at the same time. This helps avoid conflicts and ensures that only one `terraform apply` operation runs at a time.
-        - When a user starts running Terraform operations, the state is locked until the operation completes. This locking mechanism is crucial for preventing race conditions and state corruption in collaborative environments.
-    3. **Security**:
+        2. **State Locking**:
+            - Remote state storage typically supports **state locking**, which prevents multiple users from modifying the state file at the same time. This helps avoid conflicts and ensures that only one `terraform apply` operation runs at a time.
+            - When a user starts running Terraform operations, the state is locked until the operation completes. This locking mechanism is crucial for preventing race conditions and state corruption in collaborative environments.
+        3. **Security**:
 
-        - Local state files may contain **sensitive information**, such as secrets, credentials, or access keys. Storing the state file remotely in a secure environment (e.g., an S3 bucket with encryption and access control) is a best practice to avoid security risks associated with exposing sensitive data.
-        - In a remote setup, you can enforce encryption at rest and in transit, access control policies, and audit logging to secure the state file properly.
+            - Local state files may contain **sensitive information**, such as secrets, credentials, or access keys. Storing the state file remotely in a secure environment (e.g., an S3 bucket with encryption and access control) is a best practice to avoid security risks associated with exposing sensitive data.
+            - In a remote setup, you can enforce encryption at rest and in transit, access control policies, and audit logging to secure the state file properly.
 
-    4. **Consistency Across Environments**:
+        4. **Consistency Across Environments**:
 
-        - Remote state ensures that different environments (e.g., development, staging, production) share the correct state files for their respective configurations. This reduces the risk of applying changes to the wrong environment, which can occur if state files are managed locally.
+            - Remote state ensures that different environments (e.g., development, staging, production) share the correct state files for their respective configurations. This reduces the risk of applying changes to the wrong environment, which can occur if state files are managed locally.
 
-    5. **Team Collaboration in CI/CD Pipelines**:
+        5. **Team Collaboration in CI/CD Pipelines**:
 
-        - When using CI/CD pipelines to automate infrastructure changes, storing state remotely ensures that pipeline jobs and other users have access to the latest state.
-        - For example, when running automated tests or deployments in a pipeline, remote state ensures that the infrastructure matches the desired configuration and that all jobs work from the same infrastructure state.
+            - When using CI/CD pipelines to automate infrastructure changes, storing state remotely ensures that pipeline jobs and other users have access to the latest state.
+            - For example, when running automated tests or deployments in a pipeline, remote state ensures that the infrastructure matches the desired configuration and that all jobs work from the same infrastructure state.
 
-    6. **Backups and Recovery**:
-        - Remote backends like S3, GCS, or Terraform Cloud can be configured to automatically create **versioned backups** of your state files, making it easy to roll back if something goes wrong or if state corruption occurs.
+        6. **Backups and Recovery**:
+            - Remote backends like S3, GCS, or Terraform Cloud can be configured to automatically create **versioned backups** of your state files, making it easy to roll back if something goes wrong or if state corruption occurs.
 
-    ##### Common Backends for Remote State:
+        ##### Common Backends for Remote State:
 
-    Terraform supports a wide variety of **remote backends** for storing state, some of the most commonly used ones include:
+        Terraform supports a wide variety of **remote backends** for storing state, some of the most commonly used ones include:
 
-    -   **Amazon S3** (with DynamoDB for state locking)
-    -   **Google Cloud Storage (GCS)**
-    -   **Azure Blob Storage**
-    -   **HashiCorp's Terraform Cloud/Enterprise**
-    -   **Consul**
-    -   **PostgreSQL**
-    -   **Artifactory**
+        -   **Amazon S3** (with DynamoDB for state locking)
+        -   **Google Cloud Storage (GCS)**
+        -   **Azure Blob Storage**
+        -   **HashiCorp's Terraform Cloud/Enterprise**
+        -   **Consul**
+        -   **PostgreSQL**
+        -   **Artifactory**
 
-    ##### Example of Configuring Remote State in Terraform:
+        ##### Example of Configuring Remote State in Terraform:
 
-    Here’s how you can configure remote state with **Amazon S3** as the storage backend and **DynamoDB** for state locking.
-
-    ```ini
-    terraform {
-    backend "s3" {
-        bucket         = "my-terraform-state-bucket"
-        key            = "project/terraform.tfstate"
-        region         = "us-west-2"
-        encrypt        = true
-        dynamodb_table = "terraform-state-lock"
-    }
-    }
-    ```
-
-    ###### Explanation:
-
-    -   **`bucket`**: The S3 bucket where the state file will be stored.
-    -   **`key`**: The path to the state file in the bucket (useful if multiple projects share the same bucket).
-    -   **`region`**: The AWS region where the bucket resides.
-    -   **`encrypt`**: Ensures the state file is encrypted at rest in S3.
-    -   **`dynamodb_table`**: Specifies the DynamoDB table to use for state locking, preventing concurrent state modifications.
-
-    ##### Benefits of Remote State:
-
-    1. **Centralized Management**: Remote state ensures a single source of truth for the infrastructure's current state, avoiding discrepancies and making it easier to manage the infrastructure lifecycle across teams and environments.
-    2. **Locking and Concurrency**: With state locking, it avoids the risk of multiple users or processes modifying the state simultaneously, preventing potential conflicts and corruption.
-    3. **Security and Access Control**: Sensitive data is securely stored and managed in a centralized, secure backend, allowing for better access control, encryption, and audit logging.
-    4. **Collaboration**: Facilitates collaboration by allowing multiple team members to access and modify infrastructure using the same state file, ensuring consistency across their work.
-    5. **Consistency Across Environments**: Remote state enables consistent infrastructure management across different environments (e.g., development, staging, production).
-
-    ##### Use Cases for Remote State:
-
-    -   **Team Collaboration**: In teams where multiple engineers work on the same infrastructure project.
-    -   **CI/CD Pipelines**: For automated workflows, remote state ensures consistent access to the latest state across pipeline jobs.
-    -   **Production Infrastructure**: Remote state is essential when managing critical infrastructure that requires versioned state, security, and auditability.
-    -   **Multi-Environment Setup**: Managing different environments (development, staging, production) and ensuring that each environment has its own consistent state file.
-
-    ##### Summary:
-
-    **Terraform remote state** allows the state file to be stored in a shared, secure, and centralized location rather than locally. It enables collaboration, prevents state corruption through locking, and improves security by supporting secure backends like S3, GCS, or Terraform Cloud. Remote state is crucial for managing large-scale infrastructure with multiple users or in production environments where consistency and security are vital.
-
-    </details>
-
-    <details><summary style="font-size:18px;color:#C71585">How does Terraform handle secrets or sensitive information?</summary>
-
-    Terraform provides the sensitive argument for variables to mark sensitive information. Secrets can also be stored in environment variables.
-
-    Terraform provides several mechanisms for handling secrets or sensitive information securely:
-
-    -   **Sensitive Data Handling**: Terraform offers the sensitive argument to mark sensitive values within resources. When a value is marked as sensitive, Terraform will prevent it from being displayed in the plan or any output, including state files.
-
-        ```ini
-        resource "aws_secretsmanager_secret" "example" {
-            name = "example"
-            secret_string = "super_secret_value"
-            sensitive = true
-        }
-        ```
-
-    -   **Backend Configuration**: Terraform's backend configuration can be used to specify where state data is stored. It is recommended to use a backend that supports encryption and access control, such as Amazon S3 with server-side encryption enabled.
+        Here’s how you can configure remote state with **Amazon S3** as the storage backend and **DynamoDB** for state locking.
 
         ```ini
         terraform {
-            backend "s3" {
-                bucket = "example-bucket"
-                key = "terraform/state.tfstate"
-                region = "us-east-1"
-                dynamodb_table = "terraform-lock"
-                encrypt = true
-            }
+        backend "s3" {
+            bucket         = "my-terraform-state-bucket"
+            key            = "project/terraform.tfstate"
+            region         = "us-west-2"
+            encrypt        = true
+            dynamodb_table = "terraform-state-lock"
+        }
         }
         ```
 
-    -   **Input Variables and Environment Variables**: Input variables can be defined in Terraform configuration files to parameterize configurations. When sensitive information is required as input, it is recommended to use environment variables or input variables defined in separate files that are not checked into source control.
+        ###### Explanation:
 
-        ```ini
-        variable "db_password" {
-            type = string
-            default = ""
-        }
-        ```
+        -   **`bucket`**: The S3 bucket where the state file will be stored.
+        -   **`key`**: The path to the state file in the bucket (useful if multiple projects share the same bucket).
+        -   **`region`**: The AWS region where the bucket resides.
+        -   **`encrypt`**: Ensures the state file is encrypted at rest in S3.
+        -   **`dynamodb_table`**: Specifies the DynamoDB table to use for state locking, preventing concurrent state modifications.
 
-    -   **Provider Credentials**: Provider credentials, such as AWS access keys or Azure Service Principal credentials, should be managed using secure mechanisms provided by the respective cloud provider. For example, AWS IAM roles or Azure Managed Identities can be used to provide credentials securely without exposing them in Terraform configuration files.
-    -   **Secrets Management Integration**: Terraform integrates with third-party secrets management solutions, such as HashiCorp Vault or AWS Secrets Manager, to manage sensitive information securely. These solutions can be used to store and retrieve secrets dynamically during Terraform execution.
+        ##### Benefits of Remote State:
 
-        ```ini
-        data "aws_secretsmanager_secret" "example" {
-            name = "example"
-        }
+        1. **Centralized Management**: Remote state ensures a single source of truth for the infrastructure's current state, avoiding discrepancies and making it easier to manage the infrastructure lifecycle across teams and environments.
+        2. **Locking and Concurrency**: With state locking, it avoids the risk of multiple users or processes modifying the state simultaneously, preventing potential conflicts and corruption.
+        3. **Security and Access Control**: Sensitive data is securely stored and managed in a centralized, secure backend, allowing for better access control, encryption, and audit logging.
+        4. **Collaboration**: Facilitates collaboration by allowing multiple team members to access and modify infrastructure using the same state file, ensuring consistency across their work.
+        5. **Consistency Across Environments**: Remote state enables consistent infrastructure management across different environments (e.g., development, staging, production).
 
-        resource "aws_db_instance" "example" {
-        # ...
-            password = data.aws_secretsmanager_secret.example.secret_string
-        }
-        ```
+        ##### Use Cases for Remote State:
 
-    By leveraging these mechanisms, Terraform enables secure handling of secrets and sensitive information, reducing the risk of exposure and ensuring compliance with security best practices.
+        -   **Team Collaboration**: In teams where multiple engineers work on the same infrastructure project.
+        -   **CI/CD Pipelines**: For automated workflows, remote state ensures consistent access to the latest state across pipeline jobs.
+        -   **Production Infrastructure**: Remote state is essential when managing critical infrastructure that requires versioned state, security, and auditability.
+        -   **Multi-Environment Setup**: Managing different environments (development, staging, production) and ensuring that each environment has its own consistent state file.
 
-    </details>
+        ##### Summary:
 
-    <details><summary style="font-size:18px;color:#C71585">How do you handle rolling updates or blue-green deployments using Terraform?</summary>
+        **Terraform remote state** allows the state file to be stored in a shared, secure, and centralized location rather than locally. It enables collaboration, prevents state corruption through locking, and improves security by supporting secure backends like S3, GCS, or Terraform Cloud. Remote state is crucial for managing large-scale infrastructure with multiple users or in production environments where consistency and security are vital.
 
-    Terraform provides features like count and launch_template to manage rolling updates or blue-green deployments.
+        </details>
 
-    </details>
+    -   <details><summary style="font-size:18px;color:#C71585">How does Terraform handle secrets or sensitive information?</summary>
 
-    <details><summary style="font-size:18px;color:#C71585">What is the terraform import command? How is it used</summary>
+        Terraform provides the sensitive argument for variables to mark sensitive information. Secrets can also be stored in environment variables.
 
-    -   The terraform import command in Terraform is used to bring an existing resource under Terraform management. This is particularly useful when you have infrastructure that was created outside of Terraform, and you want to start managing it using Terraform without recreating or modifying the resource.
-    -   `$ terraform import aws_instance.example i-0c1234567890abcdef`
-    -   After running terraform import, Terraform will create an entry in the state file (terraform.tfstate) for the imported resource. However, this doesn't automatically generate a Terraform configuration for the resource. You'll need to manually write the Terraform configuration to match the existing resource's configuration.
-    -   Once the resource is imported and you've created a corresponding Terraform configuration, you can use Terraform commands like terraform plan and terraform apply to manage the resource going forward.
-    -   Keep in mind that not all resources are fully importable, and you might need to manually configure additional settings in your Terraform configuration to match the existing resource's configuration. Always refer to the Terraform documentation for specifics on each resource type.
+        Terraform provides several mechanisms for handling secrets or sensitive information securely:
 
----
-
-    The `terraform import` command is used in Terraform to bring an existing resource under Terraform management. This is useful when you have resources created outside Terraform (e.g., manually through a cloud provider's console) but want to manage them with Terraform going forward without recreating them.
-
-    -   **Basic Syntax**
-
-        -   `$ terraform import <resource_type>.<resource_name> <resource_id>`
-
-            -   `resource_type` -> The type of resource in Terraform (e.g., `aws_instance`, `azurerm_resource_group`).
-            -   `resource_name` -> The name you want to assign to the resource in Terraform configuration.
-            -   `resource_id` -> The unique identifier of the resource in the cloud provider.
-
-    -   **Steps for Importing a Resource**
-
-        1. `Write the Configuration`: Define the resource configuration in your Terraform files. This configuration will tell Terraform what type of resource you want to import.
-        2. `Run the Import Command`: Use `terraform import` with the appropriate arguments.
-        3. `Verify the Import`: Run `terraform plan` to see the imported resource's state.
-
-    -   **Example**: Suppose you have an existing AWS S3 bucket named `my-bucket` created manually, and you want to import it into your Terraform configuration.
-
-        1. `Write the Configuration`: Create a configuration file (`main.tf`) with the following contents:
+        -   **Sensitive Data Handling**: Terraform offers the sensitive argument to mark sensitive values within resources. When a value is marked as sensitive, Terraform will prevent it from being displayed in the plan or any output, including state files.
 
             ```ini
-            resource "aws_s3_bucket" "my_bucket" {
-            bucket = "my-bucket"
+            resource "aws_secretsmanager_secret" "example" {
+                name = "example"
+                secret_string = "super_secret_value"
+                sensitive = true
             }
             ```
 
-        2. `Run the Import Command`: Now, use the `terraform import` command to bring the bucket under Terraform’s management.
+        -   **Backend Configuration**: Terraform's backend configuration can be used to specify where state data is stored. It is recommended to use a backend that supports encryption and access control, such as Amazon S3 with server-side encryption enabled.
 
-            - `$ terraform import aws_s3_bucket.my_bucket my-bucket`
+            ```ini
+            terraform {
+                backend "s3" {
+                    bucket = "example-bucket"
+                    key = "terraform/state.tfstate"
+                    region = "us-east-1"
+                    dynamodb_table = "terraform-lock"
+                    encrypt = true
+                }
+            }
+            ```
 
-            - `aws_s3_bucket` is the resource type.
-            - `my_bucket` is the resource name in your Terraform configuration.
-            - `my-bucket` is the actual name of the S3 bucket.
+        -   **Input Variables and Environment Variables**: Input variables can be defined in Terraform configuration files to parameterize configurations. When sensitive information is required as input, it is recommended to use environment variables or input variables defined in separate files that are not checked into source control.
 
-        3. `Verify the Import`: After importing, run:
+            ```ini
+            variable "db_password" {
+                type = string
+                default = ""
+            }
+            ```
 
-            - `$ terraform plan`
+        -   **Provider Credentials**: Provider credentials, such as AWS access keys or Azure Service Principal credentials, should be managed using secure mechanisms provided by the respective cloud provider. For example, AWS IAM roles or Azure Managed Identities can be used to provide credentials securely without exposing them in Terraform configuration files.
+        -   **Secrets Management Integration**: Terraform integrates with third-party secrets management solutions, such as HashiCorp Vault or AWS Secrets Manager, to manage sensitive information securely. These solutions can be used to store and retrieve secrets dynamically during Terraform execution.
 
-    Terraform should show the imported state without any changes, indicating that the resource is now managed by Terraform.
+            ```ini
+            data "aws_secretsmanager_secret" "example" {
+                name = "example"
+            }
 
-    </details>
+            resource "aws_db_instance" "example" {
+            # ...
+                password = data.aws_secretsmanager_secret.example.secret_string
+            }
+            ```
 
-    #### Terraform Best Practices
+        By leveraging these mechanisms, Terraform enables secure handling of secrets and sensitive information, reducing the risk of exposure and ensuring compliance with security best practices.
 
-    <details><summary style="font-size:18px;color:#C71585">Explain the purpose of Terraform workspaces.</summary>
+        </details>
 
-    -   Workspaces allow you to manage multiple environments (dev, prod, staging) within a single Terraform configuration. Each workspace maintains its own state.
+    -   <details><summary style="font-size:18px;color:#C71585">How do you handle rolling updates or blue-green deployments using Terraform?</summary>
 
-    </details>
+        Terraform provides features like count and launch_template to manage rolling updates or blue-green deployments.
 
-    <details><summary style="font-size:18px;color:#C71585">How can you organize Terraform configurations for better modularity?</summary>
+        </details>
 
-    -   Use modules to organize Terraform configurations into reusable components. Modules encapsulate related resources and can be shared across projects.
+    -   <details><summary style="font-size:18px;color:#C71585">What is the terraform import command? How is it used</summary>
 
-    </details>
+        -   The terraform import command in Terraform is used to bring an existing resource under Terraform management. This is particularly useful when you have infrastructure that was created outside of Terraform, and you want to start managing it using Terraform without recreating or modifying the resource.
+        -   `$ terraform import aws_instance.example i-0c1234567890abcdef`
+        -   After running terraform import, Terraform will create an entry in the state file (terraform.tfstate) for the imported resource. However, this doesn't automatically generate a Terraform configuration for the resource. You'll need to manually write the Terraform configuration to match the existing resource's configuration.
+        -   Once the resource is imported and you've created a corresponding Terraform configuration, you can use Terraform commands like terraform plan and terraform apply to manage the resource going forward.
+        -   Keep in mind that not all resources are fully importable, and you might need to manually configure additional settings in your Terraform configuration to match the existing resource's configuration. Always refer to the Terraform documentation for specifics on each resource type.
 
-    <details><summary style="font-size:18px;color:#C71585">Why is it important to use variables in Terraform?</summary>
+        The `terraform import` command is used in Terraform to bring an existing resource under Terraform management. This is useful when you have resources created outside Terraform (e.g., manually through a cloud provider's console) but want to manage them with Terraform going forward without recreating them.
 
-    -   Variables in Terraform allow you to parameterize configurations, making them more flexible, reusable, and easier to maintain.
+        -   **Basic Syntax**
 
-    </details>
+            -   `$ terraform import <resource_type>.<resource_name> <resource_id>`
 
-    #### Infrastructure as Code Principles
+                -   `resource_type` -> The type of resource in Terraform (e.g., `aws_instance`, `azurerm_resource_group`).
+                -   `resource_name` -> The name you want to assign to the resource in Terraform configuration.
+                -   `resource_id` -> The unique identifier of the resource in the cloud provider.
 
-    <details><summary style="font-size:18px;color:#C71585">What are the benefits of Infrastructure as Code (IaC) principles?</summary>
+        -   **Steps for Importing a Resource**
 
-    -   IaC brings benefits like version control, repeatability, and automation to infrastructure provisioning, reducing manual errors and promoting collaboration.
+            1. `Write the Configuration`: Define the resource configuration in your Terraform files. This configuration will tell Terraform what type of resource you want to import.
+            2. `Run the Import Command`: Use `terraform import` with the appropriate arguments.
+            3. `Verify the Import`: Run `terraform plan` to see the imported resource's state.
 
-    </details>
+        -   **Example**: Suppose you have an existing AWS S3 bucket named `my-bucket` created manually, and you want to import it into your Terraform configuration.
 
-    #### Troubleshooting Terraform
+            1. `Write the Configuration`: Create a configuration file (`main.tf`) with the following contents:
 
-    <details><summary style="font-size:18px;color:#C71585">How can you troubleshoot Terraform errors?</summary>
+                ```ini
+                resource "aws_s3_bucket" "my_bucket" {
+                bucket = "my-bucket"
+                }
+                ```
 
-    -   Review Terraform's error messages, check the configuration for syntax errors, and use the terraform console or terraform fmt commands for debugging.
+            2. `Run the Import Command`: Now, use the `terraform import` command to bring the bucket under Terraform’s management.
 
-    </details>
+                - `$ terraform import aws_s3_bucket.my_bucket my-bucket`
 
-    <details><summary style="font-size:18px;color:#C71585">What does Terraform's taint command do?</summary>
+                - `aws_s3_bucket` is the resource type.
+                - `my_bucket` is the resource name in your Terraform configuration.
+                - `my-bucket` is the actual name of the S3 bucket.
 
-    The terraform taint command marks a resource for recreation on the next terraform apply, forcing Terraform to destroy and recreate the resource.
+            3. `Verify the Import`: After importing, run:
 
-    </details>
+                - `$ terraform plan`
 
-    #### AWS-Specific Terraform Questions
+        Terraform should show the imported state without any changes, indicating that the resource is now managed by Terraform.
 
-    <details><summary style="font-size:18px;color:#C71585">How do you authenticate Terraform with AWS?</summary>
+        </details>
 
-    -   AWS credentials can be provided via environment variables (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY) or through AWS CLI configuration.
+        #### Terraform Best Practices
 
-    </details>
+    -   <details><summary style="font-size:18px;color:#C71585">Explain the purpose of Terraform workspaces.</summary>
 
-    <details><summary style="font-size:18px;color:#C71585">What is an AWS IAM role, and how can you create it using Terraform?</summary>
+        -   Workspaces allow you to manage multiple environments (dev, prod, staging) within a single Terraform configuration. Each workspace maintains its own state.
 
-    -   An IAM role in AWS defines a set of permissions. It can be created using Terraform's aws_iam_role resource.
+        </details>
 
-    </details>
+    -   <details><summary style="font-size:18px;color:#C71585">How can you organize Terraform configurations for better modularity?</summary>
 
-    <details><summary style="font-size:18px;color:#C71585">How can you create a Virtual Private Cloud (VPC) in AWS using Terraform?</summary>
+        -   Use modules to organize Terraform configurations into reusable components. Modules encapsulate related resources and can be shared across projects.
 
-    -   Use the aws_vpc resource to define a VPC in Terraform.
+        </details>
 
-    </details>
+    -   <details><summary style="font-size:18px;color:#C71585">Why is it important to use variables in Terraform?</summary>
 
-    <details><summary style="font-size:18px;color:#C71585">Explain the purpose of security groups in AWS, and how can you create them using Terraform?</summary>
+        -   Variables in Terraform allow you to parameterize configurations, making them more flexible, reusable, and easier to maintain.
 
-    -   Security groups control inbound and outbound traffic. They can be created using Terraform's aws_security_group resource.
+        </details>
 
-    </details>
+        #### Infrastructure as Code Principles
 
-    <details><summary style="font-size:18px;color:#C71585">How can you use Terraform to create an Auto Scaling Group in AWS?</summary>
+    -   <details><summary style="font-size:18px;color:#C71585">What are the benefits of Infrastructure as Code (IaC) principles?</summary>
 
-    -   Use the aws_autoscaling_group resource to define an Auto Scaling Group in Terraform.
+        -   IaC brings benefits like version control, repeatability, and automation to infrastructure provisioning, reducing manual errors and promoting collaboration.
 
-    </details>
+        </details>
 
-    <details><summary style="font-size:18px;color:#C71585">What is AWS Elastic Load Balancer (ELB), and how can you configure it with Terraform?</summary>
+        #### Troubleshooting Terraform
+
+    -   <details><summary style="font-size:18px;color:#C71585">How can you troubleshoot Terraform errors?</summary>
+
+        -   Review Terraform's error messages, check the configuration for syntax errors, and use the terraform console or terraform fmt commands for debugging.
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">What does Terraform's taint command do?</summary>
+
+        The terraform taint command marks a resource for recreation on the next terraform apply, forcing Terraform to destroy and recreate the resource.
+
+        </details>
+
+        #### AWS-Specific Terraform Questions
+
+    -   <details><summary style="font-size:18px;color:#C71585">How do you authenticate Terraform with AWS?</summary>
+
+        -   AWS credentials can be provided via environment variables (AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY) or through AWS CLI configuration.
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">What is an AWS IAM role, and how can you create it using Terraform?</summary>
+
+        -   An IAM role in AWS defines a set of permissions. It can be created using Terraform's aws_iam_role resource.
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">How can you create a Virtual Private Cloud (VPC) in AWS using Terraform?</summary>
+
+        -   Use the aws_vpc resource to define a VPC in Terraform.
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">Explain the purpose of security groups in AWS, and how can you create them using Terraform?</summary>
+
+        -   Security groups control inbound and outbound traffic. They can be created using Terraform's aws_security_group resource.
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">How can you use Terraform to create an Auto Scaling Group in AWS?</summary>
+
+        -   Use the aws_autoscaling_group resource to define an Auto Scaling Group in Terraform.
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">What is AWS Elastic Load Balancer (ELB), and how can you configure it with Terraform?</summary>
 
         -   ELB distributes incoming traffic across multiple targets. It can be configured using Terraform's aws_lb and aws_lb_target_group resources.
 
-    </details>
+        </details>
 
-    <details><summary style="font-size:18px;color:#C71585">Explain the difference between declarative and imperative programming in the context of Terraform.</summary>
+    -   <details><summary style="font-size:18px;color:#C71585">Explain the difference between declarative and imperative programming in the context of Terraform.</summary>
 
-    In the context of Terraform, **declarative** and **imperative** programming paradigms represent two different approaches to defining and managing infrastructure.
+        In the context of Terraform, **declarative** and **imperative** programming paradigms represent two different approaches to defining and managing infrastructure.
 
-    ##### Declarative Programming in Terraform
+        ##### Declarative Programming in Terraform
 
-    Terraform primarily follows the **declarative** programming model, where users specify _what the desired state of the infrastructure should be_, and Terraform figures out how to achieve that state.
+        Terraform primarily follows the **declarative** programming model, where users specify _what the desired state of the infrastructure should be_, and Terraform figures out how to achieve that state.
 
-    -   **What, not How**: In a declarative approach, you define _what_ the final state of your infrastructure should look like, without specifying the step-by-step instructions on _how_ to achieve that state.
-    -   **State-Driven**: Terraform compares the desired state (as written in the configuration files) with the actual state of the infrastructure (tracked in the state file) and determines the actions necessary to align the actual state with the desired state.
-    -   **Idempotent**: Declarative code is idempotent, meaning that applying the same configuration multiple times will produce the same result without reapplying changes unnecessarily.
-    -   **Automatic Dependency Management**: Terraform automatically determines the dependencies between resources and ensures they are created or updated in the correct order.
+        -   **What, not How**: In a declarative approach, you define _what_ the final state of your infrastructure should look like, without specifying the step-by-step instructions on _how_ to achieve that state.
+        -   **State-Driven**: Terraform compares the desired state (as written in the configuration files) with the actual state of the infrastructure (tracked in the state file) and determines the actions necessary to align the actual state with the desired state.
+        -   **Idempotent**: Declarative code is idempotent, meaning that applying the same configuration multiple times will produce the same result without reapplying changes unnecessarily.
+        -   **Automatic Dependency Management**: Terraform automatically determines the dependencies between resources and ensures they are created or updated in the correct order.
 
-    ##### Imperative Programming in Terraform (and Infrastructure in General)
+        ##### Imperative Programming in Terraform (and Infrastructure in General)
 
-    In an **imperative** approach, the user provides explicit, step-by-step instructions on _how_ to achieve the desired outcome. It focuses more on the "how" and defines specific commands or sequences to accomplish a task.
+        In an **imperative** approach, the user provides explicit, step-by-step instructions on _how_ to achieve the desired outcome. It focuses more on the "how" and defines specific commands or sequences to accomplish a task.
 
-    While Terraform itself is declarative, **provisioners** and external scripting can introduce imperative behaviors. For example, provisioning a server and then running a script to install software is an imperative action within an otherwise declarative Terraform workflow.
+        While Terraform itself is declarative, **provisioners** and external scripting can introduce imperative behaviors. For example, provisioning a server and then running a script to install software is an imperative action within an otherwise declarative Terraform workflow.
 
-    -   **How, not What**: The imperative approach focuses on describing the _steps_ to reach the desired outcome, rather than just defining the end goal.
-    -   **Procedural**: It involves a series of commands or steps that must be executed in a certain order.
-    -   **Manual Dependency Handling**: The user needs to explicitly manage dependencies between steps, ensuring that actions occur in the correct sequence.
+        -   **How, not What**: The imperative approach focuses on describing the _steps_ to reach the desired outcome, rather than just defining the end goal.
+        -   **Procedural**: It involves a series of commands or steps that must be executed in a certain order.
+        -   **Manual Dependency Handling**: The user needs to explicitly manage dependencies between steps, ensuring that actions occur in the correct sequence.
 
-    </details>
+        </details>
+
     </details>

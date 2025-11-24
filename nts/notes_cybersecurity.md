@@ -128,3 +128,66 @@
     | **Automation**       | Lambda, Step Functions, EventBridge, SSM         |
 
     </details>
+
+-   <details><summary style="font-size:25px;color:Orange">Intrusion Detection System (IDS)</summary>
+
+    An **Intrusion Detection System (IDS)** is a security application or device that **monitors network traffic** and/or **system activity** for malicious activity or policy violations and generates **alerts** when suspicious behavior is detected. It acts as a digital watchman, observing the environment and reporting potential security breaches.
+
+    Unlike a traditional firewall, which enforces access rules (like a gatekeeper), an IDS does not typically _prevent_ the attack (it's passive). Its primary job is **detection, logging, and alerting** to facilitate a swift manual or automated response.
+
+    ## 🛠️ How an IDS Works
+
+    An IDS works by analyzing data it collects from the network or host system and comparing it against known attack characteristics or established baselines of normal activity.
+
+    [Image of the basic architecture of an Intrusion Detection System (IDS) showing data collection, analysis engine, and alerting]
+
+    ### 1. Data Collection
+
+    An IDS first needs to gather information. Depending on the type of IDS (Host-based or Network-based), this can involve:
+
+    -   **Packet Inspection:** Reading network traffic (packet headers and payloads) flowing across the network.
+    -   **Log Analysis:** Monitoring system logs, application logs, and security event logs on a host.
+    -   **File Integrity:** Taking a snapshot of critical system files and monitoring for unauthorized changes.
+
+    ### 2. Analysis and Detection Methods
+
+    The IDS uses its analysis engine with one or a combination of the following methods to identify intrusions:
+
+    | Detection Method           | Description                                                                                                                                                         | Advantages                                                                                 | Disadvantages                                                                                                                                          |
+    | :------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | **Signature-Based (SIDS)** | Compares monitored activity against a database of **known attack signatures** (specific patterns, byte sequences, or malicious instruction sets).                   | Highly accurate for **known threats**; low rate of false positives.                        | **Cannot detect new, unknown threats** (e.g., zero-day exploits); requires constant updates to the signature database.                                 |
+    | **Anomaly-Based (AIDS)**   | Establishes a **baseline** of "normal" system or network behavior using machine learning. It flags any activity that **deviates significantly** from this baseline. | Excellent for detecting **new or unknown threats** (zero-day attacks) and insider threats. | Can generate a **high rate of false positives** (legitimate new activity can be flagged); requires a lengthy learning phase to establish the baseline. |
+    | **Hybrid Detection**       | Combines both signature and anomaly-based methods to leverage the strengths of each, providing a more comprehensive approach.                                       |                                                                                            |                                                                                                                                                        |
+
+    ### 3. Response and Reporting
+
+    Upon detecting a potential intrusion, the IDS typically performs a **passive** response:
+
+    -   **Alerting:** Generating real-time alerts or notifications (e.g., email, SMS, console message) to security administrators.
+    -   **Logging:** Recording detailed information about the event (time, source, destination, protocol, nature of the attack) for future forensic investigation and compliance reporting.
+
+    > **IDS vs. IPS:** An IDS is a **passive** monitoring and alerting system. An **Intrusion Prevention System (IPS)**, often combined into an **IDPS** (Intrusion Detection and Prevention System), is an **active** system that sits _inline_ with network traffic and can automatically take action to **block** a threat (e.g., reset a connection, drop malicious packets, or block a source IP address) upon detection.
+
+    ## 🗺️ Types of Intrusion Detection Systems
+
+    Intrusion Detection Systems are typically categorized based on their monitoring location:
+
+    ### 1. Network Intrusion Detection System (NIDS)
+
+    -   **Deployment:** Placed at **strategic points** in a network (e.g., network perimeter, behind a firewall, on core routers) to monitor traffic flowing to and from all devices on a subnet.
+    -   **Data Source:** Copies and analyzes **network traffic packets** (inbound and outbound).
+    -   **Scope:** Provides a **broad view** of the entire network's traffic, excelling at detecting large-scale network scans, denial-of-service (DoS) attacks, and external threats.
+    -   **Limitation:** It struggles to analyze **encrypted traffic** (as it can't read the payload) and may miss attacks that only occur internally on a single host.
+
+    ### 2. Host Intrusion Detection System (HIDS)
+
+    -   **Deployment:** Installed as **software agents** directly on a specific host (e.g., servers, workstations, laptops).
+    -   **Data Source:** Monitors the host's **internal activities**, including system calls, application logs, file-system changes, operating system audit trails, and inbound/outbound packets _for that host only_.
+    -   **Scope:** Provides **in-depth visibility** into the internal workings of the device, detecting malware, rootkits, unauthorized user activity, and attacks that originate _inside_ the network (insider threats).
+    -   **Limitation:** It can be resource-intensive, potentially affecting host performance, and requires installation and management on every single host. It only sees local activity and has a **narrower scope** than a NIDS.
+
+    For more information on the distinctions between these two primary types, you can watch this video: [Intrusion Detection System - IDS| HIDS Vs NIDS](https://www.youtube.com/watch?v=YTWO7Q5iWzE). This video provides a comparison of Host-based and Network-based IDS.
+
+    http://googleusercontent.com/youtube_content/0
+
+    </details>

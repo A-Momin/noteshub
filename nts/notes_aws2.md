@@ -153,12 +153,12 @@
 
         The concept of the Event Source Mapping is best understood in the context of Lambda's two fundamental event invocation models:
 
-        1. The Push Model (Direct Invocation): In this model, the AWS service itself is configured to **directly invoke** your Lambda function when an event occurs. The service "pushes" the event to Lambda.
+        1. **The Push Model** (Direct Invocation): In this model, the AWS service itself is configured to **directly invoke** your Lambda function when an event occurs. The service "pushes" the event to Lambda.
 
             - **Examples:** Amazon S3 (on file upload), Amazon SNS, Amazon API Gateway, Amazon EventBridge.
             - **Role:** The invoking service is responsible for sending the event and handling invocation details (synchronous or asynchronous).
 
-        2. The Pull Model (Event Source Mapping): In this model, the **Lambda service** is responsible for actively **reading (polling)** records or messages from the source and then invoking your function. The Event Source Mapping is the resource that defines this polling connection.
+        2. **The Pull Model** (Event Source Mapping): In this model, the **Lambda service** is responsible for actively **reading (polling)** records or messages from the source and then invoking your function. The Event Source Mapping is the resource that defines this polling connection.
             - **Event Source Mapping:** This is the AWS resource you create. It tells the Lambda service:
                 - _Where_ to poll (e.g., an SQS queue ARN or Kinesis Stream ARN).
                 - _Which_ Lambda function to invoke with the records.
@@ -558,13 +558,99 @@
 
     AWS ECS offers different ways to run your containers, catering to various needs and levels of control:
 
-    -   <details><summary style="font-size: 25px;color:#C71585">Launch Types</summary>
+    -   <details><summary style="font-size: 25px;color:#C71585">Launch Types or Capacity Providers</summary>
 
-        **Launch Types** is the primary classification that determines the underlying compute infrastructure for your containers:
+        Amazon Elastic Container Service (ECS) offers two primary **Compute Options** (often referred to as **Launch Types** or **Capacity Providers**) for running your containerized workloads: **AWS Fargate** (Serverless) and **Amazon EC2** (Customer-Managed). The choice depends heavily on your team's operational model, control requirements, and cost optimization strategy.
 
-        -   **EC2 Launch Type:** You provision and manage the Amazon EC2 instances that run your containers. This gives you more control over the underlying infrastructure, including instance types, operating systems, and networking configurations. You are responsible for scaling and patching these instances.
-        -   **Fargate Launch Type:** AWS manages the underlying infrastructure for you. You specify the CPU and memory requirements for your containers, and Fargate automatically provisions and scales the compute resources. This is a serverless option, reducing operational overhead.
+        1. **AWS Fargate (Serverless Launch Type)**: **AWS Fargate** is a **serverless compute engine** for containers that removes the need for you to provision, configure, or manage the underlying virtual machines (EC2 instances). You simply define the CPU and memory requirements for your containerized application, and AWS handles the rest.
+
+            - **Key Characteristics**:
+
+                - **Infrastructure Management:** **Fully managed by AWS**. You focus only on the container tasks; AWS manages the instance fleet, scaling, patching, and security hardening of the container hosts.
+                - **Resource Allocation:** **Per-Task Granularity**. You specify the exact vCPU and memory (e.g., 0.5 vCPU and 4 GB memory) your **Task** needs, rather than selecting a fixed instance type. This leads to better resource utilization and less over-provisioning.
+                - **Pricing:** **Pay-per-use**. You are billed for the requested vCPU and memory resources for the duration your tasks are running (billed per second). There is no cost for idle EC2 instances.
+                - **Scalability:** **Automatic**. Fargate automatically provisions and scales the compute resources to meet the demand of your running tasks, making it ideal for variable, spiky, or unpredictable workloads.
+                - **Control/Customization:** **Low**. You have no access to the host operating system (OS), which simplifies security but restricts the use of host-level features (like DaemonSets or specific kernel configurations).
+
+            - **When to Choose Fargate**:
+                - When **operational simplicity** and speed of deployment are the top priorities.
+                - For **bursty, unpredictable workloads** or short-lived jobs (like batch processing), where paying per-second for only what you use provides cost efficiency.
+                - For **microservices** where tasks are independent and can be scaled quickly.
+                - When your team has **limited operational expertise** in managing EC2 clusters and Auto Scaling Groups.
+
+        2. **Amazon EC2 (Customer-Managed Launch Type)**: The **Amazon EC2 Launch Type** requires you to manage a cluster of EC2 instances that host your containers. ECS uses these instances to place and run your container tasks.
+
+            - **Key Characteristics**:
+
+                - **Infrastructure Management:** **Customer-Managed**. You are responsible for provisioning, configuring, scaling (via Auto Scaling Groups), patching the OS, and security hardening the EC2 instances that form the cluster.
+                - **Resource Allocation:** **Instance-Level**. You choose a fixed EC2 instance type (e.g., `c5.large`, `t3.medium`) and utilize the aggregate resources of the entire instance fleet. ECS then "bin-packs" container tasks onto the available instances.
+                - **Pricing:** **Pay-per-instance**. You pay for the EC2 instance capacity and associated EBS storage regardless of how much of that capacity is actually utilized by your containers. Cost optimization requires careful capacity planning (using Reserved Instances or Savings Plans).
+                - **Scalability:** **Manual/Configured**. Scaling is managed through **Auto Scaling Groups (ASG)** which use CloudWatch metrics to add or remove instances based on demand. Requires careful setup and maintenance.
+                - **Control/Customization:** **High**. You have full control over the EC2 instance type (allowing for GPU, high I/O, or custom network configuration), the OS, and can install custom software or agents directly on the host.
+
+            - **When to Choose EC2**:
+                - When **cost optimization** is paramount for **long-running, predictable, high-utilization workloads** (where Reserved Instances provide significant savings).
+                - When your workload requires **specific instance types** (e.g., GPU acceleration, specialized hardware).
+                - When you need **OS-level access** or advanced networking and security configurations not exposed by Fargate.
+                - When you need to run **DaemonSet-like agents** or security software directly on the container host.
+
+        -   **Capacity Providers**: AWS recommends using **Capacity Providers** as the modern way to manage compute in an ECS cluster, allowing you to define the infrastructure capacity in a flexible way and use both Fargate and EC2 capacity within the same cluster.
+
+            -   **Fargate Capacity Provider:** Points to the AWS Fargate infrastructure.
+            -   **EC2 Capacity Provider:** Points to an Auto Scaling Group (ASG) of EC2 instances that you manage. ECS automatically manages the scaling of the ASG and the registration of instances into the cluster.
+
+            Capacity Providers enable **automatic managed scaling** for EC2, and allow ECS to use a **capacity provider strategy** to determine which capacity type (Fargate or EC2) to use when placing a new task.
+
+            | Feature               | AWS Fargate                                  | Amazon EC2                                              |
+            | :-------------------- | :------------------------------------------- | :------------------------------------------------------ |
+            | **Operational Model** | **Serverless**                               | **Customer-Managed VM**                                 |
+            | **Infrastructure**    | Managed by AWS                               | Managed by Customer/ASG                                 |
+            | **Resource Billing**  | Per-Task (vCPU/Memory per second)            | Per-Instance (Fixed hourly rate)                        |
+            | **Cost Efficiency**   | Better for **spiky/low-utilization**         | Better for **high/steady-state utilization**            |
+            | **Control**           | Low (No host access)                         | High (Full OS/Instance control)                         |
+            | **Scaling**           | Automatic and seamless                       | Configured via Auto Scaling Group                       |
+            | **Ideal For**         | Microservices, batch jobs, dynamic workloads | Predictable long-running services, specialized hardware |
+
         -   **External Launch Type (ECS Anywhere):** This allows you to register external instances (like on-premises servers or VMs) with your ECS clusters. This provides a consistent way to manage container workloads across hybrid environments.
+
+        </details>
+
+    -   <details><summary style="font-size: 25px;color:#C71585">Launch Types vs Capacity Providers</summary>
+
+        The relationship between **Launch Types** and **Capacity Providers** in AWS ECS is one of an older, foundational concept (**Launch Types**) being largely superseded and enhanced by a newer, more flexible, and automated concept (**Capacity Providers**).
+
+        In short, **Launch Types define _what kind of_ infrastructure your tasks run on**, while **Capacity Providers define _how that_ infrastructure is managed, scaled, and distributed**.
+
+        1. **Launch Types (The "What" and "Where")**: A **Launch Type** is the fundamental designation for the compute environment that runs your ECS Tasks. It is a binary choice defined at the time of service or task creation (though its use is discouraged in modern deployments in favor of Capacity Providers).
+
+            - **EC2 Launch Type (Customer-Managed):**
+                - **What:** Specifies that tasks run on **Amazon EC2 instances** that you provision and manage (or use an Auto Scaling Group).
+                - **Management:** You are responsible for scaling, patching, and maintaining the underlying virtual machines.
+                - **Pre-Capacity Providers:** This was the only way to run containers on your own VMs in ECS, requiring separate, manual Auto Scaling Group setup.
+            - **Fargate Launch Type (AWS-Managed/Serverless):**
+                - **What:** Specifies that tasks run on **AWS Fargate** (serverless compute).
+                - **Management:** AWS automatically provisions, manages, and scales the underlying compute environment.
+                - **Current State:** For pure Fargate, using the Fargate Launch Type is functionally equivalent to using the Fargate Capacity Provider, but using the Capacity Provider is the **recommended best practice** as it enables strategies.
+
+        2. **Capacity Providers (The "How" and "Strategy")**: **Capacity Providers** were introduced to decouple the task placement logic from the capacity management logic. They are attached to an ECS Cluster and represent the available infrastructure pools.
+
+            - **Managed Scaling for EC2:** The primary benefit of EC2 Capacity Providers is **managed scaling**. ECS automatically integrates with the EC2 Auto Scaling Group (ASG), scaling the ASG **in response to task placement needs** (i.e., when a task is pending but there is no room) and managing instance draining for scale-in. This replaces the complex, separate ASG configuration required by the old EC2 Launch Type.
+            - **Capacity Provider Strategies:** This is the most powerful feature. It allows you to define **how ECS should spread tasks** across multiple, heterogeneous capacity pools.
+                - You can assign **weights** (to determine the ratio of tasks) and **base** (to define the minimum tasks) to different providers.
+                - **Example:** A strategy might be: "Run 5 minimum tasks on `FARGATE` (base), and then distribute all remaining tasks 80% to `EC2_Spot` and 20% to `EC2_OnDemand` (weights)."
+            - **Fargate and Fargate Spot:** Dedicated capacity providers exist for Fargate and Fargate Spot, enabling the use of strategies to easily mix and match these options.
+
+        -   **Relationship and Modern Best Practice**: The modern best practice is to **always use Capacity Providers** instead of explicitly setting a Launch Type on a service or task.
+
+            | Feature           | Launch Type                                          | Capacity Provider                                                                                                   |
+            | :---------------- | :--------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------ |
+            | **Defines**       | The **type** of compute (EC2 or Fargate).            | The **pool** of compute and **how it scales**.                                                                      |
+            | **Configuration** | Set directly on the service or task (old way).       | Configured on the cluster, then referenced by a strategy on the service/task.                                       |
+            | **Scaling**       | EC2 requires external ASG setup. Fargate is managed. | **Managed scaling** is built-in for both Fargate and EC2 capacity.                                                  |
+            | **Flexibility**   | Binary choice (only one type per service).           | Allows **Capacity Provider Strategies** to use multiple capacity types (e.g., Fargate and EC2 Spot) simultaneously. |
+            | **Best Practice** | **Legacy/Discouraged** for EC2.                      | **Recommended approach** for all new deployments.                                                                   |
+
+            If you use a **Capacity Provider Strategy** when creating an ECS service, you do not specify a Launch Type; the Capacity Provider effectively handles that designation as part of its definition.
 
         </details>
 
@@ -1616,25 +1702,10 @@
     The **REST API** in API Gateway allows developers to create RESTful web services that can interact with a wide range of backend services. API Gateway acts as an intermediary between the client and the backend.
 
     -   **Components**:
+
         -   **Stages**: Different deployment environments (e.g., dev, test, prod) with unique URLs.
         -   **Resources**: Logical endpoints in your API that represent entities or operations.
         -   **Methods**: HTTP methods (e.g., GET, POST, PUT, DELETE) applied to resources.
-
-    ##### Terms & Concepts:
-
-    -   **API**: An API (Application Programming Interface) is a set of rules and protocols that allows different software applications to communicate with each other. In the context of AWS API Gateway, an API is a collection of resources and methods that can be accessed through a unique endpoint URL.
-    -   **Endpoint**: An endpoint is a URL that represents the location of an API or a specific resource within an API. It typically includes the base URL of the API, the resource path, and any query parameters or request headers that are needed to access the resource.
-    -   **Integration**: An integration is a way to connect an API Gateway method to a back-end service, such as an AWS Lambda function, an Amazon EC2 instance, or a third-party service. API Gateway supports multiple types of integrations, such as Lambda, HTTP, and WebSocket.
-    -   **Authorization**: Authorization is the process of controlling access to an API by requiring clients to provide valid credentials, such as an **API key** or an **OAuth token**. API Gateway supports several types of authorization, including IAM, Lambda, and custom authorizers.
-    -   **Throttling**: Throttling is the process of limiting the rate at which API clients can make requests to an API. API Gateway supports several types of throttling, including **rate limiting** and **burst limiting**, to prevent overloading back-end services or unauthorized access.
-    -   **API proxying**: It's also known as API gateway or API proxy, is a technique used to route requests from clients to backend services through an intermediary server, known as the proxy or gateway. It acts as an intermediary between the client and the actual API endpoint, providing various benefits such as security, scalability, and flexibility. Here's how API proxying works:
-
-        -   `Routing`: The API proxy receives requests from clients and forwards them to the appropriate backend service based on predefined routing rules. These rules can be configured to direct requests based on paths, headers, or other criteria.
-        -   `Security`: API proxies often implement security measures such as authentication, authorization, and rate limiting to protect backend services from unauthorized access or abuse. They can handle tasks like API key management, OAuth integration, and encryption of sensitive data.
-        -   `Monitoring and Analytics`: API proxies typically offer monitoring and analytics capabilities to track the usage and performance of APIs. They can collect metrics such as request/response times, error rates, and traffic volume, providing valuable insights for troubleshooting and optimization.
-        -   `Caching`: Proxies may cache responses from backend services to improve performance and reduce latency. By caching frequently accessed data, they can serve subsequent requests without hitting the backend, resulting in faster response times and reduced server load.
-        -   `Transformation`: API proxies can perform data transformation and manipulation on requests and responses. They may modify headers, transform payloads between different data formats (e.g., JSON to XML), or add/remove elements from the request or response body.
-        -   `Load Balancing`: In cases where multiple backend services are available to handle requests, API proxies can perform load balancing to distribute traffic evenly across the servers. This ensures optimal resource utilization and prevents overloading of individual servers.
 
     -   <details><summary style="font-size:20px;color:#FF1493">Terms and Concepts</summary>
 
@@ -1663,6 +1734,14 @@
         -   **Integration with Backends**: Methods define how the API Gateway interacts with backend services, such as AWS Lambda functions, Amazon EC2, or HTTP endpoints.
         -   **Input/Output Mapping**: Request and response payloads can be transformed or mapped to fit the backend’s format using **mapping templates**.
 
+        ##### Integration Types:
+
+        API Gateway allows you to integrate the frontend API with various backend services via different integration types:
+
+        -   **Lambda Integration**: Direct integration with AWS Lambda functions, allowing you to run serverless functions as API endpoints.
+        -   **HTTP/HTTP_PROXY Integration**: API Gateway can route requests to HTTP-based backends such as web servers or third-party APIs.
+        -   **AWS Service Integration**: Integrate with other AWS services like DynamoDB, SNS, or SQS directly, without requiring Lambda.
+
         ##### Proxy Integration
 
         In AWS API Gateway, **Proxy Integration** is a feature that allows the API to pass through all HTTP requests directly to an AWS Lambda function or another HTTP endpoint without configuring each method, parameter, or mapping. It creates a streamlined and flexible setup, especially useful for microservices architectures. Followings are the key points of proxy integration with aws lambda
@@ -1675,102 +1754,6 @@
 
         In contrast, **Non-Proxy Integration** involves more detailed configurations for each endpoint and allows for customized mapping and transformations. However, Proxy Integration is typically preferred for simpler, JSON-based APIs that don’t need intricate transformations.
 
-        ##### Method Request
-
-        -   **Definition**: The **Method Request** is the initial part of the API Gateway process that handles the incoming request from the client.
-        -   **Purpose**: It sets up and validates client input before passing the request on to the backend integration (e.g., AWS Lambda, HTTP endpoints, or AWS services like Step Functions).
-        -   **Configuration Options**:
-            -   `Request Parameters`: Defines expected query parameters, headers, or path variables.
-            -   `Request Validation`: Allows validation rules to ensure clients send correct data (e.g., required parameters).
-            -   `Authorization`: Enables access control options like AWS IAM permissions, Cognito User Pools, or custom authorizers.
-
-        ##### Integration Request
-
-        -   **Definition**: The **Integration Request** defines how the **Method Request** is transformed and routed to the backend.
-        -   **Purpose**: It controls how API Gateway forwards requests to the backend service, including any required transformations or modifications.
-        -   **Configuration Options**:
-            -   `Mapping Templates`: Define how to map and transform incoming request data to match the backend’s expected format.
-            -   `Integration Type`: Specifies the type of backend integration, such as AWS Lambda, HTTP endpoint, AWS service (e.g., Step Functions, DynamoDB).
-            -   `Request Parameters`: Additional parameters or headers to pass along to the backend if required.
-
-        ##### Integration Response
-
-        -   **Definition**: The **Integration Response** handles the response from the backend service before passing it back to the client.
-        -   **Purpose**: It controls the format and transformation of the backend response, including error handling and data formatting.
-        -   **Configuration Options**:
-            -   `Mapping Templates`: Define transformations to convert backend responses into the desired format.
-            -   `Error Handling`: Specifies conditions (like status codes) to catch errors from the backend and map them to standard responses.
-            -   `Headers and Parameters`: Adds or modifies headers or parameters before sending them back to the client.
-
-        ##### Method Response
-
-        -   **Definition**: The **Method Response** is the final step that defines the structure and format of the response that API Gateway sends to the client.
-        -   **Purpose**: It sets up how the API Gateway should format the response for clients, including defining which HTTP status codes, headers, and data formats are returned.
-        -   **Configuration Options**:
-            -   `Response Models`: Defines a schema for different HTTP status codes and responses, ensuring predictable response formats.
-            -   `Status Codes`: Specifies which status codes the client can expect (e.g., 200 for success, 400 for client errors).
-            -   `Headers and Parameters`: Defines response headers available to the client, like `Content-Type` or custom headers.
-
-        ##### Mapping Template
-
-        In AWS API Gateway, **Mapping Templates** are used to transform incoming requests before they reach the backend and to modify backend responses before they reach the client. This transformation capability is particularly useful when integrating API Gateway with other AWS services (like AWS Lambda) or external APIs, allowing you to map data formats, handle transformations, and enforce data contracts.
-
-        -   **Key Features of Mapping Templates**
-
-            1. `Request Transformation`:
-
-                - You can configure mapping templates to modify or structure the data that comes from clients before sending it to the backend.
-                - For instance, if a client sends data in a certain JSON format, you can transform it into another format that your backend expects (like XML or another JSON structure).
-                - Mapping templates use **Velocity Template Language (VTL)**, which provides a set of pre-defined objects and functions to handle conditional logic, loops, and data transformation.
-
-            2. `Response Transformation`:
-
-                - Mapping templates can also be applied to transform the responses from the backend before they are returned to the client.
-                - This is useful if your backend provides data in a certain format, and you need to restructure or filter the data for the client.
-
-            3. `Content-Type Handling`:
-
-                - Mapping templates are associated with **content types**. You can create different templates based on content types like `application/json` or `application/xml`, allowing you to support multiple client formats.
-                - API Gateway then selects the appropriate mapping template based on the content type specified in the client’s request.
-
-            4. `Example Use Cases`:
-                - **Path and Query Parameter Mapping**: Transform parameters from a request path or query string into a request body format expected by the backend.
-                - **Error Handling**: Modify error messages from the backend to make them more meaningful to the client by converting error codes or adding context.
-                - **Data Enrichment**: Enrich requests with additional data, such as injecting metadata or headers required by the backend, without requiring the client to provide them.
-
-        -   **Example of a Simple Mapping Template**
-
-            -   Suppose you receive a JSON request like this from a client:
-
-                ```json
-                {
-                    "username": "john_doe",
-                    "age": 30
-                }
-                ```
-
-            -   If your backend expects the request in this format:
-
-                ```json
-                {
-                    "user": {
-                        "name": "john_doe",
-                        "age": 30
-                    }
-                }
-                ```
-
-            -   You could create a mapping template like:
-
-                ```vtl
-                {
-                "user": {
-                    "name": "$input.path('$.username')",
-                    "age": "$input.path('$.age')"
-                }
-                }
-                ```
-
         ##### Endpoints and Custom Domain Names:
 
         API Gateway provides default **API endpoints** but also allows you to associate your API with a **custom domain name**.
@@ -1779,14 +1762,6 @@
             -   **Regional Endpoints**: Serve requests from specific AWS regions.
             -   **Edge-Optimized Endpoints**: Uses CloudFront to serve requests to globally distributed users.
             -   **Custom Domain**: Map your custom domain name (e.g., `api.yourdomain.com`) to your API Gateway endpoint.
-
-        ##### Integration Types:
-
-        API Gateway allows you to integrate the frontend API with various backend services via different integration types:
-
-        -   **Lambda Integration**: Direct integration with AWS Lambda functions, allowing you to run serverless functions as API endpoints.
-        -   **HTTP/HTTP_PROXY Integration**: API Gateway can route requests to HTTP-based backends such as web servers or third-party APIs.
-        -   **AWS Service Integration**: Integrate with other AWS services like DynamoDB, SNS, or SQS directly, without requiring Lambda.
 
         ##### Authorization:
 
@@ -1895,6 +1870,289 @@
 
             -   Logs include detailed information such as request timestamps, IP addresses, request/response payloads, and latency.
             -   Access logs can be stored in CloudWatch Logs for long-term analysis.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">Request-Response Flow</summary>
+
+        The AWS API Gateway **Request-Response Flow** for REST APIs is structured around four main components: **Method Request**, **Integration Request**, **Integration Response**, and **Method Response**. These components allow you to define the external API contract, transform data, enforce security, and map backend results to client responses.
+
+        This intricate setup, often called a **Custom Integration** or **Non-Proxy Integration**, provides the highest degree of control over the data flow between the client and the backend service.
+
+        1. **Method Request (The Client Contract)**: The **Method Request** defines the public-facing contract of your API method. It specifies what API Gateway expects to receive from the client and what validation and authorization checks to perform before routing the request further.
+
+            - **HTTP Method and Resource Path:** The combination (e.g., `GET /users/{id}`).
+            - **Authorization:** Defines how the client is authenticated and authorized.
+                - **Authorization Type:** Includes AWS_IAM, Cognito User Pools, Lambda Authorizers, or NONE (public access).
+                - **Authorization Scopes:** Used with Cognito User Pools to restrict access based on defined scopes.
+            - **Request Parameters:** Defines which parameters API Gateway should expect from the client. These can be:
+                - **Path Parameters:** (e.g., `{id}` in `/users/{id}`).
+                - **Query String Parameters:** (e.g., `?limit=10`).
+                - **Headers:** (e.g., `Authorization`, `X-Custom-Header`).
+                - **Required Flag:** Specifies whether the parameter is mandatory.
+            - **Request Body:** Defines the expected structure of the request body (e.g., for a POST or PUT method).
+                - **Request Models:** Associates a **JSON Schema Model** (defined in API Gateway) with a specific Content-Type (e.g., `application/json`).
+                - **Request Validation:** Allows you to enable validation of required parameters and/or the request body against the defined models, preventing malformed requests from reaching the backend.
+
+        2. **Integration Request (Request Transformation to Backend)**: The **Integration Request** acts as the crucial translator between the client-facing format (**Method Request**) and the format required by the backend service (the **Integration Endpoint**).
+
+            - **Integration Type:** The service API Gateway will connect to:
+                - **AWS:** Connects to an AWS service (e.g., Lambda, DynamoDB, SQS).
+                - **HTTP:** Connects to an external HTTP/HTTPS endpoint.
+                - **MOCK:** Returns a response directly from API Gateway without hitting a backend.
+                - **VPC LINK:** Connects to a private resource in your VPC (e.g., an ALB/NLB).
+            - **Integration Endpoint URI:** The exact address of the backend service (e.g., a Lambda ARN, an SQS queue URL, or an external URL).
+            - **Credentials/Role:** The **IAM Role** that API Gateway will assume to call the backend service (critical for AWS service integrations like Lambda or DynamoDB).
+            - **Request Mapping Templates (The Core Transformation):**
+                - These are templates written in **Velocity Template Language (VTL)**.
+                - They define how the data collected in the **Method Request** (parameters, headers, body, and **Context variables** like client IP or stage) should be transformed into the payload that the backend expects.
+                - _Example:_ Transforming a simple JSON body from the client into the complex DynamoDB `PutItem` JSON structure.
+            - **Parameter Mapping:** Maps headers, query string parameters, or path variables from the Method Request to the **Integration Request** parameters (headers, query strings, or path variables) before the VTL transformation.
+
+        3. **Integration Response (Response from Backend)**: The **Integration Response** defines how API Gateway handles the raw response, status codes, and body received from the backend service. It is the first step in translating the backend's internal response format back to a client-friendly API response.
+
+            - **HTTP Status Regex:** This is the most important part. It uses a **regular expression** (regex) to match the HTTP status code or an error message pattern from the backend response.
+                - _Example:_ A regex of `2\d{2}` matches any $2\text{xx}$ success code.
+                - **Selection:** Based on the match, API Gateway selects the appropriate **Integration Response** configuration.
+            - **Response Mapping Templates (Backend-to-Client Transformation):**
+                - VTL templates that transform the raw response body received from the backend into the desired client response body format.
+                - _Example:_ A Lambda function might return a JSON object like `{"db_status": "OK", "data": {...}}`. The VTL can extract and reformat this to just `{"result": {...}}` for the client.
+            - **Header Mappings:** Allows you to extract values from the backend response and map them to new, specific **Integration Response Headers**.
+
+        4. **Method Response (The Final Client Response)**: The **Method Response** defines the final structure of the response that is returned to the client and represents the API's documented output contract. It receives the transformed data from the Integration Response and packages it for delivery.
+
+            - **HTTP Status Code:** Defines the status codes the client will receive (e.g., 200, 201, 400, 500). **A Method Response must be defined for every status code the API can return.**
+            - **Response Headers:** Defines which headers will be included in the final response sent to the client. The values for these headers are typically mapped from the **Integration Response** headers.
+            - **Response Models:** Associates a JSON Schema Model with the response body for a given status code and Content-Type. This serves primarily for documentation and validation purposes (though response validation is less common than request validation).
+
+            The process completes when the data and headers from the selected **Integration Response** are mapped to the final headers and body of the corresponding **Method Response** structure, which is then sent back to the original client.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">Mapping Templates</summary>
+
+        Mapping Templates in AWS API Gateway are the core mechanism for **data transformation** and **mediation** between the external API client and the internal backend service. They are essential for **non-proxy integrations** where you need precise control over the request and response payloads.
+
+        Mapping templates are written using the **Velocity Template Language (VTL)**, which allows you to use simple scripting logic to modify the JSON, XML, or other text payloads.
+
+        ##### Where Mapping Templates are Used
+
+        Mapping templates are used at two critical points in the request-response cycle:
+
+        1. **Integration Request Mapping Template**: This template transforms the incoming client request (the **Method Request**) into the format required by the backend service (the **Integration Request**).
+
+            - **Role:** Translator from **client API contract** to **backend service format**.
+            - **Input Data:** Accesses the original request body, headers, query parameters, path parameters, and **context variables** (like the caller's IP or authentication details).
+            - **Output Data:** The final payload sent to the backend (e.g., the JSON event for a Lambda function, or the specific JSON structure for a direct DynamoDB API call).
+            - **Primary Use Cases:**
+                - **Lambda Invocation:** Capturing all request details (headers, body, query strings) and packaging them into a single JSON object that is easy for a Lambda function to parse.
+                - **AWS Service Integration:** Transforming a simple HTTP request into the complex JSON required to call an AWS SDK action (e.g., converting a `GET /user/{id}` request into the DynamoDB `GetItem` action format).
+
+        2. **Integration Response Mapping Template**: This template transforms the raw response received from the backend service back into a format suitable for the API client (the **Method Response**).
+
+            - **Role:** Translator from **backend service response** to **client API contract**.
+            - **Input Data:** The raw response body received from the backend service (e.g., the JSON object returned by Lambda).
+            - **Output Data:** The final response body sent to the client.
+            - **Primary Use Cases:**
+                - **Flattening/Simplifying:** Removing unnecessary metadata (like AWS service wrappers, DynamoDB data type descriptors, or Lambda function execution context) from the backend's response before sending it to the client.
+                - **Error Transformation:** Changing the error body from a backend service into a clean, standardized error message the client understands.
+                - **Response Code Override:** Using VTL logic to inspect the backend response body and dynamically override the HTTP status code that API Gateway returns to the client (e.g., inspecting a Lambda response for an "Error" field and changing the status code from 200 to 400).
+
+        -   **Content-Type Handling**:
+
+            -   Mapping templates are associated with **content types**. You can create different templates based on content types like `application/json` or `application/xml`, allowing you to support multiple client formats.
+            -   API Gateway then selects the appropriate mapping template based on the content type specified in the client’s request.
+
+        ##### Velocity Template Language (VTL)
+
+        VTL is a simple templating engine that powers the mapping templates. It provides the syntax to access data and apply basic logic.
+
+        -   **VTL Syntax Fundamentals**
+
+            | Syntax   | Description                                            | Example                       |
+            | :------- | :----------------------------------------------------- | :---------------------------- |
+            | **`#`**  | Used for directives (logic, loops, setting variables). | `#set`, `#if`, `#foreach`     |
+            | **`$`**  | Used for variables and references.                     | `$input`, `$context`, `$util` |
+            | **`##`** | Used for single-line comments.                         | `## This line is a comment`   |
+
+        -   **Key VTL Variables Available**: You access data within the VTL templates using three main object references:
+
+            | Variable       | Description                                                                                      | Example Usage                                                 |
+            | :------------- | :----------------------------------------------------------------------------------------------- | :------------------------------------------------------------ |
+            | **`$input`**   | Provides methods to access the **request body and parameters**.                                  | `$input.json('$.user.name')` (selects a field using JSONPath) |
+            | **`$context`** | Provides information about the **API execution context**.                                        | `$context.identity.sourceIp` (gets the client IP)             |
+            | **`$util`**    | Provides **utility functions** for tasks like JSON parsing, base64 encoding, and error handling. | `$util.base64Encode($input.body)`                             |
+
+        -   **Common VTL Examples**
+
+            1. **Extracting/Selecting Data**: The most common use is to extract specific parts of the request payload using the `$input.path()` or `$input.json()` methods:
+
+            ```vtl
+            ## Integration Request to Lambda
+            #set($body = $input.json('$'))
+            {
+            "userId": "$input.params('id')",
+            "requestBody": $body,
+            "callerIp": "$context.identity.sourceIp"
+            }
+            ```
+
+            2. **Conditional Logic**: VTL allows for simple conditional checks, useful for handling missing optional fields or dynamic status codes:
+
+            ```vtl
+            ## Conditional check for a required header
+            #if($input.params('X-Customer-ID') == '')
+            #set($context.responseOverride.status = 400)
+            #end
+            ```
+
+            3. **Looping**: You can iterate over arrays in the payload, which is useful for transforming `application/x-www-form-urlencoded` data or reformatting data structures.
+
+            ```vtl
+            ## Used to process an array of items in the request body
+            #foreach($item in $input.path('$.items'))
+            {
+            "itemName": "$item.name"
+            }
+            #if($foreach.hasNext),#end
+            #end
+            ```
+
+        Using VTL mapping templates is crucial for achieving **loose coupling** in your architecture, as it allows the external client-facing API and the internal backend service implementation to evolve independently.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">JSON Schema (APIGateway Model)</summary>
+
+        JSON Schemas, referred to as **Models** in AWS API Gateway, are reusable, powerful JSON documents that define the **structure, format, and constraints** of the request and response payloads for your API methods. They are defined once per API and can be referenced by multiple methods, serving a dual purpose: **request body validation** and **code generation/documentation**.
+
+        API Gateway Models use the **JSON Schema Draft 4** syntax.
+
+        ##### Primary Functions of API Gateway Models
+
+        1. **Request Body Validation (The Main Use Case)**: This is the most critical function. By associating a Model with a **Method Request** and enabling a **Request Validator**, API Gateway performs schema validation _before_ forwarding the request to your backend service (like a Lambda function).
+
+            - **How it Works:** When a client sends a request with a body, API Gateway checks if the payload adheres to the rules defined in the associated JSON Schema Model (for the specified Content-Type, e.g., `application/json`).
+            - **Benefits:**
+                - **Offloads Validation:** Moves basic structural validation (type checking, required fields, constraints) from your backend code (e.g., Lambda) to the API Gateway layer. This saves execution time and costs for invalid requests.
+                - **Immediate Feedback:** If the request body fails validation, API Gateway immediately returns a $\mathbf{400}$ **Bad Request** error to the client without ever invoking the backend integration.
+                - **Security:** Enforces strict data types and prevents unexpected payload structures that could potentially lead to injection or unexpected runtime errors in the backend.
+
+        2. **Payload Transformation Guidance**: When defining a **Mapping Template** (using VTL), you can ask API Gateway to generate a _starter template_ based on the defined Model. This gives you a pre-filled VTL template with all the fields and paths defined in the schema, simplifying the process of writing complex transformation logic.
+
+        3. **Documentation and SDK Generation**: Models serve as essential input for API Gateway's documentation and SDK generation features:
+
+            - They provide a formalized, machine-readable contract for your API's input and output data structures.
+            - When you use API Gateway to generate client SDKs (for languages like JavaScript, Android, or iOS), the Models are used to create the corresponding data structures in the target programming language.
+
+        ##### JSON Schema Fundamentals
+
+        API Gateway Models are implemented as JSON objects adhering to the JSON Schema Draft 4 specification. Key keywords define the rules:
+
+        | Keyword                     | Purpose                                                                                                                                                                                                           | Example                                                |
+        | :-------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------- |
+        | **`type`**                  | Defines the data type of the value (e.g., `object`, `array`, `string`, `number`, `integer`, `boolean`).                                                                                                           | `"type": "object"`                                     |
+        | **`properties`**            | Used for `type: object`. Defines the fields the object is expected to have.                                                                                                                                       | `"properties": {"name": {"type": "string"}}`           |
+        | **`required`**              | An array of property names that **must** be present in the request body.                                                                                                                                          | `"required": ["name", "email"]`                        |
+        | **`pattern`**               | A regular expression constraint used for string validation.                                                                                                                                                       | `"pattern": "^[a-zA-Z]+$"` (must contain only letters) |
+        | **`minimum`/`maximum`**     | Numeric constraints for `type: number` or `type: integer`.                                                                                                                                                        | `"minimum": 18`                                        |
+        | **`maxLength`/`minLength`** | Length constraints for `type: string` or `type: array`.                                                                                                                                                           | `"maxLength": 50`                                      |
+        | **`additionalProperties`**  | A boolean (default `true`). Setting this to **`false`** ensures the client cannot include any properties in the payload that are _not_ defined in the `properties` list. This is highly recommended for security. | `"additionalProperties": false`                        |
+        | **`$ref`**                  | Used to reference another defined model within the same API, enabling the creation of complex or nested data structures.                                                                                          | `"items": {"$ref": "https://.../models/ItemModel"}`    |
+
+        -   **Example Model (JSON Schema)**: This schema validates a request body for creating a user:
+
+            ```json
+            {
+                "$schema": "http://json-schema.org/draft-04/schema#",
+                "title": "NewUserRequest",
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "minLength": 4,
+                        "maxLength": 30
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "age": {
+                        "type": "integer",
+                        "minimum": 18
+                    }
+                },
+                "required": ["username", "email"],
+                "additionalProperties": false
+            }
+            ```
+
+        ##### Model Integration Steps
+
+        1.  **Create the Model:** Define the JSON Schema in the API Gateway **Models** section.
+        2.  **Create a Request Validator:** In the API Gateway console, you create a Request Validator and specify whether it should validate the request body, query parameters, or both.
+        3.  **Apply to Method:** In the **Method Request** settings for a specific resource and HTTP verb (e.g., `POST /users`):
+            -   Set the **Request Validator** to the one created in step 2.
+            -   Under **Request Body**, associate the Model with a **Content-Type** (e.g., map the `NewUserRequest` Model to the content type `application/json`).
+
+        Once these steps are complete, API Gateway will automatically check all incoming `POST /users` requests against the defined schema and reject invalid requests with a $\mathbf{400}$ error before execution even begins.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">API KEY</summary>
+
+        API Keys in AWS API Gateway are long, uniquely generated strings used primarily for **tracking, metering, and controlling access rates** to your REST and WebSocket APIs. They act as a token required to identify the calling client and associate that client with a **Usage Plan**.
+
+        **Crucially, AWS strongly recommends against using API Keys alone for authentication or fine-grained authorization.** They are best used as a mechanism for **monetization** and **traffic management**.
+
+        ##### Purpose and Mechanism
+
+        The core function of an API Key is to link an API client to a **Usage Plan**, which dictates how much traffic that client is allowed to send to the API.
+
+        1. **Usage Plans**: An API Key must be associated with a **Usage Plan**. The Usage Plan is where the actual controls are defined:
+
+            - **Throttling:** Sets the steady-state **rate limit** (requests per second) and the maximum **burst limit** (maximum concurrent requests allowed in a short period).
+            - **Quota:** Sets the total number of requests a client can make within a specific time period (e.g., 10,000 requests per month).
+
+        2. **The Flow**
+            1. **Client Request:** A client sends a request to an API Gateway method that is configured to require an API key, including the key in a specified header (usually `x-api-key`).
+            2. **Key Check:** API Gateway checks the provided key against its database of valid keys.
+            3. **Usage Plan Association:** If the key is valid, API Gateway identifies the associated **Usage Plan** and **API Stage**.
+            4. **Enforcement:** API Gateway checks the client's current usage against the plan's defined **throttling** and **quota** limits.
+            5. **Execution/Rejection:**
+                - If the limits are exceeded, the request is immediately rejected with a $\mathbf{429}$ **Too Many Requests** status code.
+                - If the limits are honored, the request is passed to the backend integration, and the request count for that key is logged.
+
+        ##### Configuration Steps
+
+        To use an API key, you must configure three components:
+
+        3. **Create the API Key**: You generate a unique API key directly within the API Gateway console or via API/CLI. This key is then distributed to the API consumers.
+
+        4. **Configure the API Method**: For each method (`GET`, `POST`, etc.) on a resource that you want to protect, you must explicitly set the **API Key Required** setting to **`true`** in the **Method Request** configuration.
+
+        5. **Create and Associate the Usage Plan**:
+
+            - **Create Usage Plan:** Define the desired Rate, Burst, and Quota.
+            - **Associate Stage:** Link the Usage Plan to the specific **API Stage** (e.g., `prod`, `dev`) that contains your API methods.
+            - **Associate API Key:** Add the newly created API Key to the Usage Plan. A single API key can grant access to multiple API stages/APIs if they are all included in the same Usage Plan.
+
+        -   **API Key Source**: You can configure where API Gateway looks for the key in the request:
+            -   **`HEADER` (Default):** The key is expected in the standard `X-API-KEY` header of the request.
+            -   **`AUTHORIZER`:** The key is returned by an identity source (like a Lambda Authorizer) and can be checked against a usage plan.
+
+        ##### API Keys vs. Authorization
+
+        It is crucial to understand the difference between API Keys and true authorization mechanisms:
+
+        | Feature           | API Key                                                                   | IAM or Lambda Authorizer                                                                   |
+        | :---------------- | :------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------- |
+        | **Primary Goal**  | **Metering and Throttling** (traffic management).                         | **Authentication and Authorization** (identity and permission).                            |
+        | **Identity**      | Identifies the **consumer account** or **application**.                   | Identifies the **individual user** (e.g., Jane Doe).                                       |
+        | **Granularity**   | Coarse-grained. Checks if the key is **valid** for _any_ API in the plan. | Fine-grained. Checks if the user has permission to access _this specific_ resource/method. |
+        | **Best Practice** | Use for **SaaS APIs, Billing, and Rate Limiting**.                        | Use for **User Logon, Role-Based Access Control (RBAC)**, and sensitive data protection.   |
+
+        **API Keys are not sufficient for security.** If a malicious user steals a key, they gain access to all APIs associated with that key's Usage Plan. For security, you should use **IAM Roles**, **Lambda Authorizers**, or **Cognito User Pools** for authentication and authorization, often **in conjunction with** an API Key for metering.
 
         </details>
 
