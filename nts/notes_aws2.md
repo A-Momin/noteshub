@@ -2099,6 +2099,48 @@
 
         </details>
 
+    -   <details><summary style="font-size:20px;color:#FF1493">Usage Plans</summary>
+
+        Usage Plans in AWS API Gateway are a powerful mechanism to control access to your APIs, manage request traffic, and often serve as the foundation for **API monetization and tiered access** for different customers. They bundle together **API Stages**, **Throttling limits**, and **Quotas**, and link them to individual **API Keys**.
+
+        A Usage Plan governs how a client is permitted to interact with your deployed APIs. It is defined by three main components:
+
+        -   **API Stages**: The usage plan defines exactly which deployed API stages it applies to. A single Usage Plan can grant access to **one or more API stages** across one or more REST APIs.
+
+            -   **Example:** A "Premium" usage plan might grant access to the `v2/prod` stage of the `DataAPI` and the `beta` stage of the `AnalyticsAPI`.
+
+        -   **Throttling (Rate Limiting)**: Throttling controls the rate at which clients can submit requests to prevent your backend systems from being overwhelmed by traffic spikes or misuse.
+
+            -   **Rate:** The steady-state average rate, defined as the number of requests per second (RPS) that API Gateway allows.
+            -   **Burst:** The maximum number of concurrent requests that API Gateway will service before returning an HTTP **429 Too Many Requests** error. This is based on the **Token Bucket Algorithm**, allowing a client to temporarily exceed the stable rate for short bursts of activity.
+            -   **Granularity:** Throttling can be applied at the **API Stage level** and, more importantly, at the **Per-Client/Per-Key level** within the Usage Plan, allowing you to set different throttle limits for different customer tiers (e.g., 10 RPS for Basic, 100 RPS for Gold).
+
+        -   **Quota**: The quota defines the **total number of requests** that an individual client (identified by an API Key) can make within a specified time period.
+
+            -   **Requests:** The total request count limit (e.g., 10,000 requests).
+            -   **Period:** The time interval over which the request count is tracked (e.g., day, week, or month).
+            -   **Enforcement:** Once a client's request count exceeds the quota for the period, API Gateway will reject subsequent requests with an HTTP **403 Forbidden** error until the next period begins. You can also grant an **extension** to the quota for a specific API Key if needed.
+
+        -   **The Role of API Keys**: Usage Plans are enforced on a per-client basis through **API Keys**.
+
+            -   **API Key Creation:** You create a unique API Key (an alphanumeric string) for each client or customer.
+            -   **Association:** Each API Key is explicitly associated with a Usage Plan.
+            -   **Client Usage:** When a client makes a request, they must include their API Key in a designated header (usually `x-api-key`).
+            -   **Method Requirement:** To enable Usage Plan enforcement, you must explicitly configure individual API methods (or the entire API Stage) to require an API Key. If a method does not require an API Key, it will bypass the usage plan's throttling and quota limits.
+
+            | Plan        | Throttling (RPS)     | Quota (Requests/Month) | Associated API Keys |
+            | :---------- | :------------------- | :--------------------- | :------------------ |
+            | **Basic**   | Rate: 10, Burst: 5   | 100,000                | Client A, Client B  |
+            | **Premium** | Rate: 100, Burst: 50 | 10,000,000             | Client C, Client D  |
+
+        -   **Important Implementation Details and Limitations**:
+
+            -   **Not for Authentication/Authorization:** API Keys should **not** be used for general authentication or authorization (i.e., verifying _who_ a user is or _what_ resources they can access). For that, use mechanisms like **IAM**, **Lambda Authorizers**, or **Cognito User Pools**. API Keys are purely for **usage metering, throttling, and quota enforcement**.
+            -   **Best-Effort Enforcement:** Usage plan quotas and throttling are applied on a **best-effort basis**. They are not hard, guaranteed limits, especially under extremely high load. AWS recommends using services like **AWS WAF** for strict request blocking and **AWS Budgets** to monitor costs.
+            -   **Viewing Usage:** API Gateway provides a console view to track the usage data for each API Key linked to a Usage Plan, helping you monitor customer consumption.
+
+        </details>
+
     -   <details><summary style="font-size:20px;color:#FF1493">API KEY</summary>
 
         API Keys in AWS API Gateway are long, uniquely generated strings used primarily for **tracking, metering, and controlling access rates** to your REST and WebSocket APIs. They act as a token required to identify the calling client and associate that client with a **Usage Plan**.
@@ -3187,6 +3229,67 @@
         -   **Ideal for:** Building **complex, real-time stream processing applications** like fraud detection, real-time ETL, or advanced sessionization and time-series analysis. It often consumes data from Kinesis Data Streams or Kinesis Data Firehose.
 
         </details>
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">Amazon MSK</summary>
+
+    AWS Managed Streaming for Apache Kafka (AWS MSK) is a fully managed service that makes it easy to build and run applications using Apache Kafka to process streaming data. It handles the provisioning, configuration, scaling, and maintenance of Kafka clusters.
+
+    Here is a detailed breakdown of its key terms, concepts, components, and features.
+
+    ##### Core Apache Kafka Concepts
+
+    AWS MSK is built on open-source Apache Kafka, so understanding the core Kafka concepts is essential.
+
+    -   **Topic:** The fundamental way data is organized in Kafka. A topic is a category or feed name to which records are published.
+    -   **Partition:** A topic is divided into one or more partitions. Partitions allow a topic to be parallelized across multiple brokers and provide the basis for distributing data. Data within a partition is ordered sequentially.
+    -   **Producer:** Applications that **publish** (write) data records to topics. Producers choose which partition to write to within a topic.
+    -   **Consumer:** Applications that **subscribe** to topics and **read** (process) data records from them. Consumers typically read from one or more partitions.
+    -   **Broker:** A Kafka server. Brokers store the data for a topic's partitions and handle client requests (producing and consuming). An MSK cluster is composed of multiple broker nodes.
+    -   **ZooKeeper/KRaft:** In older Kafka versions, **ZooKeeper** was a required component for cluster coordination, metadata management, and leader election. Modern Kafka versions use **KRaft** (Kafka Raft) protocol, which integrates the metadata management directly into the Kafka brokers, removing the external dependency on ZooKeeper. MSK manages both for you.
+
+    ##### AWS MSK Components and Architecture
+
+    Amazon MSK manages several components to provide a highly available and durable Kafka environment.
+
+    -   **Broker Nodes:** These are the EC2 instances that run the Kafka broker process. When you create an MSK cluster, you specify the instance type (e.g., `kafka.m5.large`) and the number of brokers per Availability Zone (AZ). MSK ensures they are distributed across multiple AZs (usually three) for high availability.
+        -   **Standard Brokers:** Offer high flexibility with control over storage configurations.
+        -   **Express Brokers (Provisioned):** Offer more elasticity and faster recovery with virtually unlimited, elastic storage capacity, reducing storage management overhead.
+    -   **Storage (Amazon EBS):** Data logs for the Kafka partitions are stored on Amazon EBS volumes attached to the broker nodes. MSK supports automatic storage scaling based on utilization.
+    -   **ZooKeeper/KRaft Nodes:** MSK automatically provisions and manages these nodes for cluster coordination, whether they are dedicated ZooKeeper nodes or built-in KRaft controllers.
+    -   **VPC and Network Interfaces:** MSK clusters run within an Amazon **Virtual Private Cloud (VPC)** managed by MSK. Clients in your own VPC privately access the cluster through cross-account **Elastic Network Interfaces (ENIs)** that MSK deploys in your VPC.
+
+    ##### Key Features of AWS MSK
+
+    MSK provides a range of features to simplify operations and enhance security and resilience.
+
+    -   **Cluster Management and Scaling**:
+
+        -   **Fully Managed Service:** AWS handles operational overhead like provisioning, configuration, patches, upgrades, hardware failures, and routine maintenance.
+        -   **High Availability and Resilience:** Clusters are distributed across multiple AZs. MSK automatically replaces failed components (brokers) without application downtime and reuses storage to speed up recovery.
+        -   **Auto-Scaling:** Supports automatic scaling for storage in response to increased usage and can automatically adjust the number of workers in an MSK Connect connector.
+        -   **Broker Types:** Offers **Provisioned** clusters (you select instance type and number of brokers) and **MSK Serverless** (AWS manages cluster capacity and scaling automatically based on throughput and storage).
+        -   **Tiered Storage:** Allows you to retain data longer by moving older, less frequently accessed data from the high-throughput primary storage to a lower-cost secondary storage tier (like Amazon S3), while still allowing consumption.
+
+    -   **Security and Access Control**:
+
+        -   **Encryption:** Provides **Encryption at Rest** using AWS KMS (Key Management Service) and **Encryption in Transit** using TLS/SSL between brokers and between clients and brokers.
+        -   **Access Control (Authentication & Authorization):**
+            -   **IAM Access Control:** Simplifies authentication and API authorization using AWS IAM roles and user policies. This is the recommended and no-cost option.
+            -   **Mutual TLS (mTLS):** Uses client certificates for authentication.
+            -   **SASL/SCRAM:** Uses username/password credentials managed by AWS Secrets Manager.
+            -   **Apache Kafka ACLs:** Allows for granular authorization control over Kafka data-plane operations (producing/consuming).
+        -   **Private Connectivity:** Clusters are privately accessible within your VPC, optionally supporting **Multi-VPC Private Connectivity** for private access across multiple VPCs or AWS accounts.
+
+    -   **Monitoring, Replication, and Integration**:
+
+        -   **Monitoring and Logging:** Integrated with **Amazon CloudWatch** for real-time metrics and **AWS CloudTrail** for API activity logging. It also supports **Open Monitoring** with Prometheus/Grafana. Broker logs can be delivered to Amazon S3, CloudWatch Logs, or Amazon Data Firehose.
+        -   **MSK Connect:** A fully managed service for **Kafka Connect**, simplifying the deployment, management, and scaling of connectors to stream data between Kafka topics and other data stores (like S3, Amazon OpenSearch Service, or databases).
+        -   **MSK Replicator:** Enables seamless, continuous replication of topics across two different MSK clusters (even across AWS Regions) for disaster recovery, data migration, or creating multi-region architectures.
+        -   **AWS Service Integrations:** Works natively with services like **AWS Lambda** for event-driven processing, **Amazon S3** for data archival, **AWS Glue** for schema management, and **Amazon Managed Service for Apache Flink** for stream processing.
 
     </details>
 

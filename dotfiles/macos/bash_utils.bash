@@ -392,15 +392,70 @@ capturescreen() {
     screencapture -T 1 "$folder_name/screenshot-$current_datetime.png"
 }
 
-setscpath(){
+# setscpath(){
 
-    defaults write com.apple.screencapture "name" -string "screenshot"
+#     defaults write com.apple.screencapture "name" -string "screenshot"
+#     defaults write com.apple.screencapture include-date -bool false
+#     # defaults write com.apple.screencapture "include-date" -string "$(date +'%H:%M:%S')"
+
+#     defaults write com.apple.screencapture location ${1:-~/Desktop/ss}
+
+#     echo "Screenshots will be saved in '$(defaults read com.apple.screencapture location)'"
+# }
+
+setscpath() {
+    : '
+    -------------------------------------------------------------------------------
+    Function: setscpath
+    Description:
+      Sets the default save location and file name prefix for screenshots taken
+      using the macOS built-in screenshot utility (CMD+Shift+3/4/5).
+      It requires restarting the SystemUIServer to apply the changes immediately.
+    
+    Arguments:
+      $1 (Optional): The full path to the desired save directory.
+                     Defaults to '~/Desktop/ss' if not provided.
+      $2 (Optional): The file name prefix (e.g., 'capture').
+                     Defaults to 'screenshot' if not provided.
+    
+    Writes to:
+      com.apple.screencapture 'location'
+      com.apple.screencapture 'name'
+      com.apple.screencapture 'include-date' (set to false)
+    
+    Requires:
+      macOS (to use the 'defaults' and 'killall' commands).
+    
+    Invocation Syntax Examples:
+    
+      # Example 1: Set location to '~/Documents/Screens' and prefix to 'project_A'
+      setscpath ~/Documents/Screens project_A
+    
+      # Example 2: Set location to '~/Desktop/Images' but keep the default prefix ('screenshot')
+      setscpath ~/Desktop/Images
+    
+      # Example 3: Reset to default location ('~/Desktop/ss') and default prefix ('screenshot')
+      setscpath
+    -------------------------------------------------------------------------------
+    '
+
+    # 1. Set the screenshot location (defaulting to ~/Desktop/ss if $1 is empty)
+    defaults write com.apple.screencapture location "${1:-~/Desktop/ss}"
+
+    # 2. Set the screenshot name prefix (defaulting to "screenshot" if $2 is empty)
+    # The name is used as the file prefix, e.g., "myprefix 2025-11-29 at 11.52.52.png"
+    defaults write com.apple.screencapture name "${2:-screenshot}"
+    
+    # 3. Explicitly disable the date stamp as the original function attempted
     defaults write com.apple.screencapture include-date -bool false
-    # defaults write com.apple.screencapture "include-date" -string "$(date +'%H:%M:%S')"
 
-    defaults write com.apple.screencapture location ${1:-~/Desktop/ss}
+    # 4. Apply changes immediately
+    killall SystemUIServer
 
-    echo "Screenshots will be saved in '$(defaults read com.apple.screencapture location)'"
+    # 5. Provide feedback to the user
+    # Note: The command in the echo will read the actual system-resolved path.
+    echo "Screenshots will now be saved in '$(defaults read com.apple.screencapture location)'"
+    echo "Files will be named with the prefix: '$(defaults read com.apple.screencapture name)'"
 }
 
 showscpath(){

@@ -440,6 +440,40 @@
 
 ---
 
+-   <details><summary style="font-size:25px;color:Orange">Various Types of Storage Services</summary>
+
+    AWS offers a comprehensive suite of storage services categorized primarily into **Object, Block, and File Storage**, along with specialized services for **Archiving, Data Transfer,** and **Hybrid** environments.
+
+    -   **Object Storage**: Object storage is designed for massive scale, durability, and cost-effectiveness. It is ideal for unstructured data, backups, and media content.
+
+        -   **Amazon Simple Storage Service (S3):** The flagship object storage service. It stores data in "buckets" and offers various **Storage Classes** to manage cost based on access frequency (e.g., S3 Standard, S3 Intelligent-Tiering, S3 Standard-IA).
+        -   **Amazon S3 Glacier:** A family of extremely low-cost storage classes within S3 designed for data **archiving** and long-term backup, with configurable retrieval times (e.g., S3 Glacier Instant Retrieval, S3 Glacier Flexible Retrieval, S3 Glacier Deep Archive).
+
+    -   **Block Storage**: Block storage provides volumes that function like a local hard drive, offering high-performance, low-latency access for a single compute instance. It is the preferred choice for transactional workloads like databases and virtual machine boot volumes.
+
+        -   **Amazon Elastic Block Store (EBS):** Provides persistent block storage volumes that are attached to **Amazon EC2** instances. It offers various volume types (SSD-backed for performance, HDD-backed for throughput/cost).
+        -   **Amazon EC2 Instance Store:** Provides **temporary** block-level storage physically attached to the host computer of an EC2 instance. Data is lost when the instance is stopped or terminated (often called "ephemeral" storage).
+
+    -   **File Storage**: File storage allows multiple compute instances to share the same storage volume simultaneously using standard file-level protocols (like NFS or SMB).
+
+        -   **Amazon Elastic File System (EFS):** A fully managed, scalable file storage service for **Linux** workloads, providing shared access via the NFS protocol. It automatically scales capacity and performance.
+        -   **Amazon FSx Family:** A group of fully managed services that let you choose from four widely-used commercial and open-source file systems:
+            -   **Amazon FSx for Windows File Server** (SMB protocol)
+            -   **Amazon FSx for Lustre** (for high-performance computing/analytics)
+            -   **Amazon FSx for NetApp ONTAP**
+            -   **Amazon FSx for OpenZFS**
+        -   **Amazon File Cache:** A high-speed cache that speeds up processing of file data stored in disparate locations, including S3 and on-premises file systems.
+
+    -   **Hybrid, Data Transfer & Supporting Services**: These services bridge the gap between your on-premises data centers and the AWS cloud, or offer centralized data protection.
+
+        -   **AWS Storage Gateway:** A hybrid cloud storage service that provides on-premises applications with low-latency access to virtually unlimited cloud storage in AWS. It includes File Gateway, Volume Gateway, and Tape Gateway.
+        -   **AWS Snow Family:** Physical devices used to transfer **large amounts of data** into and out of AWS (petabyte-scale) when internet transfer is impractical or too slow. Includes **AWS Snowball Edge** and **AWS Snowmobile** (exabyte-scale).
+        -   **AWS Backup:** A centralized, managed service to automate and govern backup across AWS services (EBS volumes, RDS databases, EFS file systems, etc.).
+
+    </details>
+
+---
+
 -   <details><summary style="font-size:25px;color:Orange">EC2</summary>
 
     -   [DigitalCloud: EC2](https://www.youtube.com/watch?v=8bIW7qlldLg&t=108s)
@@ -1460,7 +1494,7 @@
         }
         ```
 
-    -   **Trust Policy** (Assume Role Policy): A trust policy in AWS is a JSON document that specifies which principals (users, accounts, services, etc.) are allowed to assume a specific role. It defines the conditions under which a role can be assumed and the actions that are allowed as a result.
+    -   **Trust Policy** (**Assume-Role Policy**): A trust policy in AWS is a JSON document that specifies which principals (users, accounts, services, etc.) are allowed to assume a specific role. It defines the conditions under which a role can be assumed and the actions that are allowed as a result.
 
         ```json
         {
@@ -1492,20 +1526,6 @@
             - `Attached Directly to AWS Resources`: Some resources (like S3 buckets, Lambda functions, etc.) allow policies to be attached directly to them, defining who can access them. These policies also define the allowed actions on the resource.
             - `Granting Cross-Account Access`: Resource-based policies are often used to grant cross-account access, specifying who (in another account) can access a resource.
 
-    -   **Trust Relationship**: In Amazon Web Services (AWS), a "trust relationship" refers to the trust established between two entities, typically between an AWS Identity and Access Management (IAM) role and another entity, such as an AWS account or an external identity provider (IdP). The trust relationship defines who can assume the IAM role and under what conditions.
-
-        -   `IAM Roles`: IAM roles are AWS identities that you can create and manage. They are not associated with a specific user or group, making them suitable for cross-account access, applications, and services. Trust relationships are commonly used with IAM roles.
-        -   `Trusting Entity`: This is the entity that defines the IAM role and grants permissions to the role. The trusting entity specifies who is allowed to assume the role. This can be an AWS account or an external entity, like an external IdP.
-        -   `Trusted Entity`: This is the entity or entities that are allowed to assume the IAM role. Trusted entities can assume the role to access AWS resources, services, or perform specific actions.
-        -   `Conditions`: Trust relationships often include conditions that must be met for an entity to assume the role. Conditions can be based on various factors, such as time of day, source IP address, or other context-specific criteria.
-
-        -   Common use cases for trust relationships in AWS include:
-
-            -   `Service-to-Service Access`: Allowing AWS services, such as AWS Lambda, to assume roles with specific permissions to interact with other AWS services and resources securely.
-            -   `Cross-Account Access`: Allowing entities from one AWS account to access resources in another AWS account. For example, you might use a trust relationship to allow a production account to access resources in a development or testing account.
-            -   `Federated Access`: Enabling users from an external identity provider (e.g., Active Directory, SAML-based IdP) to assume IAM roles in AWS accounts. This is useful for single sign-on (**SSO**) scenarios.
-            -   `Temporary Permissions`: Granting temporary permissions to entities. When an entity assumes a role, it receives temporary security credentials, and these credentials expire after a specified duration.
-
     #### Role
 
     An AWS IAM Role is a set of permissions that define what actions are allowed (or denied) in AWS. It is not associated with a specific user or group, but instead, it can be assumed by any trusted entity (like an AWS service, user, or application).
@@ -1517,11 +1537,28 @@
 
     -   A role is an IAM identity that you can create in your account that has specific permissions. An IAM role has some similarities to an IAM user. Roles and users are both AWS identities with permissions policies that determine what the identity can and cannot do in AWS. However, instead of being uniquely associated with one person, a role can be assumed by anyone who needs it. A role does not have standard long-term credentials such as a password or access keys associated with it. Instead, when you assume a role, it provides you with temporary security credentials for your role session. You can use roles to delegate access to users, applications, or services that don't normally have access to your AWS resources.
 
-    -   **service role**: A service role is an IAM role that a service assumes to perform actions on your (users, groups, identities) behalf. Service roles provide permissions to AWS services so that they can interact with other AWS services and resources. The Key Characteristics of Service Roles are following.
+    -   **service role**: A **Service Role** in AWS Identity and Access Management (IAM) is an IAM role that an **AWS service assumes** to perform actions on your behalf. This mechanism is crucial for the security and functionality of numerous AWS services, as it allows them to interact with other AWS resources without using your permanent user credentials.
 
-        -   `Trust Relationship`: Service roles have a trust policy that specifies which services are allowed to assume the role. This policy grants the service permission to use the role.
-        -   `Permissions Policies`: These roles also have permission policies that define what actions the service can perform and on which resources.
-        -   `Temporary Security Credentials`: When an AWS service assumes a role, it uses temporary security credentials to make requests to other AWS services.
+        -   **Core Concepts of an IAM Role**: An IAM role, in general, is an AWS identity with permission policies, similar to an IAM user. However, a role is designed to be **assumed** by a trusted entity rather than being permanently associated with a single person. The two essential components of any IAM role, including a Service Role, are:
+
+            -   **Trust Policy:** This policy defines **which entities** (principals) are allowed to assume the role. For a Service Role, the trust policy is configured to trust a specific AWS service principal (e.g., `lambda.amazonaws.com` for AWS Lambda or `ec2.amazonaws.com` for Amazon EC2).
+            -   **Permissions Policy:** This policy specifies **what actions** the entity can perform on **which AWS resources** once the role is assumed. This is where you define the permissions needed for the service to carry out its function (e.g., allow `s3:GetObject` on a specific S3 bucket).
+
+        -   **How a Service Role Works**
+
+            1.  **Creation:** An administrator creates the IAM Service Role, attaching the necessary permissions policies and defining the trust policy to allow a specific AWS service (the **principal**) to assume it.
+            2.  **Assumption:** When the AWS service needs to perform an action on a resource (like an EC2 instance needing to read data from S3, or a Lambda function needing to write logs to CloudWatch), the service automatically _assumes_ the Service Role.
+            3.  **Temporary Credentials:** When the service assumes the role, it receives **temporary security credentials**. These credentials are automatically managed, rotated, and have a defined expiration time, adhering to the principle of least privilege and enhancing security.
+            4.  **Action:** The service uses these temporary credentials to execute the allowed actions on your behalf (e.g., creating a network interface, launching an EC2 instance, or writing logs).
+
+        -   **Types of Service Roles**: There are two main categories of service roles you will encounter:
+
+            | Type of Role            | Description                                                                                                                                                                                                  | Management                                                                                                                                                   | Example Use Case                                                                                  |
+            | :---------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
+            | **Service Role**        | A custom role created by an administrator to grant specific, scoped permissions for an AWS service (like Lambda or EC2) to access resources in your account.                                                 | **Customer-Managed**. You define and control both the trust and permissions policies.                                                                        | An **AWS Lambda function** needs to read data from a DynamoDB table and write logs to CloudWatch. |
+            | **Service-Linked Role** | A unique type of IAM role that is **directly linked** to an AWS service. These roles are pre-defined by the service and automatically contain all permissions required for the service to operate correctly. | **AWS-Managed**. The service automatically creates and updates the role, and you typically cannot modify its permissions or trust policy (only view/delete). | An **Auto Scaling Group** needs to manage EC2 instances or Elastic Load Balancers on your behalf. |
+
+    -   **Service-Linked Role**:
 
     -   **assume-role-policy-document**: An assume-role-policy-document is a policy attached to an IAM role that defines who (which entities) can assume the role. This policy, also known as a trust policy, specifies the conditions under which the role can be assumed and the permissions granted to those entities.
 
@@ -1615,6 +1652,67 @@
         -   `AssumeRoleWithWebIdentity`: Returns temporary security credentials for users authenticated via a web identity provider, such as Login with Amazon, Facebook, Google, or any OpenID Connect-compatible provider.
         -   `GetFederationToken`: Returns temporary security credentials for a federated user.
         -   `GetSessionToken`: Returns temporary security credentials for an AWS account or IAM user.
+
+    There are two main ways for an **IAM User** to request an AWS STS token, which grants **temporary, limited-privilege credentials**:
+
+    1.  **Requesting a Token with `GetSessionToken` (Same Permissions)**: The `GetSessionToken` API call generates temporary credentials that are based on the calling IAM user's long-term credentials and have the exact same permissions. This is primarily used to provide temporary, MFA-protected credentials.
+
+        -   **Prerequisites**:
+
+            -   The IAM user must have long-term access keys configured.
+            -   (Optional but recommended) The IAM user must have an MFA device configured, and the policy controlling access must require MFA.
+
+        -   **AWS CLI Example (with MFA)**: Use the `aws sts get-session-token` command, providing the MFA details:
+
+            ```bash
+            aws sts get-session-token \
+                --duration-seconds 3600 \
+                --serial-number arn:aws:iam::123456789012:mfa/user-name \
+                --token-code 123456
+            ```
+
+            -   `--duration-seconds`: The duration for the temporary credentials (e.g., 3600 seconds = 1 hour). Max is 36 hours for IAM users.
+            -   `--serial-number`: The ARN of the IAM user's MFA device.
+            -   `--token-code`: The current 6-digit code from the MFA device.
+
+            **Output:** The command returns a `Credentials` object containing the `AccessKeyId`, `SecretAccessKey`, and `SessionToken`.
+
+    2.  **Requesting a Token with `AssumeRole` (Delegated Permissions)**: The `AssumeRole` API call allows an IAM user to temporarily take on the permissions defined in an **IAM Role**. This is the standard method for delegating permissions within the same account or across accounts.
+
+        -   **Prerequisites**:
+
+            1.  **IAM Role:** An IAM Role must exist with the desired permissions (via a permissions policy).
+            2.  **Role Trust Policy:** The Role's **Trust Policy** must explicitly allow the IAM User to assume it. This is done by specifying the IAM User's ARN in the `Principal` element of the trust policy, allowing the `sts:AssumeRole` action.
+                ```json
+                {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Principal": {
+                                "AWS": "arn:aws:iam::123456789012:user/target-user"
+                            },
+                            "Action": "sts:AssumeRole"
+                        }
+                    ]
+                }
+                ```
+            3.  **IAM User Permissions:** The IAM User must have an **identity-based policy** that grants them the `sts:AssumeRole` permission on the specific Role ARN.
+
+        -   **AWS CLI Example**: The IAM User uses their own long-term credentials to call the `assume-role` command, specifying the Role they want to assume:
+
+            ```bash
+            aws sts assume-role \
+                --role-arn arn:aws:iam::123456789012:role/TargetRoleName \
+                --role-session-name AWSCLI-Session
+            ```
+
+            -   `--role-arn`: The Amazon Resource Name (ARN) of the Role you want to assume.
+            -   `--role-session-name`: A unique identifier for the session (visible in CloudTrail logs).
+
+            **Output:** The command returns an `AssumedRoleUser` object and a `Credentials` object containing the temporary `AccessKeyId`, `SecretAccessKey`, and `SessionToken`.
+
+        -   **Next Step**: Once you receive the temporary credentials (Access Key ID, Secret Access Key, and Session Token), you must set them as environment variables or configure them in your AWS CLI/SDK profile to use them for subsequent AWS API calls.
 
     #### Instance Profile
 

@@ -35,10 +35,10 @@
 
     -   `$ terraform init`
 
+    -   `$ terraform plan`
     -   `$ terraform plane -refresh=false`
     -   `$ terraform plane console`
     -   `$ terraform plane -out iam.tfplane`
-    -   `$ terraform plan`
     -   `$ terraform plan -out iam.tfplan`
     -   `$ terraform plan -refresh=false -var="iam_user_name_prefix=VALUE_FROM_COMMAND_LINE"`
 
@@ -69,6 +69,73 @@
     -   `$ terraform workspace select default`
     -   `$ terraform workspace list`
     -   `$ terraform workspace select prod-env`
+
+    The Terraform CLI is used to manage and automate infrastructure provisioning. Below is a list of the most common and essential Terraform commands, along with frequently used flags and a concise explanation.
+
+    ##### Essential Terraform Workflow Commands
+
+    These commands represent the core steps of the standard Terraform workflow: initialize, plan, apply, and destroy.
+
+    | Command              | Flags / Parameters         | Explanation                                                                            |
+    | :------------------- | :------------------------- | :------------------------------------------------------------------------------------- |
+    | `terraform init`     | `--upgrade`                | Initializes a working directory, downloading necessary providers and modules.          |
+    |                      | `--backend-config=path`    | Configures the backend (e.g., S3 bucket name) non-interactively.                       |
+    | `terraform validate` | `-json`                    | Checks configuration files for syntax and internal consistency before planning.        |
+    | `terraform plan`     | `-out=path`                | Generates and saves an execution plan to a file for later application.                 |
+    |                      | `-destroy`                 | Generates a plan to destroy all resources defined in the configuration.                |
+    |                      | `-target=resource_address` | Focuses the plan on specific resources (use with caution).                             |
+    |                      | `-var 'key=value'`         | Sets a variable value on the command line.                                             |
+    |                      | `-var-file=path`           | Loads variable values from a specified file.                                           |
+    | `terraform apply`    | `<planfile>`               | Executes the saved plan file or generates a plan and applies it interactively.         |
+    |                      | `-auto-approve`            | Skips the interactive approval prompt for the execution plan.                          |
+    |                      | `-target=resource_address` | Applies changes only to specific resources and their dependencies (use with caution).  |
+    |                      | `-refresh-only`            | Updates the state file to reflect real-world changes without proposing config changes. |
+    | `terraform destroy`  | `-auto-approve`            | Destroys all infrastructure managed by the current configuration without prompting.    |
+    |                      | `-target=resource_address` | Destroys only the specified resources (use with caution).                              |
+
+    ##### State Management and Inspection
+
+    These commands allow you to view, modify, and manage the Terraform state file.
+
+    | Command                | Flags / Parameters        | Explanation                                                                         |
+    | :--------------------- | :------------------------ | :---------------------------------------------------------------------------------- |
+    | `terraform show`       | `<path_to_state_or_plan>` | Provides human-readable output of the state file or a saved plan file.              |
+    |                        | `-json`                   | Displays the state or plan output in machine-readable JSON format.                  |
+    | `terraform state list` | `[address]`               | Lists all or specific resources currently tracked in the state file.                |
+    | `terraform state mv`   | `<source> <destination>`  | Moves an item's address within the state file (e.g., renaming a resource).          |
+    | `terraform state rm`   | `<address>...`            | Removes resource instances from the state file without touching the infrastructure. |
+    | `terraform import`     | `<address> <id>`          | Imports existing infrastructure into the Terraform state file.                      |
+    | `terraform refresh`    |                           | Updates the state file to reflect the current real-world status of resources.       |
+
+    ##### Utility and Maintenance Commands
+
+    These commands handle formatting, external data, module fetching, and other general tasks.
+
+    | Command                    | Flags / Parameters   | Explanation                                                                                    |
+    | :------------------------- | :------------------- | :--------------------------------------------------------------------------------------------- |
+    | `terraform fmt`            | `--recursive`        | Rewrites all configuration files to a canonical format and style.                              |
+    |                            | `--check`            | Checks if files are formatted correctly; returns non-zero exit code if not.                    |
+    | `terraform output`         | `[name]`             | Displays the value of the root module's output variables.                                      |
+    |                            | `-json`              | Displays the output values in JSON format.                                                     |
+    | `terraform console`        |                      | Opens an interactive console for evaluating HCL expressions against the configuration/state.   |
+    | `terraform get`            | `-update`            | Downloads and updates remote modules referenced in the configuration.                          |
+    | `terraform graph`          | `-type=plan`         | Generates a visual graph of resource dependencies (outputs DOT format).                        |
+    | `terraform taint`          | `<resource_address>` | Manually marks a managed resource for replacement on the next apply.                           |
+    | `terraform untaint`        | `<resource_address>` | Removes the 'tainted' mark from a resource.                                                    |
+    | `terraform providers`      | `schema`             | Prints a schema for the installed providers, including all resource and data source arguments. |
+    | `terraform providers lock` |                      |                                                                                                |
+
+    ##### Workspace Commands (Legacy)
+
+    These commands manage separate, isolated state files within a single working directory.
+
+    | Command                      | Flags / Parameters | Explanation                                                        |
+    | :--------------------------- | :----------------- | :----------------------------------------------------------------- |
+    | `terraform workspace list`   |                    | Lists all existing workspaces.                                     |
+    | `terraform workspace show`   |                    | Displays the name of the current workspace.                        |
+    | `terraform workspace new`    | `<name>`           | Creates a new workspace and switches to it.                        |
+    | `terraform workspace select` | `<name>`           | Switches the current state environment to the specified workspace. |
+    | `terraform workspace delete` | `<name>`           | Deletes the named workspace (must be empty of resources).          |
 
     </details>
 
@@ -321,10 +388,7 @@
 -   <details><summary style="font-size:25px;color:Orange;text-align:left">Setting Input variables in order of precedence</summary>
 
     The order of precedence for setting **Input Variables** in Terraform determines which value is used when multiple sources attempt to define the same variable. Terraform uses the first value it finds, starting from the highest priority source and moving down.
-
     Here is the complete order of precedence, from **highest priority (1)** to **lowest priority (6)**:
-
-    ## 🥇 Terraform Input Variable Precedence
 
     1. **The `-var` flag on the CLI (Highest)**: Values passed directly on the command line using the `-var` flag take the highest precedence. This is often used for quick overrides or sensitive values that shouldn't be committed to files.
 
@@ -354,8 +418,8 @@
         - **Example:**
             ```terraform
             variable "instance_type" {
-            type    = string
-            default = "t3.medium" # Used if no value is set elsewhere
+                type    = string
+                default = "t3.medium" # Used if no value is set elsewhere
             }
             ```
 
@@ -775,6 +839,204 @@
 
         </details>
 
+    -   <details><summary style="font-size:18px;color:#C71585">What is the purpose of terraform block in Terraform configuration?</summary>
+
+        The `terraform block` is a top-level configuration block that is used to define settings and configurations for Terraform itself. It is not directly related to the infrastructure being provisioned but rather controls how Terraform operates.
+
+        In Terraform, the `terraform` block is a top-level configuration block that is used to define settings and configurations for Terraform itself. It is not directly related to the infrastructure being provisioned but rather controls how Terraform operates.
+
+        1. **Specifying Backend Configuration**:
+            - The `backend` section within the `terraform` block defines where Terraform stores the **state file**.
+            - Backends can be local (default) or remote (e.g., S3, Azure Blob Storage, Google Cloud Storage).
+        2. **Defining Required Providers**: The `required_providers` block specifies which providers Terraform will use, including their source and version constraints.
+        3. **Setting Required Terraform Version**: The `required_version` attribute ensures that the Terraform configuration is compatible with a specific version or range of Terraform versions.
+        4. **Enabling Experiments or Features**: Used to enable experimental features or feature flags in Terraform.
+        5. **Using Terraform Cloud or Enterprise**: Configuration to use Terraform Cloud or Enterprise for remote operations and state management.
+        6. **Controlling Dependency Lock Files**: Terraform uses a lock file (`.terraform.lock.hcl`) to record the provider versions being used. The `terraform` block can define settings for this behavior indirectly through provider configuration.
+
+        -   **Example Full `terraform` Block**:
+
+            ```ini
+            terraform {
+                required_version = ">= 1.3.0"
+
+                backend "s3" {
+                    bucket         = "my-terraform-state"
+                    key            = "state/terraform.tfstate"
+                    region         = "us-east-1"
+                }
+
+                required_providers {
+                    aws = {
+                        source  = "hashicorp/aws"
+                        version = "~> 4.0"
+                    }
+                }
+            }
+            ```
+
+        -   **Summary**: The `terraform` block is primarily used to
+            -   Configure backend storage for the state file.
+            -   Define provider dependencies.
+            -   Set version constraints for Terraform.
+            -   Enable features or manage Terraform Cloud/Enterprise settings.
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">What is provider in Terraform? When and why you need to define multiple providers?</summary>
+
+        A **provider** in Terraform is a plugin that acts as an interface between Terraform and a specific API. It's responsible for understanding the necessary API interactions and exposing **resources** (e.g., a virtual machine, a database, a network) that you can manage and configure in your Terraform code.
+
+        Essentially, the provider defines the universe of infrastructure you can interact with.
+
+        ##### Components of a Provider
+
+        -   **API Wrapper:** The provider handles authentication and translates your HCL configuration into the specific API calls required by the cloud platform (like AWS, Azure, Google Cloud) or service (like Kubernetes, GitHub, Splunk).
+        -   **Resources and Data Sources:** Providers define the schema for the resources they manage. For example, the `aws` provider defines the `aws_instance` resource and the `aws_vpc` resource, along with their respective arguments.
+
+        You declare which providers you need in the **`terraform` block** and configure them in the **`provider` block**:
+
+        ```terraform
+        terraform {
+            required_providers {
+                # Define the source and required version
+                aws = {
+                source  = "hashicorp/aws"
+                version = "~> 5.0"
+                }
+            }
+        }
+
+        # Configure the provider (default block)
+        provider "aws" {
+            region = "us-east-1"
+        }
+        ```
+
+        ##### When and Why You Need to Define Multiple Providers
+
+        Defining multiple provider configurations is necessary when you need to interact with the same underlying service or cloud platform in different, distinct ways within a single configuration. This is accomplished using **Provider Aliases**.
+
+        This is required in two main scenarios:
+
+        1. **Different Geographic Regions (Multiple Regions)**
+
+            - **When:** Your infrastructure needs to span multiple, distinct geographical regions within the same cloud provider (e.g., deploying a global application where the primary API servers are in `us-east-1` and disaster recovery assets are in `eu-west-1`).
+
+            - **Why:** A single, unaliased provider block can only manage resources in one region. You need a dedicated, aliased configuration for each region.
+
+            - **Example:**
+
+                ```terraform
+                # Default provider block (no alias) for the primary region
+                provider "aws" {
+                    region = "us-east-1"
+                }
+
+                # Aliased provider block for the disaster recovery region
+                provider "aws" {
+                    alias  = "dr" # The alias name is 'dr'
+                    region = "eu-west-1"
+                }
+
+                # The resource creation must explicitly use the alias
+                resource "aws_s3_bucket" "dr_bucket" {
+                    provider = aws.dr # Use the aliased provider
+                    bucket   = "dr-backup-data"
+                }
+                ```
+
+        2. **Different Accounts or Credentials (Multiple Accounts)**
+
+            - **When:** You need to deploy resources across different, isolated cloud accounts (e.g., a **production account** and a **development account**) for security and billing separation, but manage both from the same root Terraform configuration.
+
+            - **Why:** Each account requires unique authentication credentials (or a distinct IAM role). An alias allows you to specify a unique set of credentials for a specific provider instance.
+
+            - **Example:**
+
+                ```terraform
+                # Default provider block for the Development Account
+                provider "aws" {
+                    region  = "us-east-1"
+                    profile = "dev-profile" # Credentials stored locally in AWS CLI config
+                }
+
+                # Aliased provider block for the Production Account
+                provider "aws" {
+                    alias  = "prod"
+                    region = "us-east-1"
+                    # Assume a specific role for production access
+                    assume_role {
+                        role_arn = "arn:aws:iam::123456789012:role/TerraformProdRole"
+                    }
+                }
+
+                # Resources use the appropriate aliased provider
+                resource "aws_vpc" "prod_vpc" {
+                    provider = aws.prod # Use the Production provider
+                    cidr_block = "10.0.0.0/16"
+                }
+                ```
+
+        </details>
+
+    -   <details><summary style="font-size:18px;color:#C71585">How does Terraform handle secrets or sensitive information?</summary>
+
+        Terraform provides the sensitive argument for variables to mark sensitive information. Secrets can also be stored in environment variables.
+
+        Terraform provides several mechanisms for handling secrets or sensitive information securely:
+
+        -   **Sensitive Data Handling**: Terraform offers the sensitive argument to mark sensitive values within resources. When a value is marked as sensitive, Terraform will prevent it from being displayed in the plan or any output, including state files.
+
+            ```ini
+            resource "aws_secretsmanager_secret" "example" {
+                name = "example"
+                secret_string = "super_secret_value"
+                sensitive = true
+            }
+            ```
+
+        -   **Backend Configuration**: Terraform's backend configuration can be used to specify where state data is stored. It is recommended to use a backend that supports encryption and access control, such as Amazon S3 with server-side encryption enabled.
+
+            ```ini
+            terraform {
+                backend "s3" {
+                    bucket = "example-bucket"
+                    key = "terraform/state.tfstate"
+                    region = "us-east-1"
+                    dynamodb_table = "terraform-lock"
+                    encrypt = true
+                }
+            }
+            ```
+
+        -   **Input Variables and Environment Variables**: Input variables can be defined in Terraform configuration files to parameterize configurations. When sensitive information is required as input, it is recommended to use environment variables or input variables defined in separate files that are not checked into source control.
+
+            ```ini
+            variable "db_password" {
+                type = string
+                default = ""
+            }
+            ```
+
+        -   **Provider Credentials**: Provider credentials, such as AWS access keys or Azure Service Principal credentials, should be managed using secure mechanisms provided by the respective cloud provider. For example, AWS IAM roles or Azure Managed Identities can be used to provide credentials securely without exposing them in Terraform configuration files.
+        -   **Secrets Management Integration**: Terraform integrates with third-party secrets management solutions, such as HashiCorp Vault or AWS Secrets Manager, to manage sensitive information securely. These solutions can be used to store and retrieve secrets dynamically during Terraform execution.
+
+            ```ini
+            data "aws_secretsmanager_secret" "example" {
+                name = "example"
+            }
+
+            resource "aws_db_instance" "example" {
+            # ...
+                password = data.aws_secretsmanager_secret.example.secret_string
+            }
+            ```
+
+        By leveraging these mechanisms, Terraform enables secure handling of secrets and sensitive information, reducing the risk of exposure and ensuring compliance with security best practices.
+
+        </details>
+
     -   <details><summary style="font-size:18px;color:#C71585">What is Terraform, and why is it used?</summary>
 
         **Terraform** is an open-source **Infrastructure as Code (IaC)** tool developed by HashiCorp that allows users to define, provision, and manage infrastructure resources in a declarative manner. Terraform enables the automation of infrastructure across various cloud platforms, data centers, and other service providers.
@@ -853,50 +1115,6 @@
     -   <details><summary style="font-size:18px;color:#C71585">Explain the concept of idempotency in Terraform.</summary>
 
         Idempotency ensures that running the same Terraform configuration multiple times results in the same infrastructure state, regardless of the initial state.
-
-        </details>
-
-    -   <details><summary style="font-size:18px;color:#C71585">What is the purpose of terraform block in Terraform configuration?</summary>
-
-        The `terraform block` is a top-level configuration block that is used to define settings and configurations for Terraform itself. It is not directly related to the infrastructure being provisioned but rather controls how Terraform operates.
-
-        In Terraform, the `terraform` block is a top-level configuration block that is used to define settings and configurations for Terraform itself. It is not directly related to the infrastructure being provisioned but rather controls how Terraform operates.
-
-        1. **Specifying Backend Configuration**:
-            - The `backend` section within the `terraform` block defines where Terraform stores the **state file**.
-            - Backends can be local (default) or remote (e.g., S3, Azure Blob Storage, Google Cloud Storage).
-        2. **Defining Required Providers**: The `required_providers` block specifies which providers Terraform will use, including their source and version constraints.
-        3. **Setting Required Terraform Version**: The `required_version` attribute ensures that the Terraform configuration is compatible with a specific version or range of Terraform versions.
-        4. **Enabling Experiments or Features**: Used to enable experimental features or feature flags in Terraform.
-        5. **Using Terraform Cloud or Enterprise**: Configuration to use Terraform Cloud or Enterprise for remote operations and state management.
-        6. **Controlling Dependency Lock Files**: Terraform uses a lock file (`.terraform.lock.hcl`) to record the provider versions being used. The `terraform` block can define settings for this behavior indirectly through provider configuration.
-
-        -   **Example Full `terraform` Block**:
-
-            ```ini
-            terraform {
-            required_version = ">= 1.3.0"
-
-            backend "s3" {
-                bucket         = "my-terraform-state"
-                key            = "state/terraform.tfstate"
-                region         = "us-east-1"
-            }
-
-            required_providers {
-                aws = {
-                source  = "hashicorp/aws"
-                version = "~> 4.0"
-                }
-            }
-            }
-            ```
-
-        -   In summary, The `terraform` block is primarily used to:
-            -   Configure backend storage for the state file.
-            -   Define provider dependencies.
-            -   Set version constraints for Terraform.
-            -   Enable features or manage Terraform Cloud/Enterprise settings.
 
         </details>
 
@@ -1043,63 +1261,6 @@
         ##### Summary:
 
         **Terraform remote state** allows the state file to be stored in a shared, secure, and centralized location rather than locally. It enables collaboration, prevents state corruption through locking, and improves security by supporting secure backends like S3, GCS, or Terraform Cloud. Remote state is crucial for managing large-scale infrastructure with multiple users or in production environments where consistency and security are vital.
-
-        </details>
-
-    -   <details><summary style="font-size:18px;color:#C71585">How does Terraform handle secrets or sensitive information?</summary>
-
-        Terraform provides the sensitive argument for variables to mark sensitive information. Secrets can also be stored in environment variables.
-
-        Terraform provides several mechanisms for handling secrets or sensitive information securely:
-
-        -   **Sensitive Data Handling**: Terraform offers the sensitive argument to mark sensitive values within resources. When a value is marked as sensitive, Terraform will prevent it from being displayed in the plan or any output, including state files.
-
-            ```ini
-            resource "aws_secretsmanager_secret" "example" {
-                name = "example"
-                secret_string = "super_secret_value"
-                sensitive = true
-            }
-            ```
-
-        -   **Backend Configuration**: Terraform's backend configuration can be used to specify where state data is stored. It is recommended to use a backend that supports encryption and access control, such as Amazon S3 with server-side encryption enabled.
-
-            ```ini
-            terraform {
-                backend "s3" {
-                    bucket = "example-bucket"
-                    key = "terraform/state.tfstate"
-                    region = "us-east-1"
-                    dynamodb_table = "terraform-lock"
-                    encrypt = true
-                }
-            }
-            ```
-
-        -   **Input Variables and Environment Variables**: Input variables can be defined in Terraform configuration files to parameterize configurations. When sensitive information is required as input, it is recommended to use environment variables or input variables defined in separate files that are not checked into source control.
-
-            ```ini
-            variable "db_password" {
-                type = string
-                default = ""
-            }
-            ```
-
-        -   **Provider Credentials**: Provider credentials, such as AWS access keys or Azure Service Principal credentials, should be managed using secure mechanisms provided by the respective cloud provider. For example, AWS IAM roles or Azure Managed Identities can be used to provide credentials securely without exposing them in Terraform configuration files.
-        -   **Secrets Management Integration**: Terraform integrates with third-party secrets management solutions, such as HashiCorp Vault or AWS Secrets Manager, to manage sensitive information securely. These solutions can be used to store and retrieve secrets dynamically during Terraform execution.
-
-            ```ini
-            data "aws_secretsmanager_secret" "example" {
-                name = "example"
-            }
-
-            resource "aws_db_instance" "example" {
-            # ...
-                password = data.aws_secretsmanager_secret.example.secret_string
-            }
-            ```
-
-        By leveraging these mechanisms, Terraform enables secure handling of secrets and sensitive information, reducing the risk of exposure and ensuring compliance with security best practices.
 
         </details>
 

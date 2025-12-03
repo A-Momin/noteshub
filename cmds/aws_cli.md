@@ -1,3 +1,7 @@
+### IAM Commands:
+
+-   `$ aws iam list-users`
+
 ### S3 Commands:
 
 The AWS Command-Line Interface (CLI) offers a wide range of commands for interacting with Amazon S3 (Simple Storage Service). Here are some of the most commonly used and useful AWS CLI commands for working with S3:

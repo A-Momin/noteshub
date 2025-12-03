@@ -215,6 +215,7 @@
 
     -   `$ git clone -b feature/development-2.0 https://github.com/user/my-repo.git` → To clone a repository named `my-repo` and immediately check out the branch named `feature/development-2.0`.
     -   `$ git clone https://github.com/repoName` → It creates a repository named `repoName`, initializes a `.git` directory inside it, pulls down all the data from that `main`/`master` branch of repository, and checks out a working copy of the latest version.
+    -   `$ git clone --branch <branch_name> --single-branch <repository_url>` →
     -   `$ git init` → It creates a new subdirectory named .git that contains all of your necessary repository files – a Git repository skeleton.
     -   `$ git init <folder_name>` → It creates a new directory named folder_name in current directory and initialize a git repository – a Git Repository Skeleton - in it.
     -   `$ git remote add origin <URL>` → Add the repository, named ‘origin’, from the remote (GitHub) to the local machin through given ‘url’. Conventionaly the word ‘origin’ is used as the name of remote repository, but the link between the locally initialized git repository and the remote(GitHub) get established through the provided URL, not through the name of remote repository, ‘origin’

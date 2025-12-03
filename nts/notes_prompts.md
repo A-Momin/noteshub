@@ -1,4 +1,8 @@
-I like to be an expert in RESTfull API of AWS APIGateway. Design an real-world and practical AWS APIGateway project using Terraform to demonstrate all components and features with Cognito Authorizers.
+I like to be an expert in Amazon MSK (Managed Streaming Kafka). Design an real-world and practical Amazon MSK project using Terraform to demonstrate all Terms, Concepts, components and features of MSK.
+
+---
+
+I like to be an expert in RESTfull API of AWS APIGateway. Design an real-world and practical AWS APIGateway project using Terraform to demonstrate all components and features with Cognito Authorizers. The main focus should be on caching, Mapping Templates, SON Schema, Usage Plans etc.
 
 ---
 
