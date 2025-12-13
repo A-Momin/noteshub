@@ -1,4 +1,4 @@
--   <details><summary style="font-size:25px;color:Orange;text-align:left">Courses & Tutorials</summary>
+-   <details><summary style="font-size:25px;color:Orange">Courses & Tutorials</summary>
 
     -   [AWS: TERRAFORM DOCUMENTATION](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
     -   [HCL Language Documentation](https://developer.hashicorp.com/terraform/language)
@@ -31,7 +31,7 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange;text-align:left">Commands</summary>
+-   <details><summary style="font-size:25px;color:Orange">Commands</summary>
 
     -   `$ terraform init`
 
@@ -141,7 +141,7 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange;text-align:left">Terraform Directives</summary>
+-   <details><summary style="font-size:25px;color:Orange">Terraform Directives</summary>
 
     In Terraform, **directives** are instructions or statements that define the configuration and behavior of resources, modules, and providers within the infrastructure as code (IaC) setup. They are used to specify how Terraform should interact with the cloud or on-prem infrastructure. Each directive plays a role in structuring the configuration files and managing dependencies, resource provisioning, and lifecycle management.
 
@@ -312,7 +312,7 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange;text-align:left">Multiple Environment Managements</summary>
+-   <details><summary style="font-size:25px;color:Orange">Multiple Environment Managements</summary>
 
     Managing multiple environments (such as development, staging, and production) in Terraform is crucial for safety, isolation, and efficiency. The approach you choose depends primarily on how much your environments differ from one another.
 
@@ -385,7 +385,7 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange;text-align:left">Setting Input variables in order of precedence</summary>
+-   <details><summary style="font-size:25px;color:Orange">Setting Input variables in order of precedence</summary>
 
     The order of precedence for setting **Input Variables** in Terraform determines which value is used when multiple sources attempt to define the same variable. Terraform uses the first value it finds, starting from the highest priority source and moving down.
     Here is the complete order of precedence, from **highest priority (1)** to **lowest priority (6)**:
@@ -431,7 +431,7 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange;text-align:left">Terms & Concepts</summary>
+-   <details><summary style="font-size:25px;color:Orange">Terms & Concepts</summary>
 
     -   **Terraform Configuration**:
 
@@ -644,7 +644,7 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange;text-align:left">Hashicorp Configuration Language(HCL)</summary>
+-   <details><summary style="font-size:25px;color:Orange">Hashicorp Configuration Language(HCL)</summary>
 
     -   [Terraform Configuration Syntex](https://developer.hashicorp.com/terraform/language/syntax/configuration)
 
@@ -785,7 +785,7 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange;text-align:left">Terraform Interview Questions</summary>
+-   <details><summary style="font-size:25px;color:Orange">Terraform Interview Questions</summary>
 
     #### Terraform Fundamentals
 

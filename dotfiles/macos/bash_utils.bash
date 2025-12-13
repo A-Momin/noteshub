@@ -620,6 +620,6 @@ proxyon(){
 
 git_add_comit_push(){
     git add .
-    git commit -m "regular update"
+    git commit -m "${2:-regular update}"
     git push origin $1
 }

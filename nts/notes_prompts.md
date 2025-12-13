@@ -1,3 +1,13 @@
+I like you to write a prompt that I like to ask Chat GPT. I like to ask the Chat GPT the following:
+
+1. design a project using Terraform that demonstrate the features and components of AWS Kinesis.
+2. The project should be very practical and real world.
+3. I should demonstrate all Components and Features of AWS Kinesis.
+4. If it's not possible to demonstrate all the components and features of Kinesis than create multiple connected projects.
+5. The goal of the project should be making me an expert on AWS Kinesis and all the AWS services which are used in the industries in conjunction with AWS Kinosis
+
+---
+
 I like to be an expert in Amazon MSK (Managed Streaming Kafka). Design an real-world and practical Amazon MSK project using Terraform to demonstrate all Terms, Concepts, components and features of MSK.
 
 ---

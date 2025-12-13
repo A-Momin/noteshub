@@ -1873,6 +1873,67 @@
 
         </details>
 
+    -   <details><summary style="font-size:20px;color:#FF1493">Features of AWS APIGateway</summary>
+
+        Amazon API Gateway is a fully managed service that acts as a **"front door"** for applications to access data, business logic, or functionality from your backend services. It handles all the tasks involved in accepting and processing up to hundreds of thousands of concurrent API calls, offering a comprehensive set of features for API management. Here are the detailed features of AWS API Gateway:
+
+        -   **API Types and Protocols**: API Gateway supports building and deploying three main types of APIs, each optimized for different use cases:
+
+            -   **REST APIs (RESTful):**
+                -   Creates APIs using resources and methods that support standard HTTP methods (GET, POST, PUT, DELETE, etc.).
+                -   Offers a full suite of API management features, including API keys, usage plans, and request/response transformations.
+                -   Provides higher flexibility and more fine-grained control over the API request/response lifecycle.
+            -   **HTTP APIs:**
+                -   A lighter-weight, lower-latency, and more cost-effective option for building RESTful APIs.
+                -   Optimized for serverless workloads (like AWS Lambda) and public HTTP endpoints.
+                -   Best suited for use cases that don't require the full API management features of REST APIs.
+            -   **WebSocket APIs:**
+                -   Enables **stateful, full-duplex communication** between a client and the server using the WebSocket protocol.
+                -   Ideal for real-time, two-way communication applications like chat apps, streaming dashboards, and real-time gaming.
+
+        -   **Security and Access Control**: API Gateway provides robust security features to protect your APIs from unauthorized access and attacks:
+
+            -   **Authentication and Authorization:**
+                -   **AWS IAM:** Uses IAM roles and policies to control who can create, deploy, and invoke your APIs.
+                -   **Lambda Authorizers (Custom Authorizers):** You can write a custom AWS Lambda function to authorize API requests using bearer tokens (like JWT) or other custom schemes.
+                -   **Amazon Cognito User Pools:** Allows using Amazon Cognito as an identity provider to manage user sign-up and sign-in, and secure access to your REST APIs.
+                -   **JWT Authorizers:** Natively supports authorization using JSON Web Tokens (JWTs) for HTTP APIs via OpenID Connect (OIDC) and OAuth 2.0.
+            -   **Resource Policies:** Uses JSON policies attached to the API to control access based on source IP address ranges (CIDR blocks) or specified AWS accounts/principals.
+            -   **AWS WAF Integration:** Seamlessly integrates with **AWS Web Application Firewall (WAF)** to protect your APIs from common web exploits (like SQL injection and cross-site scripting) that could affect availability, compromise security, or consume excessive resources.
+            -   **Mutual TLS (mTLS):** For both REST and HTTP APIs, mTLS ensures that both the client and the API Gateway verify each other's identity using certificates.
+            -   **Private APIs:** Allows you to expose your APIs only to resources within your Amazon Virtual Private Cloud (VPC) using VPC endpoints.
+
+        -   **Traffic Management and Performance**: Features designed to ensure your APIs can handle high load reliably and performantly:
+
+            -   **Scalability:** API Gateway is an **always-on, scalable service** that automatically handles large traffic volumes without requiring you to manage infrastructure.
+            -   **Throttling:** Allows you to define request limits (**rate limits**) and burst capacities at the account, stage, or individual method level to prevent API backend services from being overwhelmed.
+            -   **Caching:** For **REST APIs**, you can enable caching to store responses for a specified time-to-live (TTL), reducing the number of calls to your backend and lowering latency.
+            -   **Edge Optimization (via Amazon CloudFront):** Uses the **Amazon CloudFront** global edge network to cache and accelerate API requests and responses, providing low latency for end users worldwide.
+            -   **Request/Response Transformation:** Supports data mapping and transformation using **Apache Velocity Template Language (VTL)** to convert the request payload before it reaches the backend and the response payload before it's sent back to the client.
+            -   **CORS Support:** Provides built-in support for **Cross-Origin Resource Sharing (CORS)**, allowing web applications loaded in one domain to interact with resources from a different domain.
+
+        -   **Integration and Deployment**: API Gateway simplifies the connection to various backend services:
+
+            -   **Backend Integrations:**
+                -   **AWS Lambda:** Simplifies building **serverless APIs** by directly invoking Lambda functions.
+                -   **HTTP/VPC Link:** Allows integration with any publicly accessible HTTP endpoint or private resources (like an Application Load Balancer or EC2 instance) within a VPC using a VPC Link.
+                -   **Other AWS Services:** Native integration with services like Amazon DynamoDB, Amazon S3, AWS Step Functions, and more.
+                -   **Mock Integrations:** Allows you to test your API methods without calling the backend, returning a mocked response directly from the Gateway.
+            -   **API Management and Lifecycle:**
+                -   **Stages:** Allows you to deploy your API to multiple environments (e.g., `dev`, `test`, `prod`) by creating stages, each with its own configuration.
+                -   **Canary Release Deployments (REST APIs):** Supports canary release deployments to safely roll out changes by splitting traffic between a current stage and a new stage revision.
+                -   **Custom Domain Names:** Enables mapping your custom domain name (e.g., `api.example.com`) to your API endpoint.
+                -   **OpenAPI Support:** Supports importing and exporting APIs using **OpenAPI (formerly Swagger) specification** versions 2 and 3.
+
+        -   **Monitoring and Observability**: API Gateway provides tools to monitor and troubleshoot your APIs:
+
+            -   **Amazon CloudWatch Metrics:** Automatically sends detailed performance metrics (like call counts, latency, and error rates) to CloudWatch, allowing you to monitor API usage and set custom alarms.
+            -   **CloudWatch Logging:** Supports logging of API execution and access logging to CloudWatch Logs, aiding in debugging and auditing.
+            -   **AWS X-Ray Integration:** Integrates with **AWS X-Ray** to provide end-to-end tracing and a visual map of all components involved in an API request, helping to analyze and triage performance issues.
+            -   **Usage Plans (REST APIs):** Allows you to manage client usage by defining **usage plans**, including daily or monthly quotas and throttling limits, tied to unique **API keys** issued to third-party developers.
+
+        </details>
+
     -   <details><summary style="font-size:20px;color:#FF1493">Request-Response Flow</summary>
 
         The AWS API Gateway **Request-Response Flow** for REST APIs is structured around four main components: **Method Request**, **Integration Request**, **Integration Response**, and **Method Response**. These components allow you to define the external API contract, transform data, enforce security, and map backend results to client responses.
@@ -3185,7 +3246,7 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange">Amazon Kinosis</summary>
+-   <details><summary style="font-size:25px;color:Orange">Amazon Kinesis</summary>
 
     The main difference between Kinesis Data Streams, Kinesis Data Firehose, and Amazon Managed Service for Apache Flink lies in their primary function, level of management, and real-time processing capabilities within the AWS streaming data ecosystem.
 
@@ -3202,11 +3263,78 @@
 
     -   <details><summary style="font-size: 25px;color:#C71585">Amazon Kinesis Data Streams (KDS)</summary>
 
-        KDS is the **core transport layer** for streaming data. It functions like a durable, scalable log for data records.
+        -   Paralleization Factor
 
-        -   **Role:** Acts as an intermediary buffer for real-time data, allowing multiple consumers to read the same data concurrently.
-        -   **Key Feature:** **High control and flexibility**. You manage the throughput capacity by managing **shards**, and you must build or configure your own consumer applications (e.g., using AWS Lambda, KCL, or EC2 instances) to read the data.
-        -   **Ideal for:** Any scenario requiring **custom processing logic**, **multiple independent consumers** reading the same data, or when **data needs to be replayed** for historical processing.
+        Amazon Kinesis Data Streams (KDS) is a highly scalable and durable **real-time streaming data service** that continuously captures gigabytes of data per second from hundreds of thousands of sources. It acts as a massive buffer, decoupling the data producers from the data consumers, allowing multiple applications to process the same stream concurrently and independently.
+
+        ##### Core Architecture and Components
+
+        The Kinesis Data Streams architecture is composed of producers, the data stream itself (which contains shards and data records), and consumers.
+
+        1. **Producers**: **Producers** are applications or sources that continuously push **Data Records** into the Kinesis data stream.
+
+            - **Examples:** Website clickstreams, social media feeds, financial transaction systems, application logs, and IoT device data.
+            - **Tools:** AWS provides tools to simplify data ingestion:
+                - **Kinesis Producer Library (KPL):** A Java library that helps achieve high throughput by aggregating multiple records into a single request, batching, and handling retry logic.
+                - **Kinesis Agent:** A standalone Java software application that continuously monitors log files and reliably publishes data to a Kinesis stream.
+                - **AWS SDK/API:** Direct _PutRecord_ or _PutRecords_ API calls for custom producers.
+
+        2. **Kinesis Data Stream**: The **Stream** is the core resource in KDS. It's an ordered sequence of data records that you provision capacity for (or use On-Demand mode).
+
+            - **Shard:** A **Shard** is the base **throughput unit** of a Kinesis Data Stream. A stream is composed of one or more shards.
+                - **Capacity per Shard (in Provisioned Mode):**
+                    - **Write:** Up to 1 MB/sec or 1,000 records/sec.
+                    - **Read:** Up to 2 MB/sec or 5 transactions/sec.
+                - The total capacity of the stream is the sum of the capacities of all its shards. Shards are used for **horizontal scaling** and **parallel processing**.
+            - **Data Record:** The unit of data stored in the stream. Each record is an immutable sequence of bytes and consists of three elements:
+                - **Data Blob:** The actual data payload (up to 1 MB after Base64-decoding).
+                - **Partition Key:** A string specified by the producer used to group data by shard. All records with the same partition key are guaranteed to be routed to the same shard. This is critical for maintaining **ordering** within a specific key's data flow.
+                - **Sequence Number:** A unique, monotonically increasing identifier for each data record within a shard. KDS assigns this number when the record is successfully added to the stream.
+
+        3. **Consumers**: **Consumers** (also called **Kinesis Applications**) read and process the data records from one or more shards in the stream.
+
+            - **Examples:** AWS Lambda functions, Amazon Managed Service for Apache Flink applications, or custom applications running on Amazon EC2.
+            - **Tools:**
+                - **Kinesis Client Library (KCL):** A pre-built library that simplifies consumer development by handling complex tasks like load balancing, fault tolerance, multi-shard reading, and checkpointing (tracking the last successfully processed record).
+                - **AWS Lambda:** Uses Event Source Mappings to automatically poll the stream, handle checkpointing, and invoke a Lambda function with a batch of records.
+
+        ##### Key Features and Concepts
+
+        -   **Data Management & Processing**
+
+            -   **Data Ordering (Per Shard):** KDS guarantees that records within a single **Shard** are delivered to the consumer in the **exact order** in which they were written by the producer. This is maintained by the **Sequence Number**.
+            -   **Replayability and Durability:** Unlike a message queue (where a message is deleted after being read), KDS persists the data.
+                -   **Retention Period:** The duration for which records are accessible after being added to the stream. By default, this is **24 hours**, but it can be extended up to **365 days** for an extra cost. This allows multiple consumers to read the same data and gives consumers time to recover from failures and reprocess data.
+            -   **Checkpointing:** Consumers need to keep track of their progress (the last sequence number successfully processed) for each shard. This is called **checkpointing** and allows consumers to resume processing from where they left off after a crash or restart.
+
+        -   **Scaling and Capacity**
+
+            -   **Capacity Mode:** Determines how the stream's capacity is managed and how you are charged.
+                -   **Provisioned Mode:** You manually specify the number of shards. You are charged per shard-hour, regardless of usage. Requires capacity planning but offers the most control.
+                -   **On-Demand Mode:** KDS automatically manages and scales the shards based on your throughput needs. You are charged based on the actual data throughput ingested and retrieved, eliminating the need for capacity planning.
+            -   **Resharding:** The process of dynamically changing the number of shards in a provisioned stream to adjust capacity.
+                -   **Split:** Dividing one shard into two, typically to increase the stream's capacity.
+                -   **Merge:** Combining two adjacent shards into one, typically to decrease capacity and save costs.
+
+        -   **Consumer Throughput**
+
+            -   **Shared Throughput (Default):** All consumers that read directly from a shard share the shard's total read throughput of 2 MB/s. If you have many consumers, they may experience contention and throttling.
+            -   **Enhanced Fan-Out (EFO):** A dedicated feature that provides up to **2 MB/s of dedicated read throughput** per consumer per shard. This eliminates contention and allows multiple consumers to read with high throughput and low latency. You pay a fee per "Consumer-Shard Hour."
+
+        ##### Security and Integration Features
+
+        -   **Security:**
+
+            -   **Encryption at Rest:** KDS uses **Server-Side Encryption** (SSE) with **AWS Key Management Service (KMS)** to encrypt data stored within the stream.
+            -   **Access Control:** Integration with **AWS Identity and Access Management (IAM)** allows for fine-grained control over which users or roles can perform actions like putting or getting records.
+            -   **VPC Endpoints:** Allows traffic between your Amazon Virtual Private Cloud (VPC) and Kinesis Data Streams to remain within the AWS network.
+
+        -   **Integrations:** KDS serves as a central data ingestion layer, integrating seamlessly with various AWS services:
+            -   **AWS Lambda:** Directly processes records from the stream in real-time.
+            -   **Kinesis Data Firehose:** Can read from KDS to deliver data to destinations like **Amazon S3**, **Amazon Redshift**, or **Amazon OpenSearch Service**.
+            -   **Amazon Managed Service for Apache Flink:** Reads KDS data to perform complex real-time analytics using standard SQL or Java/Scala code.
+
+        Would you like to explore a specific component, such as **Enhanced Fan-Out** or **Resharding**, in more detail?
 
         </details>
 

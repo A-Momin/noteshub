@@ -14,7 +14,7 @@
 -   having said that/ with that being said
 -   work out
 -   lift off
--   clunky
+-   clunky/fluffy/wacky
 -   roll off/out/back
 -   based off/in/out
 -   call out/off/in/over
@@ -27,15 +27,47 @@
 -   cutover
 -   wirte-off
 -   hand off / handoffs
--   Span/Embad/Encompass
--   vigilant/deligent
 -   rundown
 -   scale up/down/in/out
 -   ideal
 -   redact
 -   carve out
 -   exploit
--
+
+-   <details><summary style="font-size:25px;color:Orange">Word Comparison</summary>
+
+    -   **Resources/Assets**:
+        -   `Resources` can refer to any data or helper files used by the software, including dynamic or localized content, configuration files, and external dependencies — and sometimes even compute/storage/network capacity in cloud-native environments. Exmples: `.json`, `.xml`, `.properties`, `.env`, `.yaml`, `Templates`.
+        -   `Assets` are usually static files or content that are packaged with your application or deployed alongside it. Examples: Images (.png, .svg), Fonts (.ttf, .woff), Videos, CSS files, JavaScript files, Favicon
+    -   **Cadence/Frequency**:
+
+        -   `Cadence`:
+        -   `Frequency`:
+
+    -   **Integration/Incorporation**:
+
+        -   `Integration`:
+        -   `Incorporation`:
+
+    -   **compliction/complexity**:
+
+        -   `compliction`:
+        -   `complexity`:
+
+    -   **Provition**/**Provide**:
+
+    -   **setup**/**config**:
+
+    -   **impact**/**effect**:
+
+    -   Sensible/Reasonable
+    -   Span/Embad/Encompass
+    -   vigilant/deligent
+    -   parameters/matrix
+
+    </details>
+
+---
 
 -   <details><summary style="font-size:25px;color:Orange">Sentence Analysis</summary>
 
@@ -398,36 +430,6 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange">Word Anlysis</summary>
-
-    -   **Resources/Assets**:
-        -   `Resources` can refer to any data or helper files used by the software, including dynamic or localized content, configuration files, and external dependencies — and sometimes even compute/storage/network capacity in cloud-native environments. Exmples: `.json`, `.xml`, `.properties`, `.env`, `.yaml`, `Templates`.
-        -   `Assets` are usually static files or content that are packaged with your application or deployed alongside it. Examples: Images (.png, .svg), Fonts (.ttf, .woff), Videos, CSS files, JavaScript files, Favicon
-    -   **Cadence/Frequency**:
-
-        -   `Cadence`:
-        -   `Frequency`:
-
-    -   **Integration/Incorporation**:
-
-        -   `Integration`:
-        -   `Incorporation`:
-
-    -   **compliction/complexity**:
-
-        -   `compliction`:
-        -   `complexity`:
-
-    -   **Privition**/**Provide**:
-
-    -   **setup**/**config**:
-
-    -   **impact**/**effect**:
-
-    </details>
-
----
-
 -   <details><summary style="font-size:25px;color:Orange">Idioms</summary>
 
     -   **beat around the bush** means to **avoid saying something directly**—usually because it’s uncomfortable, awkward, or hard to say. It’s often used when someone is taking too long to get to the point.
@@ -726,6 +728,22 @@
     -   whimsical
     -   tailor
     -   denounce
+    -   galvanize
+    -   disclaimer
+    -   obsolete
+    -   reinstate
+    -   resonate
+    -   envy
+    -   despise
+    -   ascribe
+    -   hindsight
+    -   pitfall
+    -   nuisance
+    -   dissent
+    -   scumbag
+    -   bashing
+    -   packer
+    -   redact
 
     </details>
 

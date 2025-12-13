@@ -1,3 +1,6 @@
+-   [HTTPS, SSL, TLS & Certificate Authority Explained](https://www.youtube.com/watch?v=EnY6fSng3Ew)
+-   [How to encrypt/decrypt data with AWS KMS and OpenSSL?](https://www.youtube.com/watch?v=w_rpeiG7xjQ)
+
 -   <details><summary style="font-size:25px;color:Orange">SSL/TLS Certificate</summary>
 
     An **SSL/TLS certificate** is a digital certificate that authenticates a website’s identity and enables an encrypted connection between a client (browser) and a server. It ensures that data transmitted over the internet remains **secure, encrypted, and tamper-proof** by using **SSL (Secure Sockets Layer)** or **TLS (Transport Layer Security)** protocols.

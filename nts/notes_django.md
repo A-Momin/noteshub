@@ -1983,6 +1983,7 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Authentication & Authorizations</summary>
 
+    -   [API Authentication Explained (Finally) — Basic Auth, Bearer & JWT](https://www.youtube.com/watch?v=I747kI_y9eQ&t=355s)
     -   [Using the Django authentication system](https://docs.djangoproject.com/en/4.1/topics/auth/default/)
     -   [Customizing authentication in Django](https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#customizing-authentication-in-django)
     -   [Session Vs JWT: The Differences You May Not Know!](https://www.youtube.com/watch?v=fyTxwIa-1U0)

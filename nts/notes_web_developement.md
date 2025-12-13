@@ -1,3 +1,16 @@
+-   [Proxy vs Reverse Proxy vs Load Balancer | Simply Explained](https://www.youtube.com/watch?v=xo5V9g9joFs)
+-   [API Authentication Explained (Finally) — Basic Auth, Bearer & JWT](https://www.youtube.com/watch?v=I747kI_y9eQ&t=355s)
+-   [API Authentication: JWT, OAuth2, and More](https://www.youtube.com/watch?v=xJA8tP74KD0)
+-   [9 Must-Know REST API Design Principles for Developers](https://www.youtube.com/watch?v=pJ83mmqcvoQ&t=461s)
+-   [How NGINX Handles MILLIONS of Requests With Just 1 Process](https://www.youtube.com/watch?v=I6dpN0geIb4&t=211s)
+-   [REST API Caching Strategies Every Developer Must Know](https://www.youtube.com/watch?v=TV-xsNjbx_g&t=43s)
+-   [Cache Systems Every Developer Should Know](https://www.youtube.com/watch?v=dGAgxozNWFE)
+-   []()
+
+---
+
+---
+
 -   <details><summary style="font-size:30px;color:Orange">API paradigms</summary>
 
     -   [ByteByteGo: Top 6 Most Popular API Architecture Styles](https://www.youtube.com/watch?v=4vLxWqE94l4&t=20s)
@@ -82,6 +95,8 @@
 ---
 
 -   <details><summary style="font-size:30px;color:Orange">APIs, HTTP APIs & REST APIs</summary>
+
+        - [REST API Caching Strategies Every Developer Must Know](https://www.youtube.com/watch?v=TV-xsNjbx_g)
 
     #### APIs (Application Programming Interface)
 
