@@ -1,3 +1,7 @@
+List out and explain all Components, Resources, Features around AWS Organization in vivid details.
+
+---
+
 I like you to write a prompt that I like to ask Chat GPT. I like to ask the Chat GPT the following:
 
 1. design a project using Terraform that demonstrate the features and components of AWS Kinesis.

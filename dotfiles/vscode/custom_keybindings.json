@@ -1,4 +1,8 @@
-// Place your key bindings in this file to override the defaultsauto[]
+/**
+This file is symbolic to the actual keybindings.json file located in the .vscode folder of your workspace on mac.
+This file is symlinked using the following command:
+    $ ln -sf $NTHUB/dotfiles/vscode/custom_keybindings.json $HOME/Library/Application\ Support/Code/User/keybindings.json
+ */
 [
     {
         "key": "cmd+1",

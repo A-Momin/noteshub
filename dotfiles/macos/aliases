@@ -171,7 +171,6 @@ alias dt="cd $HOME/Desktop && ls -1"
 alias sshot="open $HOME/Desktop/ss"
 alias mdstyle="code $HOME/.local/state/crossnote/style.less"
 
-alias bp="code $HOME/.bash_profile"                    # bp ==> Bash Profile
 alias bu="code $DOTFILES/bash_utils.bash"
 alias secrets="code $DOTFILES/secrets.bash"
 alias aliases="code $DOTFILES/aliases"
@@ -190,6 +189,11 @@ uae() {
 alias ude="pyenv deactivate"
 alias cae="conda activate $1"
 alias cde="conda deactivate"
+
+
+alias jlb="jupyter-lab"
+alias jnb="jupyter notebook"
+alias rgh="code $HOME/notes_rough.md"
 
 # =============================================================================
 # =============================================================================
@@ -213,7 +217,6 @@ alias ntaws2="code $NTHUB/nts/notes_aws2.md"
 alias ntdjango="code $NTHUB/nts/notes_django.md"
 alias ntre="code $NTHUB/nts/notes_re.md"
 alias ntml="code $NTHUB/nts/notes_ml.md"
-alias rgh="code $HOME/notes_rough.md"
 alias ntnsql="code $NTHUB/nts/notes_nosql.md"
 alias ntkafka="code $NTHUB/nts/notes_kafka.md"
 alias ntyml="code $NTHUB/nts/notes_yml.md"
@@ -260,6 +263,7 @@ alias ntawsglue="code $NTHUB/nts/notes_awsglue.md"
 alias ntprompt="code $NTHUB/nts/notes_prompts.md"
 alias ntllm="code $NTHUB/nts/notes_llm.md"
 alias ntdatabricks="code $NTHUB/nts/notes_databricks.md"
+alias ntcb="code $NTHUB/nts/notes_cybersecurity.md"
 
 
 ###############################################################################
@@ -271,15 +275,10 @@ alias nttmp="code $NTHUB/nts/notes_tmp.md"
 alias cmdnpm="code $NTHUB/nts/cmd_npm.txt"
 alias cmdreact="code $NTHUB/nts/cmd_react.txt"
 alias cmdcpp="code $NTHUB/nts/cmd_cpp.txt"
+alias cmdspark="code $NTHUB/cmds/cmd_pyspark.md"
+alias cmdawsglue="code $NTHUB/cmds/cmd_awsglue.md"
 ###############################################################################
 
-
-
-alias jlb="jupyter-lab"
-alias jnb="jupyter notebook"
-
-
-# =============================================================================
 ## INTERVIEW QUESTIONS
 alias ivsupport="code $NTHUB/interviewprep/interview_support.md"
 alias iqs="code $NTHUB/iqs"
@@ -292,13 +291,11 @@ alias iqdjango="code $NTHUB/iqs/iq_django.md"
 alias iqdrf="code $NTHUB/iqs/iq_drf.md"
 alias iqdb="code $NTHUB/iqs/iq_db.md"
 alias iqsql="code $NTHUB/iqs/iq_sql.md"
-alias cmdspark="code $NTHUB/cmds/cmd_pyspark.md"
-alias cmdawsglue="code $NTHUB/cmds/cmd_awsglue.md"
 alias adhocsql="code $SD/Databases/RDBMS/sql/schemas/adhocsql.sql"
 alias adhocspark="code $SD/Big_Data/elements_of_spark/adhocspark.py"
 # =============================================================================
 
-## OPEN JUPYTER NOTEBOOK
+## JUPYTER NOTEBOOKS
 alias nbsql="code $NTHUB/nbs/nt_sql.ipynb"
 alias nbsqliq="code $SD/Databases/RDBMS/sql/notebooks/sql_queries_questions.ipynb"
 alias nbsqllc="code $SD/Databases/RDBMS/sql/notebooks/leetcode_sql_questions.ipynb"
@@ -330,6 +327,7 @@ dkr_aliases(){
 
 pvt_aliases(){
 
+    alias bp="code $DOTFILES/bash_profile_mos01" # bp ==> Bash Profile
     alias startmysql="sudo /usr/local/mysql/support-files/mysql.server start"
     alias stopmysql="sudo /usr/local/mysql/support-files/mysql.server stop"
     alias statusmysql="sudo /usr/local/mysql/support-files/mysql.server status"
@@ -341,7 +339,6 @@ pvt_aliases(){
     alias jobdb="open $HOME/mydocs/gd/jobs/Jobs_DB.gsheet"
     alias apartments="code $GD/MISC/apartments.md"
     alias ntrgh="code $HOME/notes_rough.md"
-    alias nttmp="code $HOME/Desktop/notes_tmp.md"
     alias ntht="code $HOME/mydocs/gd/Harness-Tech/notes_ht.md"
 
 

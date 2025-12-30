@@ -1560,6 +1560,10 @@
 
     -   **Service-Linked Role**:
 
+    -   **Assumed Role**:
+
+    -   **Pass Role**:
+
     -   **assume-role-policy-document**: An assume-role-policy-document is a policy attached to an IAM role that defines who (which entities) can assume the role. This policy, also known as a trust policy, specifies the conditions under which the role can be assumed and the permissions granted to those entities.
 
         ```json
@@ -3386,11 +3390,246 @@
 
 ---
 
+-   <details><summary style="font-size:25px;color:Orange">AWS Organization</summary>
+
+    AWS Organizations is a foundational service for any large-scale AWS environment. Here is a vivid, detailed breakdown of its core components, resources, and features.
+
+    #### Core Components and Resources of AWS Organizations
+
+    These are the fundamental building blocks that form the hierarchical structure of your multi-account environment.
+
+    | Component / Resource         | Description                                                                                                                                        | Vivid Detail                                                                                                                                                                                                                                                       |
+    | :--------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | **Organization**             | The top-level entity that is a collection of all your AWS accounts.                                                                                | This is the **entire legal entity** or company structure, acting as the root container for everything else. It defines the central administrative boundary.                                                                                                        |
+    | **Root**                     | The parent container for all accounts in the organization, automatically created when you create the organization.                                 | This is the **apex of the inverted tree structure**. Any policy attached directly to the Root applies as a maximum permission guardrail to _every single account_ in the Organization.                                                                             |
+    | **Organizational Unit (OU)** | A container that you can use to group accounts together to manage them as a single unit.                                                           | Think of OUs as **folders in a filing cabinet**. You group accounts by function (e.g., Security, Infrastructure), environment (e.g., Development, Production), or business unit. This is the key to scalable governance. OUs can also contain other OUs (nesting). |
+    | **Management Account**       | The single account that creates and manages the organization, controls consolidated billing, and acts as the central administrator for governance. | This is the **CEO and CFO account**. It holds the master bill and is immune to Service Control Policies (SCPs) applied within the organization, giving it ultimate power to administer the entire structure. **Crucially, it is the payer account.**               |
+    | **Member Account**           | All other AWS accounts that are part of the organization, holding your actual workloads and resources.                                             | These are the **Worker Bee accounts**—hosting your EC2 instances, S3 buckets, databases, and applications. They are governed by the policies inherited from their parent OUs and the Root.                                                                         |
+    | **Policy**                   | An object that, when attached to an entity (Root, OU, or Account), controls access to AWS services.                                                | These are the **Organizational Rules and Laws**. They flow down the hierarchy, defining boundaries and guardrails. The most common type is the **Service Control Policy (SCP)**.                                                                                   |
+
+    #### Key Governance and Management Features
+
+    AWS Organizations provides powerful features to simplify governance, security, and financial management across all your accounts.
+
+    1. **Centralized Governance with Service Control Policies (SCPs)**:
+
+        - **What it is:** SCPs are JSON policies that provide **centralized control** over the maximum available permissions for all IAM users and roles in your member accounts, _including the member account's root user_.
+        - **Vivid Detail:** SCPs act as **non-negotiable security guardrails** at the organizational level. They are **filters**, not granters of permissions. If an SCP _denies_ an action, no IAM policy in the member account can override that denial, ensuring consistent compliance across the entire organization. For example, you can deny the use of a specific, expensive AWS service in all Development accounts.
+
+    2. **Consolidated Billing and Cost Management**:
+
+        - **What it is:** The Management Account handles payment for all member accounts, and all charges are aggregated into a single monthly bill.
+        - **Vivid Detail:** This feature is the **Financial Hub**. It doesn't just simplify payments; it allows all accounts to benefit from **volume discounts** (tiered pricing) and **Reserved Instance/Savings Plan sharing** across the entire organization, leading to significant cost optimization. You can also use the hierarchy (OUs and accounts) to break down and allocate costs to specific teams or projects.
+
+    3. **Account Management and Provisioning**:
+
+        - **What it is:** The ability to programmatically create new accounts directly within the organization or invite existing accounts to join.
+        - **Vivid Detail:** AWS Organizations offers a simplified API for **"account vending."** Instead of manually creating accounts and applying baseline settings, you can automate the process, ensuring new accounts are born compliant and immediately subject to the organization's policies (SCPs).
+
+    4. **Integration with AWS Services (Trusted Access)**:
+
+        - **What it is:** The ability to enable other AWS services (like AWS Config, AWS CloudTrail, AWS GuardDuty) to act as a **Delegated Administrator** on behalf of the organization.
+        - **Vivid Detail:** This is how you achieve **Organization-Wide Visibility and Enforcement**. For instance, you can designate an account (often the "Security" account) to centralize all **AWS CloudTrail logs** from every member account, creating an immutable, organization-wide audit trail for security review.
+
+    5. **Policy Inheritance**:
+
+        - **What it is:** Policies attached to the Root or an OU automatically apply to all OUs and accounts beneath them in the hierarchy.
+        - **Vivid Detail:** This is the **cascading effect of governance**. A policy attached to the "Production" OU immediately affects all Production-related accounts inside it. This radically simplifies policy management—you set the rule once at a high level, and it enforces itself down to hundreds of individual accounts.
+
+    -   **Other Types of Policies**: While SCPs are the most common, AWS Organizations supports other policy types to enforce different organizational standards:
+
+        | Policy Type                      | Purpose                                                                                                                          | How it Works                                                                                                                                                                   |
+        | :------------------------------- | :------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+        | **Tag Policies**                 | Enforce consistent tagging rules across all resources in your accounts.                                                          | Define required tag keys (e.g., `Project`, `Environment`) and their permitted values (e.g., `Prod`, `Dev`), preventing non-compliant resources from being created or modified. |
+        | **Backup Policies**              | Centrally manage and automate data protection (backup) plans.                                                                    | Define backup schedules, retention periods, and target AWS Backup vaults, ensuring compliance for all resources in your organization without individual account configuration. |
+        | **AI services opt-out policies** | Control whether AI services (like Amazon Sagemaker, Amazon Comprehend) can store and use your content to improve their services. | Provides a centralized way to manage privacy and data residency requirements for your machine learning and AI workloads.                                                       |
+
+    #### Recommended Foundational OU Structure
+
+    This structure ensures that the highest-priority concerns—security, logging, and core networking—are isolated and centrally managed.
+
+    6. **Root**:
+
+        - **Purpose:** The very top of the hierarchy.
+        - **Key Policy:** Attached SCPs here should be extremely broad, ensuring mandatory security baselines apply to _all_ accounts. This is where you might **deny root user access** for daily operations or **restrict access to unused global regions** for compliance and cost control.
+        - **Accounts:** Contains the **Management Account** (Payer/Organization Admin) and often the **Service Control Policy Staging Account** (used to test SCP changes).
+
+    7. **Security OU**:
+
+        - **Purpose:** Centralizes all logging, security monitoring, and auditing functions. This OU is crucial for compliance.
+        - **Key Policy:** Highly restrictive SCPs to protect log immutability and prevent any account from turning off security services.
+        - **Key Accounts:**
+            - **Log Archive Account:** A highly restricted, read-only account dedicated to storing immutable, aggregated AWS CloudTrail logs, AWS Config history, and VPC flow logs from every account in the organization.
+            - **Security Tooling/Audit Account:** The delegated administrator account for services like AWS GuardDuty, AWS Security Hub, Amazon Macie, and AWS Config. This is where security staff gain cross-account access to perform audits and incident response.
+
+    8. **Infrastructure OU**:
+        - **Purpose:** Houses critical shared services that all or many workload accounts rely on.
+        - **Key Policy:** Moderate SCPs that ensure only approved centralized services can be deployed.
+        - **Key Accounts:**
+            - **Network Account:** Centralizes shared networking infrastructure, such as AWS Transit Gateway, AWS Direct Connect connections, and centralized DNS via Amazon Route 53 Resolver.
+            - **Shared Services Account:** Hosts centralized deployment tools (CI/CD pipelines), corporate directory services (AWS Managed Microsoft AD or IAM Identity Center), and golden AMI/Docker image pipelines.
+
+    #### Workload and Experimental OUs
+
+    These OUs house the actual applications and allow development teams to operate with the appropriate level of freedom and governance.
+
+    | OU Name                          | Purpose                                                                                 | Recommended Policy Control (SCPs)                                                                                                                                               | Key Accounts                                                |
+    | :------------------------------- | :-------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------- |
+    | **Workloads OU**                 | Groups accounts based on the Software Development Lifecycle (SDLC).                     | Policies differ based on environment (see nested OUs below).                                                                                                                    | All business-critical applications (e.g., e-commerce, ERP). |
+    | _Nested:_ **Production OU**      | Hosts live, customer-facing applications.                                               | **Tightest controls:** Deny high-risk actions, enforce tagging for cost/compliance, and require specific instance types/regions.                                                | `AppA-Prod`, `AppB-Prod`                                    |
+    | _Nested:_ **SDLC (Dev/Test) OU** | Hosts pre-production environments (Dev, QA, Staging).                                   | **Looser controls:** Allow developers freedom to experiment, but still enforce cost-management guardrails.                                                                      | `AppA-Dev`, `AppB-Test`                                     |
+    | **Sandbox OU**                   | Provides a safe, isolated, and disposable environment for experimentation and learning. | **Strictly enforced budget/time limits:** SCPs that prevent expensive service usage and possibly an automated cleanup tool (e.g., AWS Nuke) triggered by time or budget limits. | `Engineer-X-Sandbox`                                        |
+    | **Suspended OU**                 | A holding area for accounts that are closed or retired, prior to final deletion.        | **Deny All SCP:** A policy that denies all actions to prevent any resources from being launched or accessed while the account is suspended.                                     | `Old-Project-Account`                                       |
+
+    -   **Key Best Practices**:
+
+        1.  **Policy Target:** **Always attach Service Control Policies (SCPs) to the OUs, not individual accounts,** unless a specific account is a true exception. This maintains scalability and simplifies troubleshooting.
+        2.  **OU Design:** Group accounts based on the **commonality of their applied policies.** If two accounts need the exact same SCPs, put them in the same OU.
+        3.  **Isolation:** Use OUs to enforce **blast radius reduction.** By separating Production, Security, and Development, you ensure a breach in a Dev account cannot impact your sensitive Log Archive account.
+        4.  **Least Privilege:** Use **Delegated Administrator** to assign security and auditing tasks to the _Security Tooling Account_, limiting the need to use the highly privileged Management Account for daily operations.
+
+    Do you have a specific business requirement, like HIPAA compliance or a large number of development teams, that you'd like to see mapped to this structure?
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">Firewall Manager</summary>
+
+    AWS Firewall Manager (FMS) is a security management service that acts as a **central administration point** for configuring and managing firewall rules and security policies across your accounts and applications within **AWS Organizations**.
+
+    Its core value is providing **consistency, compliance, and centralized control** over various AWS security services at scale.
+
+    Here is a detailed breakdown of its components, resources, features, and concepts.
+
+    #### Core Concepts and Prerequisites
+
+    -   **Centralized Management**:
+
+        -   **Concept:** Instead of logging into dozens or hundreds of individual AWS accounts to configure WAF rules, Security Groups, or Network Firewalls, FMS allows a security administrator to define a single set of policies and automatically deploy them across the entire organization.
+
+    -   **AWS Organizations Integration (Prerequisite)**:
+
+        -   **Concept:** FMS **requires** integration with AWS Organizations. This allows FMS to discover all member accounts and Organizational Units (OUs), which are then used as the scope for applying security policies.
+        -   **Delegated Administrator:** You must designate a specific member account (the best practice is not the Management Account) as the **Firewall Manager administrator**. This account is used to create and manage the FMS security policies.
+
+    -   **AWS Config (Prerequisite)**:
+
+        -   **Concept:** FMS uses AWS Config to continuously monitor resources in the member accounts. If a resource becomes non-compliant with the central security policy (i.e., someone locally modifies a firewall rule), AWS Config detects the drift, and FMS can then take remediation action.
+
+    #### The Primary Resource: The Firewall Manager Policy
+
+    The **Policy** is the main resource in FMS. It defines the "What," "Where," and "How" of your security enforcement.
+
+    | Component                              | Description                                                                                                                                                                                                                                                                                                                                                                          |
+    | :------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | **Security Service Type** (The "What") | The specific AWS security service the policy governs (e.g., WAF, Network Firewall, Shield Advanced, Security Groups).                                                                                                                                                                                                                                                                |
+    | **Policy Scope** (The "Where")         | Defines which accounts and resources the policy applies to. You can scope policies by: \<ul\>\<li\>**AWS Accounts / Organizational Units (OUs)**\</li\>\<li\>**Resource Type** (e.g., Application Load Balancer, CloudFront Distribution, VPC)\</li\>\<li\>**Resource Tags** (e.g., apply only to resources tagged `Environment:Production`)\</li\>\</ul\>                           |
+    | **Policy Content** (The "Rule")        | The actual security configuration to be enforced (e.g., the specific AWS WAF Web ACL to deploy, or the set of allowed Security Group rules).                                                                                                                                                                                                                                         |
+    | **Remediation Action** (The "How")     | Defines the action FMS takes when non-compliant resources are discovered: \<ul\>\<li\>**Auto-Remediate:** FMS automatically reverts the resource back to the compliant state (e.g., re-applies the missing WAF rule).\</li\>\<li\>**Notify Only:** FMS only sends a notification (via SNS) about the non-compliance, leaving manual intervention to the security team.\</li\>\</ul\> |
+
+    #### Centrally Managed Security Services
+
+    FMS centralizes the management of five primary types of AWS security resources, ensuring a consistent security posture across the entire organization.
+
+    | Managed Service                           | Policy Type             | Enforcement/Use Case                                                                                                                                                                                                                                      |
+    | :---------------------------------------- | :---------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | **AWS WAF**                               | WAF Policy              | Deploys a specified Web ACL or WAF Rule Group to Application Load Balancers, CloudFront, API Gateways, and AppSync.                                                                                                                                       |
+    | **AWS Shield Advanced**                   | Shield Advanced Policy  | Automatically enables Shield Advanced protection on designated resources (e.g., Elastic IPs, Load Balancers, CloudFront distributions) across the organization.                                                                                           |
+    | **Amazon VPC Security Groups**            | Security Group Policy   | **Content Audit:** Audits existing SGs for overly permissive rules (e.g., port 22 open to `0.0.0.0/0`). **Primary SG:** Enforces a mandatory "primary" security group on all EC2 instances. **Usage Audit:** Finds and cleans up unused or redundant SGs. |
+    | **AWS Network Firewall**                  | Network Firewall Policy | Centrally deploys Network Firewall endpoints and associated rule groups into VPCs across accounts, enabling consistent Layer 3-7 traffic filtering across the network perimeter.                                                                          |
+    | **Amazon Route 53 Resolver DNS Firewall** | DNS Firewall Policy     | Associates centralized DNS filtering rule groups with VPCs across accounts to block DNS queries to known malicious domains.                                                                                                                               |
+    | **Third-Party Firewalls**                 | Third-Party Policies    | Manages policies for firewalls from AWS Marketplace sellers, such as Palo Alto Networks Cloud NGFW or Fortigate CNF.                                                                                                                                      |
+
+    #### Key Features and Concepts in Detail
+
+    -   **Hierarchical Rule Enforcement**:
+
+        -   **Concept:** Allows security teams to enforce a global, mandatory baseline while enabling local application teams to add their own application-specific rules.
+        -   **Mechanism:** With WAF policies, for example, FMS can deploy a central rule group (e.g., a "Block known bots" rule) into a local Web ACL without overwriting the application team's existing rules. FMS continuously monitors to ensure the central rules are not removed or tampered with.
+
+    -   **Automatic and Continuous Compliance**:
+
+        -   **Day-Zero Protection:** FMS is integrated with AWS Organizations, meaning that the moment a new account is created or an application team launches a new resource (e.g., an ALB), FMS automatically detects it and applies the relevant policy.
+        -   **Compliance Dashboard:** Provides a single-pane-of-glass view showing the compliance status of all accounts and resources against all active FMS policies, complete with non-compliance notifications.
+
+    -   **Multi-Account Resource Groups**:
+
+        -   **Concept:** You can define logical groups of resources across accounts based on common criteria (e.g., all ALBs in accounts belonging to the "eCommerce" OU). Policies are then applied to these resource groups, rather than individual account numbers, simplifying management.
+
+    -   **Remediation Granularity**:
+
+        -   **Audit vs. Auto-Remediate:** Policies can be configured to only _audit_ non-compliant resources, providing a report, or to automatically _remediate_ the resource back to the defined compliant state, enforcing the security policy automatically.
+
+    By leveraging AWS Organizations and continuous compliance features, AWS Firewall Manager moves security governance from a manual, per-account operation to an **automated, organization-wide capability.**
+
+    </details>
+
+---
+
 -   <details><summary style="font-size:25px;color:Orange">WAF</summary>
 
     AWS WAF (Web Application Firewall) is a security service that helps protect web applications from common web exploits, unauthorized access, and malicious traffic by filtering and monitoring HTTP/HTTPS requests based on defined rules.
 
     It integrates with **Amazon CloudFront**, **Application Load Balancer (ALB)**, and **API Gateway**, allowing businesses to apply security protections at the edge, before requests reach the application.
+
+    AWS WAF (Web Application Firewall) is a cloud-native service that helps protect your web applications and APIs from common web exploits that may affect availability, compromise security, or consume excessive resources.
+
+    #### Core Components and Concepts
+
+    The architecture of AWS WAF is built around a few central resources that define your protection strategy:
+
+    -   **Web Access Control List (Web ACL)**: This is the top-level, primary resource for your WAF configuration. A Web ACL is a collection of rules and rule groups that you want AWS WAF to check against incoming web requests.
+
+        -   **Action:** It includes a **Default Action** (either **Allow** or **Block**) that is applied to any request that does not match any of the rules within the ACL. Typically, the default action is set to **Allow**, and rules are configured to **Block** specific malicious traffic.
+        -   **Association:** A single Web ACL is associated with one or more protected AWS resources.
+
+    -   **Rules**: A rule defines the criteria for inspecting a web request and the action to take if the criteria are met. Rules are processed in a specified **Priority** order.
+
+        -   **Criteria (Statements):** Rules contain one or more statements that specify which parts of a web request to inspect (e.g., IP address, HTTP header, body, URI, query string) and the conditions to match (e.g., specific string, regex, SQLi signature, XSS signature).
+        -   **Actions:** The action taken when a request matches a rule's criteria can be:
+            -   **Allow:** Passes the request to the protected resource.
+            -   **Block:** Prevents the request from reaching the resource, returning an HTTP 403 Forbidden response.
+            -   **Count:** Tracks the request for logging and metrics but continues processing the request against the remaining rules.
+            -   **CAPTCHA / Challenge:** Presents a CAPTCHA puzzle or a silent challenge to the client before allowing the request to proceed, which helps verify human users.
+
+    -   **Rule Groups**: A reusable set of rules that you can include in a Web ACL. They are useful for organizing rules and sharing common logic across multiple Web ACLs.
+
+        -   **AWS Managed Rule Groups:** Pre-built, maintained, and automatically updated sets of rules provided by AWS (e.g., covering the OWASP Top 10 vulnerabilities, Bot Control, or IP reputation lists).
+        -   **AWS Marketplace Rule Groups:** Rule groups created and maintained by third-party security vendors.
+        -   **Custom Rule Groups:** Rule groups that you create and manage yourself.
+
+    -   **Web ACL Capacity Units (WCUs)**: A unit of measurement for the operational cost and complexity of a WAF rule, rule group, or Web ACL. AWS WAF limits are based on the total WCUs you consume. More complex rules (like those with advanced regex or body inspection) consume more WCUs.
+
+    #### Features and Terms
+
+    AWS WAF provides several specialized rule types and features to combat specific threats:
+
+    | Feature/Term              | Explanation                                                                                                                                                                                                                                       |
+    | :------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+    | **Rate-based Rules**      | Automatically block or count requests from an IP address when the number of requests exceeds a specified threshold within a configurable five-minute period. Excellent for mitigating brute-force or application-layer DDoS attacks (HTTP Flood). |
+    | **IP Sets**               | Reusable lists of trusted or malicious IP addresses (CIDR ranges) that can be referenced by one or more rules in a Web ACL to explicitly allow or block traffic.                                                                                  |
+    | **Geo Match**             | Allows you to allow or block requests based on the country of origin of the web request.                                                                                                                                                          |
+    | **Bot Control**           | A Managed Rule Group that provides visibility and control over common and pervasive bot traffic, such as scrapers, scanners, and crawlers. It can distinguish between common bots (like search engines) and malicious ones.                       |
+    | **Fraud Control**         | Includes specialized managed rule groups like **Account Takeover Prevention (ATP)** and **Application Fraud Prevention** to protect login pages and other critical areas from credential stuffing and automated fraud attempts.                   |
+    | **Tokens and Challenges** | WAF can issue a **Token** to a client after they successfully complete a **CAPTCHA** or **Challenge**. The token is then inspected in subsequent requests, allowing the client to bypass other challenging rules for a short period.              |
+    | **Text Transformations**  | Modifications performed on a request component (e.g., normalizing casing, decoding HTML entities) before WAF inspects it for a pattern. This helps prevent attackers from bypassing protection by encoding or obfuscating malicious payloads.     |
+    | **Labels**                | A custom string that a rule can apply to a web request when it matches. Subsequent rules in the Web ACL can then inspect these labels and take actions based on the labels applied by prior rules.                                                |
+
+    #### Protected Resources
+
+    AWS WAF is designed to integrate seamlessly with several AWS services that expose your applications to the internet:
+
+    -   **Amazon CloudFront:** Use WAF at the edge for global protection and lower latency.
+    -   **Application Load Balancer (ALB):** Protects web applications running on EC2 or other compute services behind an ALB.
+    -   **Amazon API Gateway (REST APIs and HTTP APIs):** Secures your APIs against web attacks and abuse.
+    -   **AWS AppSync (GraphQL APIs):** Provides protection specifically for GraphQL workloads.
+    -   **Amazon Cognito User Pools:** Helps secure user authentication flows.
+    -   **AWS App Runner:** Secures web applications deployed with App Runner.
+
+    ***
+
+    ***
 
     #### Key Components of AWS WAF
 

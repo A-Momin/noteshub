@@ -3264,14 +3264,44 @@
     -   <details><summary style="font-size: 25px;color:#C71585">Amazon Kinesis Data Streams (KDS)</summary>
 
         -   Paralleization Factor
+        -   Throughputs
+        -   **Producers**:
+            -   Amazon Kinesis Agent (Stand Alone Java Application)
+            -   SDK
+            -   Amazon Kinesis Producer Library (KPL)
+        -   **Consumers**:
+            -   Amazon Kinesis Data Analytics
+            -   Amazon Kinesis Data Firehose
+            -   Amazon Kinesis Client Library (KCL)
+            -
 
         Amazon Kinesis Data Streams (KDS) is a highly scalable and durable **real-time streaming data service** that continuously captures gigabytes of data per second from hundreds of thousands of sources. It acts as a massive buffer, decoupling the data producers from the data consumers, allowing multiple applications to process the same stream concurrently and independently.
+
+        ##### Capacity Modes
+
+        Amazon Kinesis Data Streams offers two primary **capacity modes** that determine how your stream scales and how you are billed: **Provisioned** and **On-demand**. Choosing the right mode depends on whether your data traffic is predictable or highly variable.
+
+        1. **Provisioned Mode**: In Provisioned mode, you manually specify the number of **shards** for your data stream. A shard is the base unit of throughput.
+
+            - **Capacity:** Each shard provides a fixed capacity of **1 MB/s** (or 1,000 records/s) for data input and **2 MB/s** for data output.
+            - **Scaling:** You are responsible for scaling. If traffic increases, you must manually "split" shards; if it decreases, you "merge" them to save costs.
+            - **Cost:** You pay a flat hourly rate per shard, regardless of how much data you actually send.
+            - **Best For:** Workloads with **predictable traffic** where you can "right-size" the stream to minimize costs.
+
+        2. **On-demand Mode**: On-demand mode is a serverless option where AWS automatically manages the shard capacity for you.
+
+            - **Capacity:** The stream automatically scales up or down in response to your traffic. As of late 2024, it can scale to handle up to **10 GB/s** of write throughput.
+            - **Scaling:** There is no manual shard management. AWS monitors the throughput and adds capacity as needed (it typically accommodates up to double your previous peak within a 15-minute window).
+            - **Cost:** You pay for the data throughput (per GB ingested and retrieved) and an hourly rate for the stream itself.
+            - **Best For:** **Unpredictable or "spiky" workloads** where traffic patterns are unknown or change rapidly, or when you want to avoid the operational overhead of manual scaling.
+
+        3. **Pro Tip**: In 2025, AWS introduced On-demand Advantage, an account-level setting that offers discounted rates (up to 60% lower) and "warm throughput" capabilities for high-volume on-demand users.
 
         ##### Core Architecture and Components
 
         The Kinesis Data Streams architecture is composed of producers, the data stream itself (which contains shards and data records), and consumers.
 
-        1. **Producers**: **Producers** are applications or sources that continuously push **Data Records** into the Kinesis data stream.
+        4. **Producers**: **Producers** are applications or sources that continuously push **Data Records** into the Kinesis data stream.
 
             - **Examples:** Website clickstreams, social media feeds, financial transaction systems, application logs, and IoT device data.
             - **Tools:** AWS provides tools to simplify data ingestion:
@@ -3279,19 +3309,24 @@
                 - **Kinesis Agent:** A standalone Java software application that continuously monitors log files and reliably publishes data to a Kinesis stream.
                 - **AWS SDK/API:** Direct _PutRecord_ or _PutRecords_ API calls for custom producers.
 
-        2. **Kinesis Data Stream**: The **Stream** is the core resource in KDS. It's an ordered sequence of data records that you provision capacity for (or use On-Demand mode).
+        5. **Kinesis Data Stream**: The **Stream** is the core resource in KDS. It's an ordered sequence of data records that you provision capacity for (or use On-Demand mode).
 
-            - **Shard:** A **Shard** is the base **throughput unit** of a Kinesis Data Stream. A stream is composed of one or more shards.
+            - **Shard:** A **Shard** is the base **throughput unit** of a Kinesis Data Stream. A stream is composed of one or more shards. You can create upto **500** Shards per Stream which can be increased upon request to AWS Support.
+
+                - ![kinesis](../assets/aws/kinesis%201.png)
+                - ![kinesis](../assets/aws/kinesis%202.png)
+
                 - **Capacity per Shard (in Provisioned Mode):**
                     - **Write:** Up to 1 MB/sec or 1,000 records/sec.
                     - **Read:** Up to 2 MB/sec or 5 transactions/sec.
                 - The total capacity of the stream is the sum of the capacities of all its shards. Shards are used for **horizontal scaling** and **parallel processing**.
+
             - **Data Record:** The unit of data stored in the stream. Each record is an immutable sequence of bytes and consists of three elements:
                 - **Data Blob:** The actual data payload (up to 1 MB after Base64-decoding).
                 - **Partition Key:** A string specified by the producer used to group data by shard. All records with the same partition key are guaranteed to be routed to the same shard. This is critical for maintaining **ordering** within a specific key's data flow.
                 - **Sequence Number:** A unique, monotonically increasing identifier for each data record within a shard. KDS assigns this number when the record is successfully added to the stream.
 
-        3. **Consumers**: **Consumers** (also called **Kinesis Applications**) read and process the data records from one or more shards in the stream.
+        6. **Consumers**: **Consumers** (also called **Kinesis Applications**) read and process the data records from one or more shards in the stream.
 
             - **Examples:** AWS Lambda functions, Amazon Managed Service for Apache Flink applications, or custom applications running on Amazon EC2.
             - **Tools:**
@@ -3340,21 +3375,256 @@
 
     -   <details><summary style="font-size: 25px;color:#C71585">Amazon Kinesis Data Firehose (KDF)</summary>
 
-        KDF is the **simplified, serverless delivery service** for streaming data.
+        **Amazon Data Firehose** (formerly known as Amazon Kinesis Data Firehose) is a fully managed, serverless service designed to capture, transform, and load streaming data into data lakes, warehouses, and analytics services.
 
-        -   **Role:** Automatically captures, transforms (optionally using AWS Lambda), and loads streaming data into a supported destination.
-        -   **Key Feature:** **Fully managed and easiest to use**. It focuses on the **Near Real-time** delivery of data to specific AWS data stores (S3, Redshift, OpenSearch, etc.). It manages scaling, backups, and retries automatically.
-        -   **Ideal for:** Creating **simple data pipelines** for long-term storage or near real-time BI/analytics without needing to develop and manage a custom consumer application.
+        Unlike Kinesis Data Streams—which is a storage layer requiring custom consumers—Firehose is a **delivery layer** that simplifies the "ingest-and-load" process with almost zero coding.
+
+        1.  **Core Architecture & Components**: A Firehose workflow follows a linear path: **Source → Delivery Stream → Destination.**
+
+            -   **Source:** Where the data originates.
+            -   **Direct PUT:** Using the AWS SDK or CLI (`PutRecord` / `PutRecordBatch`).
+            -   **Kinesis Data Streams:** Firehose can read directly from an existing Kinesis stream.
+            -   **Amazon MSK:** Ingest data directly from Apache Kafka topics.
+            -   **AWS Integrations:** 20+ services like CloudWatch Logs, VPC Flow Logs, and AWS IoT.
+
+            -   **Delivery Stream:** The underlying Firehose entity that handles the buffering, transformation, and transport logic.
+            -   **Destination:** The final storage or analytics tool.
+            -   **AWS Sinks:** Amazon S3, Redshift, OpenSearch Service.
+            -   **Third-Party Sinks:** Splunk, Snowflake, Datadog, New Relic, MongoDB.
+            -   **Custom Sinks:** Any generic HTTP endpoint.
+
+        2.  **Key Features & Processing Concepts**
+
+            -   **Buffering (The "Batching" Mechanism)**: Firehose does not deliver records one by one; it groups them to optimize storage costs and performance. Delivery is triggered by whichever limit is reached first:
+
+                -   **Buffer Size:** A range (usually 1 MB to 128 MB). When the accumulated data reaches this size, it is flushed.
+                -   **Buffer Interval:** A time range (usually 60 to 900 seconds). If the size limit isn't reached, the data is flushed anyway once the timer expires.
+
+            -   **Data Transformation (AWS Lambda)**: You can trigger a Lambda function to process data **in-flight**.
+
+                -   **Common Use Cases:** Masking PII, filtering records, or converting CSV to JSON.
+                -   **Blueprint Support:** AWS provides pre-built blueprints for common tasks like converting Apache logs to JSON.
+
+            -   **Format Conversion (JSON to Parquet/ORC)**: Firehose can automatically convert incoming JSON data into **columnar formats** like Apache Parquet or ORC before saving to S3.
+
+                -   **Benefit:** Columnar formats are significantly faster and cheaper to query using services like **Amazon Athena** or **Amazon Redshift Spectrum**.
+
+            -   **Dynamic Partitioning**: This feature allows you to organize data in S3 based on attributes _inside_ the data itself (e.g., `customer_id` or `region`).
+
+                -   **Standard:** `s3://bucket/yyyy/mm/dd/hh/`
+                -   **Dynamic:** `s3://bucket/customer_id=123/region=us-east-1/yyyy/mm/dd/`
+
+        3.  **Advanced Terms & Reliable Delivery**
+
+            -   **Source Record Backup:** If you perform transformations, Firehose can simultaneously save the **raw, untransformed** data to a separate S3 bucket. This is crucial for disaster recovery or auditing.
+            -   **Retry Logic:** If a destination (like Redshift or an HTTP endpoint) is down, Firehose will automatically retry delivery for up to **24 hours** (configurable). If it still fails, the data is sent to an "Error Bucket" in S3.
+            -   **Exactly-Once Delivery (to S3):** Firehose uses a "Write-ahead" approach to ensure that data is delivered to S3 exactly once, even if a retry occurs.
+            -   **Server-Side Encryption (SSE):** You can encrypt data at rest using AWS KMS keys as it passes through the Firehose stream.
+
+        4.  **Key Differences: Firehose vs. Data Streams**
+
+            | Feature          | Kinesis Data Streams (KDS)            | Amazon Data Firehose                  |
+            | ---------------- | ------------------------------------- | ------------------------------------- |
+            | **Primary Goal** | Real-time "buffer" for custom apps.   | Near real-time "delivery" to sinks.   |
+            | **Management**   | You manage Shards (or use On-Demand). | Fully Managed (Auto-scales).          |
+            | **Latency**      | < 1 second (Sub-second).              | 60 seconds to 15 minutes (Buffering). |
+            | **Storage**      | 24 hours to 365 days.                 | No storage (Transient only).          |
+            | **Consumers**    | Lambda, Kinesis Client Library (KCL). | Built-in (S3, Redshift, etc.).        |
+
+        5.  **Use Case Example: Log Analytics**
+
+            -   **Source:** Your web servers use the **Kinesis Agent** to send logs to Firehose.
+            -   **Transformation:** A **Lambda function** scrubs the user's IP address for privacy.
+            -   **Conversion:** Firehose converts the JSON log into **Parquet**.
+            -   **Destination:** The Parquet file is saved to **S3**, where **Amazon Athena** queries it for daily reports.
 
         </details>
 
     -   <details><summary style="font-size: 25px;color:#C71585">Amazon Managed Service for Apache Flink (previously Kinesis Data Analytics)</summary>
 
-        This is the **compute/processing layer** of the Kinesis suite.
+        Amazon Managed Service for Apache Flink (formerly known as Amazon Kinesis Data Analytics) is a fully managed, serverless service that allows you to run **Apache Flink** applications to process streaming data in real time.
 
-        -   **Role:** Provides a fully managed platform to run sophisticated analytical applications on streaming data using the open-source **Apache Flink** framework.
-        -   **Key Feature:** Enables **stateful stream processing** (e.g., aggregating data over time windows, joining streams) with low latency using either Flink's APIs (Java/Scala/Python) or standard SQL.
-        -   **Ideal for:** Building **complex, real-time stream processing applications** like fraud detection, real-time ETL, or advanced sessionization and time-series analysis. It often consumes data from Kinesis Data Streams or Kinesis Data Firehose.
+        It eliminates the operational heavy lifting of managing Flink clusters, providing a "pay-as-you-go" environment for high-throughput, low-latency stream processing.
+
+        1.  **Core Architecture & Components**: An application in this service follows the standard Flink dataflow model: **Source → Transform → Sink**.
+
+            -   **Application:** The primary AWS resource. It contains your code (Java, Python, Scala, or SQL), configuration, and the underlying managed Flink cluster.
+            -   **Source:** The input connector that ingests data. Common sources include Amazon Kinesis Data Streams, Amazon MSK (Managed Streaming for Apache Kafka), and Amazon S3.
+            -   **Operators:** These are the "engines" of your application. Each operator performs a specific transformation (e.g., `map`, `filter`, `join`, `window`). Operators can be **chained** together to improve performance by reducing data transfer between threads.
+            -   **Sink:** The output connector where the processed data is sent. Common sinks include Kinesis Data Streams, Amazon S3 (Data Lakes), Amazon OpenSearch, or custom HTTP endpoints.
+
+        2.  **Resource Management: KPUs**: The service uses a proprietary unit called the **Kinesis Processing Unit (KPU)** to abstract compute resources.
+
+            | Resource       | Per 1 KPU                          |
+            | -------------- | ---------------------------------- |
+            | **vCPU**       | 1 Core                             |
+            | **Memory**     | 4 GB (1 GB Native / 3 GB JVM Heap) |
+            | **Disk Space** | 50 GB (Ephemeral)                  |
+
+            -   **Parallelism:** The number of concurrent instances of a specific task. If your application has a parallelism of 8, it can process 8 data partitions simultaneously.
+            -   **ParallelismPerKPU:** Defines how many parallel subtasks can run on a single KPU (default is 1).
+            -   **Task Slots:** The basic unit of resource sharing in Flink. One KPU contains one or more task slots depending on your configuration.
+
+        3.  **Core Flink Concepts (Data Processing)**: To build effective applications, you must understand how Flink handles the "chaos" of streaming data.
+
+            1. **State Management**: Flink is a **stateful** engine, meaning it remembers information across different events (e.g., a running total).
+
+                - **Keyed State:** State that is partitioned by a key (e.g., "total sales per user ID").
+                - **Operator State:** State that is bound to a specific operator instance regardless of the keys.
+
+            2. **Time & Watermarks**: Handling "late" data is the hardest part of streaming.
+
+                - **Event Time:** The time the event actually happened (recorded in the data itself).
+                - **Processing Time:** The time the event reached the AWS server.
+                - **Watermarks:** Special markers injected into the stream that tell Flink, "We don't expect any data older than to arrive anymore." This allows Flink to close time windows even if some data is delayed.
+
+            3. **Windowing**: Since streams are infinite, you must group data into buckets to analyze it.
+
+                - **Tumbling Windows:** Fixed-size, non-overlapping (e.g., every 5 minutes).
+                - **Sliding Windows:** Overlapping windows (e.g., every 5 minutes, but starting every 1 minute).
+                - **Session Windows:** Grouped by periods of activity followed by a gap of inactivity.
+
+        4.  **Key Service Features**
+
+            -   **Fault Tolerance: Checkpoints vs. Snapshots**
+
+                -   **Checkpoints:** Automated, internal backups created frequently (seconds/minutes) to allow the application to recover to the exact state before a failure. This enables **Exactly-Once Processing**.
+                -   **Snapshots (Savepoints):** User-triggered backups that persist even if the application is deleted or updated. You use these to "pause" and "resume" state during code upgrades.
+
+            -   **Scalability & Security**
+
+                -   **Autoscaling:** The service monitors CPU usage and automatically adds or removes KPUs to match throughput.
+                -   **VPC Support:** You can run applications inside your Private Cloud (VPC) to securely access RDS databases or MSK clusters without traversing the public internet.
+                -   **In-place Upgrades:** Allows you to upgrade the Flink version (e.g., from 1.15 to 1.20) while keeping the same Application ARN and maintaining state.
+
+        5.  **Development Modes**: There are two primary ways to interact with the service:
+
+            -   **Managed Service Applications:** You write code (Java/Python/Scala) in your IDE, package it as a **Fat-JAR** or ZIP, and upload it to Amazon S3. This is best for production, "always-on" jobs.
+            -   **Studio Notebooks:** Powered by **Apache Zeppelin**, this provides a web-based interface for interactive analysis. You can write SQL, Python, or Scala in a notebook and see results instantly. It’s ideal for data exploration and prototyping.
+
+            -   **Comparison: Standard Flink vs. AWS Managed Flink**
+
+                | Feature               | Standard Apache Flink     | AWS Managed Service    |
+                | --------------------- | ------------------------- | ---------------------- |
+                | **Cluster Setup**     | Manual (EC2/Kubernetes)   | Fully Automated        |
+                | **Scaling**           | Manual/Scripted           | Native Autoscaling     |
+                | **High Availability** | Requires Zookeeper/Config | Built-in (AZ Failover) |
+                | **Backups**           | Manual to HDFS/S3         | Managed Checkpoints    |
+
+        ##### Examples:
+
+        To demonstrate a tumbling window aggregation in Amazon Managed Service for Apache Flink, I will provide examples in both **Python (PyFlink)** and **Java**.
+
+        These examples assume a scenario where you are reading a stream of "Stock Trades" from Kinesis and calculating the **average price** of each ticker symbol every **1 minute**.
+
+        1. **Python Example (PyFlink Table API)**: The Table API is often the preferred way to write Python Flink applications because it allows you to use SQL-like operations which are highly optimized.
+
+            ```python
+            import os
+            from pyflink.table import EnvironmentSettings, TableEnvironment
+
+            def main():
+                # 1. Initialize the Environment
+                env_settings = EnvironmentSettings.new_instance().in_streaming_mode().build()
+                table_env = TableEnvironment.create(env_settings)
+
+                # 2. Define Source Table (Kinesis)
+                # Note: Replace 'us-east-1' and 'InputStream' with your actual values
+                table_env.execute_sql("""
+                    CREATE TABLE trades_source (
+                        ticker STRING,
+                        price DOUBLE,
+                        trade_time TIMESTAMP(3),
+                        WATERMARK FOR trade_time AS trade_time - INTERVAL '5' SECOND
+                    ) WITH (
+                        'connector' = 'kinesis',
+                        'stream' = 'StockTradeStream',
+                        'aws.region' = 'us-east-1',
+                        'scan.stream.initpos' = 'LATEST',
+                        'format' = 'json'
+                    )
+                """)
+
+                # 3. Define the Tumbling Window Aggregation
+                # We group by ticker and a 1-minute window
+                result_table = table_env.sql_query("""
+                    SELECT
+                        ticker,
+                        AVG(price) as avg_price,
+                        TUMBLE_START(trade_time, INTERVAL '1' MINUTE) as window_start
+                    FROM trades_source
+                    GROUP BY ticker, TUMBLE(trade_time, INTERVAL '1' MINUTE)
+                """)
+
+                # 4. Define Sink (Print to Log or another Kinesis Stream)
+                table_env.execute_sql("""
+                    CREATE TABLE sink_table (
+                        ticker STRING,
+                        avg_price DOUBLE,
+                        window_start TIMESTAMP(3)
+                    ) WITH (
+                        'connector' = 'print'
+                    )
+                """)
+
+                result_table.execute_insert("sink_table")
+
+            if __name__ == '__main__':
+                main()
+
+            ```
+
+        2. **Java Example (DataStream API)**: The DataStream API provides more granular control and is the standard for complex production applications.
+
+            ```java
+            public class StockAggregator {
+                public static void main(String[] args) throws Exception {
+                    final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+                    // 1. Configure Kinesis Source
+                    Properties sourceProperties = new Properties();
+                    sourceProperties.setProperty("aws.region", "us-east-1");
+
+                    FlinkKinesisConsumer<StockTrade> source = new FlinkKinesisConsumer<>(
+                        "StockTradeStream", new SimpleStringSchema(), sourceProperties);
+
+                    // 2. Process Stream
+                    DataStream<StockTrade> tradeStream = env.addSource(source)
+                        .assignTimestampsAndWatermarks(
+                            WatermarkStrategy.<StockTrade>forBoundedOutOfOrderness(Duration.ofSeconds(5))
+                            .withTimestampAssigner((event, timestamp) -> event.getTimestamp()));
+
+                    // 3. Apply Tumbling Window
+                    DataStream<TradeSummary> result = tradeStream
+                        .keyBy(StockTrade::getTicker)
+                        .window(TumblingEventTimeWindows.of(Time.minutes(1)))
+                        .aggregate(new AverageAggregate());
+
+                    // 4. Sink to Kinesis
+                    result.addSink(new FlinkKinesisProducer<>(new SimpleStringSchema(), sinkProperties));
+
+                    env.execute("Flink Stock Aggregator");
+                }
+            }
+
+            ```
+
+        3. **Understanding the Logic**
+
+            - **The Watermark Strategy**: In both examples, you see a mention of "Watermarks" (e.g., `INTERVAL '5' SECOND`). This is the "delay tolerance." It tells Flink: _"If an event is 5 seconds late based on its timestamp, still include it in the window. If it's more than 5 seconds late, discard it."_
+
+            - **The Window Process**
+
+                1. **KeyBy / Group By:** Data is partitioned by the `ticker`. All "AAPL" trades go to one operator, and all "AMZN" trades go to another.
+                2. **Tumbling Window:** Flink creates a bucket for `[10:00, 10:01)`. It collects all events that fall in that minute.
+                3. **Trigger:** Once the Watermark reaches `10:01 + 5s`, Flink "closes" the bucket, runs the `AVG()` calculation, and emits the result.
+                4. **Purge:** The state for that window is deleted from memory to keep the application lean.
+
+            - **Deployment Prerequisites**: When moving this code to the AWS Managed Service
+
+                - **Java:** You must package your application into an **"Uber-JAR"** (containing all dependencies) and upload it to S3.
+                - **Python:** You must package your script and a `requirements.txt` into a **ZIP** file.
+                - **IAM:** Your application's IAM role must have `kinesis:DescribeStream`, `kinesis:GetRecords`, and `kinesis:PutRecord` permissions for the specific streams.
 
         </details>
 

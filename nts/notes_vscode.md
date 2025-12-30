@@ -5,6 +5,7 @@
 -   `^ + Spaces` → To get markdown snippet autocomplete.
 -   `⌘ + ⇧ + O` → Open drop down to select Heading leve to move to the selected heading.
 -   `⌥ + 8` → Shortcut to get dot symbol(•).
+-   `⌘ + ^ + ➡️/⬅️` → Split the window
 
 <details><summary style="font-size:25px;color:Orange;text-align:left">Notes Link</summary>
 
@@ -29,71 +30,61 @@
 -   ~/Library/Application\ Support/Code/User/keybindings.json
 -   ~/Library/Application\ Support/Code/User/snippets
 
-<details><summary style="font-size:25px;color:Orange;text-align:left">USEFULL SHORTCUTS</summary>
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">USEFULL SHORTCUTS</summary>
 
-#### Shortcuts
+    #### Shortcuts
 
--   `⬆︎ + ^ + -` → Split cell into two cells
--   `⬆︎ + m` → merges selected cells
--   `m` → Change selected cell to markdown cell
--   `y` → Change selected cell to code cell
--   🔥 `⌥ + z` → Toggle Wrap/Unwrap words in integrated VSC terminal.
--   🔥 `^ + ␣` → Search for custom code snippet shortcuts for markdown.
--   `^ + -` → Jump cursor backword in the chain of it's previous position
--   `^ + ⇧ + -` → Jump cursor forward in the chain of it's previous position
--   `⌘ + ⇧ + f` → Search a patteren in multiple files.
--   `⌘ + ⇧ + k` → Delete the line of code at the cursor.
--   `⌘ + x` → Cut the line of code at the cursor to paste somewhere else.
--   🔥 `⌘ + k + 0` → Fold code at the base indentation lavel
--   `⌥ + ⌘ + ]` → Fold code in the editor
--   `⌘ + k + j` → Unold code.
--   `⌘ + ⇧ + e` → Toggle between file explorer and editor.
--   `⌘ + ↓` → Collapse/Expend the folder in the file explorer
--   `→` → Expend the folder in the file explorer
--   `←` → Collapse the folder in the file explorer
--   `^ + Enter` → Open focused file from file explorer.
--   `fn + ^ + f5` → Run script
--   `⌘ + b` → Toggle side bar
--   `⌘ + ⇧ + e` → Jump between Editor and Explorer
--   `⌘ + j` → Togle between integrated terminal and Editor.
--   `⌘ + ⇧ + x` → Search for Extentions
--   `⌘ + k + m` → Options to choose among various keymaps.
+    -   `⬆︎ + ^ + -` → Split cell into two cells
+    -   `⬆︎ + m` → merges selected cells
+    -   `m` → Change selected cell to markdown cell
+    -   `y` → Change selected cell to code cell
+    -   🔥 `⌥ + z` → Toggle Wrap/Unwrap words in integrated VSC terminal.
+    -   🔥 `^ + ␣` → Search for custom code snippet shortcuts for markdown.
+    -   `^ + -` → Jump cursor backword in the chain of it's previous position
+    -   `^ + ⇧ + -` → Jump cursor forward in the chain of it's previous position
+    -   `⌘ + ⇧ + f` → Search a patteren in multiple files.
+    -   `⌘ + ⇧ + k` → Delete the line of code at the cursor.
+    -   `⌘ + x` → Cut the line of code at the cursor to paste somewhere else.
+    -   🔥 `⌘ + k + 0` → Fold code at the base indentation lavel
+    -   `⌥ + ⌘ + ]` → Fold code in the editor
+    -   `⌘ + k + j` → Unold code.
+    -   `⌘ + ⇧ + e` → Toggle between file explorer and editor.
+    -   `⌘ + ↓` → Collapse/Expend the folder in the file explorer
+    -   `→` → Expend the folder in the file explorer
+    -   `←` → Collapse the folder in the file explorer
+    -   `^ + Enter` → Open focused file from file explorer.
+    -   `fn + ^ + f5` → Run script
+    -   `⌘ + b` → Toggle side bar
+    -   `⌘ + ⇧ + e` → Jump between Editor and Explorer
+    -   `⌘ + j` → Togle between integrated terminal and Editor.
+    -   `⌘ + ⇧ + x` → Search for Extentions
+    -   `⌘ + k + m` → Options to choose among various keymaps.
 
-#### Command Palette Search
+    #### Command Palette Search
 
--   `⌘ + ⇧ + P` -> Open the Command Palette
-    -   Search:
-        -   `filename` ↦ ⮐
-        -   `insert unicode` ↦ ⮐ -> To get Unicode Characters
-        -   `transform to UPPERCASE/lowercase/titlecase` ↦ ⮐
-        -   `ndentationToSpaces` ↦ ⮐
-        -   `indentationToTabs` ↦ ⮐
-        -   `Profiles: Switch Profile` -> to Switch Between Profiles
-        -   `Notebook: Join Selected Cells` ↦ ⮐
-        -   `Notebook: Collapse all Cell Outputs` ↦ ⮐
-        -   `Notebook: Expand all Cell Inputs` ↦ ⮐
+    -   `⌘ + ⇧ + P` -> Open the Command Palette
+        -   Search:
+            -   `filename` ↦ ⮐
+            -   `insert unicode` ↦ ⮐ -> To get Unicode Characters
+            -   `transform to UPPERCASE/lowercase/titlecase` ↦ ⮐
+            -   `ndentationToSpaces` ↦ ⮐
+            -   `indentationToTabs` ↦ ⮐
+            -   `Profiles: Switch Profile` -> to Switch Between Profiles
+            -   `Notebook: Join Selected Cells` ↦ ⮐
+            -   `Notebook: Collapse all Cell Outputs` ↦ ⮐
+            -   `Notebook: Expand all Cell Inputs` ↦ ⮐
 
-#### Configuration Shortcuts
+    #### Configuration Shortcuts
 
--   `⌘ + k + t` → Toggle between themes.
--   `⌘ + ,` → Open the default `settings.json`-file for VSCode.
--   `⌘ + ⇧ + P` -> type 'Default Keyboard Shortcuts (JSON)' ↦ ⮐
--   `⌘ + k + r` → OPEN KEYBOARD SHORTCUTS Reference.
--   `⌘ + k + s` → Open Keyboard Shortcuts.
+    -   `⌘ + k + t` → Toggle between themes.
+    -   `⌘ + ,` → Open the default `settings.json`-file for VSCode.
+    -   `⌘ + ⇧ + P` -> type 'Default Keyboard Shortcuts (JSON)' ↦ ⮐
+    -   `⌘ + k + r` → OPEN KEYBOARD SHORTCUTS Reference.
+    -   `⌘ + k + s` → Open Keyboard Shortcuts.
 
-</details>
+    </details>
 
 ---
-
-<details><summary style="font-size:25px;color:Orange;text-align:left">Windows OS</summary>
-    
-- Keyboard Shortcut (`^ + k + s`):
-    - Search: `View: Open Next/Previous Editor`; Set: `⌃ + ⎇ + ➡️` / `⌃ + ⎇ + ⬅️`.
-    - Search: `cursorTop/cursorBottom`; Set: `⌃ + ⬆︎` / `⌃ + ⬇️`.
-    - Search: `cursorTopSelect/cursorBottomSelect`; Set: `⌃ + ⇧ + ⬆︎` / `⌃ + ⇧ + ⬇️`.
-    - Search: `cursorHomeSelect/cursorEndSelect`; Set: `⌃ + ⇧ + ⬅️` / `⌃ + ⇧ + ➡️`.
-    - 
-</details>
 
 ### MANAGE EXTENSIONS FROM COMMAND LINE
 
@@ -121,75 +112,65 @@
     1.  `RightClick` on one file and `select: Select for Compare`
     2.  `RightClick` on the second file and `select: Compare with Selected`
 
-<details><summary style="font-size:25px;color:Orange;text-align:left">what is a profile in Visual Studio Code?</summary>
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">what is a profile in Visual Studio Code?</summary>
 
-A **profile** in **Visual Studio Code (VS Code)** is a feature that allows you to create and manage separate, customized configurations for your development environment. Profiles can include different settings, extensions, themes, keybindings, and UI layouts, making it easier to switch between different setups tailored for specific projects, workflows, or development needs.
+    A **profile** in **Visual Studio Code (VS Code)** is a feature that allows you to create and manage separate, customized configurations for your development environment. Profiles can include different settings, extensions, themes, keybindings, and UI layouts, making it easier to switch between different setups tailored for specific projects, workflows, or development needs.
 
----
+    #### **Key Features of Profiles in VS Code**
 
-#### **Key Features of Profiles in VS Code**
+    1. **Custom Settings**: Each profile can have its own unique configuration settings (e.g., font size, editor behavior, etc.).
+    2. **Extensions**: Profiles can have different sets of installed extensions, enabling you to install only what you need for a particular project or workflow.
+    3. **Keybindings**: Profiles allow customized keybinding configurations for different tasks or workflows.
+    4. **UI Customization**: You can adjust themes, icons, and layouts for each profile.
+    5. **Workspace-Specific Profiles**: Profiles can be linked to specific workspaces, making them automatically load when you open that workspace.
 
-1. **Custom Settings**: Each profile can have its own unique configuration settings (e.g., font size, editor behavior, etc.).
-2. **Extensions**: Profiles can have different sets of installed extensions, enabling you to install only what you need for a particular project or workflow.
-3. **Keybindings**: Profiles allow customized keybinding configurations for different tasks or workflows.
-4. **UI Customization**: You can adjust themes, icons, and layouts for each profile.
-5. **Workspace-Specific Profiles**: Profiles can be linked to specific workspaces, making them automatically load when you open that workspace.
+    #### **Why Use Profiles?**
 
----
+    1. **Project-Specific Needs**: Different projects may require unique configurations or extensions (e.g., Python vs. JavaScript projects).
+    2. **Role-Specific Workflows**: Developers who switch between roles (e.g., frontend development, backend development, or DevOps) can maintain separate setups for each.
+    3. **Focus and Organization**: Minimize clutter by loading only the extensions and settings relevant to your current task or project.
+    4. **Personal and Team Use**: Share profiles with team members to maintain a consistent development environment across a team.
 
-#### **Why Use Profiles?**
+    #### **How to Use Profiles in VS Code**
 
-1. **Project-Specific Needs**: Different projects may require unique configurations or extensions (e.g., Python vs. JavaScript projects).
-2. **Role-Specific Workflows**: Developers who switch between roles (e.g., frontend development, backend development, or DevOps) can maintain separate setups for each.
-3. **Focus and Organization**: Minimize clutter by loading only the extensions and settings relevant to your current task or project.
-4. **Personal and Team Use**: Share profiles with team members to maintain a consistent development environment across a team.
+    1. **Access Profiles**:
 
----
+        - Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on macOS).
+        - Search for **"Profiles: Create Profile"**, **"Profiles: Switch Profile"**, or **"Profiles: Manage Profiles"**.
 
-#### **How to Use Profiles in VS Code**
+    2. **Create a Profile**:
 
-1. **Access Profiles**:
+        - Choose "Create Profile" from the Command Palette.
+        - Name your new profile and decide whether to start from scratch or use an existing configuration as a base.
 
-    - Open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on macOS).
-    - Search for **"Profiles: Create Profile"**, **"Profiles: Switch Profile"**, or **"Profiles: Manage Profiles"**.
+    3. **Switch Profiles**:
 
-2. **Create a Profile**:
+        - Use the **"Profiles: Switch Profile"** command to toggle between profiles.
+        - Profiles are instantly loaded, updating your settings, extensions, and layout.
 
-    - Choose "Create Profile" from the Command Palette.
-    - Name your new profile and decide whether to start from scratch or use an existing configuration as a base.
+    4. **Export/Import Profiles**:
+        - You can export a profile to a JSON file and share it with others or import a shared profile into your own VS Code setup.
 
-3. **Switch Profiles**:
+    #### **Example Use Cases**
 
-    - Use the **"Profiles: Switch Profile"** command to toggle between profiles.
-    - Profiles are instantly loaded, updating your settings, extensions, and layout.
+    1. **Frontend Development Profile**:
 
-4. **Export/Import Profiles**:
-    - You can export a profile to a JSON file and share it with others or import a shared profile into your own VS Code setup.
+        - Extensions: Prettier, ESLint, Tailwind CSS IntelliSense.
+        - Settings: Auto-format on save, dark theme.
+        - Keybindings: Shortcuts for web preview.
 
----
+    2. **Backend Development Profile**:
 
-#### **Example Use Cases**
+        - Extensions: Python, PostgreSQL, Docker.
+        - Settings: Enable linting and debugging configurations.
 
-1. **Frontend Development Profile**:
+    3. **Writing or Documentation Profile**:
+        - Extensions: Markdown Preview Enhanced, Spell Checker.
+        - Settings: Increased font size for readability.
 
-    - Extensions: Prettier, ESLint, Tailwind CSS IntelliSense.
-    - Settings: Auto-format on save, dark theme.
-    - Keybindings: Shortcuts for web preview.
+    Profiles help make **VS Code** flexible and adaptable for a variety of workflows, letting you work efficiently across different projects and tasks.
 
-2. **Backend Development Profile**:
-
-    - Extensions: Python, PostgreSQL, Docker.
-    - Settings: Enable linting and debugging configurations.
-
-3. **Writing or Documentation Profile**:
-    - Extensions: Markdown Preview Enhanced, Spell Checker.
-    - Settings: Increased font size for readability.
-
----
-
-Profiles help make **VS Code** flexible and adaptable for a variety of workflows, letting you work efficiently across different projects and tasks.
-
-</details>
+    </details>
 
 ---
 
@@ -299,4 +280,17 @@ Profiles help make **VS Code** flexible and adaptable for a variety of workflows
             - Click **Open Settings (JSON)** in the settings UI
             - Manually edit the `settings.json` file
 
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Windows OS</summary>
+        
+    - Keyboard Shortcut (`^ + k + s`):
+        - Search: `View: Open Next/Previous Editor`; Set: `⌃ + ⎇ + ➡️` / `⌃ + ⎇ + ⬅️`.
+        - Search: `cursorTop/cursorBottom`; Set: `⌃ + ⬆︎` / `⌃ + ⬇️`.
+        - Search: `cursorTopSelect/cursorBottomSelect`; Set: `⌃ + ⇧ + ⬆︎` / `⌃ + ⇧ + ⬇️`.
+        - Search: `cursorHomeSelect/cursorEndSelect`; Set: `⌃ + ⇧ + ⬅️` / `⌃ + ⇧ + ➡️`.
+        - Search: `cursorWordEndLeftSelect/cursorWordEndRightSelect`; Set: `⇧ + ⌥ + ⬅️`/`⇧ + ⌥ + ➡️`.
+        - 
     </details>

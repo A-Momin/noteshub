@@ -120,6 +120,8 @@
 
     #### HTTP (Hypertext Transfer Protocol) APIs
 
+    -   [HTTP: Hypertext Transfer Protocol](https://developer.mozilla.org/en-US/docs/Web/HTTP)
+
     An HTTP API (HyperText Transfer Protocol Application Programming Interface) is a way for applications to communicate with each other over the web using the HTTP protocol. It allows clients (such as web browsers, mobile apps, or other servers) to send requests to a server, which then processes the requests and sends back responses.
 
     In essence, an HTTP API exposes certain endpoints (URLs) that clients can interact with, using standard HTTP methods like GET (to retrieve data), POST (to send data), PUT (to update data), and DELETE (to remove data). This interaction facilitates the exchange of data and services between different software systems.

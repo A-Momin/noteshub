@@ -7,7 +7,7 @@ def generate_random_datetime(
     start: str = "1990-01-01 00:00:00",
     end: str = "2000-01-01 00:00:00",
     date_format: str = "%Y-%m-%d %H:%M:%S",
-) -> datetime.datetime:
+    ) -> datetime.datetime:
     """
     Generates a random datetime object between a given start and end date strings.
 

@@ -7,7 +7,7 @@
     AWS cybersecurity can be divided into **6 major domains**:
 
     | Domain                            | Focus                                                |
-    | --------------------------------- | ---------------------------------------------------- |
+    | :-------------------------------- | :--------------------------------------------------- |
     | 🔐 Identity & Access Management   | Controlling who can access what                      |
     | 🌐 Network Security               | Protecting VPCs, subnets, load balancers, endpoints  |
     | 🧱 Data Protection                | Encryption, key management, DLP                      |
@@ -189,5 +189,40 @@
     For more information on the distinctions between these two primary types, you can watch this video: [Intrusion Detection System - IDS| HIDS Vs NIDS](https://www.youtube.com/watch?v=YTWO7Q5iWzE). This video provides a comparison of Host-based and Network-based IDS.
 
     http://googleusercontent.com/youtube_content/0
+
+    </details>
+
+-   <details><summary style="font-size:25px;color:Orange">OWASP (Open Worldwide Application Security Project) Top 10</summary>
+
+    The **OWASP Top 10** is a globally recognized, standard awareness document for developers and web application security professionals. It represents a broad consensus of the most critical security risks facing web applications today, helping organizations prioritize their security efforts.
+
+    The most current official list is the **OWASP Top 10 - 2021**.
+
+    ## 🚨 The OWASP Top 10 (2021 List)
+
+    The 2021 list features three new categories and four categories with naming and scoping changes compared to the 2017 version, reflecting the evolving threat landscape.
+
+    | Rank   | ID           | Category Name                                  | Description                                                                                                                                                                                                                                                                |
+    | :----- | :----------- | :--------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | **1**  | **A01:2021** | **Broken Access Control**                      | The most critical risk, moving from \#5 in 2017. Attackers can exploit flaws in access control to bypass authorization, gain unauthorized data access, or execute privileged functions (e.g., changing another user's account details via a URL parameter).                |
+    | **2**  | **A02:2021** | **Cryptographic Failures**                     | Renamed from "Sensitive Data Exposure." This risk focuses on the root cause—failures related to cryptography (or lack thereof) that lead to sensitive data exposure (e.g., using weak hashing algorithms or failing to encrypt all sensitive data at rest and in transit). |
+    | **3**  | **A03:2021** | **Injection**                                  | Injection flaws, such as SQL, NoSQL, Command, and LDAP Injection, occur when untrusted data is sent to an interpreter as part of a command or query. This category now also includes **Cross-Site Scripting (XSS)**.                                                       |
+    | **4**  | **A04:2021** | **Insecure Design**                            | **A new category** focused on risks related to design and architectural flaws. It calls for better use of **threat modeling** and secure design patterns early in the development lifecycle rather than focusing only on implementation flaws.                             |
+    | **5**  | **A05:2021** | **Security Misconfiguration**                  | This includes securely configuring all application components (operating systems, web servers, databases, frameworks) and using secure default settings. XML External Entities (XXE) is now part of this category.                                                         |
+    | **6**  | **A06:2021** | **Vulnerable and Outdated Components**         | Previously "Using Components with Known Vulnerabilities." This risk involves using libraries, frameworks, or other software modules with known security vulnerabilities that haven't been patched.                                                                         |
+    | **7**  | **A07:2021** | **Identification and Authentication Failures** | Previously "Broken Authentication." This covers vulnerabilities in session management and user identification (e.g., weak password policies, ineffective multi-factor authentication, or insecure session identifiers).                                                    |
+    | **8**  | **A08:2021** | **Software and Data Integrity Failures**       | **A new category** focused on making assumptions about the integrity of software updates, critical data, and Continuous Integration/Continuous Delivery (CI/CD) pipelines without adequate verification. This includes the old "Insecure Deserialization."                 |
+    | **9**  | **A09:2021** | **Security Logging and Monitoring Failures**   | Previously "Insufficient Logging and Monitoring." This is expanded to include failures that directly impact incident visibility, alerting, and forensics, making it difficult to detect, escalate, or respond to breaches.                                                 |
+    | **10** | **A10:2021** | **Server-Side Request Forgery (SSRF)**         | **A new category** promoted from the community survey. SSRF flaws occur when a web application fetches a remote resource without properly validating the user-supplied URL, allowing attackers to force the application to send requests to internal or external systems.  |
+
+    ### 📘 How the OWASP Top 10 is Used
+
+    The primary purpose of the OWASP Top 10 is to serve as:
+
+    -   **Awareness Standard:** It helps convey the most critical web application security risks to developers, security teams, and management.
+    -   **Prioritization Guide:** Organizations use it to define and prioritize their application security testing, development standards, and budgets.
+    -   **WAF Rule Template:** Many Web Application Firewalls (WAFs) and security tools use the Top 10 risks to develop baseline security policies.
+
+    Would you like a more detailed explanation of one of these critical risks, such as **Broken Access Control** or **Injection**?
 
     </details>
