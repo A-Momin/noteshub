@@ -1526,6 +1526,8 @@
             - `Attached Directly to AWS Resources`: Some resources (like S3 buckets, Lambda functions, etc.) allow policies to be attached directly to them, defining who can access them. These policies also define the allowed actions on the resource.
             - `Granting Cross-Account Access`: Resource-based policies are often used to grant cross-account access, specifying who (in another account) can access a resource.
 
+    -   **Resource-Based Policy**:
+
     #### Role
 
     An AWS IAM Role is a set of permissions that define what actions are allowed (or denied) in AWS. It is not associated with a specific user or group, but instead, it can be assumed by any trusted entity (like an AWS service, user, or application).
@@ -3579,11 +3581,6 @@
 
     The architecture of AWS WAF is built around a few central resources that define your protection strategy:
 
-    -   **Web Access Control List (Web ACL)**: This is the top-level, primary resource for your WAF configuration. A Web ACL is a collection of rules and rule groups that you want AWS WAF to check against incoming web requests.
-
-        -   **Action:** It includes a **Default Action** (either **Allow** or **Block**) that is applied to any request that does not match any of the rules within the ACL. Typically, the default action is set to **Allow**, and rules are configured to **Block** specific malicious traffic.
-        -   **Association:** A single Web ACL is associated with one or more protected AWS resources.
-
     -   **Rules**: A rule defines the criteria for inspecting a web request and the action to take if the criteria are met. Rules are processed in a specified **Priority** order.
 
         -   **Criteria (Statements):** Rules contain one or more statements that specify which parts of a web request to inspect (e.g., IP address, HTTP header, body, URI, query string) and the conditions to match (e.g., specific string, regex, SQLi signature, XSS signature).
@@ -3598,6 +3595,13 @@
         -   **AWS Managed Rule Groups:** Pre-built, maintained, and automatically updated sets of rules provided by AWS (e.g., covering the OWASP Top 10 vulnerabilities, Bot Control, or IP reputation lists).
         -   **AWS Marketplace Rule Groups:** Rule groups created and maintained by third-party security vendors.
         -   **Custom Rule Groups:** Rule groups that you create and manage yourself.
+
+    -   **Web Access Control List (Web ACL)**: This is the top-level, primary resource for your WAF configuration. A Web ACL is a collection of rules and rule groups that you want AWS WAF to check against incoming web requests.
+
+        -   **Action:** It includes a **Default Action** (either **Allow** or **Block**) that is applied to any request that does not match any of the rules within the ACL. Typically, the default action is set to **Allow**, and rules are configured to **Block** specific malicious traffic.
+        -   **Association:** A single Web ACL is associated with one or more protected AWS resources.
+        -   **Web ACL** can be associated with various WAS services like ALB, APIGateway, CloudFront etc
+        -   **Web ACL** can have Rules and Rule Groups.
 
     -   **Web ACL Capacity Units (WCUs)**: A unit of measurement for the operational cost and complexity of a WAF rule, rule group, or Web ACL. AWS WAF limits are based on the total WCUs you consume. More complex rules (like those with advanced regex or body inspection) consume more WCUs.
 
@@ -3626,10 +3630,6 @@
     -   **AWS AppSync (GraphQL APIs):** Provides protection specifically for GraphQL workloads.
     -   **Amazon Cognito User Pools:** Helps secure user authentication flows.
     -   **AWS App Runner:** Secures web applications deployed with App Runner.
-
-    ***
-
-    ***
 
     #### Key Components of AWS WAF
 

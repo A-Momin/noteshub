@@ -3449,9 +3449,10 @@
         1.  **Core Architecture & Components**: An application in this service follows the standard Flink dataflow model: **Source → Transform → Sink**.
 
             -   **Application:** The primary AWS resource. It contains your code (Java, Python, Scala, or SQL), configuration, and the underlying managed Flink cluster.
-            -   **Source:** The input connector that ingests data. Common sources include Amazon Kinesis Data Streams, Amazon MSK (Managed Streaming for Apache Kafka), and Amazon S3.
             -   **Operators:** These are the "engines" of your application. Each operator performs a specific transformation (e.g., `map`, `filter`, `join`, `window`). Operators can be **chained** together to improve performance by reducing data transfer between threads.
-            -   **Sink:** The output connector where the processed data is sent. Common sinks include Kinesis Data Streams, Amazon S3 (Data Lakes), Amazon OpenSearch, or custom HTTP endpoints.
+            -   **Connectors**:
+                -   **Source:** The input connector that ingests data. Common sources include Amazon Kinesis Data Streams, Amazon MSK (Managed Streaming for Apache Kafka), and Amazon S3.
+                -   **Sink:** The output connector where the processed data is sent. Common sinks include Kinesis Data Streams, Amazon S3 (Data Lakes), Amazon OpenSearch, or custom HTTP endpoints.
 
         2.  **Resource Management: KPUs**: The service uses a proprietary unit called the **Kinesis Processing Unit (KPU)** to abstract compute resources.
 
@@ -3478,11 +3479,41 @@
                 - **Processing Time:** The time the event reached the AWS server.
                 - **Watermarks:** Special markers injected into the stream that tell Flink, "We don't expect any data older than to arrive anymore." This allows Flink to close time windows even if some data is delayed.
 
-            3. **Windowing**: Since streams are infinite, you must group data into buckets to analyze it.
+            3. **Windowing**: In Amazon Managed Service for Apache Flink, **Windowing** is the core mechanism used to process infinite streams of data by slicing them into finite "buckets" of time or events. Since a stream never ends, windows allow you to perform aggregations like `SUM`, `AVG`, or `COUNT` over a specific period. There are three primary types of windows you will encounter: **Tumbling**, **Hopping**, and **Session**.
 
-                - **Tumbling Windows:** Fixed-size, non-overlapping (e.g., every 5 minutes).
-                - **Sliding Windows:** Overlapping windows (e.g., every 5 minutes, but starting every 1 minute).
-                - **Session Windows:** Grouped by periods of activity followed by a gap of inactivity.
+                1. **Tumbling Windows**: Tumbling windows are fixed-size, contiguous, and **non-overlapping**. They are the simplest form of windowing.
+
+                    - **How they work:** When a window closes, a new one starts immediately. Each data point belongs to exactly **one** window.
+                    - **Key Parameter:** `Size` (e.g., 5 minutes).
+                    - **Example:** If you have a 5-minute tumbling window starting at 10:00, the windows are `[10:00, 10:05)`, `[10:05, 10:10)`, and so on.
+                    - **Use Case:** Periodic reporting, such as "Total sales per hour" or "Number of website visits per minute."
+                    - **Flink SQL Syntax:** `TUMBLE(table_name, DESCRIPTOR(time_col), INTERVAL '5' MINUTES)`
+
+                2. **Hopping Windows (Sliding Windows)**: Hopping windows are fixed-size but **can overlap**. They are used when you want a "moving" view of your data.
+
+                    - **How they work:** They are defined by a **Size** and a **Hop** (or Slide). If the Hop is smaller than the Size, the windows overlap. An individual data point can belong to **multiple** windows.
+                    - **Key Parameters:** `Size` (e.g., 10 minutes) and `Hop` (e.g., 5 minutes).
+                    - **Example:** A window of 10 minutes that hops every 5 minutes will result in: `[10:00, 10:10)`, `[10:05, 10:15)`, `[10:10, 10:20)`.
+                    - **Use Case:** Calculating moving averages or trends, such as "The average CPU usage over the last 5 minutes, updated every 30 seconds."
+                    - **Flink SQL Syntax:** `HOP(table_name, DESCRIPTOR(time_col), INTERVAL '5' MINUTES, INTERVAL '10' MINUTES)`
+
+                3. **Session Windows**: Session windows are **dynamic**; they do not have a fixed start or end time. Instead, they are defined by periods of activity separated by gaps of inactivity.
+
+                    - **How they work:** A window "stays open" as long as data keeps arriving within a specific **Gap** duration. If no data arrives for longer than the gap, the window closes.
+                    - **Key Parameter:** `Gap` (e.g., 15 minutes of inactivity).
+                    - **Example:** A user browses a website at 10:00, 10:05, and 10:10. If the gap is 15 minutes, all these events are in one window. If they don't click again until 10:30, a new session window begins.
+                    - **Use Case:** Analyzing user behavior where activity comes in bursts, such as "User session duration" or "Gaming session telemetry."
+                    - **Flink SQL Syntax:** `SESSION(table_name, DESCRIPTOR(time_col), INTERVAL '15' MINUTES)`
+
+                - **Key Comparison Table**
+
+                    | Feature            | Tumbling      | Hopping                     | Session                                        |
+                    | ------------------ | ------------- | --------------------------- | ---------------------------------------------- |
+                    | **Window Size**    | Fixed         | Fixed                       | Dynamic (Variable)                             |
+                    | **Overlapping**    | No            | Yes                         | No                                             |
+                    | **Logic**          | Every minutes | Last minutes, every minutes | Stop after minutes of silence                  |
+                    | **Complexity**     | Low           | Medium                      | High                                           |
+                    | **Resource Usage** | Low           | High (due to overlap)       | Highest (requires state tracking per user/key) |
 
         4.  **Key Service Features**
 
@@ -3517,7 +3548,7 @@
 
         These examples assume a scenario where you are reading a stream of "Stock Trades" from Kinesis and calculating the **average price** of each ticker symbol every **1 minute**.
 
-        1. **Python Example (PyFlink Table API)**: The Table API is often the preferred way to write Python Flink applications because it allows you to use SQL-like operations which are highly optimized.
+        3. **Python Example (PyFlink Table API)**: The **Table API** is often the preferred way to write Python Flink applications because it allows you to use SQL-like operations which are highly optimized.
 
             ```python
             import os
@@ -3574,7 +3605,7 @@
 
             ```
 
-        2. **Java Example (DataStream API)**: The DataStream API provides more granular control and is the standard for complex production applications.
+        4. **Java Example (DataStream API)**: The **DataStream API** provides more granular control and is the standard for complex production applications.
 
             ```java
             public class StockAggregator {
@@ -3609,7 +3640,7 @@
 
             ```
 
-        3. **Understanding the Logic**
+        5. **Understanding the Logic**
 
             - **The Watermark Strategy**: In both examples, you see a mention of "Watermarks" (e.g., `INTERVAL '5' SECOND`). This is the "delay tolerance." It tells Flink: _"If an event is 5 seconds late based on its timestamp, still include it in the window. If it's more than 5 seconds late, discard it."_
 

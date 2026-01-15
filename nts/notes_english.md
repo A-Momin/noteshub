@@ -51,8 +51,13 @@
 
     -   **compliction/complexity**:
 
-        -   `compliction`:
-        -   `complexity`:
+        -   `compliction`: Because it is "folded," the surface is hidden and hard to see all at once. However, it is still one piece of material. If you have the patience and the "know-how," you can unfold it back to its original simple state.
+        -   `complexity`: It is not made of one piece folded up; it is made of many different strands interwoven. You cannot "unbraid" a complex system to make it simple without destroying the system itself. The strands rely on each other to create the strength and pattern of the whole.
+
+        | Word         | Latin Root | Literal Action | Key Characteristic                                |
+        | :----------- | :--------- | :------------- | :------------------------------------------------ |
+        | Complication | Plicāre    | Folding        | "Can be ""unfolded"" or solved through analysis." |
+        | Complexity   | Plectere   | Braiding       | Parts are inseparable; the pattern is the system. |
 
     -   **Provition**/**Provide**:
 

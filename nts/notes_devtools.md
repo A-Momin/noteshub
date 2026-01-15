@@ -228,7 +228,7 @@
 
     -   `$ npm install npm@latest -g` → to upgrade npm into latest version
     -   `$ npm help` →
-    -   `$ npm install -h` → Display different way to use the 'specified' (install in this case) command
+    -   `$ npm install -h` → Display different way to use the 'specified' (`install` in this case) command
     -   `$ npm <command> -h` → quick help on <command>
     -   `$ npm update -h` → Display the documentation for the 'specified' (update) ttext
     -   `$ npm help-search update` → Allow you search the npm documentation for the 'specified' (update in this case) text.
@@ -242,7 +242,9 @@
     -   `$ npm install moment` → install moment package
     -   `$ npm install moment --save` → install moment package adding the package name (moment) into the 'dependencies', aka production dependency list, of 'package.json' file.
     -   `$ npm install moment -g` → install moment package globaly.
-        # aliases: remove, rm, r, un, unlink
+
+    #### aliases: remove, rm, r, un, unlink
+
     -   `$ npm uninstall moment` → uninstall moment package WITHOUT removing its record from package.json file
     -   `$ npm uninstall moment --save` → uninstall moment package WITH removing its record from package.json file
     -   `$ npm uninstall moment -g` → uninstall moment package globally.

@@ -148,3 +148,7 @@ export PYSPARK_PYTHON="/usr/bin/python3"
 # export PYSPARK_DRIVER_PYTHON_OPTIONS="--ip 127.0.0.1 --port 8888"
 # ============================================================================
 
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

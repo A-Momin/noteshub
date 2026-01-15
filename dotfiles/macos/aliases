@@ -374,6 +374,9 @@ pvt_aliases(){
     alias vim=nvim
 
     # alias tmux="tmux 2"
+
+    # Rough or Tmp Aliases
+    alias ntbh="code $NTHUB/nts/notes_buy_houses.md"
 }
 
 c1_aliases(){
