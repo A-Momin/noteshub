@@ -618,6 +618,50 @@ proxyon(){
     cofproxy on
 }
 
+install_vscode_extensions_from_file() {
+    : '
+    Installs Visual Studio Code extensions listed in a specified file.
+    Args:
+        $1 (mendatory): the path to the file containing the list of extensions.
+    Example:
+        $ install_vscode_extensions_from_file $NTHUB/dotfiles/vscode/vscode_extension_list.txt
+    '
+    local file_path="$1"
+
+    # Check if a file path was provided
+    if [[ -z "$file_path" ]]; then
+        echo "Usage: install_extensions_from_file <path_to_file>"
+        return 1
+    fi
+
+    # Check if the file actually exists
+    if [[ ! -f "$file_path" ]]; then
+        echo "Error: File '$file_path' not found."
+        return 1
+    fi
+
+    echo "Starting extension installation..."
+
+    # Read the file line by line
+    while IFS= read -r extension || [[ -n "$extension" ]]; do
+        # 1. Strip carriage returns (for files created on Windows)
+        # 2. Trim whitespace
+        # 3. Skip empty lines or lines starting with '#'
+        clean_ext=$(echo "$extension" | tr -d '\r' | xargs)
+        
+        if [[ -z "$clean_ext" || "$clean_ext" == \#* ]]; then
+            continue
+        fi
+
+        echo "------------------------------------------"
+        echo "Installing: $clean_ext"
+        code --install-extension "$clean_ext"
+    done < "$file_path"
+
+    echo "------------------------------------------"
+    echo "Process complete."
+}
+
 git_add_comit_push(){
     git add .
     git commit -m "${2:-regular update}"
