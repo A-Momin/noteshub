@@ -1,57 +1,28 @@
+-   𝐔𝐬𝐞𝐟𝐮𝐥𝐥 𝑺𝒚𝒎𝒃𝒐𝒍𝒔: → ⌘ ⌥ + ⌃ + ⤶ ⇧ ⇪ ␣ ⌦ ⎋  ⮐ ⤶ ↩︎ ↲ ↵ ⬋ ↫ ♥ ★ → ↓ ↑ ➡️ ⬅️ ⬆︎ ⬇️
 -   [How to make your own VS Code theme!](https://www.youtube.com/watch?v=pGzssFNtWXw)
--   𝐔𝐬𝐞𝐟𝐮𝐥𝐥 𝑺𝒚𝒎𝒃𝒐𝒍𝒔: → ⌘ ⌥ + ⌃ + ⤶ ⇧ ⇪ ␣ ⌦ ⎋  ⮐ ⤶ ↩︎ ↲ ↵ ⬋ ↫ ♥ ★ → ➡️ ⬅️ ⬆︎ ⬇️
+-   [RemoteDev: Develop from anywhere with Visual Studio Code](https://www.youtube.com/watch?v=CYObXaSjj78)
 
 -   `^ + ⌘ + Spaces` → To get Emoji (🏠)
 -   `^ + Spaces` → To get markdown snippet autocomplete.
--   `⌘ + ⇧ + O` → Open drop down to select Heading leve to move to the selected heading.
+-   `⌘ + ⇧ + O` → Open drop down to select Heading level to move to the selected heading.
 -   `⌥ + 8` → Shortcut to get dot symbol(•).
 -   `⌘ + ^ + ➡️/⬅️` → Split the window
 
-<details><summary style="font-size:25px;color:Orange;text-align:left">Notes Link</summary>
-
--   [RemoteDev: Develop from anywhere with Visual Studio Code](https://www.youtube.com/watch?v=CYObXaSjj78)
-
-</details>
-
-### TWEAK SETTINGS:
-
--   `~/Library/Application\ Support/Code/User/settings.json` → Path for VSC `settings.json` file
-
--   `⌘ + ⇧ + P`
-    -   🔥search: `setting`; Select: `Open Workspace Setting (JSON)` → to create local workspace Settings? - `python.terminal.activateEnvironment": true`
-    -   search: `key mapping`; Select: `Inspect key mapping` → to inspect key-mapping file.
-    -   search: `keyboard shortcut`; Select: `Open Default keyboard shortcut (JSON)` → to inspect shortcut file.
-    -   search: `user snippet`; Select: `configure user snippet` → to configure user snippets.
-        -   Project wise user's snippet are saved in `.vscode` folder
-
-### USEFULL PATH OF FILES AND FOLDERS on MACOS
-
--   ~/Library/Application\ Support/Code/User/settings.json
--   ~/Library/Application\ Support/Code/User/keybindings.json
--   ~/Library/Application\ Support/Code/User/snippets
-
 -   <details><summary style="font-size:25px;color:Orange;text-align:left">USEFULL SHORTCUTS</summary>
 
-    #### Shortcuts
+    ##### Shortcuts
 
-    -   `⬆︎ + ^ + -` → Split cell into two cells
-    -   `⬆︎ + m` → merges selected cells
-    -   `m` → Change selected cell to markdown cell
-    -   `y` → Change selected cell to code cell
     -   🔥 `⌥ + z` → Toggle Wrap/Unwrap words in integrated VSC terminal.
     -   🔥 `^ + ␣` → Search for custom code snippet shortcuts for markdown.
-    -   `^ + -` → Jump cursor backword in the chain of it's previous position
-    -   `^ + ⇧ + -` → Jump cursor forward in the chain of it's previous position
-    -   `⌘ + ⇧ + f` → Search a patteren in multiple files.
-    -   `⌘ + ⇧ + k` → Delete the line of code at the cursor.
-    -   `⌘ + x` → Cut the line of code at the cursor to paste somewhere else.
+    -   🔥 `^ + -` → Jump cursor backword in the chain of it's previous position
+    -   🔥 `^ + ⇧ + -` → Jump cursor forward in the chain of it's previous position
+    -   🔥 `⌘ + ⇧ + k` → Delete the line of code at the cursor.
+    -   🔥 `⌘ + x` → Cut the line of code at the cursor to paste somewhere else.
     -   🔥 `⌘ + k + 0` → Fold code at the base indentation lavel
     -   `⌥ + ⌘ + ]` → Fold code in the editor
-    -   `⌘ + k + j` → Unold code.
+    -   `⌘ + k + j` → Unold all code blocks.
     -   `⌘ + ⇧ + e` → Toggle between file explorer and editor.
-    -   `⌘ + ↓` → Collapse/Expend the folder in the file explorer
-    -   `→` → Expend the folder in the file explorer
-    -   `←` → Collapse the folder in the file explorer
+    -   `⌘ + ↓/↑` → Collapse/Expend the folder in the file explorer
     -   `^ + Enter` → Open focused file from file explorer.
     -   `fn + ^ + f5` → Run script
     -   `⌘ + b` → Toggle side bar
@@ -60,7 +31,16 @@
     -   `⌘ + ⇧ + x` → Search for Extentions
     -   `⌘ + k + m` → Options to choose among various keymaps.
 
-    #### Command Palette Search
+    -   `⌘ + ⇧ + f` → Search a patteren in multiple files.
+
+    ##### Jupyter Notebook
+
+    -   `⬆︎ + ^ + -` → Split cell into two cells in Jupyter Notebook
+    -   `⬆︎ + m` → merges selected cells in Jupyter Notebook
+    -   `m` → Change selected cell to markdown cell in Jupyter Notebook
+    -   `y` → Change selected cell to code cell in Jupyter Notebook
+
+    ##### Command Palette Search
 
     -   `⌘ + ⇧ + P` -> Open the Command Palette
         -   Search:
@@ -74,7 +54,7 @@
             -   `Notebook: Collapse all Cell Outputs` ↦ ⮐
             -   `Notebook: Expand all Cell Inputs` ↦ ⮐
 
-    #### Configuration Shortcuts
+    ##### Configuration Shortcuts
 
     -   `⌘ + k + t` → Toggle between themes.
     -   `⌘ + ,` → Open the default `settings.json`-file for VSCode.
@@ -84,35 +64,60 @@
 
     </details>
 
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Settings & Configs</summary>
+
+    ##### TWEAK SETTINGS:
+
+    -   `~/Library/Application\ Support/Code/User/settings.json` → Path for VSC `settings.json` file
+
+    -   `⌘ + ⇧ + P`
+        -   🔥search: `setting`; Select: `Open Workspace Setting (JSON)` → to create local workspace Settings? - `python.terminal.activateEnvironment": true`
+        -   search: `key mapping`; Select: `Inspect key mapping` → to inspect key-mapping file.
+        -   search: `keyboard shortcut`; Select: `Open Default keyboard shortcut (JSON)` → to inspect shortcut file.
+        -   search: `user snippet`; Select: `configure user snippet` → to configure user snippets.
+            -   Project wise user's snippet are saved in `.vscode` folder
+
+    ##### USEFULL PATH OF FILES AND FOLDERS on MACOS
+
+    -   ~/Library/Application\ Support/Code/User/settings.json
+    -   ~/Library/Application\ Support/Code/User/keybindings.json
+    -   ~/Library/Application\ Support/Code/User/snippets
+
+    ##### MANAGE EXTENSIONS FROM COMMAND LINE
+
+    -   `$ code -help` → Print usage.
+    -   `$ code --install-extension <extension-id[@version] | path-to-vsix>` → Installs or updates an extension.
+        -   The argument is either an extension id or a path to a VSIX.
+        -   The identifier of an extension is '${publisher}.${name}'.
+        -   Use '--force' argument to update to latest version. To install a specific version provide '@${version}'. For example: 'vscode.csharp@1.2.3'.
+    -   `$ code --list-extensions > list_vsc_extension.txt` → List out all the vscode extensions in the file, list_vsc_extension
+    -   `$ code --uninstall-extension <extension-id>` → Uninstalls an extension.
+    -   `$ code --disable-extensions` → Disable all installed extensions.
+    -   `$ code --disable-extension <extension-id>` → Disable an extension.
+    -   `$ code --extensions-dir <dir>` → Set the root path for extensions.
+
+    </details>
+
 ---
 
-### MANAGE EXTENSIONS FROM COMMAND LINE
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Q & A</summary>
 
--   `$ code -help` → Print usage.
--   `$ code --install-extension <extension-id[@version] | path-to-vsix>` → Installs or updates an extension.
-    -   The argument is either an extension id or a path to a VSIX.
-    -   The identifier of an extension is '${publisher}.${name}'.
-    -   Use '--force' argument to update to latest version. To install a specific version provide '@${version}'. For example: 'vscode.csharp@1.2.3'.
--   `$ code --list-extensions > list_vsc_extension.txt` → List out all the vscode extensions in the file, list_vsc_extension
--   `$ code --uninstall-extension <extension-id>` → Uninstalls an extension.
--   `$ code --disable-extensions` → Disable all installed extensions.
--   `$ code --disable-extension <extension-id>` → Disable an extension.
--   `$ code --extensions-dir <dir>` → Set the root path for extensions.
+    -   <b style="color:magenta;text-align:left">How to search a kewword across multiple files?</b>
 
-### MISC:
+        1.  select the folder/files (by clicking it) you want to serch in.
+        2.  `⌘+⬆︎+f`
+        3.  put the kew word into the search box to search
 
--   <b style="color:magenta;text-align:left">How to search a kewword across multiple files?</b>
-
-    1.  select the folder/files (by clicking it) you want to serch of.
-    2.  `⌘+⬆︎+f`
-    3.  put the kew word into the search box to search
-
--   <b style="color:magenta;text-align:left">How to find differences between two files?</b>
+    -   <b style="color:magenta;text-align:left">How to find differences between two files?</b>
 
     1.  `RightClick` on one file and `select: Select for Compare`
     2.  `RightClick` on the second file and `select: Compare with Selected`
 
--   <details><summary style="font-size:25px;color:Orange;text-align:left">what is a profile in Visual Studio Code?</summary>
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Profile in Visual Studio Code?</summary>
 
     A **profile** in **Visual Studio Code (VS Code)** is a feature that allows you to create and manage separate, customized configurations for your development environment. Profiles can include different settings, extensions, themes, keybindings, and UI layouts, making it easier to switch between different setups tailored for specific projects, workflows, or development needs.
 

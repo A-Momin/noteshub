@@ -613,11 +613,7 @@ setup_noteshub_on_c1(){
     echo -e "\trm -rf $HOME/noteshub.bak" # -e flag enables interpretation of escape sequences like \t for a tab.
 }
 
-proxyon(){
-
-    cofproxy on
-}
-
+## NOT TESTED YET !!
 install_vscode_extensions_from_file() {
     : '
     Installs Visual Studio Code extensions listed in a specified file.
