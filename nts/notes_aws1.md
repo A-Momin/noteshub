@@ -1321,21 +1321,52 @@
         -   `Security Groups`: Network interfaces can be associated with one or more security groups, which act as virtual firewalls, controlling the traffic allowed to and from the instance.
         -   `Traffic Monitoring and Control`: AWS provides tools for monitoring and controlling traffic through network interfaces, such as VPC Flow Logs, which capture information about the IP traffic going to and from network interfaces.
 
-    -   <details><summary style="font-size:20px;color:Magenta">VPC Endpoint</summary>
 
-        An `VPC Endpoint` allows you to privately connect your VPC to supported AWS services and VPC endpoint services, without using an internet gateway, NAT device, VPN connection, or AWS Direct Connect. These endpoints provide secure access to services by keeping traffic within the AWS network, avoiding exposure to the public internet.
+    - <details><summary style="font-size:20px;color:Magenta">VPC Endpoint</summary>
 
-        1. **Interface Endpoints**: Elastic Network Interfaces (ENI) with private IP addresses that act as entry points to services such as S3, DynamoDB, SNS, or your own AWS-hosted services.
+        - An `VPC Endpoint` allows you to privately connect your VPC to supported AWS services and VPC endpoint services powered by **AWS PrivateLink**, without using an internet gateway, NAT device, VPN connection, or AWS Direct Connect. These endpoints provide secure access to services by keeping traffic within the AWS network, avoiding exposure to the public internet.
+        - **Types of Endpoints**: AWS classifies VPC endpoints into three distinct categories based on how they connect and which services they support.
 
-            - `Purpose`: Provides private connectivity between your VPC and AWS services through the private IPs of the endpoints.
-            - `Example Use Case`: Accessing Amazon S3 or Amazon DynamoDB from within your VPC without exposing traffic to the internet.
-            - `Cost`: There's a cost for creating and using interface endpoints because they rely on AWS PrivateLink.
+            | Type                    | Technology      | Supported Services                                 | Connectivity Method                             | Cost                                 |
+            | ----------------------- | --------------- | -------------------------------------------------- | ----------------------------------------------- | ------------------------------------ |
+            | **Interface Endpoint**  | AWS PrivateLink | Most AWS services (SQS, SNS, Kinesis, etc.) & SaaS | Elastic Network Interface (ENI) with private IP | Hourly charge + Data processing fees |
+            | **Gateway Endpoint**    | Routing Rules   | **Amazon S3** and **DynamoDB** only                | Prefix List entry in a Route Table              | **Free**                             |
+            | **Gateway LB Endpoint** | GWLB            | Virtual appliances (Firewalls, IDS/IPS)            | Target of a route table entry                   | Hourly charge + Data processing fees |
 
-        2. **Gateway Endpoints**: A gateway that you specify in your route table to route traffic privately to Amazon S3 or DynamoDB It does not use PrivateLink.
+            1. **Interface Endpoints**: Elastic Network Interfaces (ENI) with private IP addresses that act as entry points to services such as S3, DynamoDB, SNS, or your own AWS-hosted services.
+                - `Purpose`: Provides private connectivity between your VPC and AWS services through the private IPs of the endpoints.
+                - `Example Use Case`: Accessing Amazon S3 or Amazon DynamoDB from within your VPC without exposing traffic to the internet.
+                - `Cost`: There's a cost for creating and using interface endpoints because they rely on AWS PrivateLink.
 
-            - `Purpose`: Provides a direct route from your VPC to these services without an intermediate NAT or VPN.
-            - `Supported Services`: Currently, only Amazon S3 and DynamoDB are supported.
-            - `Cost`: Free to use, but only available for a limited set of services.
+            2. **Gateway Endpoints**: A gateway that you specify in your route table to route traffic privately to Amazon S3 or DynamoDB It does not use PrivateLink.
+                - `Purpose`: Provides a direct route from your VPC to these services without an intermediate NAT or VPN.
+                - `Supported Services`: Currently, only Amazon S3 and DynamoDB are supported.
+                - `Cost`: Free to use, but only available for a limited set of services.
+
+            3. **Gateway Load Balancer Endpoints**:
+
+        - **Core Components**: To function, a VPC Endpoint relies on several network and identity components:
+            - **Elastic Network Interface (ENI) - _Interface Endpoints Only_**: When you create an interface endpoint, AWS creates an ENI in your chosen subnets. This ENI is assigned a **private IP address** from your VPC range, serving as the entry point for the service.
+
+            - **Route Table & Prefix Lists - _Gateway Endpoints Only_**: Gateway endpoints do not use ENIs. Instead, they use a **Prefix List** (a range of public IP addresses for the service) which is added as a target in your VPC Route Table.
+                - **Target:** `vpce-xxxxxxxx`
+                - **Destination:** `pl-xxxxxxxx` (e.g., `com.amazonaws.us-east-1.s3`)
+
+            - **Private DNS**: Interface endpoints support **Private DNS**. When enabled, the standard public service URL (e.g., `sqs.us-east-1.amazonaws.com`) automatically resolves to the private IP of your endpoint's ENI within the VPC.
+
+            - **Endpoint Policy**: A JSON resource-based policy attached to the endpoint itself. It functions like an IAM policy to control which principals (users/roles) can access which resources through that specific endpoint.
+
+        - **Key Features**:
+            - **Private Connectivity:** Traffic stays entirely within the AWS backbone. This reduces exposure to common internet threats like brute force attacks or DDoS.
+            - **Security Groups & Network ACLs:**
+                - **Interface Endpoints:** You can associate Security Groups with the endpoint's ENI to restrict inbound traffic from specific instances or subnets.
+                - **Gateway Endpoints:** Controlled primarily through Endpoint Policies and the Security Groups/ACLs of the source instances.
+
+            - **Cross-Region & On-Premises Access:**
+                - **Interface Endpoints** can be accessed from on-premises via Direct Connect or VPN, and from other regions via VPC Peering.
+                - **Gateway Endpoints** are typically restricted to the VPC and region where they are created.
+
+            - **Granular Access Control:** Through **Endpoint Policies**, you can define "Data Perimeter" rules—for example, allowing access to only your company's S3 buckets and denying access to all other external buckets, even if the user has broad IAM permissions.
 
         </details>
 
@@ -3907,6 +3938,7 @@
     -   **Rules**: Rules define conditions that filter traffic based on various attributes. You can create custom rules or use **AWS Managed Rules**.
 
         -   **Rules Priority**:
+        -   **Web ACL Capacity Unit (WCU)**:
         -   `Rate-Based Rule`: Blocks IPs sending excessive requests (prevents DDoS).
         -   `IP Set Rule`: Allows or blocks requests from a list of IPs.
         -   `String Matching Rule`: Filters requests based on headers, body, or query parameters.

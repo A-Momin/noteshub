@@ -345,6 +345,7 @@ pvt_aliases(){
     alias mlcourses="cd $HOME/mydocs/Software_Development/Machine_Learning/ml_courses && ls -1"
     alias ml="cd $HOME/mydocs/Software_Development/Machine_Learning && ls -1"                 # ml ==> Machine_Learning
     alias bigdata="cd $HOME/mydocs/Software_Development/Big_Data"
+    alias deds="cd $HOME/mydocs/Software_Development/DEDS && ls -1"                     # deds ==> Data_Engineering_Data_Science
     alias books="cd $HOME/mydocs/BOOKS/PDF\ Books && ls -1"
     alias llmapp="cd $SD/llm_app && ls -1"
     alias ads="cd $HOME/mydocs/Software_Development/Algorithms_and_Data_Structures"
