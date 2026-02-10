@@ -1,40 +1,45 @@
-| Verbs | On  | Out | Up  | Away | Off |
-| :---: | :-: | :-: | :-: | :--: | :-: |
-| Take  |     |     |     |      |     |
-|  Put  |     |     |     |      |     |
-|  Get  |     |     |     |      |     |
-| Turn  |     |     |     |      |     |
-| Give  |     |     |     |      |     |
+        **Hypercorn** is an ASGI (Asynchronous Server Gateway Interface) web server. If Gunicorn is the "Sync" veteran and Uvicorn is the "Speed" specialist, Hypercorn is the **"Protocol Powerhouse."**
 
-That's a great way to learn! Phrasal verbs can be tricky, but knowing the common combinations is a big help.
+        It was originally part of the **Quart** framework (an async version of Flask) before being spun out as a standalone server. It is built using "sans-io" libraries (like `h11`, `h2`, and `wsproto`), which means the logic of the protocols is separated from the network code, making it incredibly robust and flexible.
 
-Here is the completed grid with some of the most common meanings for each phrasal verb.
+        1. **What is it used for?**: Hypercorn is used to serve modern, asynchronous Python web applications. Its main selling point is **protocol completeness**.
 
-### 📚 Phrasal Verbs Grid
+            1. **Serving Async Frameworks:** It is the primary way to run frameworks like **FastAPI, Quart, and Starlette** in production.
+            2. **Modern Web Protocols:** It is often chosen specifically when a project needs native **HTTP/2** or **HTTP/3 (QUIC)** support, which many other Python servers lack or handle only partially.
+            3. **Hybrid Environments:** Because it can wrap WSGI apps (like Django or Flask) in an ASGI interface, it can be used to "modernize" older apps without changing their code.
 
-| Verbs    | On                                                        | Out                                                        | Up                                                                 | Away                                                    | Off                                                                            |
-| :------- | :-------------------------------------------------------- | :--------------------------------------------------------- | :----------------------------------------------------------------- | :------------------------------------------------------ | :----------------------------------------------------------------------------- |
-| **Take** | To accept a job/responsibility.                           | To remove something; to go on a date.                      | To start a hobby or activity; to occupy space/time.                | To remove something; to subtract.                       | To remove clothing; a plane leaving the ground; to suddenly become successful. |
-| **Put**  | To dress oneself; to gain weight; to stage a show.        | To extinguish a fire or light.                             | To build; to offer accommodation; to tolerate.                     | To return something to its proper place.                | To postpone; to discourage or displease someone.                               |
-| **Get**  | To enter a bus/train/plane; to have a good relationship.  | To leave or escape; to be revealed (secret).               | To rise from bed.                                                  | To escape; to go on a short vacation.                   | To leave a bus/train/plane; to avoid punishment.                               |
-| **Turn** | To start a device/light.                                  | To attend an event; to be discovered/known.                | To increase the volume/heat; to arrive unexpectedly.               | To refuse entry or assistance.                          | To stop a device/light.                                                        |
-| **Give** | (Less common/informal, e.g., _give on to_ meaning _face_) | To distribute; to stop working (machine).                  | To stop trying or doing something; to surrender.                   | To donate; to reveal a secret.                          | To emit a smell, heat, or light.                                               |
-| **Look** | To observe an event without getting involved.             | To be careful or watchful.                                 | To search for information (in a dictionary/online).                | To turn one's eyes from something.                      | (Less common)                                                                  |
-| **Call** | To visit briefly; to formally ask someone to speak.       | To shout or say something loudly; to criticize publicly.   | To telephone someone; to summon for military service.              | To summon or distract someone from what they are doing. | To cancel an event.                                                            |
-| **Hold** | To wait (usually on the phone); to grip tightly.          | To resist or endure; to offer hope.                        | To delay; to rob a bank/shop.                                      | (Less common)                                           | To delay or postpone action.                                                   |
-| **Come** | To hurry up; to encourage someone.                        | To become known/public; to be published.                   | To approach; to be mentioned (as a topic); to appear unexpectedly. | To detach or separate from something.                   | To succeed; to happen (as planned).                                            |
-| **Go**   | To continue; to happen.                                   | To leave your home to socialize; a light stopping shining. | To rise or increase.                                               | To leave or depart.                                     | To explode (bomb); a warning sound to ring; food to spoil.                     |
+        2. **Key Components & Concepts**
 
----
+            -   **The ASGI Interface**: The "spiritual successor" to WSGI. Unlike WSGI, which is strictly "one request, one response," ASGI allows for a constant stream of communication. This is what makes real-time features like **WebSockets** and **Server-Sent Events (SSE)** possible.
 
-### 💡 Example Sentences
+            -   **Protocol Handlers**: Hypercorn is unique because of its native support for a wide range of protocols:
 
-To make them stick even better, here are a few examples:
+                * **HTTP/1.1:** The legacy standard.
+                * **HTTP/2:** Supports multiplexing (sending multiple files over one connection) and **Server Push**.
+                * **HTTP/3 (QUIC):** The newest standard that runs over UDP instead of TCP, reducing latency significantly for mobile users and unstable connections.
 
--   **Take off:** The plane is scheduled to **take off** at 10:00 AM.
--   **Put off:** We had to **put off** the meeting until next week.
--   **Get up:** I like to **get up** early on weekends.
--   **Turn down** (A common one not in the grid): Could you **turn down** the music, please?
--   **Give up:** Don't **give up** on learning English!
+            -   **Flexible Event Loops**: While most servers are locked into one way of handling tasks, Hypercorn allows you to choose your "engine":
 
-Would you like me to provide definitions and examples for a few of your favorite combinations, or perhaps give you a quiz to practice using them?
+                * **asyncio:** The Python standard library loop.
+                * **uvloop:** A high-performance drop-in replacement for asyncio (often used for speed).
+                * **Trio:** A newer, "human-friendly" async library that focuses on structured concurrency.
+
+        3. **Hypercorn vs. Gunicorn vs. Uvicorn**: To understand Hypercorn, you have to see where it fits in the family tree:
+
+            | Feature              | Gunicorn                 | Uvicorn                   | Hypercorn               |
+            | -------------------- | ------------------------ | ------------------------- | ----------------------- |
+            | **Primary Standard** | WSGI (Sync)              | ASGI (Async)              | ASGI (Async)            |
+            | **Speed**            | Moderate                 | **Fastest** (with uvloop) | High                    |
+            | **HTTP/2 Support**   | No                       | Partial (experimental)    | **Full Support**        |
+            | **HTTP/3 Support**   | No                       | No                        | **Yes** (optional)      |
+            | **WebSockets**       | No                       | Yes                       | **Yes**                 |
+            | **Best For**         | Traditional Django/Flask | High-speed FastAPI        | Complex Protocols/Quart |
+
+        4. **Important Terms to Know**
+
+            * **QUIC:** The underlying transport protocol for HTTP/3. It's designed to be faster and more secure than traditional TCP.
+            * **ALPN (Application-Layer Protocol Negotiation):** A TLS extension that Hypercorn uses to "negotiate" with the browser to decide whether to use HTTP/1.1 or HTTP/2 during the initial handshake.
+            * **Worker Class:** Just like Gunicorn, Hypercorn can spawn multiple "workers." You can specify the type (e.g., `--worker-class trio`) depending on your application's needs.
+            * **Backpressure:** A concept Hypercorn manages where it slows down receiving data if the application is too busy to process it, preventing the server from crashing under load.
+
+        > **Pro Tip:** If you just want raw speed for a simple REST API, go with **Uvicorn**. If you need your Python app to serve **HTTP/2 or HTTP/3** directly to the internet without a heavy proxy like Nginx in the way, **Hypercorn** is your best bet.

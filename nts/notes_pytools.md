@@ -238,9 +238,10 @@
     -   `$ pip3 uninstall --user selenium`
     -   `$ pip3 uninstall [options] <package> ...`
     -   `$ pip3 uninstall [options] -r <requirements file> ...`
+    -   `$ pip3 freeze | xargs pip uninstall -y`
     -   `$ pip3 freeze` → to displey the list of dependencies that you'd used in a requirements.txt file
     -   `$ pip3 freeze > requirements.txt` → create the requirements.txt file with the list of dependencies recorded in the current env.
-    -   `$ pip3 install -r requirements.txt` → install the dependencies recorded in requirement.txt into the environment
+    -   `$ pip3 install -r requirements.txt -y` → install the dependencies recorded in requirement.txt into the environment
     -   🔥 `$ pip3 install -e .` → Install a custom package in editable mode.
 
     -   `$ pip install somepackage.whl` → Install from a Local `.whl` File

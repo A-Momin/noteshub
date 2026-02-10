@@ -31,6 +31,236 @@
 
 ---
 
+-   <details><summary style="font-size:25px;color:Orange">Terms & Concepts</summary>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Terraform Configuration</summary>
+
+        -   **Terraform Configuration**:
+
+            -   A set of files written in HashiCorp Configuration Language (HCL) that describe the desired infrastructure state.
+            -   The main configuration file is usually named `main.tf` and contains resource definitions, providers, variables, and other settings.
+            -   In Terraform, several files are automatically generated to manage and track the state of your infrastructure, handle locks, and ensure consistent operations. These files are critical to the functionality of Terraform, ensuring that the infrastructure is created, updated, and destroyed correctly.
+
+                -   **terraform.tfstate**:
+
+                    -   This file stores the current state of your infrastructure. It includes details about the resources that Terraform manages, their current configuration, and metadata.
+                    -   It's usually in JSON format and can be quite large, depending on the size and complexity of your infrastructure.
+                    -   It Should be stored securely because it contains sensitive information about your infrastructure.
+
+                -   **terraform.tfstate.backup**:
+
+                    -   This file is a backup of the previous state. Before Terraform makes changes to your infrastructure, it creates a backup of the existing state in this file.
+                    -   It's useful in case something goes wrong during an apply, and you need to roll back to the previous state.
+                    -   While it's good to keep a backup, you might not want to version control it, especially if it contains sensitive information. Ensure it's stored securely.
+
+                -   **terraform.lock.hcl**:
+
+                    -   This file is related to Terraform's dependency locking mechanism. It's used to lock down the versions of providers and modules to ensure that subsequent runs use the same versions as the original deployment.
+                    -   It's generally used in conjunction with terraform init and is crucial for ensuring consistency in a team or CI/CD environment.
+                    -   This file should be version controlled along with your Terraform configuration files. It ensures that everyone working on the project uses the same versions of providers and modules.
+
+        | File Name                      | Short Explanation                                                                                                                                                                                                                                                                                    |
+        | :----------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+        | **`terraform.tfstate`**        | The primary **State File** and the single source of truth. It maps your configuration to the real-world infrastructure created on your cloud provider, storing the current status and IDs of all managed resources. **Never edit manually.**                                                         |
+        | **`terraform.tfstate.backup`** | A **backup of the state file** created automatically by Terraform whenever a successful operation modifies the primary state file. It serves as a safety mechanism to prevent data loss if the primary state file is corrupted during an operation.                                                  |
+        | **`terraform.lock.hcl`**       | The **Dependency Lock File**. It records the exact versions of the **providers** downloaded and used for the configuration. This ensures that everyone working on the project uses the same provider versions to avoid unexpected changes or state drift. It should be committed to version control. |
+        | **`terraform.tfvars`**         | A **default, manually-loaded variable file**. If present, Terraform automatically loads all variable values defined within it during execution. It's typically used to store common, non-sensitive input variables for a configuration.                                                              |
+        | **`*.auto.tfvars`**            | **Automatically loaded variable files**. Any file ending with `.auto.tfvars` or `.auto.tfvars.json` is automatically loaded by Terraform. This is commonly used for injecting values from external systems or for environment-specific variables (e.g., `prod.auto.tfvars`).                         |
+
+
+        -   **Infrastructure as Code (IaC)**:
+
+            -   IaC is a methodology where infrastructure is defined and managed using code, allowing for versioning, automation, and consistency.
+            -   Terraform is a popular cloud agnostic IaC tool used to provision, version, and manage infrastructure in a declarative manner.
+
+        -   **Terraform CLI**:
+
+            -   The command-line interface for interacting with Terraform, enabling users to apply, plan, and destroy infrastructure.
+            -   Commands: Common commands include terraform init, terraform plan, terraform apply, and terraform destroy.
+
+        -   **Terraform Cloud**:
+
+            -   A hosted service by HashiCorp that provides collaboration, versioning, and automation features for Terraform configurations.
+            -   Usage: Terraform Cloud facilitates remote execution of Terraform runs, workspace management, and collaboration among team members.
+
+        -   **Provider**:
+            -   **Tier**:
+                -   **Official Provider** 
+                -   **Partner Provider**
+                -   **Community Provider**
+
+            -   **Provider Namespace**:
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Blocks</summary>
+
+        -   A block is a structural unit of configuration that defines specific behavior or configuration for resources, providers, modules, and other components. Blocks in Terraform contain settings or instructions in a declarative format and are the building blocks of a Terraform configuration file.
+        -   Each block typically starts with a keyword (e.g., `resource`, `provider`, `variable`, etc.), followed by parameters or attributes that define the desired state or configuration for that specific entity. These blocks can be nested and often contain other blocks or key-value pairs.
+
+        -   **Key Elements of a Block**:
+
+            -   `Block Type`: The keyword that defines what kind of entity the block is configuring (e.g., `resource`, `provider`, `output`, etc.).
+            -   `Block Label(s)`: Identifies the specific instance or name of the entity.
+            -   `Attributes/Arguments`: Key-value pairs or other configurations inside the block that describe the properties of the entity.
+            -   `Nested Blocks`: Other blocks inside a block that further refine its configuration.
+
+        -   [Resource Block](https://developer.hashicorp.com/terraform/language/resources)
+
+            ```ini
+            resource "aws_instance" "example" {
+                ami = "abc123"
+
+                network_interface {
+                    # ...
+                }
+            }
+            ```
+
+        -   **[Data Block](https://developer.hashicorp.com/terraform/language/data-sources)** Block: In Terraform, the data block is used to retrieve and expose data from various sources, such as cloud providers, external APIs, or other Terraform-managed resources. The data retrieved using a data block can then be used within the Terraform configuration to make decisions, configure resources, or provide input values.
+
+            -   In Terraform, the data specified within a data block is retrieved during the planning phase of the Terraform workflow. Specifically, the data retrieval occurs when Terraform executes the `terraform plan`, `terraform apply`, or `terraform refresh` commands. Here's how the data retrieval process works:
+
+            -   `Plan Phase`:
+
+                -   During the plan phase (terraform plan), Terraform examines the configuration files and determines the actions necessary to achieve the desired state described in the configuration.
+                -   When Terraform encounters a data block, it evaluates the configuration settings specified within the block to determine how to retrieve the requested data.
+                -   Terraform builds a dependency graph based on the relationships between resources and data sources, ensuring that data retrieval occurs in the correct order.
+
+            -   `Data Retrieval`:
+
+                -   Once Terraform has determined the dependencies and the order in which data sources should be queried, it begins the data retrieval process.
+                -   Terraform communicates with the appropriate data sources (e.g., cloud providers, external APIs) based on the configuration settings specified within the data block.
+                -   The data is retrieved from the sources and stored in memory within the Terraform process.
+
+            -   `Dependency Resolution`:
+
+                -   If a data block depends on other resources or data sources, Terraform ensures that those dependencies are resolved first before retrieving the data.
+                -   For example, if a data block depends on an AWS VPC, Terraform will first ensure that the VPC resource is created or retrieved before attempting to query other data sources related to the VPC.
+
+            -   `Plan Generation`:
+
+                -   After retrieving the necessary data, Terraform incorporates that data into the plan it generates.
+                -   The plan includes any changes or actions required to achieve the desired state described in the configuration, including the use of the retrieved data in resource configurations or other parts of the configuration.
+
+            -   `Apply Phase`:
+
+                -   During the apply phase (terraform apply), Terraform executes the actions specified in the plan, including the creation, modification, or deletion of resources, and applies any changes to the infrastructure.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Magenta">Meta-Arguments</summary>
+
+        In Terraform, a **meta-argument** is a special argument that can be used with resources to control aspects of how those resources are managed rather than specifying properties of the resource itself. `Meta-arguments` give more control over lifecycle, dependencies, and iteration.
+
+        1. **count**: The `count` meta-argument allows you to create multiple instances of a resource based on a given number.
+
+            ```ini
+            resource "aws_instance" "example" {
+                count         = 3  # Creates 3 instances
+                ami           = "ami-0c55b159cbfafe1f0"
+                instance_type = "t2.micro"
+
+                tags = {
+                    Name = "ExampleInstance-${count.index}"
+                }
+            }
+            ```
+
+            - In this example, Terraform creates 3 instances. The `count.index` is used to give each instance a unique name tag like `ExampleInstance-0`, `ExampleInstance-1`, and `ExampleInstance-2`.
+
+        2. **for_each**: The `for_each` meta-argument allows you to create resources based on a map or a set, where each item is uniquely identified by a key.
+
+            ```ini
+            resource "aws_instance" "example" {
+                for_each      = {
+                    "web" = "ami-0c55b159cbfafe1f0"
+                    "db"  = "ami-0a313d6098716f372"
+                }
+                ami           = each.value
+                instance_type = "t2.micro"
+
+                tags = {
+                    Name = "ExampleInstance-${each.key}"
+                }
+            }
+            ```
+
+            - In this example, Terraform creates two instances with different AMIs, one for `web` and one for `db`. Each instance gets a tag name of either `ExampleInstance-web` or `ExampleInstance-db`.
+
+        3. **provider**: The `provider` meta-argument specifies which provider configuration should be used for a particular resource. This is useful if multiple provider configurations are defined.
+
+            ```ini
+            provider "aws" {
+                alias  = "us_east"
+                region = "us-east-1"
+            }
+
+            provider "aws" {
+                alias  = "us_west"
+                region = "us-west-2"
+            }
+
+            resource "aws_instance" "example" {
+                provider      = aws.us_east  # Use the `us_east` provider configuration
+                ami           = "ami-0c55b159cbfafe1f0"
+                instance_type = "t2.micro"
+            }
+            ```
+
+            - Here, Terraform uses the `us_east` provider configuration for this specific instance, even though other provider configurations are defined.
+
+        4. **depends_on**: The `depends_on` meta-argument explicitly specifies dependencies for a resource. This ensures that the resource is created only after the specified dependencies have been created.
+
+            ```ini
+            resource "aws_security_group" "example_sg" {
+            # Security group configuration
+            }
+
+            resource "aws_instance" "example_instance" {
+                ami           = "ami-0c55b159cbfafe1f0"
+                instance_type = "t2.micro"
+                depends_on    = [aws_security_group.example_sg]  # Ensure SG is created first
+            }
+            ```
+
+            - In this example, `example_instance` will only be created after `example_sg` has been created, ensuring proper ordering.
+
+        5. **lifecycle**: The `lifecycle` meta-argument controls how Terraform manages changes to resources, including preventing deletion or customizing behavior during updates.
+
+            ```ini
+            resource "aws_instance" "example" {
+                ami           = "ami-0c55b159cbfafe1f0"
+                instance_type = "t2.micro"
+
+                lifecycle {
+                    create_before_destroy = true  # Replace old instance only after new one is created
+                    prevent_destroy       = true  # Prevent accidental deletion
+                }
+            }
+            ```
+
+            - Here, `create_before_destroy` ensures that if an update requires replacement, the new resource is created before the old one is destroyed. `prevent_destroy` protects this instance from being accidentally deleted.
+
+        6. **provisioner**: The `provisioner` meta-argument allows you to run scripts or commands on a resource after it has been created or destroyed. Common provisioners include `local-exec` (runs on the local machine) and `remote-exec` (runs on the remote resource).
+
+            ```ini
+            resource "aws_instance" "example" {
+                ami           = "ami-0c55b159cbfafe1f0"
+                instance_type = "t2.micro"
+
+                provisioner "local-exec" {
+                    command = "echo ${self.private_ip} > instance_ip.txt"
+                }
+            }
+            ```
+
+        </details>
+
+    </details>
+
+---
+
 -   <details><summary style="font-size:25px;color:Orange">Commands</summary>
 
     -   `$ terraform init`
@@ -56,6 +286,7 @@
 
     -   `$ terraform console`
 
+    -   `$ terraform get -update` -> Check already-downloaded modules for available updates and install the newest versions available.
     -   `$ terraform validate`
     -   `$ terraform fmt`
     -   `$ terraform show`
@@ -70,72 +301,63 @@
     -   `$ terraform workspace list`
     -   `$ terraform workspace select prod-env`
 
-    The Terraform CLI is used to manage and automate infrastructure provisioning. Below is a list of the most common and essential Terraform commands, along with frequently used flags and a concise explanation.
 
-    ##### Essential Terraform Workflow Commands
+    -   **Essential Terraform Workflow Commands**: These commands represent the core steps of the standard Terraform workflow: initialize, plan, apply, and destroy.
 
-    These commands represent the core steps of the standard Terraform workflow: initialize, plan, apply, and destroy.
+        | Command              | Flags / Parameters         | Explanation                                                                            |
+        | :------------------- | :------------------------- | :------------------------------------------------------------------------------------- |
+        | `terraform init`     | `--upgrade`                | Initializes a working directory, downloading necessary providers and modules.          |
+        |                      | `--backend-config=path`    | Configures the backend (e.g., S3 bucket name) non-interactively.                       |
+        | `terraform validate` | `-json`                    | Checks configuration files for syntax and internal consistency before planning.        |
+        | `terraform plan`     | `-out=path`                | Generates and saves an execution plan to a file for later application.                 |
+        |                      | `-destroy`                 | Generates a plan to destroy all resources defined in the configuration.                |
+        |                      | `-target=resource_address` | Focuses the plan on specific resources (use with caution).                             |
+        |                      | `-var 'key=value'`         | Sets a variable value on the command line.                                             |
+        |                      | `-var-file=path`           | Loads variable values from a specified file.                                           |
+        | `terraform apply`    | `<planfile>`               | Executes the saved plan file or generates a plan and applies it interactively.         |
+        |                      | `-auto-approve`            | Skips the interactive approval prompt for the execution plan.                          |
+        |                      | `-target=resource_address` | Applies changes only to specific resources and their dependencies (use with caution).  |
+        |                      | `-refresh-only`            | Updates the state file to reflect real-world changes without proposing config changes. |
+        | `terraform destroy`  | `-auto-approve`            | Destroys all infrastructure managed by the current configuration without prompting.    |
+        |                      | `-target=resource_address` | Destroys only the specified resources (use with caution).                              |
 
-    | Command              | Flags / Parameters         | Explanation                                                                            |
-    | :------------------- | :------------------------- | :------------------------------------------------------------------------------------- |
-    | `terraform init`     | `--upgrade`                | Initializes a working directory, downloading necessary providers and modules.          |
-    |                      | `--backend-config=path`    | Configures the backend (e.g., S3 bucket name) non-interactively.                       |
-    | `terraform validate` | `-json`                    | Checks configuration files for syntax and internal consistency before planning.        |
-    | `terraform plan`     | `-out=path`                | Generates and saves an execution plan to a file for later application.                 |
-    |                      | `-destroy`                 | Generates a plan to destroy all resources defined in the configuration.                |
-    |                      | `-target=resource_address` | Focuses the plan on specific resources (use with caution).                             |
-    |                      | `-var 'key=value'`         | Sets a variable value on the command line.                                             |
-    |                      | `-var-file=path`           | Loads variable values from a specified file.                                           |
-    | `terraform apply`    | `<planfile>`               | Executes the saved plan file or generates a plan and applies it interactively.         |
-    |                      | `-auto-approve`            | Skips the interactive approval prompt for the execution plan.                          |
-    |                      | `-target=resource_address` | Applies changes only to specific resources and their dependencies (use with caution).  |
-    |                      | `-refresh-only`            | Updates the state file to reflect real-world changes without proposing config changes. |
-    | `terraform destroy`  | `-auto-approve`            | Destroys all infrastructure managed by the current configuration without prompting.    |
-    |                      | `-target=resource_address` | Destroys only the specified resources (use with caution).                              |
+    -   **State Management and Inspection**: These commands allow you to view, modify, and manage the Terraform state file.
 
-    ##### State Management and Inspection
+        | Command                | Flags / Parameters        | Explanation                                                                         |
+        | :--------------------- | :------------------------ | :---------------------------------------------------------------------------------- |
+        | `terraform show`       | `<path_to_state_or_plan>` | Provides human-readable output of the state file or a saved plan file.              |
+        |                        | `-json`                   | Displays the state or plan output in machine-readable JSON format.                  |
+        | `terraform state list` | `[address]`               | Lists all or specific resources currently tracked in the state file.                |
+        | `terraform state mv`   | `<source> <destination>`  | Moves an item's address within the state file (e.g., renaming a resource).          |
+        | `terraform state rm`   | `<address>...`            | Removes resource instances from the state file without touching the infrastructure. |
+        | `terraform import`     | `<address> <id>`          | Imports existing infrastructure into the Terraform state file.                      |
+        | `terraform refresh`    |                           | Updates the state file to reflect the current real-world status of resources.       |
 
-    These commands allow you to view, modify, and manage the Terraform state file.
+    -   **Utility and Maintenance Commands**: These commands handle formatting, external data, module fetching, and other general tasks.
 
-    | Command                | Flags / Parameters        | Explanation                                                                         |
-    | :--------------------- | :------------------------ | :---------------------------------------------------------------------------------- |
-    | `terraform show`       | `<path_to_state_or_plan>` | Provides human-readable output of the state file or a saved plan file.              |
-    |                        | `-json`                   | Displays the state or plan output in machine-readable JSON format.                  |
-    | `terraform state list` | `[address]`               | Lists all or specific resources currently tracked in the state file.                |
-    | `terraform state mv`   | `<source> <destination>`  | Moves an item's address within the state file (e.g., renaming a resource).          |
-    | `terraform state rm`   | `<address>...`            | Removes resource instances from the state file without touching the infrastructure. |
-    | `terraform import`     | `<address> <id>`          | Imports existing infrastructure into the Terraform state file.                      |
-    | `terraform refresh`    |                           | Updates the state file to reflect the current real-world status of resources.       |
+        | Command                    | Flags / Parameters   | Explanation                                                                                    |
+        | :------------------------- | :------------------- | :--------------------------------------------------------------------------------------------- |
+        | `terraform fmt`            | `--recursive`        | Rewrites all configuration files to a canonical format and style.                              |
+        |                            | `--check`            | Checks if files are formatted correctly; returns non-zero exit code if not.                    |
+        | `terraform output`         | `[name]`             | Displays the value of the root module's output variables.                                      |
+        |                            | `-json`              | Displays the output values in JSON format.                                                     |
+        | `terraform console`        |                      | Opens an interactive console for evaluating HCL expressions against the configuration/state.   |
+        | `terraform get`            | `-update`            | Downloads and updates remote modules referenced in the configuration.                          |
+        | `terraform graph`          | `-type=plan`         | Generates a visual graph of resource dependencies (outputs DOT format).                        |
+        | `terraform taint`          | `<resource_address>` | Manually marks a managed resource for replacement on the next apply.                           |
+        | `terraform untaint`        | `<resource_address>` | Removes the 'tainted' mark from a resource.                                                    |
+        | `terraform providers`      | `schema`             | Prints a schema for the installed providers, including all resource and data source arguments. |
+        | `terraform providers lock` |                      |                                                                                                |
 
-    ##### Utility and Maintenance Commands
+    -   **Workspace Commands (Legacy)**: These commands manage separate, isolated state files within a single working directory.
 
-    These commands handle formatting, external data, module fetching, and other general tasks.
-
-    | Command                    | Flags / Parameters   | Explanation                                                                                    |
-    | :------------------------- | :------------------- | :--------------------------------------------------------------------------------------------- |
-    | `terraform fmt`            | `--recursive`        | Rewrites all configuration files to a canonical format and style.                              |
-    |                            | `--check`            | Checks if files are formatted correctly; returns non-zero exit code if not.                    |
-    | `terraform output`         | `[name]`             | Displays the value of the root module's output variables.                                      |
-    |                            | `-json`              | Displays the output values in JSON format.                                                     |
-    | `terraform console`        |                      | Opens an interactive console for evaluating HCL expressions against the configuration/state.   |
-    | `terraform get`            | `-update`            | Downloads and updates remote modules referenced in the configuration.                          |
-    | `terraform graph`          | `-type=plan`         | Generates a visual graph of resource dependencies (outputs DOT format).                        |
-    | `terraform taint`          | `<resource_address>` | Manually marks a managed resource for replacement on the next apply.                           |
-    | `terraform untaint`        | `<resource_address>` | Removes the 'tainted' mark from a resource.                                                    |
-    | `terraform providers`      | `schema`             | Prints a schema for the installed providers, including all resource and data source arguments. |
-    | `terraform providers lock` |                      |                                                                                                |
-
-    ##### Workspace Commands (Legacy)
-
-    These commands manage separate, isolated state files within a single working directory.
-
-    | Command                      | Flags / Parameters | Explanation                                                        |
-    | :--------------------------- | :----------------- | :----------------------------------------------------------------- |
-    | `terraform workspace list`   |                    | Lists all existing workspaces.                                     |
-    | `terraform workspace show`   |                    | Displays the name of the current workspace.                        |
-    | `terraform workspace new`    | `<name>`           | Creates a new workspace and switches to it.                        |
-    | `terraform workspace select` | `<name>`           | Switches the current state environment to the specified workspace. |
-    | `terraform workspace delete` | `<name>`           | Deletes the named workspace (must be empty of resources).          |
+        | Command                      | Flags / Parameters | Explanation                                                        |
+        | :--------------------------- | :----------------- | :----------------------------------------------------------------- |
+        | `terraform workspace list`   |                    | Lists all existing workspaces.                                     |
+        | `terraform workspace show`   |                    | Displays the name of the current workspace.                        |
+        | `terraform workspace new`    | `<name>`           | Creates a new workspace and switches to it.                        |
+        | `terraform workspace select` | `<name>`           | Switches the current state environment to the specified workspace. |
+        | `terraform workspace delete` | `<name>`           | Deletes the named workspace (must be empty of resources).          |
 
     </details>
 
@@ -262,9 +484,7 @@
         }
         ```
 
-    8. **data**
-
-        - The `data` directive is used to fetch or read data from external resources without creating or modifying them. This is useful for fetching details about existing infrastructure components (like AMIs, VPCs, etc.).
+    8. **data**: The `data` directive is used to fetch or read data from external resources without creating or modifying them. This is useful for fetching details about existing infrastructure components (like AMIs, VPCs, etc.).
 
         ```ini
         data "aws_ami" "example" {
@@ -277,9 +497,7 @@
         }
         ```
 
-    9. **lifecycle**
-
-        - The `lifecycle` directive inside a resource block is used to define special lifecycle management behaviors, such as preventing resource deletion or defining creation-time dependencies.
+    9. **lifecycle**: The `lifecycle` directive inside a resource block is used to define special lifecycle management behaviors, such as preventing resource deletion or defining creation-time dependencies.
 
         ```ini
         resource "aws_s3_bucket" "example" {
@@ -314,13 +532,11 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Multiple Environment Managements</summary>
 
-    Managing multiple environments (such as development, staging, and production) in Terraform is crucial for safety, isolation, and efficiency. The approach you choose depends primarily on how much your environments differ from one another.
+    Managing multiple environments (such as development, staging, and production) in Terraform is crucial for safety, isolation, and efficiency. There are three primary methods for environment management in Terraform:
 
-    There are three primary methods for environment management in Terraform:
+    1. **Terraform Workspaces**: **Workspaces** are designed to manage multiple, separate **state files** within a **single configuration**.
 
-    1. **Separate Directories (Recommended Best Practice)**:This is the most widely recommended and robust solution for managing **long-lived, distinct environments** like `dev`, `staging`, and `prod`.
-
-        Instead of using a single configuration, you create a dedicated root module (a separate folder) for each environment.
+    2. **Separate Directories (Recommended Best Practice)**: This is the most widely recommended and robust solution for managing **long-lived, distinct environments** like `dev`, `staging`, and `prod`. Instead of using a single configuration, you create a dedicated root module (a separate folder) for each environment.
 
         - **File Structure**:
 
@@ -343,11 +559,10 @@
             │       └── prod.tfvars  # Large, highly available instance sizes
             ```
 
-        * **Maximum Isolation (Best for Production):** Each environment has its own completely separate **state file** and remote backend (e.g., different keys in an S3 bucket or GCS), ensuring that a mistake in `dev` cannot affect `prod`.
-        * **Architectural Flexibility:** Because each folder is an independent configuration, you can deploy different resource types, providers, or even different architectural designs in one environment compared to another.
-        * **Clearer CI/CD Integration:** You can easily restrict who can run `terraform apply` on the `envs/prod` directory and ensure production deploys only run on the `main` branch.
+        -   **Maximum Isolation (Best for Production):** Each environment has its own completely separate **state file** and remote backend (e.g., different keys in an S3 bucket or GCS), ensuring that a mistake in `dev` cannot affect `prod`.
+        -   **Architectural Flexibility:** Because each folder is an independent configuration, you can deploy different resource types, providers, or even different architectural designs in one environment compared to another.
+        -   **Clearer CI/CD Integration:** You can easily restrict who can run `terraform apply` on the `envs/prod` directory and ensure production deploys only run on the `main` branch.
 
-    2. **Terraform Workspaces**:**Workspaces** are designed to manage multiple, separate **state files** within a **single configuration**.
 
         - You keep one set of `.tf` files and use the built-in `terraform workspace` commands to switch context.
 
@@ -368,7 +583,6 @@
         - **Best Use Case:** Spinning up temporary or **ephemeral environments** (e.g., a "sandbox" for a new team member, or a dedicated environment for a feature branch—like `pr-101`). They are best for configurations that are **nearly identical** except for simple variables (like size or name prefix).
         - **Caution:** HashiCorp advises **against** using workspaces for managing long-lived, critical environments like `prod` and `staging` because they all share the exact same code base, which increases the risk of deploying a change intended for `dev` to `prod`.
 
-    3. **The Role of Variable Files (`.tfvars`)**:Regardless of whether you choose Separate Directories or Workspaces, you will use **Terraform Variable Definition Files (`.tfvars`)** to manage environment-specific values.
 
         This is a best practice to keep environment-specific settings—like the number of server instances, the database size, or a tag prefix—out of your main `.tf` files.
 
@@ -377,9 +591,12 @@
         | `dev.tfvars`  | Small, cheap resources     | `terraform apply -var-file=dev.tfvars`  |
         | `prod.tfvars` | Large, expensive resources | `terraform apply -var-file=prod.tfvars` |
 
-    4. **External Tools (Terragrunt)**:For large-scale infrastructure using the **Separate Directories** approach, you may find yourself repeating backend configuration or module calls in many directories.
+    3. **External Tools (Terragrunt)**:For large-scale infrastructure using the **Separate Directories** approach, you may find yourself repeating backend configuration or module calls in many directories.
 
-        **Terragrunt** is a popular open-source wrapper tool that addresses this repetition by letting you define configurations once and inherit them across all environment directories, keeping your entire infrastructure code **D**on't **R**epeat **Y**ourself (DRY).
+        -   **Terragrunt** is a popular open-source wrapper tool that addresses this repetition by letting you define configurations once and inherit them across all environment directories, keeping your entire infrastructure code **D**on't **R**epeat **Y**ourself (DRY).
+
+    -   **NOTES ON `.tfvars`**:Regardless of whether you choose Separate Directories or Workspaces, you will use **Terraform Variable Definition Files (`.tfvars`)** to manage environment-specific values.
+
 
     </details>
 
@@ -426,219 +643,6 @@
     6. **Prompted Input (Lowest)**: If a variable is declared with **no default value** and is not set by any of the higher-precedence sources, Terraform will **prompt the user** to enter a value during execution.
 
     The primary takeaway is that **command-line arguments and flags always override file-based or environment-based settings.**
-
-    </details>
-
----
-
--   <details><summary style="font-size:25px;color:Orange">Terms & Concepts</summary>
-
-    -   **Terraform Configuration**:
-
-        -   A set of files written in HashiCorp Configuration Language (HCL) that describe the desired infrastructure state.
-        -   The main configuration file is usually named `main.tf` and contains resource definitions, providers, variables, and other settings.
-        -   In Terraform, several files are automatically generated to manage and track the state of your infrastructure, handle locks, and ensure consistent operations. These files are critical to the functionality of Terraform, ensuring that the infrastructure is created, updated, and destroyed correctly.
-
-            -   **terraform.tfstate**:
-
-                -   This file stores the current state of your infrastructure. It includes details about the resources that Terraform manages, their current configuration, and metadata.
-                -   It's usually in JSON format and can be quite large, depending on the size and complexity of your infrastructure.
-                -   It Should be stored securely because it contains sensitive information about your infrastructure.
-
-            -   **terraform.tfstate.backup**:
-
-                -   This file is a backup of the previous state. Before Terraform makes changes to your infrastructure, it creates a backup of the existing state in this file.
-                -   It's useful in case something goes wrong during an apply, and you need to roll back to the previous state.
-                -   While it's good to keep a backup, you might not want to version control it, especially if it contains sensitive information. Ensure it's stored securely.
-
-            -   **terraform.lock.hcl**:
-
-                -   This file is related to Terraform's dependency locking mechanism. It's used to lock down the versions of providers and modules to ensure that subsequent runs use the same versions as the original deployment.
-                -   It's generally used in conjunction with terraform init and is crucial for ensuring consistency in a team or CI/CD environment.
-                -   This file should be version controlled along with your Terraform configuration files. It ensures that everyone working on the project uses the same versions of providers and modules.
-
-    | File Name                      | Short Explanation                                                                                                                                                                                                                                                                                    |
-    | :----------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | **`terraform.tfstate`**        | The primary **State File** and the single source of truth. It maps your configuration to the real-world infrastructure created on your cloud provider, storing the current status and IDs of all managed resources. **Never edit manually.**                                                         |
-    | **`terraform.tfstate.backup`** | A **backup of the state file** created automatically by Terraform whenever a successful operation modifies the primary state file. It serves as a safety mechanism to prevent data loss if the primary state file is corrupted during an operation.                                                  |
-    | **`terraform.lock.hcl`**       | The **Dependency Lock File**. It records the exact versions of the **providers** downloaded and used for the configuration. This ensures that everyone working on the project uses the same provider versions to avoid unexpected changes or state drift. It should be committed to version control. |
-    | **`terraform.tfvars`**         | A **default, manually-loaded variable file**. If present, Terraform automatically loads all variable values defined within it during execution. It's typically used to store common, non-sensitive input variables for a configuration.                                                              |
-    | **`*.auto.tfvars`**            | **Automatically loaded variable files**. Any file ending with `.auto.tfvars` or `.auto.tfvars.json` is automatically loaded by Terraform. This is commonly used for injecting values from external systems or for environment-specific variables (e.g., `prod.auto.tfvars`).                         |
-
-    -   **Infrastructure as Code (IaC)**:
-
-        -   IaC is a methodology where infrastructure is defined and managed using code, allowing for versioning, automation, and consistency.
-        -   Terraform is a popular cloud agnostic IaC tool used to provision, version, and manage infrastructure in a declarative manner.
-
-    -   **Terraform CLI**:
-
-        -   The command-line interface for interacting with Terraform, enabling users to apply, plan, and destroy infrastructure.
-        -   Commands: Common commands include terraform init, terraform plan, terraform apply, and terraform destroy.
-
-    -   **Terraform Cloud**:
-
-        -   A hosted service by HashiCorp that provides collaboration, versioning, and automation features for Terraform configurations.
-        -   Usage: Terraform Cloud facilitates remote execution of Terraform runs, workspace management, and collaboration among team members.
-
-    #### Blocks:
-
-    -   A block is a structural unit of configuration that defines specific behavior or configuration for resources, providers, modules, and other components. Blocks in Terraform contain settings or instructions in a declarative format and are the building blocks of a Terraform configuration file.
-    -   Each block typically starts with a keyword (e.g., `resource`, `provider`, `variable`, etc.), followed by parameters or attributes that define the desired state or configuration for that specific entity. These blocks can be nested and often contain other blocks or key-value pairs.
-
-    -   **Key Elements of a Block**:
-
-        -   `Block Type`: The keyword that defines what kind of entity the block is configuring (e.g., `resource`, `provider`, `output`, etc.).
-        -   `Block Label(s)`: Identifies the specific instance or name of the entity.
-        -   `Attributes/Arguments`: Key-value pairs or other configurations inside the block that describe the properties of the entity.
-        -   `Nested Blocks`: Other blocks inside a block that further refine its configuration.
-
-    -   [Resource Block](https://developer.hashicorp.com/terraform/language/resources)
-
-        ```ini
-        resource "aws_instance" "example" {
-            ami = "abc123"
-
-            network_interface {
-                # ...
-            }
-        }
-        ```
-
-    -   **[Data Block](https://developer.hashicorp.com/terraform/language/data-sources)** Block: In Terraform, the data block is used to retrieve and expose data from various sources, such as cloud providers, external APIs, or other Terraform-managed resources. The data retrieved using a data block can then be used within the Terraform configuration to make decisions, configure resources, or provide input values.
-
-        -   In Terraform, the data specified within a data block is retrieved during the planning phase of the Terraform workflow. Specifically, the data retrieval occurs when Terraform executes the `terraform plan`, `terraform apply`, or `terraform refresh` commands. Here's how the data retrieval process works:
-
-        -   `Plan Phase`:
-
-            -   During the plan phase (terraform plan), Terraform examines the configuration files and determines the actions necessary to achieve the desired state described in the configuration.
-            -   When Terraform encounters a data block, it evaluates the configuration settings specified within the block to determine how to retrieve the requested data.
-            -   Terraform builds a dependency graph based on the relationships between resources and data sources, ensuring that data retrieval occurs in the correct order.
-
-        -   `Data Retrieval`:
-
-            -   Once Terraform has determined the dependencies and the order in which data sources should be queried, it begins the data retrieval process.
-            -   Terraform communicates with the appropriate data sources (e.g., cloud providers, external APIs) based on the configuration settings specified within the data block.
-            -   The data is retrieved from the sources and stored in memory within the Terraform process.
-
-        -   `Dependency Resolution`:
-
-            -   If a data block depends on other resources or data sources, Terraform ensures that those dependencies are resolved first before retrieving the data.
-            -   For example, if a data block depends on an AWS VPC, Terraform will first ensure that the VPC resource is created or retrieved before attempting to query other data sources related to the VPC.
-
-        -   `Plan Generation`:
-
-            -   After retrieving the necessary data, Terraform incorporates that data into the plan it generates.
-            -   The plan includes any changes or actions required to achieve the desired state described in the configuration, including the use of the retrieved data in resource configurations or other parts of the configuration.
-
-        -   `Apply Phase`:
-
-            -   During the apply phase (terraform apply), Terraform executes the actions specified in the plan, including the creation, modification, or deletion of resources, and applies any changes to the infrastructure.
-
-    #### Meta-Arguments
-
-    In Terraform, a **meta-argument** is a special argument that can be used with resources to control aspects of how those resources are managed rather than specifying properties of the resource itself. Meta-arguments give more control over lifecycle, dependencies, and iteration.
-
-    1. **count**: The `count` meta-argument allows you to create multiple instances of a resource based on a given number.
-
-        ```ini
-        resource "aws_instance" "example" {
-            count         = 3  # Creates 3 instances
-            ami           = "ami-0c55b159cbfafe1f0"
-            instance_type = "t2.micro"
-
-            tags = {
-                Name = "ExampleInstance-${count.index}"
-            }
-        }
-        ```
-
-        - In this example, Terraform creates 3 instances. The `count.index` is used to give each instance a unique name tag like `ExampleInstance-0`, `ExampleInstance-1`, and `ExampleInstance-2`.
-
-    2. **for_each**: The `for_each` meta-argument allows you to create resources based on a map or a set, where each item is uniquely identified by a key.
-
-        ```ini
-        resource "aws_instance" "example" {
-            for_each      = {
-                "web" = "ami-0c55b159cbfafe1f0"
-                "db"  = "ami-0a313d6098716f372"
-            }
-            ami           = each.value
-            instance_type = "t2.micro"
-
-            tags = {
-                Name = "ExampleInstance-${each.key}"
-            }
-        }
-        ```
-
-        - In this example, Terraform creates two instances with different AMIs, one for `web` and one for `db`. Each instance gets a tag name of either `ExampleInstance-web` or `ExampleInstance-db`.
-
-    3. **provider**: The `provider` meta-argument specifies which provider configuration should be used for a particular resource. This is useful if multiple provider configurations are defined.
-
-        ```ini
-        provider "aws" {
-            alias  = "us_east"
-            region = "us-east-1"
-        }
-
-        provider "aws" {
-            alias  = "us_west"
-            region = "us-west-2"
-        }
-
-        resource "aws_instance" "example" {
-            provider      = aws.us_east  # Use the `us_east` provider configuration
-            ami           = "ami-0c55b159cbfafe1f0"
-            instance_type = "t2.micro"
-        }
-        ```
-
-        - Here, Terraform uses the `us_east` provider configuration for this specific instance, even though other provider configurations are defined.
-
-    4. **depends_on**: The `depends_on` meta-argument explicitly specifies dependencies for a resource. This ensures that the resource is created only after the specified dependencies have been created.
-
-        ```ini
-        resource "aws_security_group" "example_sg" {
-        # Security group configuration
-        }
-
-        resource "aws_instance" "example_instance" {
-            ami           = "ami-0c55b159cbfafe1f0"
-            instance_type = "t2.micro"
-            depends_on    = [aws_security_group.example_sg]  # Ensure SG is created first
-        }
-        ```
-
-        - In this example, `example_instance` will only be created after `example_sg` has been created, ensuring proper ordering.
-
-    5. **lifecycle**: The `lifecycle` meta-argument controls how Terraform manages changes to resources, including preventing deletion or customizing behavior during updates.
-
-        ```ini
-        resource "aws_instance" "example" {
-            ami           = "ami-0c55b159cbfafe1f0"
-            instance_type = "t2.micro"
-
-            lifecycle {
-                create_before_destroy = true  # Replace old instance only after new one is created
-                prevent_destroy       = true  # Prevent accidental deletion
-            }
-        }
-        ```
-
-        - Here, `create_before_destroy` ensures that if an update requires replacement, the new resource is created before the old one is destroyed. `prevent_destroy` protects this instance from being accidentally deleted.
-
-    6. **provisioner**: The `provisioner` meta-argument allows you to run scripts or commands on a resource after it has been created or destroyed. Common provisioners include `local-exec` (runs on the local machine) and `remote-exec` (runs on the remote resource).
-
-        ```ini
-        resource "aws_instance" "example" {
-            ami           = "ami-0c55b159cbfafe1f0"
-            instance_type = "t2.micro"
-
-            provisioner "local-exec" {
-                command = "echo ${self.private_ip} > instance_ip.txt"
-            }
-        }
-        ```
 
     </details>
 

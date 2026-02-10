@@ -440,126 +440,6 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange">AWS Organizations</summary>
-
-    AWS Organizations is a centralized management service that allows you to consolidate multiple AWS accounts into an organization that you create and centrally govern. It is essential for scaling AWS environments, managing billing, and enforcing security guardrails across all accounts.
-
-    1. **Core Components**: The following table outlines the building blocks of an AWS Organization:
-
-        | Component                    | Description                                                                                                                           |
-        | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-        | **Organization**             | The primary entity you create to consolidate your AWS accounts.                                                                       |
-        | **Root**                     | The parent container for all the accounts in your organization.                                                                       |
-        | **Management Account**       | The administrative account (formerly "Master Account") that creates the organization. It handles billing and can create OUs and SCPs. |
-        | **Member Account**           | Any AWS account, other than the management account, that is part of the organization.                                                 |
-        | **Organizational Unit (OU)** | A container for accounts within a root. OUs can be nested (up to 5 levels deep) to mirror your company's structure.                   |
-        | **Policy**                   | JSON documents used to manage the accounts. The most common is the **Service Control Policy (SCP)**.                                  |
-
-    2. **Key Features**:
-
-        - **Governance & Control**
-
-            - **Service Control Policies (SCPs):** These define the maximum permissions for member accounts. Even if an IAM user has "Full Administrator" access, an SCP can explicitly deny them access to specific services (e.g., preventing them from leaving a specific region).
-            - **Tag Policies:** Enforce standardized tagging across resources to ensure cost tracking and automation work correctly.
-            - **Backup Policies:** Centrally manage and enforce backup plans across all accounts using AWS Backup.
-            - **AI Services Opt-out:** Control whether AWS AI services can use your data for model improvement.
-            - **Upgrade Rollout Policies:** (Latest feature) Systematically manage and stagger automatic minor version upgrades for RDS and Aurora databases across your fleet.
-
-        - **Simplified Billing**
-
-            - **Consolidated Billing:** You receive a single bill for all accounts in the organization.
-            - **Volume Discounts:** AWS treats all accounts as one for the purposes of volume-based pricing tiers (e.g., S3 storage costs), often resulting in significant savings.
-
-        - **Service Integration & Delegation**
-
-            - **Trusted Access:** Allows AWS services (like CloudTrail, Config, or GuardDuty) to perform tasks across all accounts in your organization automatically.
-            - **Delegated Administration:** Assign a member account as the "administrator" for a specific service (e.g., making a Security account the admin for Amazon GuardDuty), so you don't have to use the Management account for daily security tasks.
-
-    -   **Terraform Demonstration**: This script demonstrates the creation of an organization, a hierarchical OU structure, a member account, and a Service Control Policy (SCP) to restrict usage to a specific region.
-
-            ```hcl
-            # 1. Initialize the AWS Organization
-            resource "aws_organizations_organization" "org" {
-                aws_service_access_principals = [
-                    "cloudtrail.amazonaws.com",
-                    "config.amazonaws.com",
-                ]
-                # Enable all policy types for full governance
-                enabled_policy_types = [
-                    "SERVICE_CONTROL_POLICY",
-                    "TAG_POLICY",
-                    "BACKUP_POLICY"
-                ]
-                feature_set = "ALL"
-            }
-
-            # 2. Create Organizational Units (OUs)
-            resource "aws_organizations_organizational_unit" "prod" {
-                name      = "Production"
-                parent_id = aws_organizations_organization.org.roots[0].id
-            }
-
-            resource "aws_organizations_organizational_unit" "dev" {
-                name      = "Development"
-                parent_id = aws_organizations_organization.org.roots[0].id
-            }
-
-            # 3. Create a Member Account within the Dev OU
-            # Note: AWS will send a confirmation email to the address below.
-            resource "aws_organizations_account" "dev_account" {
-                name      = "dev-app-account"
-                email     = "aws-dev-team@yourcompany.com"
-                parent_id = aws_organizations_organizational_unit.dev.id
-
-                # Allows IAM users in the management account to access this account via a role
-                role_name = "OrganizationAccountAccessRole"
-            }
-
-            # 4. Define a Service Control Policy (SCP)
-            # This example denies all actions if they are NOT in the us-east-1 region.
-            resource "aws_organizations_policy" "region_restriction" {
-                name        = "EnforceRegionRestriction"
-                description = "Deny all actions outside of us-east-1"
-                content     = jsonencode({
-                    Version = "2012-10-17"
-                    Statement = [
-                    {
-                        Sid      = "DenyAllOutsideUSEast1"
-                        Effect   = "Deny"
-                        NotAction = [
-                            "iam:*",
-                            "organizations:*",
-                            "route53:*",
-                            "budgets:*",
-                            "waf:*",
-                            "cloudfront:*",
-                            "globalaccelerator:*",
-                            "importexport:*",
-                            "support:*"
-                        ]
-                        Resource = "*"
-                        Condition = {
-                            StringNotEquals = {
-                                "aws:RequestedRegion" = ["us-east-1"]
-                        }
-                        }
-                    }
-                    ]
-                })
-            }
-
-            # 5. Attach the Policy to the Production OU
-            resource "aws_organizations_policy_attachment" "prod_region_lock" {
-            policy_id = aws_organizations_policy.region_restriction.id
-            target_id = aws_organizations_organizational_unit.prod.id
-            }
-
-            ```
-
-        </details>
-
----
-
 -   <details><summary style="font-size:25px;color:Orange">Various Types of Storage Services</summary>
 
     AWS offers a comprehensive suite of storage services categorized primarily into **Object, Block, and File Storage**, along with specialized services for **Archiving, Data Transfer,** and **Hybrid** environments.
@@ -3712,15 +3592,28 @@
         - **What it is:** SCPs are JSON policies that provide **centralized control** over the maximum available permissions for all IAM users and roles in your member accounts, _including the member account's root user_.
         - **Vivid Detail:** SCPs act as **non-negotiable security guardrails** at the organizational level. They are **filters**, not granters of permissions. If an SCP _denies_ an action, no IAM policy in the member account can override that denial, ensuring consistent compliance across the entire organization. For example, you can deny the use of a specific, expensive AWS service in all Development accounts.
 
+        - **Service Control Policies (SCPs):** These define the maximum permissions for member accounts. Even if an IAM user has "Full Administrator" access, an SCP can explicitly deny them access to specific services (e.g., preventing them from leaving a specific region).
+        - **Tag Policies:** Enforce standardized tagging across resources to ensure cost tracking and automation work correctly.
+        - **Backup Policies:** Centrally manage and enforce backup plans across all accounts using AWS Backup.
+        - **AI Services Opt-out:** Control whether AWS AI services can use your data for model improvement.
+        - **Upgrade Rollout Policies:** (Latest feature) Systematically manage and stagger automatic minor version upgrades for RDS and Aurora databases across your fleet.
+
+
     2. **Consolidated Billing and Cost Management**:
 
         - **What it is:** The Management Account handles payment for all member accounts, and all charges are aggregated into a single monthly bill.
         - **Vivid Detail:** This feature is the **Financial Hub**. It doesn't just simplify payments; it allows all accounts to benefit from **volume discounts** (tiered pricing) and **Reserved Instance/Savings Plan sharing** across the entire organization, leading to significant cost optimization. You can also use the hierarchy (OUs and accounts) to break down and allocate costs to specific teams or projects.
 
+        - **Consolidated Billing:** You receive a single bill for all accounts in the organization.
+        - **Volume Discounts:** AWS treats all accounts as one for the purposes of volume-based pricing tiers (e.g., S3 storage costs), often resulting in significant savings.
+
     3. **Account Management and Provisioning**:
 
         - **What it is:** The ability to programmatically create new accounts directly within the organization or invite existing accounts to join.
         - **Vivid Detail:** AWS Organizations offers a simplified API for **"account vending."** Instead of manually creating accounts and applying baseline settings, you can automate the process, ensuring new accounts are born compliant and immediately subject to the organization's policies (SCPs).
+
+        - **Trusted Access:** Allows AWS services (like CloudTrail, Config, or GuardDuty) to perform tasks across all accounts in your organization automatically.
+        - **Delegated Administration:** Assign a member account as the "administrator" for a specific service (e.g., making a Security account the admin for Amazon GuardDuty), so you don't have to use the Management account for daily security tasks.
 
     4. **Integration with AWS Services (Trusted Access)**:
 
@@ -3744,13 +3637,13 @@
 
     This structure ensures that the highest-priority concerns—security, logging, and core networking—are isolated and centrally managed.
 
-    6. **Root**:
+    1. **Root**:
 
         - **Purpose:** The very top of the hierarchy.
         - **Key Policy:** Attached SCPs here should be extremely broad, ensuring mandatory security baselines apply to _all_ accounts. This is where you might **deny root user access** for daily operations or **restrict access to unused global regions** for compliance and cost control.
         - **Accounts:** Contains the **Management Account** (Payer/Organization Admin) and often the **Service Control Policy Staging Account** (used to test SCP changes).
 
-    7. **Security OU**:
+    2. **Security OU**:
 
         - **Purpose:** Centralizes all logging, security monitoring, and auditing functions. This OU is crucial for compliance.
         - **Key Policy:** Highly restrictive SCPs to protect log immutability and prevent any account from turning off security services.
@@ -3758,7 +3651,7 @@
             - **Log Archive Account:** A highly restricted, read-only account dedicated to storing immutable, aggregated AWS CloudTrail logs, AWS Config history, and VPC flow logs from every account in the organization.
             - **Security Tooling/Audit Account:** The delegated administrator account for services like AWS GuardDuty, AWS Security Hub, Amazon Macie, and AWS Config. This is where security staff gain cross-account access to perform audits and incident response.
 
-    8. **Infrastructure OU**:
+    3. **Infrastructure OU**:
         - **Purpose:** Houses critical shared services that all or many workload accounts rely on.
         - **Key Policy:** Moderate SCPs that ensure only approved centralized services can be deployed.
         - **Key Accounts:**

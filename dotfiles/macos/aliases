@@ -204,7 +204,7 @@ alias ntabc="code $NTHUB/nts/notes_arabic.md"
 alias ntbash="code $NTHUB/nts/notes_bash.md"
 alias ntdb="code $NTHUB/nts/notes_db.md"
 alias ntwaf="code $NTHUB/nts/notes_waf.md"
-alias ntwdev="code $NTHUB/nts/notes_web_developement.md"
+alias ntwbdv="code $NTHUB/nts/notes_web_developement.md"
 alias ntshell="code $NTHUB/nts/notes_shell.md"
 alias ntde="code $NTHUB/nts/notes_data_engineering.md"
 alias ntlnx="code $NTHUB/nts/notes_linux.md"
@@ -258,12 +258,12 @@ alias ntopenssl="code $NTHUB/nts/notes_openssl.md"
 alias ntselenium="code $NTHUB/nts/notes_selenium.md"
 alias ntbehave="code $NTHUB/nts/notes_behave.md"
 alias ntxpath="code $NTHUB/nts/notes_xpath.md"
-alias ntcolabtl="code $NTHUB/nts/notes_colaboration_tools.md"
 alias ntawsglue="code $NTHUB/nts/notes_awsglue.md"
 alias ntprompt="code $NTHUB/nts/notes_prompts.md"
 alias ntllm="code $NTHUB/nts/notes_llm.md"
 alias ntdatabricks="code $NTHUB/nts/notes_databricks.md"
 alias ntcb="code $NTHUB/nts/notes_cybersecurity.md"
+alias ntdos="code $NTHUB/nts/notes_windows.md"
 
 
 ###############################################################################
@@ -291,8 +291,6 @@ alias iqdjango="code $NTHUB/iqs/iq_django.md"
 alias iqdrf="code $NTHUB/iqs/iq_drf.md"
 alias iqdb="code $NTHUB/iqs/iq_db.md"
 alias iqsql="code $NTHUB/iqs/iq_sql.md"
-alias adhocsql="code $SD/Databases/RDBMS/sql/schemas/adhocsql.sql"
-alias adhocspark="code $SD/Big_Data/elements_of_spark/adhocspark.py"
 # =============================================================================
 
 ## JUPYTER NOTEBOOKS
@@ -333,6 +331,9 @@ pvt_aliases(){
     alias statusmysql="sudo /usr/local/mysql/support-files/mysql.server status"
     alias logmysql="sudo tail -f /usr/local/mysql/data/$(hostname).err"
     alias mvpdf="mv $NTHUB/{nts,cmds}/*.pdf $GD/NOTES_PDF/notes/"
+
+    alias adhocsql="code $SD/Databases/RDBMS/sql/schemas/adhocsql.sql"
+    alias adhocspark="code $SD/Big_Data/elements_of_spark/adhocspark.py"
 
     # NON-TECHNICAL
     alias passdb="open $HOME/mydocs/gd/passdb.gsheet"

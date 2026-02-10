@@ -376,6 +376,10 @@
         -   `$ git tag < -l | --list >` → List all tags created so far.
         -   `$ git push --tags` → Push all the tags into remote (github.com)
 
+    - FETCH:
+        -   `$ git fetch origin <branch-name>` -> To fetch a specific branch from your remote (usually named `origin`)
+        -   `$ git fetch` → retrieves the latest commits, branches, and tags from the remote repository **without merging** them into your current branch; updates your local view of the remote.
+
     -   🔥 [MERGING](https://www.atlassian.com/git/tutorials/using-branches/git-merge):
 
         -   `$ git merge <origin_branch_name> < local_branch_name>` → Merge a local branch into a origin branch.
@@ -390,12 +394,13 @@
         -   `$ git remote set-url origin git@github.com:Aminul-Momin/Algorithms_and_Data_Structures.git` → to set remote origin url
         -   `$ git remote show origin` → Displays detailed information about the remote named `origin`, including its fetch and push URLs, tracking branches, and status.
         -   `$ git remote add upstream <URL>` → Adds a new remote named `upstream` pointing to the given `<URL>`, typically used to track the original repository if you’ve forked it.
+
         -   `$ git push origin master` → Pushes the master branch of local repository to master branch of remote repository.
         -   `$ git push -u origin master` → Push the commits from my local master branch to the master branch on the remote repository named origin, and set up tracking information for the master branch on the remote repository.
         -   `$ git push origin cpecs-12147 --force` → force-pushes the local `cpecs-12147` branch to the `origin` remote, overwriting any conflicts on the remote branch.
-        -   `$ git pull --rebase origin cpecs-12147` → fetches the latest changes from `origin/cpecs-12147` and rebases your local branch on top of it (instead of merging).
         -   `$ git push origin` → push all the branches to origin
-        -   `$ git fetch` → retrieves the latest commits, branches, and tags from the remote repository **without merging** them into your current branch; updates your local view of the remote.
+
+        -   `$ git pull --rebase origin cpecs-12147` → fetches the latest changes from `origin/cpecs-12147` and rebases your local branch on top of it (instead of merging).
         -   `$ git pull` → does everything `git fetch` does, **plus it merges** the fetched changes from the remote branch into your current branch (equivalent to `git fetch` followed by `git merge`).
         -   `$ git pull origin master` → fetches the latest changes from the `master` branch on the remote named `origin` and **merges** them into your current local branch.
         -   `$ git pull upstream Master` → fetches and merges the `Master` branch from the `upstream` remote into your current local branch. - `$ git pull upstream Master` →

@@ -1,14 +1,18 @@
 <h1 style="text-align:center"> <a href="https://docs.djangoproject.com/en/5.0/contents/">Django documentation contents</a> </h1>
 
--   How do I check Django installation?
+-   How do I check Django installation: `$ django-admin --version`
 
-    -   `$ django-admin --version`
-
--   Useful Django Extentions as a Tools
-
-    -   `django-extentions`
+-   Useful Django Extentions as a Tools: `django-extentions`
 
 -   [settings.py](https://docs.djangoproject.com/en/4.0/ref/settings/)
+-   [Logging](https://docs.djangoproject.com/en/4.2/topics/logging/)
+-   [Doc: django-admin and manage.py](https://docs.djangoproject.com/en/4.1/ref/django-admin/#django-admin-and-manage-py)
+-   [Validators](https://docs.djangoproject.com/en/4.1/ref/validators/)
+
+-   **ChatGPT**:
+
+    -   demo audit trails that log and monitor user activities with Django project
+
 
 ---
 
@@ -204,6 +208,174 @@
             -   Each method returns a new QuerySet, which can be further refined.
 
     </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">Django Utilities & Managements</summary>
+
+    -   Django Managements or Management Commands refers to a set of commands and utilities provided by the Django framework for performing various administrative tasks, such as creating database tables, running development servers, managing migrations, and more. These management commands are primarily accessed through the command-line interface (CLI) using the `manage.py` script located in your Django project's root directory. Here are some key aspects of Django management:
+
+    -   [**django-admin & manage.py**](https://docs.djangoproject.com/en/5.0/ref/django-admin/#django-admin-and-manage-py)
+
+        -   **django-admin**: `django-admin` is Django’s command-line utility for administrative tasks. Think of it as the **master controller** that exists outside of any specific project. It’s what you use to jumpstart the development process before your project even exists.
+
+        -   **manage.py**:
+
+            -   The `manage.py` script is a thin wrapper around the `django-admin` utility and created automatically in each Django project. It does the same thing as `django-admin` but also sets the `DJANGO_SETTINGS_MODULE` environment variable so that it points to your project’s `settings.py` file. Generally, when working on a single Django project, it’s easier to use `manage.py` than `django-admin`. If you need to switch between multiple Django settings files, use `django-admin` with `DJANGO_SETTINGS_MODULE` or the `--settings` command line option.
+            -   It resides in the root directory of your Django project and is automatically generated when you create a new project using the `django-admin startproject` command.
+
+    -   **Custom Management Commands**:
+
+        -   Django allows you to define custom management commands to automate tasks specific to your project or app.
+        -   Custom commands are defined as Python functions within a module inside the `management/commands` directory of your app.
+        -   Each command function must accept `self` as its first argument and can define additional options and arguments using `add_arguments()`.
+        -   Example:
+
+        ```python
+        from django.contrib.auth.models import User
+        from django.core.management.base import BaseCommand
+        from django.utils.crypto import get_random_string
+
+
+        class Command(BaseCommand):
+            """
+            Examples: How to invoke the comands
+                1.  $ python manage.py create_users 5
+                2.  $ python manage.py create_users 5 -p manager --superuser
+            """
+            help = 'Generate random users'
+
+            def add_arguments(self, parser):
+                parser.add_argument('count', type=int, help='Indicates the number of users to be created')
+
+                # Optional argument
+                parser.add_argument('-p', '--prefix', type=str, help='Define a username prefix')
+                parser.add_argument('-s', '--superuser', action='store_true', help='Create a superuser account')
+
+            def handle(self, *args, **kwargs):
+                count = kwargs['count']
+                prefix = kwargs['prefix']
+                superuser = kwargs['superuser']
+
+                for i in range(count):
+                    if prefix:
+                        username = f'{prefix}_{get_random_string()}'
+                    else:
+                        username = get_random_string()
+
+                    if superuser:
+                        User.objects.create_superuser(username=username, email='hello@hi.com', password='123')
+                    else:
+                        User.objects.create_user(username=username, email='hello@hi.com', password='123')
+        ```
+
+        ```txt
+        demo_app/
+            __init__.py
+            ...
+            management/
+                __init__.py
+                commands/
+                    __init__.py
+                    hello.py
+        ```
+
+    -   **Running Management Commands Programmatically**:
+
+        -   You can also run management commands programmatically from within your Django code using the `call_command()` function provided in Django's `django.core.management` module.
+            ```python
+            from django.core.management import call_command
+            call_command("loaddata", "db_user_fixture.json")
+            ```
+        -   This allows you to integrate management commands into your application logic or scripts.
+
+    -   <details><summary style="font-size:25px;color:Orange">Django Utilities (Django CLI)</summary>
+
+        > **Pro Tip:** You can always run `$ python manage.py help` to see all available commands (including those added by third-party apps) or `$ python manage.py help <command>` for detailed documentation on a specific utility.
+
+
+        -   **Project & App Management**:
+
+            -   `$ python manage.py startproject` -> Create a new Django project directory structure.
+            -   `$ python manage.py startapp` -> Create a new Django application directory structure within the project.
+            -   `$ python manage.py check` -> Inspect the entire project for common configuration and logic errors.
+            -   `$ python manage.py diffsettings` -> Compare the current project settings against Django's default settings.
+
+        -   **Database & Migrations**:
+
+            -   `$ python manage.py makemigrations` -> Create new migration files based on changes detected in your models.
+            -   `$ python manage.py migrate` -> Synchronize the database schema with your current models and migrations.
+            -   `$ python manage.py showmigrations` -> List all migrations in the project and their current application status.
+            -   `$ python manage.py sqlmigrate` -> Display the raw SQL statements that will be executed for a specific migration.
+            -   `$ python manage.py squashmigrations` -> Consolidate a range of existing migrations into a single new migration.
+            -   `$ python manage.py inspectdb` -> Introspect existing database tables and output a Django model module.
+            -   `$ python manage.py sqlflush` -> Print the SQL statements required to return all tables to their initial state.
+            -   `$ python manage.py sqlsequencereset` -> Print the SQL statements for resetting sequences for an app's tables.
+
+        -   **Authentication & Authorization**:
+
+            -   `$ python manage.py createsuperuser` -> Create a user account with administrative (superuser) permissions.
+            -   `$ python manage.py changepassword` -> Change the password for a specific user account via the terminal.
+
+        -   **Development & Shell**:
+
+            -   `$ python manage.py runserver` -> Start a lightweight, auto-reloading development web server.
+            -   `$ python manage.py shell` -> Open an interactive Python interpreter with the Django environment pre-loaded.
+            -   `$ python manage.py dbshell` -> Launch the command-line client for your project's configured database engine.
+
+        -   **Maintenance & Data Handling**:
+
+            -   `$ python manage.py dumpdata` -> Export the contents of the database into a JSON, XML, or YAML fixture file.
+            -   `$ python manage.py loaddata` -> Import data from a fixture file into your project's database.
+            -   `$ python manage.py flush` -> Remove all data from the database while keeping the table structure intact.
+            -   `$ python manage.py clearsessions` -> Clean up expired sessions from the database session table.
+            -   `$ python manage.py remove_stale_contenttypes` -> Delete content types in the database that no longer have corresponding models.
+            -   `$ python manage.py sendtestemail` -> Send a test email to verify the project's email configuration.
+            -   `$ python manage.py createcachetable` -> Create the database table required for the database caching backend.
+
+        -   **Static Files & Testing**:
+
+            -   `$ python manage.py collectstatic` -> Gathers all static files from your apps into the directory specified by `STATIC_ROOT`.
+            -   `$ python manage.py findstatic` -> Search for the absolute path(s) of one or more static files.
+            -   `$ python manage.py test` -> Run the test suite for all installed applications in the project.
+            -   `$ python manage.py testserver` -> Run a development server using data from the specified fixture(s).
+
+        -   **Internationalization (i18n)**:
+
+            -   `$ python manage.py makemessages` -> Scan the source tree for translatable strings and update the message files.
+            -   `$ python manage.py compilemessages` -> Compile `.po` message files into `.mo` files for use by the translation engine.
+
+        -   **django-admin Commands**
+            -   `$ django-admin -h`
+            -   `$ django-admin check`
+            -   `$ django-admin compilemessages`
+            -   `$ django-admin createcachetable`
+            -   `$ django-admin dbshell`
+            -   `$ django-admin diffsettings`
+            -   `$ django-admin dumpdata`
+            -   `$ django-admin flush`
+            -   `$ django-admin inspectdb`
+            -   `$ django-admin loaddata`
+            -   `$ django-admin makemessages`
+            -   `$ django-admin makemigrations`
+            -   `$ django-admin migrate`
+            -   `$ django-admin runserver`
+            -   `$ django-admin sendtestemail`
+            -   `$ django-admin shell`
+            -   `$ django-admin showmigrations`
+            -   `$ django-admin sqlflush`
+            -   `$ django-admin sqlmigrate`
+            -   `$ django-admin sqlsequencereset`
+            -   `$ django-admin squashmigrations`
+            -   `$ django-admin startapp`
+            -   `$ django-admin startproject`
+            -   `$ django-admin test`
+            -   `$ django-admin testserver`
+
+        </details>
+
+
+        </details>
 
 ---
 
@@ -2993,99 +3165,6 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange">Django Managements</summary>
-
-    Django Managements or Management Commands refers to a set of commands and utilities provided by the Django framework for performing various administrative tasks, such as creating database tables, running development servers, managing migrations, and more. These management commands are primarily accessed through the command-line interface (CLI) using the manage.py script located in your Django project's root directory.
-
-    Here are some key aspects of Django management:
-
-    -   **manage.py Script**:
-
-        -   The manage.py script is a thin wrapper around the django-admin utility, providing a convenient way to run management commands specific to your Django project.
-        -   It resides in the root directory of your Django project and is automatically generated when you create a new project using the django-admin startproject command.
-
-    -   **Available Management Commands**:
-
-        -   Django provides a wide range of built-in management commands to perform common tasks, such as creating new apps, running the development server, generating migrations, collecting static files, and more.
-        -   You can also create custom management commands to extend Django's functionality by defining Python modules within your app's management/commands directory.
-
-    -   **Running Management Commands**:
-
-        -   To run a management command, you use the manage.py script followed by the command name and any necessary options or arguments.
-        -   For example, to start the development server, you would run `python manage.py runserver`.
-        -   You can also get a list of all available commands and their descriptions by running `python manage.py help`.
-
-    -   **Custom Management Commands**:
-
-        -   Django allows you to define custom management commands to automate tasks specific to your project or app.
-        -   Custom commands are defined as Python functions within a module inside the `management/commands` directory of your app.
-        -   Each command function must accept `self` as its first argument and can define additional options and arguments using `add_arguments()`.
-        -   Example:
-
-        ```python
-        from django.contrib.auth.models import User
-        from django.core.management.base import BaseCommand
-        from django.utils.crypto import get_random_string
-
-
-        class Command(BaseCommand):
-            """
-            Examples: How to invoke the comands
-                1.  $ python manage.py create_users 5
-                2.  $ python manage.py create_users 5 -p manager --superuser
-            """
-            help = 'Generate random users'
-
-            def add_arguments(self, parser):
-                parser.add_argument('count', type=int, help='Indicates the number of users to be created')
-
-                # Optional argument
-                parser.add_argument('-p', '--prefix', type=str, help='Define a username prefix')
-                parser.add_argument('-s', '--superuser', action='store_true', help='Create a superuser account')
-
-            def handle(self, *args, **kwargs):
-                count = kwargs['count']
-                prefix = kwargs['prefix']
-                superuser = kwargs['superuser']
-
-                for i in range(count):
-                    if prefix:
-                        username = f'{prefix}_{get_random_string()}'
-                    else:
-                        username = get_random_string()
-
-                    if superuser:
-                        User.objects.create_superuser(username=username, email='hello@hi.com', password='123')
-                    else:
-                        User.objects.create_user(username=username, email='hello@hi.com', password='123')
-        ```
-
-        ```txt
-        demo_app/
-            __init__.py
-            ...
-            management/
-                __init__.py
-                commands/
-                    __init__.py
-                    hello.py
-        ```
-
-    -   **Running Management Commands Programmatically**:
-
-        -   You can also run management commands programmatically from within your Django code using the `call_command()` function provided in Django's `django.core.management` module.
-            ```python
-            from django.core.management import call_command
-            call_command("loaddata", "db_user_fixture.json")
-            ```
-        -   This allows you to integrate management commands into your application logic or scripts.
-
-    Overall, Django's management system provides a convenient and powerful way to perform administrative tasks and automate common development workflows, helping developers streamline their Django projects' management and maintenance.
-
-    </details>
-
----
-
 -   <details><summary style="font-size:25px;color:Orange">Django Security Features</summary>
 
     ##### CSRF (Cross Site Request Forgery)
@@ -3290,26 +3369,6 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange">MISC</summary>
-
-    ##### Configure logging for Django app
-
-    -   [Logging](https://docs.djangoproject.com/en/4.2/topics/logging/)
-
-    ##### django-admin and manage.py
-
-    -   [Doc: django-admin and manage.py](https://docs.djangoproject.com/en/4.1/ref/django-admin/#django-admin-and-manage-py)
-
-    ##### [Validators](https://docs.djangoproject.com/en/4.1/ref/validators/)
-
-    ### ChatGPT
-
-    -   demo audit trails that log and monitor user activities with Django project
-
-    </details>
-
----
-
 -   <details><summary style="font-size:25px;color:Orange">Importing Objects</summary>
 
     ```python
@@ -3357,85 +3416,318 @@
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange">Django CLI</summary>
+-   <details><summary style="font-size:25px;color:Orange">Deployment</summary>
 
-    -   [**django-admin & manage.py**](https://docs.djangoproject.com/en/5.0/ref/django-admin/#django-admin-and-manage-py)
+    -   [Top 5 Most-Used Deployment Strategies](https://www.youtube.com/watch?v=AWVTKBUnoIg)
+    -   [How to use Django with uWSGI](https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/uwsgi/)
+    -   [How to use Django with Gunicorn](https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/gunicorn/)
+    -   [Setting up Django and your web server with uWSGI and nginx](https://uwsgi-docs.readthedocs.io/en/latest/tutorials/Django_and_nginx.html#)
+    -   [Deploying Django with Docker Compose](https://www.youtube.com/watch?v=mScd-Pc_pX0&t=1928s)
 
-        **django-admin** and **manage.py** are Django’s command-line utility for administrative tasks. `manage.py` is automatically created in each Django project. It does the same thing as django-admin but also sets the DJANGO_SETTINGS_MODULE environment variable so that it points to your project’s settings.py file. Generally, when working on a single Django project, it’s easier to use `manage.py` than django-admin. If you need to switch between multiple Django settings files, use django-admin with DJANGO_SETTINGS_MODULE or the --settings command line option.
+    -   `Gunicorn` vs `uWSGI` vs `Uvicorn`: `Gunicorn`, `uWSGI` and `Uvicorn` are popular Python WSGI (Web Server Gateway Interface) servers that are commonly used to serve Python web applications.
+        -   **Gunicorn** (short for Green Unicorn) is a Python WSGI HTTP server that is designed to be lightweight, fast, and easy to use. It can handle multiple requests concurrently and can scale to handle large numbers of requests. `Gunicorn` is commonly used in conjunction with a reverse proxy server, such as `Nginx` or `Apache`, which handles incoming requests and passes them on to `Gunicorn`.
+        -   **uWSGI** is a more feature-rich WSGI server that is designed to be highly configurable and extensible. It supports multiple protocols and interfaces, including WSGI, FastCGI, and HTTP. `uWSGI` is known for its ability to handle high traffic volumes and its support for a variety of advanced features, including load balancing, caching, and process management.
+        -   **Uvicorn**: Uvicorn is an ASGI (Asynchronous Server Gateway Interface) server that is used to run asynchronous web applications written in Python. ASGI is a specification for asynchronous web servers and applications, allowing for better support of long-lived connections and real-time communication.
+    -   `Apache` is a popular web server that has been around for a long time. It is widely used and supports a wide range of features and modules, making it highly configurable and adaptable to different use cases. `Apache` is primarily used for serving static content and dynamic content through the use of modules such as PHP or Python.
+    -   `Nginx` is a newer web server that has gained popularity in recent years due to its high performance and scalability. `Nginx` is designed to handle large volumes of traffic and can serve both static and dynamic content. `Nginx` is often used as a **reverse proxy** in front of other web servers, such as `Apache` or `Tomcat`, to improve performance and reliability.
+    -   `Tomcat` is a Java-based web server and application server that is designed to serve Java applications. It supports the Java Servlet and JavaServer Pages (JSP) specifications and is often used to serve Java web applications. `Tomcat` is highly configurable and can be extended through the use of plugins and modules.
 
-    -   `$ django-admin -h`
-    -   `$ django-admin check`
-    -   `$ django-admin compilemessages`
-    -   `$ django-admin createcachetable`
-    -   `$ django-admin dbshell`
-    -   `$ django-admin diffsettings`
-    -   `$ django-admin dumpdata`
-    -   `$ django-admin flush`
-    -   `$ django-admin inspectdb`
-    -   `$ django-admin loaddata`
-    -   `$ django-admin makemessages`
-    -   `$ django-admin makemigrations`
-    -   `$ django-admin migrate`
-    -   `$ django-admin runserver`
-    -   `$ django-admin sendtestemail`
-    -   `$ django-admin shell`
-    -   `$ django-admin showmigrations`
-    -   `$ django-admin sqlflush`
-    -   `$ django-admin sqlmigrate`
-    -   `$ django-admin sqlsequencereset`
-    -   `$ django-admin squashmigrations`
-    -   `$ django-admin startapp`
-    -   `$ django-admin startproject`
-    -   `$ django-admin test`
-    -   `$ django-admin testserver`
+    #### `Proxy Server` vs `Reverse Proxy Server`:
 
-    -   `$ python manage.py -h`
+    -   `Proxy Server`: A proxy server acts as an intermediary between a client and a server. When a client makes a request to access a resource (e.g., a web page), the request is first sent to the proxy server. The proxy server then forwards the request to the destination server on behalf of the client. The response from the server is relayed back to the client through the proxy server. A proxy server can reside in various locations within a network architecture, depending on its intended purpose and the network's configuration; for example, On-Premises Network, Data Center, Cloud Environment, Content Delevary Networks (CDNs) etc. The key characteristics of a proxy server include:
 
-    -   [auth]
+        -   `Client-side configuration`: The client needs to be aware of and configured to use the proxy server.
+        -   `Client anonymity`: The server sees the proxy server's IP address instead of the client's IP address.
+        -   `Caching`: Proxy servers can cache responses, allowing subsequent requests for the same resource to be served directly from the cache instead of going to the server again.
+        -   Proxy servers are often used for purposes such as improving performance through caching, controlling access to resources (e.g., content filtering, firewall), and providing anonymity for clients.
 
-        -   `$ python manage.py changepassword`
-        -   `$ python manage.py createsuperuser`
+    -   `Reverse Proxy Server`: A reverse proxy server is similar to a proxy server but operates on the server-side instead of the client-side. It sits between the client and the destination server and forwards client requests to the appropriate backend servers based on various criteria (e.g., load balancing, request routing, SSL termination). The client is unaware of the presence of the reverse proxy and communicates directly with it. The key characteristics of a reverse proxy server include:
 
-    -   [contenttypes]
+        -   `Server-side configuration`: The server is configured to use the reverse proxy to handle incoming requests.
+        -   `Load balancing`: Reverse proxies distribute client requests across multiple backend servers to balance the load.
+        -   `SSL termination`: Reverse proxies can handle SSL encryption/decryption, offloading this task from backend servers.
+        -   `Caching`: Reverse proxies can also cache responses to improve performance.
+        -   Reverse proxy servers are commonly used for load balancing, high availability, SSL termination, request routing, and as a security layer protecting backend servers by shielding them from direct access.
 
-        -   `$ python manage.py remove_stale_contenttypes`
+    -   The image below show how 'client', 'Nginx', and 'uWSGI' work together.
 
-    -   [django]
+        -   ![server configuration for Django](/assets/django/nginx-uwsgi.webp)
 
-        -   `$ python manage.py check`
-        -   `$ python manage.py compilemessages`
-        -   `$ python manage.py createcachetable`
-        -   `$ python manage.py dbshell`
-        -   `$ python manage.py diffsettings`
-        -   `$ python manage.py dumpdata`
-        -   `$ python manage.py flush`
-        -   `$ python manage.py inspectdb`
-        -   `$ python manage.py loaddata`
-        -   `$ python manage.py makemessages`
-        -   `$ python manage.py makemigrations`
-        -   `$ python manage.py migrate`
-        -   `$ python manage.py sendtestemail`
-        -   `$ python manage.py shell`
-        -   `$ python manage.py showmigrations`
-        -   `$ python manage.py sqlflush`
-        -   `$ python manage.py sqlmigrate`
-        -   `$ python manage.py sqlsequencereset`
-        -   `$ python manage.py squashmigrations`
-        -   `$ python manage.py startapp`
-        -   `$ python manage.py startproject`
-        -   `$ python manage.py test`
-        -   `$ python manage.py testserver`
+    #### `Reverse Proxy Server` vs `Web Server Gateway Interface` (WSGI):
 
-    -   [sessions]
+    A Reverse Proxy Server and a Web Server Gateway Interface (WSGI) serve different roles in web application architecture, but they are complementary components. Here's a comparison of the two:
 
-        -   `$ python manage.py clearsessions`
+    -   `Reverse Proxy Server`: A reverse proxy server is a server that sits between client devices and backend web servers. It receives incoming client requests, such as HTTP requests, and forwards those requests to the appropriate backend server or application.
 
-    -   [staticfiles]
+        -   `Purpose`:
 
-        -   `$ python manage.py collectstatic`
-        -   `$ python manage.py findstatic`
-        -   `$ python manage.py runserver`
+            -   `Load Balancing`: Reverse proxies can distribute client requests across multiple backend servers to balance the load and improve performance and reliability.
+            -   `Security`: They can provide an additional layer of security by hiding the internal structure of the network and filtering out malicious traffic.
+            -   `SSL Termination`: Reverse proxies can handle SSL/TLS encryption and decryption, offloading this resource-intensive task from the backend servers.
+            -   `Caching`: They can cache frequently requested content to reduce the load on backend servers and improve response times.
 
-    -   `$ python manage.py collectstatic`
+        -   `Examples`: `Nginx` and `Apache` HTTP Server are commonly used as reverse proxy servers. CDNs (Content Delivery Networks) often use reverse proxies to cache and serve static content.
+
+    -   `Web Server Gateway Interface (WSGI)`: WSGI is a specification in Python that defines a standard interface between web servers and web applications or frameworks. It allows web servers to communicate with Python web applications in a consistent and standardized way.
+
+        -   `Purpose`:
+
+            -   WSGI serves as an interface between a web server and a Python web application or framework.
+            -   It allows different web servers to run Python web applications written using various frameworks, such as Flask, Django, or Pyramid.
+
+        -   `Examples`: Popular Python web servers like `Gunicorn`, `uWSGI`, and `mod_wsgi` (for Apache) implement the WSGI standard. Python web frameworks, including Flask and Django, can be deployed using WSGI servers.
+
+    -   `Relationship`:
+
+        -   `A reverse proxy server and WSGI serve different but complementary roles`:
+
+            -   The reverse proxy server handles tasks like load balancing, SSL termination, and security at the network level, sitting between clients and backend servers.
+            -   WSGI, on the other hand, handles the communication between a web server and a Python web application at the application level, allowing the Python code to receive and process HTTP requests.
+
+        -   In a typical web application architecture, a reverse proxy server (e.g., Nginx) may be used to handle tasks like load balancing and SSL termination, while a WSGI server (e.g., Gunicorn or uWSGI) interfaces with the Python web application to serve dynamic content.
+
+    In summary, a reverse proxy server and WSGI serve different purposes in web application architecture. The reverse proxy manages network-level tasks, while WSGI provides a standardized interface for communication between web servers and Python web applications. Together, they enable the deployment of Python web applications in a scalable and secure manner.
+
+    #### ASGI (Asynchronous Server Gateway Interface):
+
+    ASGI is a specification for asynchronous web servers and frameworks in Python. It allows Python web applications to handle asynchronous operations, such as long-lived connections and real-time communication, in an efficient and non-blocking manner.
+
+    ASGI servers are the web servers that implement the ASGI specification. These servers are responsible for handling incoming ASGI requests and routing them to the appropriate ASGI application or framework. Some popular ASGI servers include Daphne, Uvicorn, Hypercorn, and more. Uvicorn, for example, is widely used and known for its simplicity and performance.
+
+    -   `Purpose`:
+
+        -   ASGI is designed to handle asynchronous web applications and services that require real-time interactions, like chat applications, streaming, and server-sent events.
+        -   It provides a standardized interface for handling asynchronous HTTP requests and WebSocket connections.
+
+    -   `Usage`:
+
+        -   ASGI servers are commonly used with asynchronous web frameworks like FastAPI and Starlette to build high-performance web applications that require real-time capabilities.
+        -   To run an ASGI application with a server like Uvicorn, you typically use a command like this:
+
+            -   `$ uvicorn core.asgi:app --host 0.0.0.0 --port 8000`
+            -   In this example, `asgi` is the Python module in `core` directory which containing your ASGI application instance assigned to `app` variable (`app` is the instance of your ASGI application within that module).
+
+    -   <details><summary style="font-size:20px;color:#C71585">gunicorn (Green Unicorn)</summary>
+
+        **Gunicorn** (short for "Green Unicorn") is a production-grade, Python **WSGI HTTP Server**. If you've been using `python manage.py runserver` to view your Django site, you've been using a "development server." It’s great for coding, but it’s fragile and can only handle one request at a time. Gunicorn is the "grown-up" version designed to handle real-world internet traffic.
+
+        > **Gunicorn** is the bridge that takes incoming web traffic and distributes it across multiple Python processes to ensure your app stays fast, stable, and concurrent.
+
+        1. **What is it used for?**: In a production environment, your web stack usually looks like a relay race. Gunicorn sits in the middle:
+            1. **Nginx (The Gatekeeper):** Handles SSL, static files, and buffering. It receives the request from the user and hands it off to...
+            2. **Gunicorn (The Translator):** It takes the request from Nginx and translates it into a format your Python code understands (WSGI). It manages multiple "workers" to handle many users at once.
+            3. **Django/Flask (The Brains):** Your code processes the request and sends a response back through Gunicorn to Nginx, then to the user.
+
+        2. **How it Works: The "Pre-fork Worker Model"**: Gunicorn’s secret sauce is its **Pre-fork** architecture. Here is the breakdown:
+            - **The Master Process:** Think of this as the "Manager." It doesn't handle actual web requests. Its only job is to spawn, manage, and kill worker processes. If a worker dies, the Master immediately creates a new one.
+            - **The Worker Processes:** These are the "Employees." When a request comes in, one of these workers picks it up, runs your Python code, and returns the result.
+
+            Because Gunicorn "pre-forks" (creates) these workers before the requests arrive, it can handle multiple concurrent users much more efficiently than a single-threaded development server.
+
+        3. **Key Concepts & Terms**:
+
+            | Term             | Explanation                                                                                                                                                                |
+            | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+            | **WSGI**         | Web Server Gateway Interface. It is the standardized "handshake" protocol that allows web servers (like Gunicorn) to talk to Python applications.                          |
+            | **Workers**      | The number of simultaneous processes running. A common formula is .                                                                                                        |
+            | **Worker Class** | The type of worker. "Sync" (default) is for standard tasks. "Gevent" or "Eventlet" are "async" workers used if your app stays connected for a long time (like WebSockets). |
+            | **Binding**      | Telling Gunicorn which IP and Port to listen on (e.g., `127.0.0.1:8000`).                                                                                                  |
+            | **Timeout**      | How long Gunicorn will wait for a worker to finish a request before killing it and restarting (default is 30 seconds).                                                     |
+
+        4. **Why can't I just use `runserver`?**: Using Django’s `runserver` in production is like trying to use a golf cart to pull a semi-truck.
+            - **Concurrency:** `runserver` is usually single-threaded. If one user triggers a heavy 10-second report, _everyone else_ is blocked until it's done.
+            - **Stability:** If your code crashes on one request, `runserver` might die entirely. Gunicorn just kills that specific worker and moves on.
+            - **Security:** Development servers aren't audited for security and are vulnerable to various types of denial-of-service attacks.
+
+
+        -   `gunicorn.socket` vs `gunicorn.service`: these are systemd units used for running Gunicorn, a Python WSGI HTTP server. They serve different purposes within the systemd service management system.
+
+            -   `gunicorn.socket`: This file represents a Socket Unit which nanage inter-process communication through sockets. It defines a system socket that listens for incoming connections and passes them to the associated service unit (`gunicorn.service`). The `gunicorn.socket` unit allows systemd to manage the socket activation process, where the socket is created on-demand when a connection is received. This helps improve resource usage by only starting the Gunicorn process when needed.
+            -   `gunicorn.service`: This file represents a Service Unit. It defines the Gunicorn service that handles the incoming connections received through the associated socket (`gunicorn.socket`). The `gunicorn.service` unit specifies the command to start the Gunicorn process, along with its configuration options and other settings.
+
+        -   `$ gunicorn core.wsgi:application --bind 0.0.0.0:8000`
+            -   specifies the network address and port to bind the server to:
+                -   `0.0.0.0` means the server will listen on all available network interfaces, making it accessible from any host.
+                -   `8000` is the port number the server will listen on.
+        -   `$ gunicorn core.wsgi:application --config ./gunicorn_config.py`
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#C71585">hypercorn</summary>
+
+        **Hypercorn** is an ASGI (Asynchronous Server Gateway Interface) web server. If Gunicorn is the "Sync" veteran and Uvicorn is the "Speed" specialist, Hypercorn is the **"Protocol Powerhouse."**
+
+        It was originally part of the **Quart** framework (an async version of Flask) before being spun out as a standalone server. It is built using "sans-io" libraries (like `h11`, `h2`, and `wsproto`), which means the logic of the protocols is separated from the network code, making it incredibly robust and flexible.
+
+        1. **What is it used for?**: Hypercorn is used to serve modern, asynchronous Python web applications. Its main selling point is **protocol completeness**.
+
+            1. **Serving Async Frameworks:** It is the primary way to run frameworks like **FastAPI, Quart, and Starlette** in production.
+            2. **Modern Web Protocols:** It is often chosen specifically when a project needs native **HTTP/2** or **HTTP/3 (QUIC)** support, which many other Python servers lack or handle only partially.
+            3. **Hybrid Environments:** Because it can wrap WSGI apps (like Django or Flask) in an ASGI interface, it can be used to "modernize" older apps without changing their code.
+
+        2. **Key Components & Concepts**
+
+            -   **The ASGI Interface**: The "spiritual successor" to WSGI. Unlike WSGI, which is strictly "one request, one response," ASGI allows for a constant stream of communication. This is what makes real-time features like **WebSockets** and **Server-Sent Events (SSE)** possible.
+
+            -   **Protocol Handlers**: Hypercorn is unique because of its native support for a wide range of protocols:
+
+                * **HTTP/1.1:** The legacy standard.
+                * **HTTP/2:** Supports multiplexing (sending multiple files over one connection) and **Server Push**.
+                * **HTTP/3 (QUIC):** The newest standard that runs over UDP instead of TCP, reducing latency significantly for mobile users and unstable connections.
+
+            -   **Flexible Event Loops**: While most servers are locked into one way of handling tasks, Hypercorn allows you to choose your "engine":
+
+                * **asyncio:** The Python standard library loop.
+                * **uvloop:** A high-performance drop-in replacement for asyncio (often used for speed).
+                * **Trio:** A newer, "human-friendly" async library that focuses on structured concurrency.
+
+        3. **Hypercorn vs. Gunicorn vs. Uvicorn**: To understand Hypercorn, you have to see where it fits in the family tree:
+
+            | Feature              | Gunicorn                 | Uvicorn                   | Hypercorn               |
+            | -------------------- | ------------------------ | ------------------------- | ----------------------- |
+            | **Primary Standard** | WSGI (Sync)              | ASGI (Async)              | ASGI (Async)            |
+            | **Speed**            | Moderate                 | **Fastest** (with uvloop) | High                    |
+            | **HTTP/2 Support**   | No                       | Partial (experimental)    | **Full Support**        |
+            | **HTTP/3 Support**   | No                       | No                        | **Yes** (optional)      |
+            | **WebSockets**       | No                       | Yes                       | **Yes**                 |
+            | **Best For**         | Traditional Django/Flask | High-speed FastAPI        | Complex Protocols/Quart |
+
+        4. **Important Terms to Know**
+
+            * **QUIC:** The underlying transport protocol for HTTP/3. It's designed to be faster and more secure than traditional TCP.
+            * **ALPN (Application-Layer Protocol Negotiation):** A TLS extension that Hypercorn uses to "negotiate" with the browser to decide whether to use HTTP/1.1 or HTTP/2 during the initial handshake.
+            * **Worker Class:** Just like Gunicorn, Hypercorn can spawn multiple "workers." You can specify the type (e.g., `--worker-class trio`) depending on your application's needs.
+            * **Backpressure:** A concept Hypercorn manages where it slows down receiving data if the application is too busy to process it, preventing the server from crashing under load.
+
+        > **Pro Tip:** If you just want raw speed for a simple REST API, go with **Uvicorn**. If you need your Python app to serve **HTTP/2 or HTTP/3** directly to the internet without a heavy proxy like Nginx in the way, **Hypercorn** is your best bet.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#C71585">uvicorn</summary>
+
+        -   `uvicorn myapp:app --host 0.0.0.0 --port 8000`
+
+            -   `myapp` refers to the Python module containing your ASGI application.
+            -   `app` is the instance of your ASGI application within that module.
+            -   `--host` and `--port` options specify the host and port on which `uvicorn` should listen.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#C71585">uWSGI</summary>
+
+        -   [uWSGI (universal Web Server Gateway Interface)](https://uwsgi-docs.readthedocs.io/en/latest/index.html): It's a popular web server interface and application server gateway that facilitates communication between web servers and web applications, allowing them to work together seamlessly. uWSGI is commonly used in deploying Python web applications, but it supports multiple programming languages and frameworks.
+
+        -   What is `uwsgi_params` file?
+
+            -   The `uwsgi_params` file is a configuration file used by uWSGI, which is a fast and flexible application server commonly used for hosting Python web applications. The `uwsgi_params` file contains a set of predefined variables and configurations that are used to communicate between the web server (such as Nginx) and the uWSGI application server.
+            -   The contents of the `uwsgi_params` file typically include directives that define how certain aspects of the communication between Nginx and uWSGI should be handled. These directives often include settings related to request buffering, proxying, and headers.
+            -   Some common directives found in the `uwsgi_params` file include:
+
+                -   `uwsgi_param QUERY_STRING $query_string;`
+
+                    -   This directive sets the value of the QUERY_STRING variable to the value of the query string provided in the original HTTP request.
+
+                -   `uwsgi_param REQUEST_METHOD $request_method;`
+
+                    -   This directive sets the value of the REQUEST_METHOD variable to the HTTP request method (e.g., GET, POST, etc.).
+
+                -   `uwsgi_param CONTENT_TYPE $content_type;`
+
+                    -   This directive sets the value of the CONTENT_TYPE variable to the type of the content being sent in the request, such as "application/json" or "text/html".
+
+                -   `uwsgi_param CONTENT_LENGTH $content_length;`
+                    -   This directive sets the value of the CONTENT_LENGTH variable to the size of the content being sent in the request.
+
+            -   These directives are used to pass information from Nginx to the uWSGI application server, enabling proper handling of requests and responses.
+            -   The `uwsgi_params` file is typically included in the Nginx configuration when using uWSGI as the application server. It ensures that the necessary variables and configurations are available for the communication between Nginx and uWSGI to work correctly.
+            -   It's important to note that the specific contents of the `uwsgi_params` file can vary depending on the configuration and requirements of your specific application or environment.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#C71585">Nginx</summary>
+
+        -   [Learn Proper NGINX Configuration Context Logic](https://www.youtube.com/watch?v=C5kMgshNc6g&t=683s)
+        -   [How to Deploy Django on Nginx with uWSGI (full tutorial)](https://www.youtube.com/watch?v=ZpR1W-NWnp4&t=21s)
+        -   [How to Secure Nginx with Lets Encrypt on Ubuntu 20.04 with Certbot?](https://www.youtube.com/watch?v=R5d-hN9UtpU)
+
+        #### Terms and Concepts
+
+        -   `nginx.conf`: The nginx configuration file, typically named `nginx.conf`, is a text-based file that specifies how the Nginx web server should behave. The `nginx.conf` file is written in a language called NGINX configuration language or NGINX Configuration Syntax. It is a custom configuration syntax specific to NGINX. It contains a set of directives within different contexts to specify their scope and define various aspects of server functionality, such as server listening ports, request handling, load balancing, caching, and security settings. The main contexts in an `nginx.conf` file are:
+
+        -   `default.conf.tpl`: It is a template file for a server block configuration in Nginx. A server block (also known as a virtual host) is a configuration that defines how Nginx should handle requests for a specific domain or IP address. The ".tpl" extension suggests that this file is a template that can be used to generate an actual default.conf file. Typically, you would have multiple `*.conf.tpl` files, each representing a different virtual host configuration template.
+
+        -   `Main Context`: The main context includes directives that apply globally to the entire Nginx server. It is typically defined within the http block. Directives within this context affect the overall behavior of the server, such as the number of worker processes, the user and group that the server runs as, and the configuration for logging. It typically contains directives such as server, upstream, and include.
+
+            -   ![Main Context](/assets/nginx/main-context.png)
+
+        -   `Events Context`: The events context, also defined within the http block, is used to configure how Nginx handles connections and events. Directives in this context control parameters such as the maximum number of connections, the worker connections, and the multi_accept setting.
+
+        -   `HTTP Context`: The HTTP context contains server-level configurations and is defined within the http block. It includes directives related to HTTP protocol settings, server-wide proxies, gzip compression, SSL/TLS settings, and default MIME types. Server blocks (virtual servers) are typically defined within the HTTP context.
+
+        -   `Server Context`: The server context defines the configuration for a specific virtual server (server block). It is contained within the http context and includes directives that apply to a particular server or group of servers. Directives within the server context may include the server name, listening ports, SSL/TLS configurations, proxy settings, and location blocks.
+
+        -   `Location Context`: The location context is defined within a server context and is used to configure how Nginx handles specific URL patterns or paths. Directives within the location context determine how requests matching the specified pattern are processed. Examples of directives within the location context are root, try_files, proxy_pass, rewrite, and access control directives such as allow and deny.
+
+        -   `Directive`: A directive is a command that configures a specific aspect of the server's behavior. Each directive is placed within the appropriate context to ensure it is applied at the desired level, whether it is server-wide, specific to a virtual server, or for handling requests matching a particular URL pattern. The context hierarchy and directive placement allow for fine-grained control over the server's behavior and functionality. It's important to note that the structure and directives in the `nginx.conf` file may vary depending on the specific setup and requirements of your web server. Understanding the purpose and proper usage of each directive is essential for configuring Nginx to meet your application's needs. Examples of commonly used directives are:
+
+            -   ![Directives](/assets/nginx/directives.png)
+
+            -   `listen`: Specifies the IP address and port on which Nginx should listen for incoming requests.
+            -   `server_name`: Defines the domain name(s) associated with the server block.
+            -   `root`: Specifies the document root directory where static files are located.
+            -   `proxy_pass`: Forwards requests to a specified backend server.
+            -   `try_files`: Defines the fallback behavior for file requests that do not exist.
+            -   `ssl_certificate and ssl_certificate_key`: Configures SSL/TLS certificates for secure connections.
+            -   `gzip`: Enables compression of HTTP responses to reduce file size.
+            -   `access_log and error_log`: Specifies the log file locations for access and error logging.
+
+        -   `Block` vs `Context`: In Nginx configuration files, the terms "block" and "context" are often used interchangeably to refer to a section of directives that serve a specific purpose. The distinction between blocks and contexts can be a bit nuanced, but in general, blocks refer to the specific groups of directives enclosed within curly braces, while contexts refer to the overall hierarchical structure and scope of the configuration file.
+
+        -   `Block`: A block in Nginx refers to a group of directives enclosed within curly braces {}. Blocks define the scope and boundaries of a configuration section and determine where directives are applicable. There are several types of blocks in an nginx.conf file:
+
+        -   `Include Directive`: The include directive in Nginx is used to include external configuration files within the main `nginx.conf` file. It allows you to split your configuration into multiple files for better organization and easier maintenance. Using the include directive can help simplify the management of complex configurations by dividing them into smaller, modular files. It allows you to reuse common configurations across multiple server blocks, separate different aspects of the configuration, and make it easier to maintain and update your Nginx setup. Here's how the include directive works:
+
+            -   `Syntax`: The include directive is written as follows:
+
+                ```txt
+                include file_path;
+                ```
+
+                -   `file_path` represents the path to the external configuration file you want to include. It can be an absolute path or a relative path to the nginx.conf file.
+
+            -   `Usage`: The include directive can be used in various contexts within the nginx.conf file. For example:
+
+                -   `Global context`: It can be placed in the main http block of the nginx.conf file to include global configurations that apply to the entire server.
+                -   `Server context`: It can be placed within individual server blocks to include server-specific configurations.
+                -   `Location context`: It can be placed within location blocks to include specific configuration snippets related to handling requests for specific URL patterns.
+
+            -   `Multiple Includes`: You can use multiple include directives to include multiple configuration files. They can be specified in the same context or in different contexts, depending on where you want the configurations to apply. For example:
+
+                ```txt
+                include /path/to/file1.conf;
+                include /path/to/file2.conf;
+                ```
+
+            -   `Wildcard Includes`: The include directive also supports wildcard patterns (_) to include multiple files that match a specific pattern. For example, you can use include /path/to/_.conf; to include all configuration files with the .conf extension in the specified directory.
+
+        #### Basic Nignx Commands
+
+        -   `$ nginx -v` → Check Nginx version
+        -   `$ sudo nginx -t` → Check configuration file syntex before reloading
+        -   `$ nginx -T` → Display current configuration
+        -   `$ nginx -s reload` → Reload Nginx
+
+        #### Configuration file
+
+        -   `/ect/nginx/nginx.conf` → Main file location of Nginx
+        -   `/ect/nginx/conf.d/*.conf` → Include file location of Nginx
+
+        </details>
 
     </details>
+
+---
+
+
+
+    

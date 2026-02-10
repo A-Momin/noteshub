@@ -88,6 +88,8 @@ pvt_symbolic_links(){
         ~/Library/Application\ Support/Code/User/settings.json
     ln -sf $NTHUB/dotfiles/vscode/custom_keybindings.json \
         $HOME/Library/Application\ Support/Code/User/keybindings.json
+    ln -sf $NTHUB/dotfiles/vscode/markdown_code_snippets \
+        $HOME/Library/Application\ Support/Code/User/snippets/markdown_snippets.code-snippets
     ln -sf $NTHUB/dotfiles/vscode/style.less \
         $HOME/.local/state/crossnote/style.less
     ###################################################################
@@ -399,17 +401,6 @@ capturescreen() {
     screencapture -T 1 "$folder_name/screenshot-$current_datetime.png"
 }
 
-# setscpath(){
-
-#     defaults write com.apple.screencapture "name" -string "screenshot"
-#     defaults write com.apple.screencapture include-date -bool false
-#     # defaults write com.apple.screencapture "include-date" -string "$(date +'%H:%M:%S')"
-
-#     defaults write com.apple.screencapture location ${1:-~/Desktop/ss}
-
-#     echo "Screenshots will be saved in '$(defaults read com.apple.screencapture location)'"
-# }
-
 setscpath() {
     : '
     -------------------------------------------------------------------------------
@@ -592,11 +583,8 @@ function cleandir() {
       $1 (optional) - Directory name pattern to match (default: "*.venv").
 
     Example Usage:
-      cleandir node_modules
-      # Removes all directories named "node_modules" in the current directory.
-
-      cleandir
-      # Removes all directories named "*.venv" in the current directory.
+      1. `$ cleandir node_modules` -> Removes all directories named "node_modules" in the current directory.
+      2. `$ cleandir` -> Removes all directories named "*.venv" in the current directory.
     '
 
     find . -type d -name "${1:-*.venv}" -exec rm -rf {} +

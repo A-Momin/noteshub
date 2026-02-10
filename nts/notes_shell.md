@@ -261,7 +261,9 @@
     -   `$ ssh-add --apple-use-keychain ~/.ssh/ghub_amomin02`
     -   `$ cat ~/.ssh/file_name.pub >> ~/.ssh/authorized_keys`
     -   `$ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys`
+    -   `$ pbpaste | sort | uniq | pbcopy`
     -   `$ pbcopy < ~/.ssh/id_rsa.pub` → Copies the contents of the id_rsa.pub file to your clipboard in MacOS
+
 
     **ssh:**
 
@@ -744,6 +746,8 @@ bar.o: bar.c
 -   🔥 `$ ALT+B` → Moves backward one word
 -   🔥 `$ ALT+D` → Deletes next word
 -   🔥 `$ ALT+F` → Moves forward one word
+-   🔥 `$ CTRL+u` → Kills backward from point to the beginning of line
+
 -   🔥 `$ history` → Shows command line history
 -   🔥 `$ !!` → Repeats the last command
 -   🔥 `$ !<n>` → Refers to command line 'n'
@@ -764,7 +768,6 @@ bar.o: bar.c
 -   `$ CTRL+R` → Searches backward
 -   `$ CTRL+S` → Searches forward
 -   `$ CTRL+T` → Transposes two characters
--   `$ CTRL+U` → Kills backward from point to the beginning of line
 -   `$ CTRL+V` → Makes the next character typed verbatim
 -   `$ CTRL+W` → Kills the word behind the cursor
 -   `$ CTRL+X` → Lists the possible filename completions of the current word

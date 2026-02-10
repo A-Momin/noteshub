@@ -57,7 +57,8 @@
     "editor.suggestOnTriggerCharacters": false,
     "debug.console.fontSize": 14,
     "[json]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
     },
     "[jsonc]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -75,7 +76,8 @@
         "editor.defaultFormatter": "vscode.typescript-language-features"
     },
     "[html]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
     },
     "[python]": {
         // "editor.formatOnType": true
@@ -84,8 +86,9 @@
     "[markdown]": {
         "editor.wordWrap": "off",
         "editor.tabSize": 4,
-        // "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        // "editor.defaultFormatter": "esbenp.prettier-vscode",
+        // "editor.defaultFormatter": "mervin.markdown-formatter",
         "editor.wordWrapColumn": 80
     },
     // "markdown.extension.print.absoluteImgPath": false,
