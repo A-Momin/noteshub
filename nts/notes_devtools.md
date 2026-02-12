@@ -514,10 +514,26 @@
 
 - <details><summary style="font-size:25px;color:Orange">make</summary>
 
-    The `make` tool is built around a few core **concepts** and **components** that work together to automate building and task execution. Here's a breakdown:
     - `$ brew install make`
 
+    -   `make` is a command-line utility in Linux and other Unix-like operating systems that is used to build and manage software projects. It automates the process of compiling source code, linking object files, and creating executables and libraries. The basic idea behind make is that it reads a set of instructions, called a `Makefile`, that describe how to build the project. The `Makefile` specifies a set of targets, dependencies, and commands that make can use to build the project.
+    -   A `Makefile` is a text file that contains a set of rules that tell make how to build a software project. Each rule defines a target, which is the name of the file that make should create, and a set of dependencies, which are the files that the target depends on. The rule also specifies a set of commands that make should execute to build the target.
+
+    #### Terms and Components around `make`
+
+    | Component       | Description                                 |
+    | --------------- | ------------------------------------------- |
+    | `Target`        | What you want to build or run               |
+    | `Dependency`    | Files or targets required before execution  |
+    | `Recipe`        | Shell commands that build or run something  |
+    | `Makefile`      | File that defines targets, rules, variables |
+    | `Variable`      | Name-value pairs used in recipes            |
+    | `Automatic Var` | Special variables (`$@`, `$<`, `$^`, etc.)  |
+    | `Phony Target`  | Label for tasks, not related to a file      |
+
+
     #### Targets
+
     - A _target_ is usually a filename or a label for a task.
     - It defines what should be built or what action should be performed.
 
@@ -528,15 +544,16 @@
     ```
 
     #### Dependencies (Prerequisites)
+
     - **dependencies** (also called **prerequisites**) are **files or targets** that a given rule relies on to determine whether it needs to be executed. They form the foundation of how `make` determines **what to build** and **when** to rebuild it.
 
     - **Terminology**
         - In a `Makefile`, a rule has the following structure:
 
-        ```makefile
-        target: dependencies
-            commands
-        ```
+            ```makefile
+            target: dependencies
+                commands
+            ```
 
         - `target`: The file or output you want to create.
         - `dependencies`: Files that the target depends on.
@@ -607,6 +624,7 @@
         - Here, `clean` has no dependencies. It's a command wrapper.
 
     #### Recipes
+
     - A recipe is a set of shell commands that `make` runs to build a target.
     - Each line is executed in a new shell.
 
@@ -616,10 +634,12 @@
     ```
 
     #### Makefile
+
     - The file named `Makefile` (or `makefile`) contains all the targets, dependencies, and recipes.
     - This is the instruction file that `make` reads.
 
     #### Variables
+
     - Variables store reusable values (e.g., compiler names, flags).
 
     ```makefile
@@ -631,6 +651,7 @@
     ```
 
     #### Automatic Variables
+
     - **automatic variables** are special variables that are **automatically populated** by `make` during the execution of rules. They allow you to **reference information about the target, dependencies, and commands** without having to hard-code values — making your `Makefile` more concise, dynamic, and reusable.
     - Special variables provided by `make` for use inside recipes:
 
@@ -705,6 +726,7 @@
         ```
 
     #### Pattern Rules
+
     - Define generic build instructions using wildcards.
 
     ```makefile
@@ -713,6 +735,7 @@
     ```
 
     #### Phony Targets
+
     - These are not actual files. They're used for task-like commands (e.g., `clean`, `test`).
 
     ```makefile
@@ -721,18 +744,6 @@
     clean:
         rm -rf *.o myapp
     ```
-
-    #### Summary of `make` Components
-
-    | Component       | Description                                 |
-    | --------------- | ------------------------------------------- |
-    | `Target`        | What you want to build or run               |
-    | `Dependency`    | Files or targets required before execution  |
-    | `Recipe`        | Shell commands that build or run something  |
-    | `Makefile`      | File that defines targets, rules, variables |
-    | `Variable`      | Name-value pairs used in recipes            |
-    | `Automatic Var` | Special variables (`$@`, `$<`, `$^`, etc.)  |
-    | `Phony Target`  | Label for tasks, not related to a file      |
 
     #### Sample `Makefile`
 

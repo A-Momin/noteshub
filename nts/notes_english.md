@@ -39,6 +39,7 @@
     -   **Resources/Assets**:
         -   `Resources` can refer to any data or helper files used by the software, including dynamic or localized content, configuration files, and external dependencies — and sometimes even compute/storage/network capacity in cloud-native environments. Exmples: `.json`, `.xml`, `.properties`, `.env`, `.yaml`, `Templates`.
         -   `Assets` are usually static files or content that are packaged with your application or deployed alongside it. Examples: Images (.png, .svg), Fonts (.ttf, .woff), Videos, CSS files, JavaScript files, Favicon
+
     -   **Cadence/Frequency**:
 
         -   `Cadence`:
@@ -48,6 +49,11 @@
 
         -   `Integration`:
         -   `Incorporation`:
+
+    -   **Parameters/Metrics**:
+
+        -   `Parameters`:
+        -   `Metrics`:
 
     -   **compliction/complexity**:
 
@@ -68,7 +74,6 @@
     -   Sensible/Reasonable
     -   Span/Embad/Encompass
     -   vigilant/deligent
-    -   parameters/matrix
 
     </details>
 
