@@ -212,7 +212,7 @@ beautify_prompt(){
     # fi
 
 
-    export PS1="${host_color}${host}-${arrow_color} =>|${green}$(__git_ps1)${blue}\W${arrow_color}|${reset}\n$ "
+    export PS1="${host_color}${host}-${arrow_color} =>|${green}$(__git_ps1)${blue}\W${arrow_color}|\n${reset}$ "
 
     # Meaning of
         #	\h     ->> the host name

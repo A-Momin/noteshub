@@ -192,8 +192,6 @@
 
     ### BASH BASICS
 
-    -   `$ cd `
-
     -   `$ env` → Displays all environment variables
     -   `$ echo $SHELL` → Displays the shell you're using
     -   `$ echo $BASH_VERSION` → Displays bash version
