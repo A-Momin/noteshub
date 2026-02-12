@@ -2,24 +2,18 @@
 
 -   `$ grep -E '^\[(Developer|ProdSupport)]' ~/.aws/credentials` -> Display Developer and Support profile
 
----
-
--   <details><summary style="font-size:25px;color:Orange">Documents & Tutorials</summary>
-
-    -   [Corey Schafer: Linux/Mac Tutorials](https://www.youtube.com/playlist?list=PL-osiE80TeTvGhHkpvfmKWOiIPF8UVy6c)
-    -   [Introduction to Linux – Full Course for Beginners](https://www.youtube.com/watch?v=sWbUDq4S6Y8)
-    -   [Learn CentOS](https://www.youtube.com/playlist?list=PLT98CRl2KxKHjHLIHrmmi5FmBGIZ8cNJE)
-    -   [Linux TV: Linux Crash Course](https://www.youtube.com/playlist?list=PLT98CRl2KxKHKd_tH3ssq0HPrThx2hESW)
-    -   [Linux](https://www.digitalocean.com/community/tutorials?q=%5BLinux%20Basics%5D)
-    -   [LinuxHowTo](https://www.linuxhowto.net/)
-    -   [The 50 Most Popular Linux & Terminal Commands - Full Course for Beginners](https://www.youtube.com/watch?v=ZtqBQ68cfJc&t=119s)
-    -   [18 Commands That Will Change The Way You Use Linux Forever](https://www.youtube.com/watch?v=AVXYq8aL47Q)
-
-    </details>
+-   [Corey Schafer: Linux/Mac Tutorials](https://www.youtube.com/playlist?list=PL-osiE80TeTvGhHkpvfmKWOiIPF8UVy6c)
+-   [Introduction to Linux – Full Course for Beginners](https://www.youtube.com/watch?v=sWbUDq4S6Y8)
+-   [Learn CentOS](https://www.youtube.com/playlist?list=PLT98CRl2KxKHjHLIHrmmi5FmBGIZ8cNJE)
+-   [Linux TV: Linux Crash Course](https://www.youtube.com/playlist?list=PLT98CRl2KxKHKd_tH3ssq0HPrThx2hESW)
+-   [Linux](https://www.digitalocean.com/community/tutorials?q=%5BLinux%20Basics%5D)
+-   [LinuxHowTo](https://www.linuxhowto.net/)
+-   [The 50 Most Popular Linux & Terminal Commands - Full Course for Beginners](https://www.youtube.com/watch?v=ZtqBQ68cfJc&t=119s)
+-   [18 Commands That Will Change The Way You Use Linux Forever](https://www.youtube.com/watch?v=AVXYq8aL47Q)
 
 ---
 
--   <details><summary style="font-size:25px;color:Orange">Terms, Concepts & Helps</summary>
+-   <details><summary style="font-size:25px;color:Orange">Terms, Concepts & Configs</summary>
 
     -   **Shell**: A shell is a command-line interpreter that acts as a user interface to interact with the operating system. It interprets user commands and executes them. Shells can be graphical or text-based. Text-based shells are commonly referred to as `Command-line` Shells. Examples of command-line shells include Bash (Bourne Again SHell), Zsh (Z Shell), and PowerShell (for Windows). Shells provide features such as command execution, script interpretation, variable assignment, and control structures. Users interact with the shell by typing commands, and the shell interprets and executes those commands.
     -   **Terminal**: A terminal is a program that provides a text-based interface to interact with the shell. It acts as a window into the shell environment. Terminals can be graphical or text-based. Graphical terminals are often terminal emulators embedded in a graphical user interface (GUI). Text-based terminals may be physical terminals or terminal emulators in a text-based environment. The terminal program communicates with the shell, allowing users to input commands and receive the output. In a graphical environment, you may have multiple terminal windows open, each representing a separate session with the shell.
@@ -68,13 +62,7 @@
         4. vertical bars for choice of items:
             - EX: `netstat {-t| -u}`
 
-    </details>
-
----
-
--   <details><summary style="font-size:25px;color:Orange">Shell Configurations</summary>
-
-    ### How to set default shell to bash.
+    ##### How to set default shell to bash.
 
     -   `$ cat /etc/shells.` → List out available shells.
     -   `$ chsh -s /bin/bash` → Set the shell to `/bin/bash` for the current user on MacOS only.
@@ -82,7 +70,7 @@
     -   `$ exec $SHELL -l` → Reload your shell.
     -   `$ sudo hostnamectl set-hostname AWSEC2 && /bin/bash` -> Set Host name into 'AWSEC2'
 
-    ### Some important files & directories in Linux distributions.
+    ##### Some important files & directories in Linux distributions.
 
     -   `$ cat /etc/redhat-release`
         -   The `/etc/redhat-release` file is specific to Red Hat-based Linux distributions, such as Red Hat Enterprise Linux (RHEL), CentOS, and Fedora. It is used to provide information about the specific version and variant of the Red Hat-based distribution.
@@ -146,7 +134,7 @@
     -   `$ cat /etc/ssh/sshd_config` → SSH Clint Configuration File
     -   `$ cat /etc/services`
 
-    ### Bash Utilities
+    ##### Bash Utilities
 
     -   `$ man command_name`
     -   `$ help enable`
@@ -161,8 +149,6 @@
             -   `$ tree -L 2 $NTHUB` → Descend only level directories deep.
         -   `$ tree -f $NTHUB`
         -   `$ tree -x $NTHUB` → Stay on current filesystem only.
-    -   `$ `
-    -   `$ `
 
     -   `compgen`: It is a built-in command used for generating completions, which means it helps in completing commands, keywords, and other items while using the command-line interface. It is often used in shell scripts or by advanced users who want to interactively explore available commands and options. The compgen command has several options to generate completions for different types of items: - `$ compgen -k`: Lists all keywords that are recognized by the shell. Keywords are reserved words that have special meaning in the shell language. - `$ compgen -b`: Lists all the built-in shell commands. These are commands that are part of the shell itself and don't require external programs. - `$ compgen -v`: Lists all the names of variables currently defined in the shell. - `$ compgen -a`: Lists all the aliases defined in the current shell session. - `$ compgen -c`: Lists all the commands and utilities (built-in and external) available in the current shell session. - `$ compgen -A function`: Lists all the names of user-defined functions available in the shell. - `$ compgen -A function -abck`: Combines multiple options to list all the available completions for commands, built-ins, and keywords.
 
@@ -172,7 +158,7 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Basic Bash Commands</summary>
 
-    ### FILE/DIRECTORY COMMANDS
+    ##### FILE/DIRECTORY COMMANDS
 
     -   `ls -l -a -r`
     -   `$ mkdir <dirname>` → Makes a new directory
@@ -190,7 +176,7 @@
     -   `$ cd /` → Changes to root directory.
     -   `$ cd -` → Changes to previous directory.
 
-    ### BASH BASICS
+    ##### BASH BASICS
 
     -   `$ env` → Displays all environment variables
     -   `$ echo $SHELL` → Displays the shell you're using
@@ -202,6 +188,122 @@
     -   `$ whoami` → Returns your username
     -   `$ passwd` → Lets you change your password
     -   `$ clear` → Clears content on window (hide displayed lines)
+
+    ##### find
+
+    -   `$ find -type f -name *.gdoc`
+    -   `$ find . -name <name> <type>`
+    -   `$ find . -type d -name .venv`
+
+    -   `$ find . -type l` → Find all the links recursively from given directory
+    -   `$ find $(pwd) -maxdepth 1 -type f -not -path '_/\._' | sort`
+
+    -   `$ find . -maxdepth 1 -type f -not -path '_/\._' | sed 's/^\.\///g' | sort`
+
+        -   `.` : current folder
+        -   remove `-maxdepth 1` to search recursively
+        -   `-type f `: find files, not directories (`d`)
+        -   `-not -path '*/\.*'` : do not return `.hidden_files`
+        -   `sed 's/^\.\///g'` : remove the prepended `./` from the result list
+
+    -   `$ find . -type f -name *node_modules -ls -delete`
+
+        -   Delete all FILE by the pattern '\*node_modules' recursively.
+
+    -   `$ find . -type d -name ${1:-*.venv} -exec rm -rf {} +`
+
+        -   Delete all FOLDER by the pattern '.venv' recursively.
+
+
+    ##### rsync
+
+    ```bash
+    rsync -avz \                            # run in archival and vervose mode
+        --delete \                          # delete any files in the destination folder that do not exist in the source folder.
+        --exclude '.venv' \
+        --rsh="ssh -i ~/.ssh/id_rsa user@remote_server:/src_path target_path"
+            # make sure `id_rsa` file generated and coppied `id_rsa.pub` into remote server
+    ```
+
+    -   `$ rsync -avz --rsh="ssh -i ~/.ssh/mos01_to_mos02 $HOME/gd/ a.momin@mos02.local:~/gd/`
+    -   `$ rsync -avz --rsh="ssh -i ~/.ssh/mos01_to_mos02 $HOME/gd/ a.momin@mos02.local:/Volumes/MOMIN_DRIVE/gd/`
+    -   `$ rsync -avz --rsh="ssh -i ~/.ssh/mos01_to_mos02 $HOME/gd/Software_Development/ a.momin@mos02.local:/Volumes/MOMIN_DRIVE/gd/Software_Development/`
+    -   `$ rsync -av --exclude '.venv' --exclude '.ipynb_checkpoints' --exclude '.egg-info' --exclude '__pycache__' $HOME/gd/Software_Development/Algorithms_and_Data_Structures a.momin@mos02.local:/Volumes/MOMIN_DRIVE/gd/`
+
+
+    ##### curl
+
+    -   [curl](https://www.hostinger.com/tutorials/curl-command-with-examples-linux/)
+    -   [Using Curl and Telnet Command To Make HTTP Requests](https://www.youtube.com/watch?v=cn3u7-dP3S0)
+    -   [Telnet vs SSH Explained](https://www.youtube.com/watch?v=tZop-zjYkrU)
+    -   [Ubuntu: How to build curl with the latest openssl? (6 Solutions!!)](https://www.youtube.com/watch?v=DEBuN-80cuU&t=37s)
+
+    -   `$ curl -vvv localhost:8000` → Simple get request.
+    -   `$ curl -vvv http://www.google.com` → Simple get request.
+    -   `$ curl –data “text=Hello” https://myDomain.com/firstPage.jsp` → Simple post request
+    -   `$ curl -x  sampleproxy.com:8090 -U username:password -O http://testdomain.com/testfile.tar.gz`
+    -   `$ curl --request POST --url http://localhost:8000/ --header 'content-type: image/jpeg' --data-binary @'/path/to/image.jpeg'`
+    -   `$ curl -u username:password -O https://example.com/path/to/file.zip`
+    -   `$ curl https://path/py_script.py > $NTHUB/dotfiles/blocking.py`
+    -   `$ telnet www.google.com 80`
+
+
+    ##### jq
+
+    -   To process JSON data efficiently, Linux provides a command-line tool called jq. This powerful tool enables users to extract, manipulate, and transform JSON data with ease. With jq, users can quickly perform a wide range of tasks on JSON data, including filtering, sorting, and selecting specific fields.
+
+
+    ##### Archive
+
+    -   **wget:**
+
+        -   `$ wget -O ~/Data/my-file.csv http://file-to-download.csv` → download `file-to-download.csv` and save it as `my-file.csv` instead of `file-to-download.csv` into `~/Data`. (`-O`, Output)
+        -   `$ wget -P ~/Data http://file-to-download.csv` → download `file-to-download.csv` into `~/Data` directory ( '`-P` to prefix directory path)
+        -   `$ wget --directory-prefix=~/Data --output-document=my-file.csv http://file-to-download.csv` →
+
+    -   [tar](https://linuxhint.com/linux-tar-command/)
+
+        -   `$ tar xvf ~/Data/file-to-untar.tar -C ~/Download` → Untar `file-to-untar.tar` and save it into `~/Download` directory.
+        -   `$ tar --list -f tar_file_name.tar.gz` →
+
+    -   [zip/unzip](https://www.hostinger.com/tutorials/how-to-unzip-files-linux/)
+
+        -   `$ unzip ~/Data/filename.zip -d ~/Data` → To unzip a ZIP file to a different directory than the current one, use the -d switch
+        -   `$ unzip -l *.whl` →
+        -   `$ gzip <filename>` → Compresses files using gzip algorithm
+        -   `$ gunzip <filename>` → Uncompresses files compressed by gzip
+        -   `$ gzcat <filename>` → Lets you look at gzipped file without actually having to gunzip it
+
+
+    ##### Symbolic Links
+
+    -   symbolic links (also known as “soft links” or “symlinks”): Refer to a symbolic path indicating the abstract location of another file.
+    -   hard links : Refer to the specific location of physical data.
+
+    -   `$ ln -s path/source_file_name.extn` → Create a symlink for the source file into current directory.
+    -   `$ ln -s path/source_folder_name` → Create a symlink for the source folder into current directory.
+    -   `$ ln -sf absolute_path/source_file absolute_path/target_file` → Create a symlink for the source file into target file.
+
+
+    ##### sed (Stream Editor)
+
+    -   `$ visudo` → Open `/etc/sudoers` in vim
+    -   `$ sed -i '$ a Shah ALL=(ALL) NOPASSWD: ALL' /etc/sudoers` → gives the user `Shah` the ability to use sudo without a password prompt.
+
+
+    ##### diff
+
+    -   [The diff Command](https://www.youtube.com/watch?v=qLRQspQxvFk)
+    -   `$ diff -u file1 file2` → The `-u` option produces a unified diff output, which includes additional context lines around the differences to provide better readability.
+    -   `$ diff -w file1 file2` → The `-w` option tells diff to ignore whitespace differences, such as spaces or tabs.
+    -   `$ diff -qr dir1 dir2` → The `-q` option displays only whether the files differ or not, while the `-r` option performs a recursive comparison of the directories.
+    -   `$ diff `
+
+
+    ##### htop
+
+    -   [Linux Crash Course - htop](https://www.youtube.com/watch?v=tU9cO9FwDx0)
+
 
     </details>
 
@@ -306,136 +408,6 @@
 
         -   `$ sshpass -p <password> scp [options] [source] [destination]`
         -   `$ sshpass -p am5202844 scp data/demofile.txt a.momin@mos02.local:/Users/a.momin/Data/`
-
-    </details>
-
----
-
--   <details><summary style="font-size:25px;color:Orange">MISC</summary>
-
-
-    ##### find
-
-    -   `$ find -type f -name *.gdoc`
-    -   `$ find . -name <name> <type>`
-    -   `$ find . -type d -name .venv`
-
-    -   `$ find . -type l` → Find all the links recursively from given directory
-    -   `$ find $(pwd) -maxdepth 1 -type f -not -path '_/\._' | sort`
-
-    -   `$ find . -maxdepth 1 -type f -not -path '_/\._' | sed 's/^\.\///g' | sort`
-
-        -   `.` : current folder
-        -   remove `-maxdepth 1` to search recursively
-        -   `-type f `: find files, not directories (`d`)
-        -   `-not -path '*/\.*'` : do not return `.hidden_files`
-        -   `sed 's/^\.\///g'` : remove the prepended `./` from the result list
-
-    -   `$ find . -type f -name *node_modules -ls -delete`
-
-        -   Delete all FILE by the pattern '\*node_modules' recursively.
-
-    -   `$ find . -type d -name ${1:-*.venv} -exec rm -rf {} +`
-
-        -   Delete all FOLDER by the pattern '.venv' recursively.
-
-    ---
-
-    ##### rsync
-
-    ```bash
-    rsync -avz \                            # run in archival and vervose mode
-        --delete \                          # delete any files in the destination folder that do not exist in the source folder.
-        --exclude '.venv' \
-        --rsh="ssh -i ~/.ssh/id_rsa user@remote_server:/src_path target_path"
-            # make sure `id_rsa` file generated and coppied `id_rsa.pub` into remote server
-    ```
-
-    -   `$ rsync -avz --rsh="ssh -i ~/.ssh/mos01_to_mos02 $HOME/gd/ a.momin@mos02.local:~/gd/`
-    -   `$ rsync -avz --rsh="ssh -i ~/.ssh/mos01_to_mos02 $HOME/gd/ a.momin@mos02.local:/Volumes/MOMIN_DRIVE/gd/`
-    -   `$ rsync -avz --rsh="ssh -i ~/.ssh/mos01_to_mos02 $HOME/gd/Software_Development/ a.momin@mos02.local:/Volumes/MOMIN_DRIVE/gd/Software_Development/`
-    -   `$ rsync -av --exclude '.venv' --exclude '.ipynb_checkpoints' --exclude '.egg-info' --exclude '__pycache__' $HOME/gd/Software_Development/Algorithms_and_Data_Structures a.momin@mos02.local:/Volumes/MOMIN_DRIVE/gd/`
-
-    ---
-
-    ##### curl
-
-    -   [curl](https://www.hostinger.com/tutorials/curl-command-with-examples-linux/)
-    -   [Using Curl and Telnet Command To Make HTTP Requests](https://www.youtube.com/watch?v=cn3u7-dP3S0)
-    -   [Telnet vs SSH Explained](https://www.youtube.com/watch?v=tZop-zjYkrU)
-    -   [Ubuntu: How to build curl with the latest openssl? (6 Solutions!!)](https://www.youtube.com/watch?v=DEBuN-80cuU&t=37s)
-
-    -   `$ curl -vvv localhost:8000` → Simple get request.
-    -   `$ curl -vvv http://www.google.com` → Simple get request.
-    -   `$ curl –data “text=Hello” https://myDomain.com/firstPage.jsp` → Simple post request
-    -   `$ curl -x  sampleproxy.com:8090 -U username:password -O http://testdomain.com/testfile.tar.gz`
-    -   `$ curl --request POST --url http://localhost:8000/ --header 'content-type: image/jpeg' --data-binary @'/path/to/image.jpeg'`
-    -   `$ curl -u username:password -O https://example.com/path/to/file.zip`
-    -   `$ curl https://path/py_script.py > $NTHUB/dotfiles/blocking.py`
-    -   `$ telnet www.google.com 80`
-
-    ---
-
-    ##### jq
-
-    -   To process JSON data efficiently, Linux provides a command-line tool called jq. This powerful tool enables users to extract, manipulate, and transform JSON data with ease. With jq, users can quickly perform a wide range of tasks on JSON data, including filtering, sorting, and selecting specific fields.
-
-    ---
-
-    ##### Archive
-
-    -   **wget:**
-
-        -   `$ wget -O ~/Data/my-file.csv http://file-to-download.csv` → download `file-to-download.csv` and save it as `my-file.csv` instead of `file-to-download.csv` into `~/Data`. (`-O`, Output)
-        -   `$ wget -P ~/Data http://file-to-download.csv` → download `file-to-download.csv` into `~/Data` directory ( '`-P` to prefix directory path)
-        -   `$ wget --directory-prefix=~/Data --output-document=my-file.csv http://file-to-download.csv` →
-
-    -   [tar](https://linuxhint.com/linux-tar-command/)
-
-        -   `$ tar xvf ~/Data/file-to-untar.tar -C ~/Download` → Untar `file-to-untar.tar` and save it into `~/Download` directory.
-        -   `$ tar --list -f tar_file_name.tar.gz` →
-
-    -   [zip/unzip](https://www.hostinger.com/tutorials/how-to-unzip-files-linux/)
-
-        -   `$ unzip ~/Data/filename.zip -d ~/Data` → To unzip a ZIP file to a different directory than the current one, use the -d switch
-        -   `$ unzip -l *.whl` →
-        -   `$ gzip <filename>` → Compresses files using gzip algorithm
-        -   `$ gunzip <filename>` → Uncompresses files compressed by gzip
-        -   `$ gzcat <filename>` → Lets you look at gzipped file without actually having to gunzip it
-
-    ---
-
-    ##### Symbolic Links
-
-    -   symbolic links (also known as “soft links” or “symlinks”): Refer to a symbolic path indicating the abstract location of another file.
-    -   hard links : Refer to the specific location of physical data.
-
-    -   `$ ln -s path/source_file_name.extn` → Create a symlink for the source file into current directory.
-    -   `$ ln -s path/source_folder_name` → Create a symlink for the source folder into current directory.
-    -   `$ ln -sf absolute_path/source_file absolute_path/target_file` → Create a symlink for the source file into target file.
-
-    ---
-
-    ##### sed (Stream Editor)
-
-    -   `$ visudo` → Open `/etc/sudoers` in vim
-    -   `$ sed -i '$ a Shah ALL=(ALL) NOPASSWD: ALL' /etc/sudoers` → gives the user `Shah` the ability to use sudo without a password prompt.
-
-    ---
-
-    ##### diff
-
-    -   [The diff Command](https://www.youtube.com/watch?v=qLRQspQxvFk)
-    -   `$ diff -u file1 file2` → The `-u` option produces a unified diff output, which includes additional context lines around the differences to provide better readability.
-    -   `$ diff -w file1 file2` → The `-w` option tells diff to ignore whitespace differences, such as spaces or tabs.
-    -   `$ diff -qr dir1 dir2` → The `-q` option displays only whether the files differ or not, while the `-r` option performs a recursive comparison of the directories.
-    -   `$ diff `
-
-    ---
-
-    ##### htop
-
-    -   [Linux Crash Course - htop](https://www.youtube.com/watch?v=tU9cO9FwDx0)
 
     </details>
 
