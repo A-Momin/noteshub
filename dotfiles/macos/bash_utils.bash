@@ -205,14 +205,9 @@ beautify_prompt(){
     arrow_color=$purple
 
     # # Prompt String
-    # if declare -f __git_ps1 > /dev/null; then
-    #     export PROMPT_COMMAND='__git_ps1 "'"${host_color}${host}-${arrow_color}"' =>|'"${green}"'" "'"${blue}"'\W'"${arrow_color}"'|\n$ '"${reset}"'"'
-    # else
-    #     export PS1="${host_color}${host}-${arrow_color} =>|${blue}\W${arrow_color}|\n$ ${reset}"
-    # fi
+    # export PS1="$host_color${host}-$arrow_color =>|$green\$(__git_ps1)$blue\W$arrow_color|\n$ $reset"
 
-
-    export PS1="${host_color}${host}-${arrow_color} =>|${green}$(__git_ps1)${blue}\W${arrow_color}|\n${reset}$ "
+    export PS1="${host_color}${host}-${arrow_color} =>|${green}\$(__git_ps1)${blue}\W${arrow_color}|${reset}\n$ "
 
     # Meaning of
         #	\h     ->> the host name

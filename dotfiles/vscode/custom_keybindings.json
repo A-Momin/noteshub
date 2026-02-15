@@ -69,5 +69,13 @@ This file is symlinked using the following command:
         "key": "ctrl+enter", // Run selected block of Python code in terminal
         "command": "python.execSelectionInTerminal",
         "when": "editorTextFocus && !findInputFocussed && !isCompositeNotebook && !jupyter.ownsSelection && !notebookEditorFocused && !replaceInputFocussed && editorLangId == 'python'"
+    },
+    {
+        "key": "ctrl+shift+]",
+        "command": "workbench.action.increaseViewSize"
+    },
+    {
+        "key": "ctrl+shift+[",
+        "command": "workbench.action.decreaseViewSize"
     }
 ]
