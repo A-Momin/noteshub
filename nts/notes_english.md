@@ -121,6 +121,24 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Phrasal Verbs</summary>
 
+    | Verbs     | On   | Off  | in   | Out  | Up   | down | Away | over |
+    | :-------- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+    | **carve** |      |      |      |      |      |      |      |      |
+    | **build** |      |      |      |      |      |      |      |      |
+    | **page**  |      |      |      |      |      |      |      |      |
+    | **cut**   |      |      |      |      |      |      |      |      |
+    | **Take**  |      |      |      |      |      |      |      |      |
+    | **Put**   |      |      |      |      |      |      |      |      |
+    | **Get**   |      |      |      |      |      |      |      |      |
+    | **Turn**  |      |      |      |      |      |      |      |      |
+    | **Give**  |      |      |      |      |      |      |      |      |
+    | **Look**  |      |      |      |      |      |      |      |      |
+    | **Call**  |      |      |      |      |      |      |      |      |
+    | **Hold**  |      |      |      |      |      |      |      |      |
+    | **Come**  |      |      |      |      |      |      |      |      |
+    | **Go**    |      |      |      |      |      |      |      |      |
+
+
     | Verbs    | On                                                        | Out                                                        | Up                                                                 | Away                                                    | Off                                                                            |
     | :------- | :-------------------------------------------------------- | :--------------------------------------------------------- | :----------------------------------------------------------------- | :------------------------------------------------------ | :----------------------------------------------------------------------------- |
     | **Take** | To accept a job/responsibility.                           | To remove something; to go on a date.                      | To start a hobby or activity; to occupy space/time.                | To remove something; to subtract.                       | To remove clothing; a plane leaving the ground; to suddenly become successful. |
