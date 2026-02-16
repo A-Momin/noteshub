@@ -1,3 +1,5 @@
+-   kudos
+-   benchmark
 -   gotcha
 -   sorted out
 -   should/would have been
@@ -142,41 +144,124 @@
 
             - I’m struggling to understand how Databricks pricing works.
 
-        3. > She’s trying to wrap her head around quantum physics for her exam.
-
-            - She’s working hard to understand quantum physics.
-
-        4. > It’s hard to wrap your head around differential equations if you don’t understand calculus first.
-
-            - You need to understand calculus before you can comprehend differential equations.
-
-        5. > I just can't wrap my head around why he quit his job without a backup plan.
+        3. > I just can't wrap my head around why he quit his job without a backup plan.
 
             - I don’t understand his decision to quit suddenly.
 
-        6. > It’s difficult to wrap my head around the fact that she's gone.
+        4. > It’s difficult to wrap my head around the fact that she's gone.
 
             - It’s emotionally hard to accept that she has passed away.
 
-        7. > We're still trying to wrap our heads around the client’s new requirements.
+        </details>
 
-            - We’re still figuring out what the client wants.
+    -   <details><summary style="font-size:20px;color:#FF1493">looking forward</summary>
 
-        8. > Before implementing the new architecture, let’s first wrap our heads around the business logic.
+        **"Looking forward"** is commonly used in professional and casual settings to express anticipation or excitement about a future event. Here’s how to use it correctly:
 
-            - Let’s first make sure we understand the logic properly.
+        -   **"Looking forward to" + noun (or gerund)**: Used when anticipating something specific.
+
+            -   _"I am looking forward to the meeting tomorrow."_
+            -   _"We are looking forward to working with you."_
+
+            -   **Incorrect:** _"I am looking forward to meet you."_  
+                (Use **"meeting"** instead of **"meet"** because "to" is a preposition here.)
+
+        -   **"Looking forward to" at the end of emails/messages**: Often used in business emails as a polite closing.
+
+            -   _"Looking forward to your response."_
+            -   _"Looking forward to hearing from you soon."_
+
+        -   **"Looking forward" without "to"**: Less common, but used informally.
+
+            -   _"I’m really looking forward!"_ _(Only if the context is clear, like in a conversation.)_
+
+        -   **Examples in a Work Context (Data Engineering)**
+
+            _"I’m looking forward to deploying the new ETL pipeline."_
+            _"Looking forward to discussing AWS Glue optimizations in our next meeting."_
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">as a matter of the fact</summary>
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">the more ... the more</summary>
+
+        1.  **The more** I practice coding, the more confident I become.
+        2.  **The more** I engage with different Jira tickets that involve troubleshooting, automation, and AWS services, **the more** I realize how interconnected these concepts are and how much I still have to learn.
+        3.  **The more** I optimize my workflows by automating frequent tasks, **the more** I realize how much unnecessary manual effort I used to put in.
+        4.  **The more** I step out of my comfort zone and take on challenging tasks, **the more** I grow both as an engineer and as a problem-solver.
+        5.  **The more** we align on project goals and expectations early on, **the more** efficient and conflict-free our execution becomes.
+        6.  **The more** I break down complex problems into smaller, manageable parts, **the more** effective and efficient my solutions become.
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:#FF1493">across</summary>
+
+        The word **"across"** can be used in different ways in English sentences. Here are the common usages with examples:
+
+        1. **As a Preposition (Showing Movement or Position)**: It means **from one side to another** or **on the other side of something**.
+
+            - `Movement`:
+
+                - "She walked across the street."
+                - "We traveled across the country by train."
+
+            - `Position`:
+                - "There is a coffee shop across the road."
+                - "His office is across the hall from mine."
+
+        2. **As an Adverb (Indicating Direction or Spread)**: It means **horizontally or covering a large area**.
+
+            - "She looked across at him and smiled."
+            - "News about the event spread across social media quickly."
+            - "The bridge goes across the river."
+
+        3. **As "Across From" (Indicating Opposite Position)**: It means **directly opposite to something**.
+
+            - "The hotel is **across from** the park."
+            - "He sat **across from** me at the meeting."
+
+        4. **As an Idiomatic or Abstract Meaning (Indicating Understanding or Effect)**: It means **being understood or experienced**.
+
+            - "I tried to get my point across, but they didn’t understand."
+            - "The teacher communicated the concept across very well."
 
         </details>
 
     -   <details><summary style="font-size:20px;color:#FF1493">look up / Look up to</summary>
 
-        </details>
+        1. **Look up (The Fact-Finder)**: This version is about **searching** or **gazing**. It is usually used when you are trying to find a specific piece of information or physically moving your eyes toward the ceiling.
 
-    -   <details><summary style="font-size:20px;color:#FF1493">Take off/on/down</summary>
+           * **Searching for Info:** "I didn’t know what the word meant, so I had to **look it up**."
+           * **Physical Action:** "When the plane flew over, everyone **looked up** at the sky."
+           * **Improving Situations:** "Business was slow in January, but things are starting to **look up**."
 
-        </details>
+        2. **Look up to (The Admirer)**: This is a phrasal verb that means to **admire** or **respect** someone. You treat them as a role model or someone whose character you want to emulate.
 
-    -   <details><summary style="font-size:20px;color:#FF1493">Check in/out</summary>
+           * **Respecting a Peer:** "I really **look up to** my manager because of how she handles stress."
+           * **Role Models:** "Many young athletes **look up to** LeBron James."
+
+        3. **Key Differences at a Glance**:
+
+            | Feature          | Look up                                      | Look up to                                            |
+            | ---------------- | -------------------------------------------- | ----------------------------------------------------- |
+            | **Core Meaning** | To search for information or improve.        | To admire or respect.                                 |
+            | **Object**       | Usually a thing (word, address, price).      | Always a person (hero, mentor, parent).               |
+            | **Separability** | **Separable:** You can say "Look **it** up." | **Inseparable:** You cannot say "Look my hero up to." |
+            | **Physicality**  | Can be literal (eyes moving upward).         | Purely figurative (an emotional state).               |
+
+        4. **The "Separability" Trap**: This is where most people trip up.
+
+           * **Look up** is flexible. You can put the object in the middle:
+             * *Correct:* "Look up the number."
+             * *Correct:* "Look the number up."
+
+
+        * **Look up to** is rigid. You can never break it apart:
+          * *Correct:* "I look up to him."
+          * *Incorrect:* "I look him up to."
 
         </details>
 
@@ -274,178 +359,6 @@
 
             -   `A`: "We need to increase productivity without overwhelming the team."
             -   `B`: "To that end, we could introduce automation tools to streamline repetitive tasks."
-
-        </details>
-
-    -   <details><summary style="font-size:20px;color:#FF1493">Page out</summary>
-
-            In the context of an on-call engineer's role, "page out" (or being "paged") refers to the process where the engineer is alerted—typically outside of regular working hours—about a system incident or issue that needs immediate attention.
-
-            -   **Trigger**:
-
-                > A monitoring or alerting system (e.g., AWS CloudWatch, Datadog, Prometheus, etc.) detects a critical problem—like a service outage, high error rate, or infrastructure failure.
-
-            -   **Alert**:
-
-                > The system sends a notification (a "page") to the on-call engineer via SMS, phone call, push notification, or email using tools like PagerDuty, Opsgenie, or VictorOps.
-
-            -   **Response**:
-                > The on-call engineer is expected to acknowledge the alert quickly and investigate or remediate the issue as soon as possible, often under pressure.
-
-            The phrase **page out** typically refers to the movement of data from RAM (memory) to disk (swap space) when the system is under memory pressure. In cybersecurity or cloud infrastructure contexts (like AWS), it's not a phrase you’d hear often in general conversation—but it can be relevant when discussing performance, incident analysis, or system stability, especially for EC2 instances, container workloads, or memory-sensitive applications.
-
-            1. **EC2 Instance Monitoring:**
-
-                > "We noticed the EC2 instance began to page out heavily due to an unoptimized Lambda function consuming excess memory—this led to slower response times and triggered our WAF rate-based rules."
-
-            2. **Security Incident Review:**
-
-                > "During the DDoS simulation, the server started paging out memory, causing critical processes to slow down—this could be exploited in a real attack scenario if not mitigated."
-
-            3. **CloudWatch Alert Setup:**
-
-                > "We configured CloudWatch alarms to notify us when memory page-out activity spikes, as it might be an early sign of a memory exhaustion attack."
-
-            4. **Container Security:**
-
-                > "The ECS task began paging out when memory usage exceeded the soft limit, which made the application vulnerable to timeouts and potential data leaks."
-
-            5. **Auto Scaling Group Health:**
-                > "Instances in the auto scaling group were paging out during peak hours; we updated the launch template to use memory-optimized instances to prevent security degradation under load."
-
-        </details>
-
-    -   <details><summary style="font-size:20px;color:#FF1493">Build out</summary>
-
-        **Build out** means to expand, develop, or enhance something by adding more components or features. It is commonly used in business, technology, and construction contexts.
-
-        -   _"We need to build out the API with additional endpoints."_
-            -   `Meaning`: Expand the API by adding more features.
-        -   _"The company is building out its cloud infrastructure."_
-            -   `Meaning`: Expanding and improving the cloud setup.
-        -   _"We are building out our sales team to support more clients."_
-            -   `Meaning`: Expanding the sales team by hiring more people.
-        -   _"They are building out a new office space."_
-            -   `Meaning`: Expanding or furnishing a physical location.
-
-        </details>
-
-    -   <details><summary style="font-size:20px;color:#FF1493">cut in/out/over</summary>
-
-        -   > You **cut out** for a second—can you repeat that?
-        -   > Your voice keeps cutting out.
-        -   > The call **cut out** right in the middle.
-
-        1. **Interrupting a conversation** (most common usage in human interactions)
-
-            - > Sorry to **cut in**, but I have a quick point.
-            - > He kept cutting in while I was speaking.
-
-        2. **Audio suddenly coming back or interjecting randomly** (less common, but still used technically)
-
-            - > Your audio **cut in** for a second and then went silent again.
-            - > It cuts in and out—it’s hard to follow.
-
-        </details>
-
-    -   <details><summary style="font-size:20px;color:#FF1493">carve out</summary>
-
-        **"Carve out"** is a phrase that means to **create, establish, or allocate something by making deliberate effort or removing obstacles.**
-
-        1. **To Create or Allocate Time**
-
-            - _"I need to carve out some time for this project."_
-            - `Meaning`: I need to set aside or allocate time for this project.
-
-        2. **To Establish a Niche or Position**
-
-            - _"She carved out a successful career in data engineering."_
-            - `Meaning`: She built or established her career through effort and skill.
-
-        3. **To Separate a Business or Unit**
-
-            - _"The company decided to carve out its cloud division into a separate entity."_
-            - `Meaning`: The company separated its cloud division to function independently.
-
-        4. **To Physically Remove or Cut Out Something**
-            - _"They carved out a path through the dense forest."_
-            - `Meaning`: They physically cleared a path by cutting through obstacles.
-
-        </details>
-
-    -   <details><summary style="font-size:20px;color:#FF1493">Looking forward</summary>
-
-        **"Looking forward"** is commonly used in professional and casual settings to express anticipation or excitement about a future event. Here’s how to use it correctly:
-
-        -   **"Looking forward to" + noun (or gerund)**: Used when anticipating something specific.
-
-            -   _"I am looking forward to the meeting tomorrow."_
-            -   _"We are looking forward to working with you."_
-
-            -   **Incorrect:** _"I am looking forward to meet you."_  
-                (Use **"meeting"** instead of **"meet"** because "to" is a preposition here.)
-
-        -   **"Looking forward to" at the end of emails/messages**: Often used in business emails as a polite closing.
-
-            -   _"Looking forward to your response."_
-            -   _"Looking forward to hearing from you soon."_
-
-        -   **"Looking forward" without "to"**: Less common, but used informally.
-
-            -   _"I’m really looking forward!"_ _(Only if the context is clear, like in a conversation.)_
-
-        -   **Examples in a Work Context (Data Engineering)**
-
-            _"I’m looking forward to deploying the new ETL pipeline."_
-            _"Looking forward to discussing AWS Glue optimizations in our next meeting."_
-
-        </details>
-
-    -   <details><summary style="font-size:20px;color:#FF1493">across</summary>
-
-        The word **"across"** can be used in different ways in English sentences. Here are the common usages with examples:
-
-        1. **As a Preposition (Showing Movement or Position)**: It means **from one side to another** or **on the other side of something**.
-
-            - `Movement`:
-
-                - "She walked across the street."
-                - "We traveled across the country by train."
-
-            - `Position`:
-                - "There is a coffee shop across the road."
-                - "His office is across the hall from mine."
-
-        2. **As an Adverb (Indicating Direction or Spread)**: It means **horizontally or covering a large area**.
-
-            - "She looked across at him and smiled."
-            - "News about the event spread across social media quickly."
-            - "The bridge goes across the river."
-
-        3. **As "Across From" (Indicating Opposite Position)**: It means **directly opposite to something**.
-
-            - "The hotel is **across from** the park."
-            - "He sat **across from** me at the meeting."
-
-        4. **As an Idiomatic or Abstract Meaning (Indicating Understanding or Effect)**: It means **being understood or experienced**.
-
-            - "I tried to get my point across, but they didn’t understand."
-            - "The teacher communicated the concept across very well."
-
-        </details>
-
-    -   <details><summary style="font-size:20px;color:#FF1493">As a matter of the fact</summary>
-
-        </details>
-
-    -   <details><summary style="font-size:20px;color:#FF1493">The more ... the more</summary>
-
-        1.  **The more** I practice coding, the more confident I become.
-        2.  **The more** I engage with different Jira tickets that involve troubleshooting, automation, and AWS services, **the more** I realize how interconnected these concepts are and how much I still have to learn.
-        3.  **The more** I optimize my workflows by automating frequent tasks, **the more** I realize how much unnecessary manual effort I used to put in.
-        4.  **The more** I step out of my comfort zone and take on challenging tasks, **the more** I grow both as an engineer and as a problem-solver.
-        5.  **The more** we align on project goals and expectations early on, **the more** efficient and conflict-free our execution becomes.
-        6.  **The more** I break down complex problems into smaller, manageable parts, **the more** effective and efficient my solutions become.
 
         </details>
 
@@ -777,8 +690,123 @@
     -   supposedly
     -   intentionaly
     -   deliberately
+    -   drastically
     -   Ironicly
     -   Idealy
+
+    ### 1. The "Power" Adverbs (Strategic & High-Level)
+
+    These are used in meetings to make ideas sound more thought-out and comprehensive.
+
+    * **Strategically:** Used to justify a decision. *"We need to look at this **strategically**."*
+    * **Holistically:** Looking at the "big picture." *"Let’s approach this problem **holistically**."*
+    * **Fundamentally:** When you want to get to the core of an issue. *"This is **fundamentally** a data problem."*
+    * **Scalably:** Can it grow? *"We need to build this **scalably**."*
+    * **Globally:** Often used to mean "everywhere in the company." *"We are rolling this out **globally**."*
+
+
+    ### 2. The "Action" Adverbs (Operational)
+
+    These describe *how* we want the work to be done—usually fast and without errors.
+
+    * **Proactively:** The undisputed king of corporate adverbs. It means doing something before it becomes a problem. *"Let's **proactively** reach out to the client."*
+    * **Efficiently:** Doing things without wasting time/money. *"We need to manage these resources more **efficiently**."*
+    * **Effectively:** Getting the desired result. *"How can we communicate this **effectively**?"*
+    * **Seamlessly:** When you want a change to happen without anyone noticing. *"The transition should happen **seamlessly**."*
+    * **Consistently:** Doing it the same way every time. *"We need to perform **consistently** to meet our KPIs."*
+
+
+    ### 3. The "Emphasis" Adverbs (Intensity)
+
+    Americans love to use these to show they are serious or to give "kudos."
+
+    | Adverb         | Corporate Context                                                                         |
+    | -------------- | ----------------------------------------------------------------------------------------- |
+    | **Absolutely** | The standard "Yes" in a meeting. *"I **absolutely** agree with that."*                    |
+    | **Extremely**  | Used to highlight importance. *"This is **extremely** high-priority."*                    |
+    | **Highly**     | Usually paired with "recommended" or "valued." *"He is a **highly** valued team member."* |
+    | **Literally**  | Often used incorrectly for emphasis. *"We **literally** have no more budget."*            |
+    | **Totally**    | Common in casual-corporate speech. *"I'm **totally** on board."*                          |
+
+
+    ### 4. The "Filler & Pivot" Adverbs (Speech Flow)
+
+    In spoken English, these help you transition between ideas or soften a difficult message.
+
+    * **Basically:** Used to simplify a complex point. *"**Basically**, we're over budget."*
+    * **Essentially:** Similar to basically, but sounds a bit more sophisticated. *"**Essentially**, the project is on hold."*
+    * **Actually:** Used to correct someone or introduce a surprising fact. *"**Actually**, the data shows the opposite."*
+    * **Potentially:** Used when you don't want to commit 100%. *"This could **potentially** cause a delay."*
+    * **Transparently:** Used when sharing "honest" (and sometimes bad) news. *"To speak **transparently**, we missed our targets."*
+
+
+    ### 5. Summary Table for Quick Reference
+
+    | Adverb           | Definition in "Corporate Speak"                                         |
+    | ---------------- | ----------------------------------------------------------------------- |
+    | **Leveragingly** | Using something to its maximum advantage (often used as a verb phrase). |
+    | **Aggressively** | With extreme speed and focus.                                           |
+    | **Quarterly**    | The heartbeat of corporate time.                                        |
+    | **Internally**   | "Don't tell the clients yet."                                           |
+    | **Functionally** | "It works, but it's not pretty."                                        |
+
+
+    ### 1. The "Nuance" Adverbs (Managing Expectations)
+
+    In a corporate setting, being 100% certain can be risky. These adverbs allow you to frame your statements with enough wiggle room to stay accurate without overcommitting.
+
+    * **Relatively:** Used to compare performance against a benchmark. *"Our growth was **relatively** flat this quarter compared to last year."*
+    * **Marginally:** When a change is small but worth noting. *"We’ve **marginally** improved our click-through rates."*
+    * **Virtually:** Meaning "almost entirely." *"The project is **virtually** complete; we’re just waiting on one sign-off."*
+    * **Supposedly:** Use this with caution—it implies a hint of doubt about someone else's claim. *"The software is **supposedly** fixed now."*
+    * **Typically:** Sets a baseline for normal behavior. *"**Typically**, we see a dip in sales during the summer months."*
+
+
+    ### 2. The "Precision" Adverbs (The Data-Driven Approach)
+
+    When you're in a "data is king" environment, these adverbs lend scientific weight to your arguments.
+
+    * **Quantifiably:** When you have the numbers to back it up. *"We are **quantifiably** better at lead generation than our competitors."*
+    * **Statistically:** Specifically referring to data trends. *"That outlier isn't **statistically** significant."*
+    * **Measurably:** Showing that a difference can actually be seen. *"The new training has **measurably** increased team morale."*
+    * **Systematically:** Doing things in a step-by-step, organized way. *"We are **systematically** reviewing every line item in the budget."*
+    * **Explicitly:** Leaving no room for confusion. *"I **explicitly** stated that we need the report by Friday."*
+
+
+    ### 3. The "Workflow" Adverbs (Agile & Operations)
+
+    These are common in tech and project management to describe the *cadence* of work.
+
+    | Adverb              | Meaning in the Office                                 |
+    | ------------------- | ----------------------------------------------------- |
+    | **Iteratively**     | Doing things in small cycles and improving each time. |
+    | **Simultaneously**  | Multitasking or running parallel projects.            |
+    | **Rapidly**         | Moving fast (often used during a "sprint" or crisis). |
+    | **Collaboratively** | Working across teams (no "silos").                    |
+    | **Manually**        | Doing it by hand because the automation failed.       |
+
+
+    ### 4. The "Interpersonal" Adverbs (Soft Skills)
+
+    These are used to navigate sensitive conversations or to maintain professional "politeness" while being direct.
+
+    * **Constructively:** Used when giving feedback that might be hard to hear. *"I want to discuss this **constructively** so we can move forward."*
+    * **Respectfully:** A classic "buffer" before disagreeing with a boss. *"**Respectfully**, I think we should reconsider the timeline."*
+    * **Candidly:** The "corporate signal" that you are about to drop the professional act and speak the truth. *"**Candidly**, this vendor isn't meeting our needs."*
+    * **Empathetically:** Often used in HR or leadership contexts. *"We need to handle the layoffs **empathetically**."*
+    * **Frankly:** Similar to "candidly," but often a bit more blunt. *"**Frankly**, we don't have the bandwidth for this right now."*
+
+
+    ### 5. Frequency & Impact Table
+
+    | Highly Frequent | Meaning / Usage                                      | Corporate "Vibe"     |
+    | --------------- | ---------------------------------------------------- | -------------------- |
+    | **Definitely**  | The enthusiastic "Yes."                              | High Confidence      |
+    | **Currently**   | "Right now" (sounds more formal).                    | Professional/Neutral |
+    | **Shortly**     | "Soon" (but keeps it vague).                         | Non-Committal        |
+    | **Clearly**     | Used to make your opinion seem like an obvious fact. | Assertive            |
+    | **Necessarily** | Usually used in the negative: "Not **necessarily**." | Skeptical            |
+
 
     </details>
 

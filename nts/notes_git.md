@@ -318,7 +318,7 @@
         -   `$ git checkout <file_name>` → Discard the specified file from Working Area.
         -   `$ git checkout .` → Discard all the changes to the Working Area.
         -   `$ git checkout <commit_id>`
-        -   `$ git checkout -- <file> ...` → to discard changes in working directory
+        -   `$ git checkout -- <file_name>` → just want to discard your recent edits to return to the last committed state
 
     -   🔥 [git reset]()
 
@@ -330,7 +330,9 @@
             -   It can be used to undo the effects of `git add` and unstage changes you have previously added to the Staging Area.
             -   It can also be used to discard local changes in a file, thereby restoring its last committed state.
 
-        -   `$ git restore path/to/file/to/revert` → Unstage the given file from Staging Area into Working Directory.
+        -   `$ git restore <path/to/filefile_name>` → just want to discard your recent edits to return to the last committed state
+        -   `$ git restore --staged <path/to/filefile_name>` → Unstage the given file from Staging Area into Working Directory.
+        -   `$ git restore --source <commit_hash> <file_name>` → You want to revert to a version from a specific commit without affecting the rest of your project.
         -   `$ git clean -f` → Remove untracked files from the working tree.
         -   `$ git rm --cached <file_name>` → Unstage the specified file (`file_name`) from Staging Area.
         -   `$ git rm --cached *_initial.py` → Unstage all the files name ended with `_initial.py` from Staging Area.
