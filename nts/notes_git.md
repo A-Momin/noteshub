@@ -265,6 +265,7 @@
     -   `$ git remote show origin` → get the remote origin URL
     -   `$ git config --get remote.origin.url` → get the remote origin URL
     -   `$ git clone git@gh1:A-Momin/project_name.git` → Clone from perticular github account
+    -   `$ git remote add origin git@gh1:A-Momin/drf.git`
     -   `$ git remote set-url origin git@gh1:A-Momin/drf.git`
     -   `$ git remote set-url origin git@gh2:Aminul-Momin/noteshub.git`
     -   `$ git remote set-url origin git@github.com:Aminul-Momin/noteshub.git`

@@ -1,5 +1,6 @@
 *   Explain _.exe, _.cmd, _.bat, _.ps1 files in great details
 *   how to customize Windows CMD prompt
+*   [Configure keyboard shortcut](https://www.youtube.com/watch?v=vEQe_Mt0BTM)
 
 *   <details><summary style="font-size:25px; color: Orange">Windows Shortcuts</summary>
 

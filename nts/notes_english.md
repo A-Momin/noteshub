@@ -1,7 +1,8 @@
+-   under the weather
+-   be in good hand
 -   kudos
 -   benchmark
 -   gotcha
--   sorted out
 -   should/would have been
 -   what so ever
 -   get along
@@ -12,11 +13,21 @@
 -   remediation/fixing
 -   Timeline/Pipeline/Process/workflow
 -   Schema/Scheme/Schemetic
--   utileze/leverage
 -   having said that/ with that being said
+
+-   clunky/fluffy/wacky
+-   wirte-off
+-   hand off / handoffs
+-   rundown
+-   redact
+-   cutover
+-   ideal
+-   exploit
+
+
+
 -   work out
 -   lift off
--   clunky/fluffy/wacky
 -   roll off/out/back
 -   based off/in/out
 -   call out/off/in/over
@@ -26,15 +37,13 @@
 -   take up/on/off/out
 -   plan/work out
 -   back out
--   cutover
--   wirte-off
--   hand off / handoffs
--   rundown
 -   scale up/down/in/out
--   ideal
--   redact
--   carve out
--   exploit
+
+- How to welcome someone into our team
+- How to see off someone from our team
+- how to encurage/appreciate someone for the work he has done
+- How to present/introduce myself to a new team
+- 
 
 -   <details><summary style="font-size:25px;color:Orange">Word Comparison</summary>
 
@@ -73,6 +82,7 @@
 
     -   **impact**/**effect**:
 
+    -   utileze/leverage
     -   Sensible/Reasonable
     -   Span/Embad/Encompass
     -   vigilant/deligent
