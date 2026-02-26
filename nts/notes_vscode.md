@@ -99,13 +99,14 @@
 
     1. **Most Usaful Shortcuts**:
 
-       - 🔥 `⌥ + z` → Toggle Wrap/Unwrap words in integrated VSC terminal.
-       - 🔥 `^ + ␣` → Search for custom code snippet shortcuts for markdown.
-       - 🔥 `^ + -` → Jump cursor backword in the chain of it's previous position
-       - 🔥 `^ + ⇧ + -` → Jump cursor forward in the chain of it's previous position
-       - 🔥 `^ + ⇧ + ]/[` → Increase or decrease the view size of current editor
-       - 🔥 `⌘ + ⇧ + k` → Delete the line of code at the cursor.
-       - 🔥 `⌘ + x` → Cut the line of code at the cursor to paste somewhere else.
+       - 🔥 `^ + g` → Move cursore to the beginning of the given **LINE #**.
+       - 🔥 `⌥ + z` → Toggle **WRAP/UNWRAP** words in integrated VSC terminal.
+       - 🔥 `^ + ␣` → Search for custom **CODE SNIPPET** shortcuts for markdown.
+       - 🔥 `^ + -` → **JUMP CURSOR BACKWORD** in the chain of it's previous position
+       - 🔥 `^ + ⇧ + -` → **JUMP CURSOR FORWARD** in the chain of it's previous position
+       - 🔥 `^ + ⇧ + ]/[` → **INCREASE OR DECREASE** the view size of current editor
+       - 🔥 `⌘ + ⇧ + k` → **DELETE THE LINE** of code at the cursor.
+       - 🔥 `⌘ + x` → **CUT THE LINE OF CODE** at the cursor to paste somewhere else.
        - 🔥 `⌘ + k + 0` → Fold code at the base indentation lavel
        - `⌥ + ⌘ + ]` → Fold code in the editor
        - `⌘ + k + j` → Unold all code blocks.

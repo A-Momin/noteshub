@@ -1,45 +1,7 @@
 - **𝑺𝒚𝒎𝒃𝒐𝒍𝒔**: ⌘ ⌥ + ⌃ + ⤶ ⇧  ⤶ ⬋ ↩︎ ↲ ↵ ↫ ⭿ ♥ ★ 🎾 & 🔹
 
 ---
-
-- <details><summary style="font-size:25px;color:Orange"> Software Version System </summary>
-
-    Software versioning is a system of assigning unique identifiers (version numbers) to different releases of a software product. These versions help in tracking changes, managing updates, and ensuring compatibility.
-
-    #### Versioning Schemes
-    - **Semantic Versioning (SemVer)**: Uses a structured `MAJOR.MINOR.PATCH` format:
-        - **MAJOR** (`X.0.0`) → Increments when there are breaking changes.
-            - `1.0.0` → Initial stable release
-            - `2.0.0` → Breaking changes introduced
-        - **MINOR** (`1.X.0`) → Increments when new features are added in a backward-compatible manner.
-            - `1.1.0` → Added new feature (backward-compatible)
-        - **PATCH** (`1.0.X`) → Increments when bug fixes and minor improvements are made.
-            - `1.1.1` → Bug fix release
-
-    - **Date-Based Versioning**: Uses the release date as the version number, typically `YYYY.MM.DD` or `YYYY.R` (where `R` is the release number for that year). Example: `2024.1`, `2024.02.15`
-    - **Incremental Versioning**: Uses a simple incremental number (`1`, `2`, `3`, etc.). Example: Windows 10, Windows 11
-
-    #### Versioning Terminology
-    - **Pre-Release Versions**: These are versions released before the final stable version and usually include experimental or test features.
-        - **Alpha (`alpha`)** → Very early-stage, unstable version for internal testing. Example: `1.0.0-alpha.1`
-        - **Beta (`beta`)** → More stable than Alpha, but still under development. Example: `1.0.0-beta.2`
-        - **Release Candidate (`rc`)** → A version that is almost final, pending last-minute testing. Example: `1.0.0-rc.1`
-
-    - **Stable Release**: Official, fully tested version ready for production use. Example: `1.0.0`
-    - **Long-Term Support (LTS)**: A version supported for a longer period with security and bug fixes. Example: `Node.js 18 LTS`
-    - **Hotfix**: A minor release to fix a critical issue. Example: `1.0.1`
-    - **Deprecated Version**: A version that is no longer supported and should not be used.
-
-    #### Other Versioning Concepts
-    - **Backward Compatibility** → New versions work with older data or APIs.
-    - **Forward Compatibility** → Older versions can work with new data or APIs.
-    - **Rolling Release** → Continuous software updates without distinct version numbers (e.g., Arch Linux).
-
-    </details>
-
----
-
-- <details><summary style="font-size:25px;color:Orange">Maven</summary>
+-   <details><summary style="font-size:25px;color:Orange">Maven</summary>
     - **📘 What is Maven?**
         - Apache Maven is a **build automation and project management tool** primarily for **Java** projects.
         - It uses an XML file called `pom.xml` to describe the project’s structure, dependencies, build steps, and plugins.
@@ -200,7 +162,7 @@
 
 ---
 
-- <details><summary style="font-size:25px;color:Orange">NPM (Node Package Manager)</summary>
+-   <details><summary style="font-size:25px;color:Orange">NPM (Node Package Manager)</summary>
     - **NPM Sub Tools**:
         - eslint --init
     - **NodeJS Global Packages**: ~/../../usr/local/lib/node_modules/
@@ -257,7 +219,7 @@
 
 ---
 
-- <details><summary style="font-size:25px;color:Orange">dig</summary>
+-   <details><summary style="font-size:25px;color:Orange">dig</summary>
     - `$ dig server name type`
     - `$ vim /ete/resolve.conf` → config file that lists prefarable name server to look up to.
     - `8.8.8.8` is a IP address of DNS server owned by Google
@@ -361,7 +323,7 @@
 
 ---
 
-- <details><summary style="font-size:25px;color:Orange">yq</summary>
+-   <details><summary style="font-size:25px;color:Orange">yq</summary>
     - `$ brew install yq`
     - `$ yq 'explode(.)' file_name.yml > explode_file_name.yml`
     - `$ yq . file.yaml` → Pretty-prints the content of `file.yaml`.
@@ -387,7 +349,7 @@
 
 ---
 
-- <details><summary style="font-size:25px;color:Orange">jq</summary>
+-   <details><summary style="font-size:25px;color:Orange">jq</summary>
     - `$ jq -r .access_token`
     - `$ cat file.json | jq .` → Pretty-prints the JSON content of `file.json` for easier reading.
     - `$ jq '.name' file.json` → Extracts and displays the value of the `name` key from the JSON object.
@@ -408,14 +370,14 @@
 
 ---
 
-- <details><summary style="font-size:25px;color:Orange">parquet</summary>
+-   <details><summary style="font-size:25px;color:Orange">parquet</summary>
     - `$ pip install parquet`
 
     </details>
 
 ---
 
-- <details><summary style="font-size:25px;color:Orange">pre-commit</summary>
+-   <details><summary style="font-size:25px;color:Orange">pre-commit</summary>
     - `$ `
     - `$ pip install pre-commit` -> Install `pre-commit`
     - `$ pre-commit install` -> Install the hooks
@@ -512,7 +474,7 @@
 
 ---
 
-- <details><summary style="font-size:25px;color:Orange">make</summary>
+-   <details><summary style="font-size:25px;color:Orange">make</summary>
 
     - `$ brew install make`
 
@@ -748,112 +710,3 @@
     #### Sample `Makefile`
 
     </details>
-
----
-
-- <details><summary style="font-size:25px;color:Orange">Slack</summary>
-    - <details><summary style="font-size:20px;color:#FF1493">Common Slack emojis and their Shortcuts</summary>
-
-        • `:Thumbs up` → 👍 "Thumbs up": Expresses agreement, acknowledgment, or "got it."
-        • `:Check mark` → ✅ "Check mark": Shows a task is complete or a request has been acknowledged.
-        • `:Fire` → 🔥 "Fire": Signifies enthusiasm, excitement, or high praise.
-        • `:emoji_name` → 👀 "Eyes": Indicates someone is looking at a message or task, or needs to get back to it.
-        • `:emoji_name` → 💯 "100": Indicates perfection, outstanding work, or a job well done.
-        • `:emoji_name` → 🤔 "Thinking face": Encourages reflection, invites collaboration, or shows someone is pondering.
-        • `:emoji_name` → 🙌 "Raised hands": Celebrates success, expresses excitement, or acknowledges a team effort.
-        • `:emoji_name` → 👏 "Clap": Offers praise, appreciation, or acknowledges a job well done.
-        • `:emoji_name` → 😀 "Smiley face": Creates a welcoming atmosphere, expresses happiness, or shows agreement.
-        • `:emoji_name` → 👋 "Wave": Greets colleagues, acknowledges messages, or expresses a friendly gesture.
-        • `:emoji_name` → 😂 "Laughing face with tears": Expresses humor or strong agreement.
-        • `:emoji_name` → 🙏 "Folded hands": Requests help or expresses gratitude.
-        • `:emoji_name` → ❤️ "Red heart": Expresses love or affection.
-        • `:emoji_name` → ✨ "Sparkles": Adds excitement or highlights something special.
-        • `:emoji_name` → 🤯 "Exploding head": Indicates astonishment, surprise, or excitement.
-        • `:emoji_name` → 🙏 "Praying hands": Expresses gratitude, appreciation, or a request.
-        • `:emoji_name` → 🎉 "Party popper": Celebrates something, expresses enthusiasm, or marks an accomplishment.
-        • `:emoji_name` → 🤔 "Thinking face": Indicates a question, a need for clarification, or someone is pondering.
-        • `:emoji_name` → ✨ "Sparkles": Adds a bit of flair or excitement.
-        • `:emoji_name` → ⏰ "Alarm clock": Often used to indicate a deadline or reminder.
-        • `:emoji_name` → 💡 "Lightbulb": Suggests an idea or inspiration.
-        • `:emoji_name` → 🚦 "Traffic light": Can be used to indicate the status of a project or task.
-        • `:emoji_name` → 🚀 "Rocket": Can be used to indicate a launch or the start of a project.
-        • `:emoji_name` → ⚙️ "Gear": Can be used to indicate work or processes.
-        • `:emoji_name` → 🚧 "Construction site": Can be used to indicate an issue or a project in progress.
-        • `:emoji_name` → ⚠️ "Warning sign": Can be used to indicate a potential problem or a warning.
-        • `:emoji_name` → 🛑 "Stop sign": Can be used to indicate a halt or a pause.
-        • `:emoji_name` → 🤔 "Thinking face": Can be used to indicate a question or a need for clarification.
-        • `:emoji_name` → ❓ "Question mark": Can be used to indicate a question or a need for clarification.
-        • `:emoji_name` → 🔴 "Red circle": Can be used to indicate an issue or a problem.
-        • `:emoji_name` → 🟢 "Green circle": Can be used to indicate a successful completion or a positive outcome.
-        • `:emoji_name` → 🚫 "Prohibited": Can be used to indicate a negative or unacceptable status.
-        • `:emoji_name` → 🚳 "Men's room": Can be used in the context of certain situations.
-        • `:emoji_name` → 🚺 "Women's room": Can be used in the context of certain situations.
-        • `:emoji_name` → ♾ "Infinity": Can be used to indicate an unlimited amount or situation.
-
-        </details>
-
-    #### 🙋‍♂️ Participation & Acknowledgment
-
-    | Emoji                | Meaning                             |
-    | -------------------- | ----------------------------------- |
-    | `:wave:`             | 👋 Hello / Goodbye / I'm here       |
-    | `:raised_hand:`      | ✋ I have a question / volunteering |
-    | `:hand:`             | ✋🏽 Also a raised hand / hold on     |
-    | `:eyes:`             | 👀 Looking into it / Monitoring     |
-    | `:thumbsup:`         | 👍 Approved / Got it / Agree        |
-    | `:white_check_mark:` | ✅ Task complete / Confirmed        |
-    | `:ok_hand:`          | 👌 All good / Okay                  |
-
-    #### 🔋 Energy & Availability
-
-    | Emoji           | Meaning                              |
-    | --------------- | ------------------------------------ |
-    | `:low_battery:` | 🔋 Low energy / need a break         |
-    | `:battery:`     | 🔋 Back online / charged up          |
-    | `:zzz:`         | 😴 Logging off / AFK                 |
-    | `:coffee:`      | ☕ Need coffee / early start / focus |
-    | `:hourglass:`   | ⏳ Busy / heads-down work            |
-    | `:soon:`        | 🔜 On it / Will respond soon         |
-
-    #### 🧠 Status & Mood
-
-    | Emoji             | Meaning                               |
-    | ----------------- | ------------------------------------- |
-    | `:thinking_face:` | 🤔 Considering / Evaluating something |
-    | `:confused:`      | 😕 Need clarity / Not sure            |
-    | `:nerd_face:`     | 🤓 Deep in dev / Learning mode        |
-    | `:fire:`          | 🔥 High urgency / Great work          |
-    | `:rocket:`        | 🚀 Shipping / Launching / Progress    |
-
-    #### ✅ Feedback & Voting
-
-    | Emoji                | Usage                           |
-    | -------------------- | ------------------------------- |
-    | `:heavy_plus_sign:`  | ➕ Add me / Add something       |
-    | `:heavy_minus_sign:` | ➖ Remove me / Remove something |
-    | `:x:`                | ❌ Disagree / Cancel            |
-    | `:clap:`             | 👏 Applause / Appreciation      |
-    | `:tada:`             | 🎉 Congrats / Celebrations      |
-
-    #### 🖐 Special Custom (Popular in Tech Teams)
-
-    | Emoji          | Meaning                                                          |
-    | -------------- | ---------------------------------------------------------------- |
-    | `:this:`       | ☝️ Agree with the message above (Slack default or custom with ↑) |
-    | `:that:`       | 👇 Agree with the message below                                  |
-    | `:eyes_on_me:` | 🔍 Review request / PR needs attention (custom)                  |
-    | `:nope:`       | 🙅‍♂️ Not valid / Decline                                           |
-
-    </details>
-
----
-
-- <details><summary style="font-size:25px;color:Orange">Zoom</summary>
-
-    | MacOS Commands | Achivements | Windows Commands |
-    | :------------- | :---------- | :--------------- |
-    | `⌘ + ⌥ + 5`    | 👍          | ----             |
-    | `⌥ + y`        | ✋          | ----             |
-    | ----           | ----        | ----             |
-
-    <details>

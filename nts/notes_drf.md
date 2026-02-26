@@ -1,6 +1,6 @@
 -   <details><summary><a  style="font-size:25px;color:#FF1493" href="https://www.django-rest-framework.org/api-guide/serializers/">Serializer</a></summary>
 
-    > A serializer is a crucial component used to convert complex data types, such as querysets and model instances, into native Python data types that can then be easily rendered into JSON, XML, or other content types for use in HTTP responses. It also performs the reverse operation, deserializing data received in requests into complex data types. Here are some key terms and concepts related to serializers in Django REST Framework:
+    > A serializer is a crucial component used to convert complex data types, such as querysets and model instances, into native Python data types that can then be easily rendered into JSON, XML, or other content types for use in HTTP responses. It also performs the reverse operation, deserializing data received in requests into complex data types.
 
     > Serializers in DRF are similar to Django's forms but are used to convert complex data types like Django querysets or model instances into native Python data types. Once serialized, the data can be rendered into JSON, XML, or other content types. They also help in deserializing incoming data, validating it, and converting it back into a usable format, typically saving it in the database.
 
@@ -381,23 +381,23 @@
 
     #### Authentication
 
-    Authentication in DRF determines who the user is. DRF provides several built-in authentication classes to support common authentication mechanisms.
+    > Authentication in DRF determines who the user is. DRF provides several built-in authentication classes to support common authentication mechanisms.
 
     -   **BasicAuthentication**: Uses HTTP Basic Authentication, a simple authentication scheme where the user provides a username and password.
     -   **TokenAuthentication**: Uses token-based authentication. A token is generated upon user login and passed with each request for user identification.
     -   **SessionAuthentication**: Uses Django’s session framework for managing authenticated users. It relies on session cookies, so it’s useful in browser-based interactions.
     -   **Custom Authentication**: You can also define custom authentication schemes by subclassing `BaseAuthentication`.
 
-    Example of Token Authentication:
+    -   Example of Token Authentication:
 
-    ```python
-    from rest_framework.authentication import TokenAuthentication
+        ```python
+        from rest_framework.authentication import TokenAuthentication
 
-    class BookViewSet(viewsets.ModelViewSet):
-        queryset = Book.objects.all()
-        serializer_class = BookSerializer
-        authentication_classes = [TokenAuthentication]
-    ```
+        class BookViewSet(viewsets.ModelViewSet):
+            queryset = Book.objects.all()
+            serializer_class = BookSerializer
+            authentication_classes = [TokenAuthentication]
+        ```
 
     #### Permissions
 
@@ -445,14 +445,14 @@
 
     -   **Response**: The `Response` object in DRF is a subclass of Django’s `HttpResponse` that renders the response data into the requested format (e.g., JSON).
 
-        Example:
+        -   Example:
 
-        ```python
-        from rest_framework.response import Response
+            ```python
+            from rest_framework.response import Response
 
-        def get(self, request):
-            return Response({"message": "Hello, World!"})
-        ```
+            def get(self, request):
+                return Response({"message": "Hello, World!"})
+            ```
 
     #### Terms & Concepts
 
@@ -466,16 +466,16 @@
         -   **UserRateThrottle**: Limits requests for authenticated users.
         -   **Custom Throttling**: Custom throttling strategies can also be implemented.
 
-        Example:
+        -   Example:
 
-        ```python
-        from rest_framework.throttling import UserRateThrottle
+            ```python
+            from rest_framework.throttling import UserRateThrottle
 
-        class BookViewSet(viewsets.ModelViewSet):
-            queryset = Book.objects.all()
-            serializer_class = BookSerializer
-            throttle_classes = [UserRateThrottle]
-        ```
+            class BookViewSet(viewsets.ModelViewSet):
+                queryset = Book.objects.all()
+                serializer_class = BookSerializer
+                throttle_classes = [UserRateThrottle]
+            ```
 
     -   **Renderer**:
 
@@ -713,6 +713,7 @@
     from rest_framework.authtoken.models import Token
 
     from rest_framework.settings import api_settings
+    from django.forms.models import model_to_dict
     ```
 
     </details>

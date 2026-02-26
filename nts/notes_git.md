@@ -1,13 +1,13 @@
--   <details><summary style="font-size:25px;color:Orange;text-align:left">Git Terminology</summary>
+-   `$ brew install git-lfs`
 
-    -   `$ brew install git-lfs`
-
-    🔥 GIT TUTORIALS:
-
+-   **GIT TUTORIALS**:
     -   [Git MERGE vs REBASE: Everything You Need to Know](https://www.youtube.com/watch?v=0chZFIZLR_0)
     -   [Learn Git with Bitbucket Cloud](https://www.atlassian.com/git/tutorials/learn-git-with-bitbucket-cloud)
     -   [Udacity: How to Use Git and GitHub](https://www.youtube.com/playlist?list=PLAwxTw4SYaPk8_-6IGxJtD3i2QAu5_s_p)
     -   https://git-scm.com/docs
+
+
+-   <details><summary style="font-size:25px;color:Orange;text-align:left">Git Terminology</summary>
 
     #### KEY WORDS:
 
@@ -99,12 +99,120 @@
         -   Forking is the process of creating a personal copy of a repository in which you can make changes without affecting the original repository.
         -   It's commonly used for contributing to open-source projects.
 
-    -   **Tag**:
+    -   **Tag**: A **Tag** is a permanent "bookmark" pointing to a specific point in your repository's history. While branches move every time you add a new commit, a tag **stays put**. It is typically used to mark specific release points (like **v1.0** or **v2.1**).
 
-        -   A tag is a reference to a specific commit.
-        -   It is often used to mark significant milestones or releases in a project's history.
+        1. **When to use a Tag**: Think of tags as **milestones**. You shouldn't tag every commit, but you should tag significant moments:
 
-    #### KEY Terminology:
+            * **Software Releases:** Marking a version that is being deployed to production.
+            * **Version History:** Keeping a record of what code was included in "v1.0.2" versus "v1.1.0."
+            * **Major Milestones:** Marking the completion of a major project phase or a "Golden Master" build.
+
+        2. **Creating a Tag**: There are two main types of tags: **Lightweight** (just a pointer) and **Annotated** (stored as full objects with a message, date, and creator). Annotated tags are recommended for public releases.
+
+            * **Annotated Tag (Best Practice)**: `$ git tag -a v1.0 -m "Initial public release"`
+            * **Lightweight Tag**: `$ git tag v1.0-lw`
+
+        3. **Pushing Tags to a Server**: By default, `git push` does **not** send tags to remote servers like GitHub. You have to push them explicitly:
+
+            -   `$ git push origin v1.0` -> Push a specific tag
+            -   `$ git push origin --tags` -> Push all local tags
+
+        4. **Listing and Deleting Tags**: 
+
+            -   `$ git tag` -> List all tags
+            -   `$ git tag -d v1.0` -> Delete a local tag
+
+        5. **Tags vs. Branches**
+
+            | Feature       | Git Tag                                   | Git Branch                                  |
+            | ------------- | ----------------------------------------- | ------------------------------------------- |
+            | **Movement**  | **Fixed.** It never changes once created. | **Active.** Moves forward with new commits. |
+            | **Purpose**   | To mark a **version** or milestone.       | To develop **features** or fixes.           |
+            | **Lifecycle** | Usually exists forever as a record.       | Usually deleted after merging.              |
+
+
+
+    #### KEY Terminology
+
+    -   **Fast-forward merge**: Fast-forward merge is the simplest and cleanest way to combine two branches. It occurs when the base branch (like main) hasn't had any new commits since you created your feature branch. Instead of creating a new "merge commit," Git simply moves the pointer of your current branch forward to the latest commit of the feature branch.
+
+        -   **How it Works Visually**: Imagine your project is a book. You are on Page 10 (main) and you write Pages 11 and 12 on a separate notepad (feature). If nobody else wrote anything in the book while you were gone, you can just glue your new pages directly to the end of Page 10.
+
+    -   **Divergent Branch**: A **divergent branch** situation arises when both your local branch and its corresponding remote branch have progressed independently since their last common commit. This means that new commits have been added to both branches, leading to separate lines of development. Here are the Causes of Divergence:
+
+        -   `Local Commits`: You've made commits on your local branch that haven't been pushed to the remote repository.
+
+        -   `Remote Commits`: Other collaborators have pushed commits to the remote branch that you haven't yet incorporated into your local branch.
+
+        -   When you attempt to synchronize these branches using commands like `git pull` or `git push`, Git detects the divergence and requires guidance on how to reconcile the differences.
+
+        -   **Resolving Divergent Branches**: To address this situation, you can choose from several strategies:
+
+            1. `Merge (Default Strategy)`: Combines the remote changes with your local commits, creating a new merge commit.
+
+                - `$ git pull --no-rebase`
+                - `$ git config pull.rebase false` → Set Merge as Default
+
+            2. `Rebase`: Reapplies your local commits on top of the remote branch, resulting in a linear commit history.
+
+                - `$ git pull --rebase`
+                - `$ git pull --rebase origin cpecs-12147`
+                - `$ git config pull.rebase true` → Set Rebase as Default
+
+            3. `Fast-Forward Only`: Updates your branch only if it can be fast-forwarded; otherwise, it aborts to prevent unintended merges.
+
+    -   **Three-way merge**: A Three-way merge is how Git combines two branches that have diverged. Unlike a Fast-Forward merge (where one branch is just ahead of the other), a three-way merge occurs when both branches have new, unique commits since they last shared a common ancestor. It is called "three-way" because Git uses three specific snapshots to create the final result:
+
+        -   **The Common Ancestor**: The last point where both branches were identical.
+
+        -   **Branch A Tip**: The latest work on your current branch (e.g., main).
+
+        -   **Branch B Tip**: The latest work on the branch you are pulling in (e.g., feature).
+
+    -   **Merge Commit**: A Merge Commit is a special type of commit that combines the histories of two diverging branches. Unlike a standard commit, which has only one "parent," a merge commit has two or more parent commits. It acts as a symbolic knot that ties together independent lines of development, marking exactly when and how a feature was integrated back into a main branch.
+
+        -   **When a Merge Commit happen**: A merge commit is created automatically during a Three-way Merge. This occurs when the branch you are merging into (e.g., main) has moved forward with new commits since you first branched off to start your work. Since Git can't just "fast-forward" the pointer in a straight line, it creates a new commit to reconcile the differences between:
+
+            -   The tip of Branch A (main).
+            -   The tip of Branch B (feature).
+            -   The Common Ancestor where they first split.
+
+    -   **Rebase**: **rebase** is an alternative to merging. While a merge joins two branches together with a "merge commit," a rebase rewrites your project history by moving your entire branch so that it begins at the tip of another branch.
+
+        -   **When to use rebase**: Rebasing is most commonly used to keep a **clean, linear project history**. You should use it when:
+
+            1. **Updating your local branch:** If you've been working on a feature for a few days and `main` has moved forward, you rebase your feature branch onto `main` to pull in the latest changes without an ugly "merge commit."
+            2. **Cleaning up commits:** Before pushing your work for a Pull Request, you can use **Interactive Rebase** to combine (squash) small "fixed typo" commits into one clean, professional commit.
+            3. **Maintaining a "No-Merge" policy:** Many professional teams prefer a linear history where every commit follows the previous one in a straight line.
+
+        1. **The Standard Rebase**: If you are on your `feature` branch and want to pull in the latest from `main`:
+
+            ```bash
+            git checkout feature
+            git rebase main
+            ```
+
+            -   Git will "lift" your feature commits, move the starting point to the end of `main`, and then "replay" your commits one by one on top.
+
+        2. **The Interactive Rebase (The "Cleanup" Tool)**: This is the most powerful version of the command. It lets you edit your history before others see it.
+
+            ```bash
+            git rebase -i HEAD~3
+            ```
+
+            -   This opens an editor showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
+
+        3. **The Golden Rule of Rebasing**: Never rebase commits that you have already pushed to a public/shared server. Because rebasing **rewrites history** (it actually creates brand new commits with new IDs), if you rebase something that others are already working on, you will break their version of the repository. Only rebase work that is still local to your machine.
+
+        -   **Rebase vs. Merge**
+
+            | Feature        | Git Merge                                | Git Rebase                            |
+            | -------------- | ---------------------------------------- | ------------------------------------- |
+            | **History**    | Preserves the exact chronological order. | Creates a **clean, linear line**.     |
+            | **Complexity** | Simple and safe.                         | Can be complex if conflicts occur.    |
+            | **Commits**    | Adds a new "Merge Commit."               | **Rewrites** existing commits.        |
+            | **Best For**   | Joining finished features into `main`.   | Keeping your local branch up-to-date. |
+
 
     -   **ISO (International Organization for Standardization)**:
 
@@ -122,28 +230,6 @@
 
             These are typically mentioned in **README files**, **project documentation**, or **compliance badges**.
 
-    -   **Divergent Branch**: A **divergent branch** situation arises when both your local branch and its corresponding remote branch have progressed independently since their last common commit. This means that new commits have been added to both branches, leading to separate lines of development. Here are the Causes of Divergence:
-
-        -   `Local Commits`: You've made commits on your local branch that haven't been pushed to the remote repository.
-
-        -   `Remote Commits`: Other collaborators have pushed commits to the remote branch that you haven't yet incorporated into your local branch.
-
-        -   When you attempt to synchronize these branches using commands like `git pull` or `git push`, Git detects the divergence and requires guidance on how to reconcile the differences. citeturn0search0
-
-        -   **Resolving Divergent Branches**: To address this situation, you can choose from several strategies:
-
-            1. `Merge (Default Strategy)`: Combines the remote changes with your local commits, creating a new merge commit.
-
-                - `$ git pull --no-rebase`
-                - `$ git config pull.rebase false` → Set Merge as Default
-
-            2. `Rebase`: Reapplies your local commits on top of the remote branch, resulting in a linear commit history.
-
-                - `$ git pull --rebase`
-                - `$ git pull --rebase origin cpecs-12147`
-                - `$ git config pull.rebase true` → Set Rebase as Default
-
-            3. `Fast-Forward Only`: Updates your branch only if it can be fast-forwarded; otherwise, it aborts to prevent unintended merges.
 
     -   **SHA**: SHA stands for Secure Hash Algorithm, usually referring to the SHA-1 hash Git uses to identify each object uniquely.
 
@@ -216,15 +302,20 @@
     -   `$ git clone -b feature/development-2.0 https://github.com/user/my-repo.git` → To clone a repository named `my-repo` and immediately check out the branch named `feature/development-2.0`.
     -   `$ git clone https://github.com/repoName` → It creates a repository named `repoName`, initializes a `.git` directory inside it, pulls down all the data from that `main`/`master` branch of repository, and checks out a working copy of the latest version.
     -   `$ git clone --branch <branch_name> --single-branch <repository_url>` →
+
     -   `$ git init` → It creates a new subdirectory named .git that contains all of your necessary repository files – a Git repository skeleton.
     -   `$ git init <folder_name>` → It creates a new directory named folder_name in current directory and initialize a git repository – a Git Repository Skeleton - in it.
     -   `$ git remote add origin <URL>` → Add the repository, named ‘origin’, from the remote (GitHub) to the local machin through given ‘url’. Conventionaly the word ‘origin’ is used as the name of remote repository, but the link between the locally initialized git repository and the remote(GitHub) get established through the provided URL, not through the name of remote repository, ‘origin’
         `$ git remote add origin git@github.com:Aminul-Momin/TestingProj.git`
+    -   `$ 🔥 git remote set-url origin git@github.com:Aminul-Momin/<repository_name>.git` → Updates the URL of the existing origin remote to a new repository address.
+    -   `$ git remote set-url origin git@gh2:Aminul-Momin/project_name.git`
+    -   `$ git remote set-url origin git@github.com:Aminul-Momin/Algorithms_and_Data_Structures.git` → to set remote origin url
+    -   `$ git remote show origin` → Displays detailed information about the remote named `origin`, including its fetch and push URLs, tracking branches, and status.
+    -   `$ git remote add upstream <URL>` → Adds a new remote named `upstream` pointing to the given `<URL>`, typically used to track the original repository if you’ve forked it.
+
     -   `$ git config --global user.name 'Aminul Momin'`
     -   `$ git config --global user.email A.Momin.NYC@gmail.com`
     -   `$ git config --global init.defaultBranch <master_branch>` → setup the initial branch name to create in all new repositories.
-    -   `$ 🔥 git remote set-url origin git@github.com:Aminul-Momin/<repository_name>.git` → Updates the URL of the existing origin remote to a new repository address.
-    -   `$ git remote set-url origin git@gh2:Aminul-Momin/project_name.git`
     -   `$ git remote` → List out all the remote this git repo has been added to
     -   `$ git remote -v` → Listout all the remote’s URL this git repo has been added to
 
@@ -249,28 +340,28 @@
     -   `$ git config --local [user.email | author.name | author.email | committer.name | committer.email]`
     -   `$ git config user.name [author.name | author.email | committer.name | committer.email]` → Returns a specific key’s value ( here, key = user.name).
 
-    <details open><summary style="font-size:20px;color:red;text-align:left">Troubleshoot Github Authenticatios</summary>
+    -   <details open><summary style="font-size:20px;color:red;text-align:left">Troubleshoot Github Authenticatios</summary>
 
-    -   `$ eval $(ssh-agent)` → Make sure 'ssh-agent' is running
-    -   `$ 🔥 alias runsshagent='eval $(ssh-agent)'` → Make sure 'ssh-agent' is running
-    -   `$ code .git/config` → Git Repo's local configuration file.
+        -   `$ eval $(ssh-agent)` → Make sure 'ssh-agent' is running
+        -   `$ 🔥 alias runsshagent='eval $(ssh-agent)'` → Make sure 'ssh-agent' is running
+        -   `$ code .git/config` → Git Repo's local configuration file.
 
-    -   `$ ssh-add -l` → list out all the keys added to the ssh agent.
-    -   `$ ssh-add -d ~/.ssh/github_bbcredcap3` → Delete a key from SSH Agent
-    -   `$ ssh-add ~/.ssh/github_bbcredcap3` → Add a key to SSH Agent
+        -   `$ ssh-add -l` → list out all the keys added to the ssh agent.
+        -   `$ ssh-add -d ~/.ssh/github_bbcredcap3` → Delete a key from SSH Agent
+        -   `$ ssh-add ~/.ssh/github_bbcredcap3` → Add a key to SSH Agent
 
-    -   `$ ssh -T git@github.com` → Test your Authentication/Connection into remote.
-    -   `$ ssh -T git@gh1` → Test your Authentication/Connection into remote.
-    -   `$ ssh -T git@gh2` → Test your Authentication/Connection into remote.
-    -   `$ git remote show origin` → get the remote origin URL
-    -   `$ git config --get remote.origin.url` → get the remote origin URL
-    -   `$ git clone git@gh1:A-Momin/project_name.git` → Clone from perticular github account
-    -   `$ git remote add origin git@gh1:A-Momin/drf.git`
-    -   `$ git remote set-url origin git@gh1:A-Momin/drf.git`
-    -   `$ git remote set-url origin git@gh2:Aminul-Momin/noteshub.git`
-    -   `$ git remote set-url origin git@github.com:Aminul-Momin/noteshub.git`
+        -   `$ ssh -T git@github.com` → Test your Authentication/Connection into remote.
+        -   `$ ssh -T git@gh1` → Test your Authentication/Connection into remote.
+        -   `$ ssh -T git@gh2` → Test your Authentication/Connection into remote.
+        -   `$ git remote show origin` → get the remote origin URL
+        -   `$ git config --get remote.origin.url` → get the remote origin URL
+        -   `$ git clone git@gh1:A-Momin/project_name.git` → Clone from perticular github account
+        -   `$ git remote add origin git@gh1:A-Momin/drf.git`
+        -   `$ git remote set-url origin git@gh1:A-Momin/drf.git`
+        -   `$ git remote set-url origin git@gh2:Aminul-Momin/noteshub.git`
+        -   `$ git remote set-url origin git@github.com:Aminul-Momin/noteshub.git`
 
-    </details>
+        </details>
 
     ## RECORD & EXAMIN CHANGES
 
@@ -392,21 +483,17 @@
         -   `$ git rebase`
         -   `$ git rebase`
 
-    -   🔥 PUSH/PULL/FETCH:
-
-        -   `$ git remote set-url origin git@github.com:Aminul-Momin/Algorithms_and_Data_Structures.git` → to set remote origin url
-        -   `$ git remote show origin` → Displays detailed information about the remote named `origin`, including its fetch and push URLs, tracking branches, and status.
-        -   `$ git remote add upstream <URL>` → Adds a new remote named `upstream` pointing to the given `<URL>`, typically used to track the original repository if you’ve forked it.
-
-        -   `$ git push origin master` → Pushes the master branch of local repository to master branch of remote repository.
-        -   `$ git push -u origin master` → Push the commits from my local master branch to the master branch on the remote repository named origin, and set up tracking information for the master branch on the remote repository.
-        -   `$ git push origin cpecs-12147 --force` → force-pushes the local `cpecs-12147` branch to the `origin` remote, overwriting any conflicts on the remote branch.
-        -   `$ git push origin` → push all the branches to origin
+    -   🔥 FETCH/PULL/PUSH:
 
         -   `$ git pull --rebase origin cpecs-12147` → fetches the latest changes from `origin/cpecs-12147` and rebases your local branch on top of it (instead of merging).
         -   `$ git pull` → does everything `git fetch` does, **plus it merges** the fetched changes from the remote branch into your current branch (equivalent to `git fetch` followed by `git merge`).
         -   `$ git pull origin master` → fetches the latest changes from the `master` branch on the remote named `origin` and **merges** them into your current local branch.
         -   `$ git pull upstream Master` → fetches and merges the `Master` branch from the `upstream` remote into your current local branch. - `$ git pull upstream Master` →
+
+        -   `$ git push origin master` → Pushes the master branch of local repository to master branch of remote repository.
+        -   `$ git push -u origin master` → Push the commits from my local master branch to the master branch on the remote repository named origin, and set up tracking information for the master branch on the remote repository.
+        -   `$ git push origin cpecs-12147 --force` → force-pushes the local `cpecs-12147` branch to the `origin` remote, overwriting any conflicts on the remote branch.
+        -   `$ git push origin` → push all the branches to origin
 
     </details>
 
