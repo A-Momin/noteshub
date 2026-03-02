@@ -174,23 +174,22 @@
             -   They provide a way to persist data independently of the host machine's file system.
             -   Named volumes are identified by a user-defined name and can be shared and accessed by multiple containers.
             -   Docker manages the lifecycle of named volumes, ensuring data integrity and allowing for easy backup, restoration, and migration.
-            -   Named volumes are typically defined in the Docker Compose file or with the `docker volume create` command and then mounted into containers using the `--mount` or `-v` flag.
+            -   Named volumes are typically defined in the `docker-compose` file or with the `docker volume create` command and then mounted into containers using the `--mount` or `-v` flag.
+
+        -   `Anonymous Volumes`: are created automatically when a container is created with the `--mount` or `-v` flag, without specifying a named volume. Anonymous volumes are not managed by Docker and their contents are lost when the container is deleted. Anonymous volumes are useful for testing and debugging, but not recommended for production use.
 
         -   `Volumes Mounts`:
 
             -   Volume mounts, also known as bind mounts, involve mounting a specific directory or file from the host machine directly into the container.
             -   With volume mounts, the data is stored on the host machine's file system and is shared with the container.
             -   Any changes made to the mounted directory or file in the container are immediately reflected on the host machine and vice versa.
-            -   Volume mounts provide flexibility, as they allow you to work directly with the host machine's file system and leverage existing files or directories.
-            -   Volume mounts are typically specified in the Docker run command or in the Docker Compose file using the `<absolut_host_path>:<container_path>` syntax.
+            -   Volume mounts are typically specified in the `docker run` command or in the `docker-compose` file using the `<absolut_host_path>:<container_path>` syntax.
 
             -   `Bind Mounts`: allows you to mount a host file or directory into a container. The host file or directory is mounted directly into the container's file system and changes made to the mounted file or directory are reflected in both the host and container file systems.
 
                 -   Bind mounts are a specific type of volume mount that map a host file or directory to a container.
-                -   Bind mounts are specified in the Docker run command or in the Docker Compose file using the `<host_path>:<container_path>:<options>` syntax, where `<options>` can include read-only mode, consistency settings, or other mount options.
+                -   Bind mounts are specified in the `docker run` command or in the `docker-compose` file using the `<host_path>:<container_path>:<options>` syntax, where `<options>` can include `read-only` mode, consistency settings, or other mount options.
 
-        -   `Anonymous Volumes`: are created automatically when a container is created with the `--mount` or `-v` flag, without specifying a named volume. Anonymous volumes are not managed by Docker and their contents are lost when the container is deleted. Anonymous volumes are useful for testing and debugging, but not recommended for production use.
-        -   In summary, named volumes are a better choice for production use, as they provide a way to manage and persist data, while anonymous volumes are useful for testing and debugging, but should not be used for production data.
 
     -   `Networking`: Docker provides networking capabilities to enable communication between containers and other services. Docker creates a default bridge network for containers to communicate with each other. Additionally, Docker supports custom networks to isolate containers, attach containers to specific networks, and define network-level policies. Docker provides a flexible networking model that allows you to connect containers in various ways. Here are key concepts related to Docker networks:
 
@@ -319,7 +318,7 @@
 
         -   `$ docker run -dit --rm -v $GD/gd/Software_Development/notes_hub/dotfiles/Linux:/root --name=rhel8 roboxes/rhel8 sleep 9000`
 
-    -   [docker run](https://docs.docker.com/engine/reference/commandline/run/): `docker run [OPTIONS] IMAGE [COMMAND] [ARG...]`
+    -   [`docker run` (Actually an Alias for `docker container run`)](https://docs.docker.com/engine/reference/commandline/run/): `docker run [OPTIONS] IMAGE [COMMAND] [ARG...]`
 
         -   The docker run command is used to launch and run a Docker container based on a pre-built specific Docker image. It is one of the fundamental commands in Docker and allows you to instantiate and start a container from an image. Here's a detailed explanation of the docker run command and its various options:
 
@@ -330,9 +329,11 @@
                 -   `COMMAND` (optional): Overrides the default command specified in the Docker image.
                 -   `ARG...` (optional): Arguments passed to the command in the container.
 
-            -   Commonly used options with the docker run command:
+            -   Commonly used options with the `docker run` command:
 
-                -   `-d` or `--detach`: Runs the container in the background (detached mode).
+                -   `-d` or `--detach` (Detatched Mode): It tells Docker to run the container in the background. If you omit this, your terminal will be **locked** to the container's output.
+                -   `-i` or `--interactive` (Interactive Mode): Keeps STDIN open even if not attached.
+                -   `-t` (TTY): Allocates a pseudo-TTY (a virtual terminal).
                 -   `-v` or `--volume`: Mounts a host directory or volume into the container in the format `<host-path>:<container-path>`.
                 -   `-p` or `--publish`: Maps container ports to host ports in the format `<host-port>:<container-port>`.
                 -   `-expose`: Expose a port or a range of ports.
@@ -341,6 +342,7 @@
                 -   `--restart`: Specifies container restart policy (e.g., always, unless-stopped, on-failure).
                 -   `--network`: Connects the container to a specific Docker network.
                 -   `--rm`: Specifies to automatically remove the container once it exits.
+                -   **Note**: Combining `-it` is what allows you to eventually **enter** the container later using docker exec to run bash commands.
 
             ```bash
             docker run \
@@ -356,9 +358,9 @@
                 --read-only --mount type=volume,target=/icanwritetoo \  # This option creates a volume named /icanwritetoo and mounts it inside the container.
                 --mount type=bind,src=/data,dst=/data \     # This option mounts the directory /data from the host system into the same path inside the container.
                 -w `pwd` \
-                --entrypoint sleep \                     # This option overrides the default entrypoint of the image with the sleep command.
                 --network=network_name \
                 --name=container_name \
+                --entrypoint sleep \                     # This option overrides the default entrypoint of the image with the `sleep` command.
                 image_name:latest param1                # Append parameter `param1` to entrypoint bash command (`sleep param1`)
             ```
 
@@ -368,6 +370,15 @@
         -   Run in _Attach Mode_. Add `-d` option to run in _Detach Mode_
         -   `--name=name_your_container` is used to give the container a name to refer it later
         -   EX: `$ docker run nginx`.
+
+    -   **Runing Special UBUNTU Image**:
+
+        -   When you run the Docker run Ubuntu command it runs an instance of Ubuntu image and exits immediately.
+        -   Now why is that? Unlike virtual machine containers are not meant to host an operating system. Containers are meant to run a specific task or process such as to host an instance of a web server or application server or a database, or simply to carry some kind of computation or analysis task. Once the task is complete, the container exits. A container only lives as long as the process inside it is alive. If the web service inside the container is stopped, or crash, then the container exits.
+
+        -   `$ docker run ubuntu` → Runs an Ubuntu image and it exites immediately.
+        -   `$ docker run ubuntu sleep 60` → Runs an Ubuntu image with sleep command of 60 minutes
+
 
     -   `$ docker pull <image_name>` → Just pull down the image into the docker-host (Local machine) form docker registry (Docker Hub)
 
@@ -389,7 +400,7 @@
 
         -   `$ docker inspect <container_name | container_id>` → Return details of a container in json format.
 
-    -   Container Logs:
+    -   **Container Logs**:
 
         -   `$ docker logs <container_name | container_id>` → Show the logs of a container ran in backgroun (detach mode).
         -   `$ docker logs -f <container_name | container_id>` → Show the logs of a container ran in backgroun (detach mode) with `-f` (--follow) following log output.
@@ -398,6 +409,7 @@
     -   [$ docker ps](https://docs.docker.com/engine/reference/commandline/ps/): `docker ps [OPTIONS]`
 
         -   `$ docker ps` → list out only the running containers
+        -   `$ docker ps -a` → list out all (running/stopped) containers
         -   `$ docker ps --format "table {{.Names}}:\t{{.Ports}}\t{{.Status}}"` → Print the result of `docker pa` in the given format.
 
     -   [$ docker stop](https://docs.docker.com/engine/reference/commandline/stop/): `docker stop [OPTIONS] CONTAINER [CONTAINER...]`
@@ -408,7 +420,7 @@
 
         -   The docker kill subcommand kills one or more containers. The main process inside the container is sent SIGKILL signal (default), or the signal that is specified with the --signal option. You can reference a container by its ID, ID-prefix, or name. While the default (SIGKILL) signal will terminate the container, the signal set through --signal may be non-terminal, depending on the container’s main process. For example, the SIGHUP signal in most cases will be non-terminal, and the container will continue running after receiving the signal.
 
-    -   [$ docker rm](): ``
+    -   [$ `docker rm` (Alias of `docker container remove`)](https://docs.docker.com/reference/cli/docker/container/rm/):
 
         -   `$ docker rm <container_id | container_name>` → Remove the instance of container previously created.
         -   `$ docker images` → List out images available in docker host (local machine or remote server)
@@ -417,14 +429,6 @@
             -   Remove the image_name previously build or pulled down from docker registry.
             -   EX: `$ docker rmi nginx`.
             -   Must not running any container of that image.
-
-    -   Runing Special UBUNTU Image:
-
-        -   When you run the Docker run Ubuntu command it runs an instance of Ubuntu image and exits immediately.
-        -   Now why is that? Unlike virtual machine containers are not meant to host an operating system. Containers are meant to run a specific task or process such as to host an instance of a web server or application server or a database, or simply to carry some kind of computation or analysis task. Once the task is complete, the container exits. A container only lives as long as the process inside it is alive. If the web service inside the container is stopped, or crash, then the container exits.
-
-        -   `$ docker run ubuntu` → Runs an Ubuntu image and it exites immediately.
-        -   `$ docker run ubuntu sleep 60` → Runs an Ubuntu image with sleep command of 60 minutes
 
     -   [$ docker exec](https://docs.docker.com/engine/reference/commandline/exec/): `docker exec [OPTIONS] CONTAINER COMMAND [ARG...]`
 
@@ -454,44 +458,22 @@
             -   Copy content of current directory in the `folder_name` of `volume_name`.
         -   `$ docker cp source <container_name | container_id>:folder_path`
 
----
+    ##### [docker image]()
 
--   <details><summary style="font-size:25px;color:Orange">docker network</summary>
+    -   `$ docker image ls` (or `ls -a`) → **List** all top-level images currently stored on your local machine.
+    -   `$ docker image pull name:tag` → **Download** an image from a registry (like Docker Hub) to your local machine.
+    -   `$ docker image push name:tag` → **Upload** a local image to a remote registry.
+    -   `$ docker image build -t name .` → **Create** a new image from a `Dockerfile` located in the current directory.
+    -   `$ docker image tag image_name new_name` → **Create a shortcut** (alias) that refers to `image_name` by a new name.
+    -   `$ docker image inspect image_name` → **Display detailed information** (JSON format) about an image, including layers, OS, and environment variables.
+    -   `$ docker image history image_name` → **Show the history** of an image, listing every layer and command used to build it.
+    -   `$ docker image save -o file.tar image_name` → **Export** an image to a tarball archive (useful for moving images without a registry).
+    -   `$ docker image load -i file.tar` → **Import** an image from a tarball archive back into Docker.
+    -   `$ docker image rm image_name` → **Remove** one or more specific images from local storage.
+    -   `$ docker image prune` → **Remove all dangling images** (images that are not tagged and not used by any container).
+    -   `$ docker image prune -a` → **Remove all unused images**, not just the dangling ones (be careful with this one!).
 
-    -   [docker network](https://docs.docker.com/engine/reference/commandline/network/)
-    -   `$ docker network --help`
-    -   `$ docker network <COMMAND> --help`
-    -   `$ docker network create [OPTIONS] NETWORK`
-    -   `$ docker network ls [OPTIONS]`
-    -   `$ docker network inspect [OPTIONS] NETWORK [NETWORK...]`
-    -   `$ docker network rm NETWORK [NETWORK...]`
-    -   `$ docker network prune [OPTIONS]` → Remove all unused networks. Unused networks are those which are not referenced by any containers.
-    -   `$ `
-
-    </details>
-
----
-
--   <details><summary style="font-size:25px;color:Orange">docker volume</summary>
-    -   [Add bind mounts, volumes or memory filesystems](https://docs.docker.com/engine/reference/commandline/service_create/#add-bind-mounts-volumes-or-memory-filesystems)
-
-    -   `$ docker volume --help`
-    -   `$ docker volume ls --help`
-    -   `$ docker volume create [OPTIONS] [VOLUME]`
-    -   `$ docker volume ls [OPTIONS]`
-    -   `$ docker volume inspect [OPTIONS] VOLUME [VOLUME...]`
-    -   `$ docker volume rm [OPTIONS] VOLUME [VOLUME...]`
-    -   `$ docker volume prune [OPTIONS]`
-        -   Remove all unused local volumes. Unused local volumes are those which are not referenced by any containers.
-    -   `$ `
-
-    </details>
-
-    </details>
-
----
-
--   <details><summary style="font-size:25px;color:Orange">docker container</summary>
+    ##### Docker Container
 
     -   `$ docker container --help`
     -   `$ docker container <COMMAND> --help`
@@ -521,9 +503,34 @@
     -   `$ docker container update` → Update configuration of one or more containers
     -   `$ docker container wait` → Block until one or more containers stop, then print their exit codes
 
-    </details>
+
+    ##### [docker network](https://docs.docker.com/engine/reference/commandline/network/)
+
+    -   `$ docker network --help`
+    -   `$ docker network <COMMAND> --help`
+    -   `$ docker network create [OPTIONS] NETWORK`
+    -   `$ docker network ls [OPTIONS]`
+    -   `$ docker network inspect [OPTIONS] NETWORK [NETWORK...]`
+    -   `$ docker network rm NETWORK [NETWORK...]`
+    -   `$ docker network prune [OPTIONS]` → Remove all unused networks. Unused networks are those which are not referenced by any containers.
+    -   `$ `
+
+
+    ##### docker volume
+
+    -   [Add bind mounts, volumes or memory filesystems](https://docs.docker.com/engine/reference/commandline/service_create/#add-bind-mounts-volumes-or-memory-filesystems)
+
+    -   `$ docker volume --help`
+    -   `$ docker volume ls --help`
+    -   `$ docker volume create [OPTIONS] [VOLUME]`
+    -   `$ docker volume ls [OPTIONS]`
+    -   `$ docker volume inspect [OPTIONS] VOLUME [VOLUME...]`
+    -   `$ docker volume rm [OPTIONS] VOLUME [VOLUME...]`
+    -   `$ docker volume prune [OPTIONS]` → Remove all unused local volumes. Unused local volumes are those which are not referenced by any containers.
+    -   `$ `
 
     </details>
+
 
 ---
 
@@ -589,7 +596,6 @@
     -   `$ docker commit`
 
         -   docker commit <conatainer_id> <username/imagename>
-
         -   This command creates a new image of an edited container on the local system
 
     ### Run Container:
@@ -604,7 +610,7 @@
     -   `$ docker <object> <command> [options] [...]`
 
         -   `object` indicates the type of Docker object you'll be manipulating. This can be a `container`, `image`, `network` or `volume` object.
-        -   `command` indicates the task to be carried out by the daemon, for instance, the run command.
+        -   `command` indicates the task to be carried out by the daemon, for instance, the `run` command.
         -   `options` can be any valid parameter that can override the default behavior of the command, like the `--publish` option for port mapping.
 
         -   `$ docker container run -d <image_name>`
@@ -618,18 +624,6 @@
 
     -   `$ ctrl + c`
 
-    -   `$ docker container ls`
-
-        -   List out containers that are currently running.
-
-    -   `$ docker container ls --all`
-
-        -   List out containers that are currently running and were run in past.
-
-    -   `$ `
-    -   `$ docker ps -a`
-        -   List all the containers that are currently running or have run in the past.
-
     ### Stop/kill Container:
 
     -   `$ docker container stop <container_identifier>`
@@ -638,7 +632,6 @@
         -   If you use the name as identifier, you'll get the name thrown back to you as output. The stop command shuts down a container gracefully by sending a SIGTERM signal. If the container doesn't stop within a certain period, a SIGKILL signal is sent which shuts down the container immediately.
         -   In cases where you want to send a SIGKILL signal instead of a SIGTERM signal, you may use the container kill command instead. The container kill command follows the same syntax as the stop command.
 
-    -   `$ `
 
     ### Restart/Reboot Container:
 
@@ -655,12 +648,6 @@
     -   The main difference between the two commands is that the container restart command attempts to stop the target container and then starts it back up again, whereas the start command just starts an already stopped container.
     -   In case of a stopped container, both commands are exactly the same. But in case of a running container, you must use the container restart command.
 
-    ### docker-compose:
-
-    -   `$ docker-compose build`
-    -   `$ docker-compose up -d`
-    -   `$ docker-compose down`
-
     ### Docker Volume:
 
     -   `Anonymous`: Randomly created and maintained by Docker.
@@ -673,10 +660,6 @@
     -   cat sos_commands/process/ps_auxwww | awk '$8 ~ /D/'
     -   echo 1 > /proc/sys/kernel/sysrq
     -   echo w > /proc/sysrq-trigger
-
-    ### Misc
-
-    -   `$ docker ps --format '{{.Names}}'`
 
     </details>
 
