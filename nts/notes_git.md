@@ -164,9 +164,7 @@
     -   **Three-way merge**: A Three-way merge is how Git combines two branches that have diverged. Unlike a Fast-Forward merge (where one branch is just ahead of the other), a three-way merge occurs when both branches have new, unique commits since they last shared a common ancestor. It is called "three-way" because Git uses three specific snapshots to create the final result:
 
         -   **The Common Ancestor**: The last point where both branches were identical.
-
         -   **Branch A Tip**: The latest work on your current branch (e.g., main).
-
         -   **Branch B Tip**: The latest work on the branch you are pulling in (e.g., feature).
 
     -   **Merge Commit**: A Merge Commit is a special type of commit that combines the histories of two diverging branches. Unlike a standard commit, which has only one "parent," a merge commit has two or more parent commits. It acts as a symbolic knot that ties together independent lines of development, marking exactly when and how a feature was integrated back into a main branch.
@@ -181,28 +179,20 @@
 
         -   **When to use rebase**: Rebasing is most commonly used to keep a **clean, linear project history**. You should use it when:
 
-            1. **Updating your local branch:** If you've been working on a feature for a few days and `main` has moved forward, you rebase your feature branch onto `main` to pull in the latest changes without an ugly "merge commit."
-            2. **Cleaning up commits:** Before pushing your work for a Pull Request, you can use **Interactive Rebase** to combine (squash) small "fixed typo" commits into one clean, professional commit.
-            3. **Maintaining a "No-Merge" policy:** Many professional teams prefer a linear history where every commit follows the previous one in a straight line.
+            1. **Updating your local branch**: If you've been working on a feature for a few days and `main` has moved forward, you rebase your feature branch onto `main` to pull in the latest changes without an ugly "merge commit."
+            2. **Cleaning up commits**: Before pushing your work for a Pull Request, you can use **Interactive Rebase** to combine (**squash**) small "fixed typo" commits into one clean, professional commit.
+            3. **Maintaining a "No-Merge" policy**: Many professional teams prefer a linear history where every commit follows the previous one in a straight line.
 
-        1. **The Standard Rebase**: If you are on your `feature` branch and want to pull in the latest from `main`:
+        -   **The Standard Rebase**: If you are on your `feature` branch and want to pull in the latest from `main`:
 
-            ```bash
-            git checkout feature
-            git rebase main
-            ```
-
+            -   `$ git checkout feature & git rebase main` → This sequence of commands is a common workflow used to keep a feature branch up to date with the main branch. Instead of "merging" (which creates a new commit joining the two branches), rebasing literally "rewrites" your branch history by moving your unique work to sit on top of the latest changes from main.
             -   Git will "lift" your feature commits, move the starting point to the end of `main`, and then "replay" your commits one by one on top.
 
-        2. **The Interactive Rebase (The "Cleanup" Tool)**: This is the most powerful version of the command. It lets you edit your history before others see it.
+        -   **The Interactive Rebase (The "Cleanup" Tool)**: This is the most powerful version of the command. It lets you edit your history before others see it.
 
-            ```bash
-            git rebase -i HEAD~3
-            ```
+            -   `$ git rebase -i HEAD~3` → This opens an editor showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
 
-            -   This opens an editor showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
-
-        3. **The Golden Rule of Rebasing**: Never rebase commits that you have already pushed to a public/shared server. Because rebasing **rewrites history** (it actually creates brand new commits with new IDs), if you rebase something that others are already working on, you will break their version of the repository. Only rebase work that is still local to your machine.
+        -   **The Golden Rule of Rebasing**: Never rebase commits that you have already pushed to a public/shared server. Because rebasing **rewrites history** (it actually creates brand new commits with new IDs), if you rebase something that others are already working on, you will break their version of the repository. Only rebase work that is still local to your machine.
 
         -   **Rebase vs. Merge**
 
@@ -212,6 +202,106 @@
             | **Complexity** | Simple and safe.                         | Can be complex if conflicts occur.    |
             | **Commits**    | Adds a new "Merge Commit."               | **Rewrites** existing commits.        |
             | **Best For**   | Joining finished features into `main`.   | Keeping your local branch up-to-date. |
+
+    -   **Squashing**: In Git, **squashing** is the process of taking multiple commits and condensing them into a single, clean commit. Think of it as "editing" your history to remove the messy trail of small, intermediate changes before sharing your work with the rest of the team.
+
+        1. **Why Squash?**
+
+            -   During development, your commit history often looks like this:
+                1. `Added initial login logic`
+                2. `Fixed typo`
+                3. `Forgot to add validation`
+                4. `Actually fixed typo this time`
+                5. `Finalized login feature`
+
+            -   To a teammate reviewing your code, the "typo" commits are noise. Squashing allows you to combine all five into one professional commit: **"Implemented User Login with validation."**
+
+        2. **Common Ways to Squash**
+
+            -   **Method A: Interactive Rebase (The Manual Way)**: This is the most powerful method because it allows you to choose exactly which commits to merge.
+
+                1. Run `git rebase -i HEAD~N` (where **N** is the number of commits you want to look back at).
+                2. An editor opens. You'll see a list of commits starting with the word `pick`.
+                3. Change `pick` to `squash` (or just `s`) for the commits you want to fold into the one above them.
+                4. Save and close. Git will then ask you to write a new, combined commit message.
+
+            -   **Method B: Merge with Squash (The "GitHub/GitLab" Way)**: When you are ready to merge a feature branch into `main`, you can squash everything at the point of the merge.
+
+                ```bash
+                git checkout main
+                git merge --squash feature-branch
+                git commit -m "Summarized feature description"
+                ```
+
+            -   **Result:** All changes from the feature branch are added to `main` as one single commit. The original history on the feature branch remains untouched.
+
+        3. **Squash vs. Standard Merge**
+
+            | Feature          | Standard Merge                                   | Squash Merge                                           |
+            | ---------------- | ------------------------------------------------ | ------------------------------------------------------ |
+            | **History**      | Preserves every single tiny commit.              | Creates one clean, summary commit.                     |
+            | **Traceability** | Easy to see exactly *when* a bug was introduced. | Harder to see granular changes; cleaner "big picture." |
+            | **Reverting**    | Can be complex to undo multiple commits.         | Very easy to undo (it's just one commit).              |
+            | **Best For...**  | Long-running shared branches.                    | Feature branches and Pull Requests.                    |
+
+        4. **Important Rules & Risks**
+
+            * **Don't Squash Shared History:** Never squash commits that have already been pushed to a shared public branch (like `main`) that others are working on. This rewrites history and will cause "Git nightmares" for your teammates.
+            * **The "Base" Commit:** When squashing via rebase, you always keep at least one `pick` at the top. You cannot squash the very first commit in the list into nothingness; it needs a "parent" to merge into.
+
+    -   **Merge Conflict**: In Git, a **Merge Conflict** is an event that occurs when Git is unable to automatically reconcile differences between two commits. While Git is usually smart enough to combine changes from different branches, it stops and asks for help when it sees "competing" edits.
+
+        1. **Why do Merge Conflicts happen?**: A conflict typically occurs in two scenarios:
+
+           -    **Competing Content:** Two or more people change the same line(s) in the same file differently.
+           -    **Structural Changes:** One person deletes a file while another person is busy editing it.
+
+        2. **How to Identify a Conflict**: When you run `git merge <branch>`, Git will notify you:
+
+            > `CONFLICT (content): Merge conflict in file_name.py`
+            > `Automatic merge failed; fix conflicts and then commit the result.`
+
+            If you open the conflicted file, you will see **Conflict Markers**:
+
+            ```text
+            <<<<<<< HEAD (Current change)
+            print("Hello from the Main branch")
+            =======
+            print("Hello from the Feature branch")
+            >>>>>>> feature-branch (Incoming change)
+            ```
+
+            * **`<<<<<<< HEAD`**: Start of the changes on your current branch.
+            * **`=======`**: The divider between the two versions.
+            * **`>>>>>>> branch-name`**: End of the changes from the branch you are trying to merge.
+
+        -   **Step-by-Step Resolution**: 
+
+            -   **Step 1: Locate the files**: Run `git status` to see a list of "Unmerged paths." These are your broken files.
+
+            -   **Step 2: Decide which code to keep**: Open the file in a text editor (like VS Code). You have four choices:
+
+                1. Keep **Current** (yours).
+                2. Keep **Incoming** (theirs).
+                3. Keep **Both** (by combining the lines).
+                4. Write something entirely new.
+
+                -   **Crucial:** You must delete the `<<<<<<<`, `=======`, and `>>>>>>>` lines manually.
+
+            -   **Step 3: Stage the fix**: Tell Git you've resolved the issue by staging the file:
+
+                -   `$ git add file_name.py`
+
+
+            -   **Step 4: Complete the merge**: Finalize the process with a commit:
+
+                -   `$ git commit -m "Resolved merge conflict in file_name.py"`
+
+            -   **Pro Tools for Resolution**: : If manually editing text files feels "primitive," you can use a **Merge Tool** which provides a side-by-side 3-pane view (Local, Remote, and Result).
+
+                * **VS Code:** Has a built-in "Merge Editor" with easy-to-click buttons.
+                * **GitKraken:** A visual GUI that makes dragging and dropping changes very intuitive.
+                * **`git mergetool`:** A command that launches external software like Meld, KDiff3, or P4Merge.
 
 
     -   **ISO (International Organization for Standardization)**:
@@ -479,9 +569,18 @@
         -   `$ git merge <origin_branch_name> < local_branch_name>` → Merge a local branch into a origin branch.
         -   `$ git merge <local_branch_name1> < local_branch_name2>` → Merges two branches in local repository.
         -   `$ git merge —abort` → Abort merge if it is not possible to merge for any reason.
+
+    -   Rebase & Squash:
+
+        -   `$ git checkout feature & git rebase main` → This sequence of commands is a common workflow used to keep a feature branch up to date with the main branch. Instead of "merging" (which creates a new commit joining the two branches), rebasing literally "rewrites" your branch history by moving your unique work to sit on top of the latest changes from main.
+        -   `$ git rebase -i HEAD~3` → This opens an editor showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
         -   `$ git rebase`
-        -   `$ git rebase`
-        -   `$ git rebase`
+
+        -   ```bash
+            git checkout main
+            git merge --squash feature-branch
+            git commit -m "Summarized feature description"
+            ```
 
     -   🔥 FETCH/PULL/PUSH:
 
