@@ -99,8 +99,8 @@
 
     1. **Most Usaful Shortcuts**:
 
+       - 🔥 `^ + k + f` → Format selected block of code snippets using default formatter.
        - 🔥 `^ + g` → Move cursore to the beginning of the given **LINE #**.
-       - 🔥 `⌥ + z` → Toggle **WRAP/UNWRAP** words in integrated VSC terminal.
        - 🔥 `^ + ␣` → Search for custom **CODE SNIPPET** shortcuts for markdown.
        - 🔥 `^ + -` → **JUMP CURSOR BACKWORD** in the chain of it's previous position
        - 🔥 `^ + ⇧ + -` → **JUMP CURSOR FORWARD** in the chain of it's previous position
@@ -108,6 +108,7 @@
        - 🔥 `⌘ + ⇧ + k` → **DELETE THE LINE** of code at the cursor.
        - 🔥 `⌘ + x` → **CUT THE LINE OF CODE** at the cursor to paste somewhere else.
        - 🔥 `⌘ + k + 0` → Fold code at the base indentation lavel
+       - 🔥 `⌥ + z` → Toggle **WRAP/UNWRAP** words in integrated VSC terminal.
        - `⌥ + ⌘ + ]` → Fold code in the editor
        - `⌘ + k + j` → Unold all code blocks.
        - `⌘ + ⇧ + e` → Toggle between file explorer and editor.

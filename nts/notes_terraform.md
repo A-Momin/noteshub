@@ -536,6 +536,33 @@
 
     1. **Terraform Workspaces**: **Workspaces** are designed to manage multiple, separate **state files** within a **single configuration**.
 
+        - You keep one set of `*.tf` files and use the built-in `terraform workspace` commands to switch context.
+
+            1. Create a new workspace: `terraform workspace new staging`
+            2. Switch to it: `terraform workspace select staging`
+            3. Run apply: `terraform apply`
+
+        - Workspaces rely on the `terraform.workspace` variable, which you reference in your code to change resource attributes:
+
+            ```terraform
+            # Example: Use the workspace name to set the instance size
+            resource "aws_instance" "app_server" {
+                instance_type = var.instance_sizes[terraform.workspace]
+                # ...
+            }
+            ```
+
+        - **Best Use Case:** Spinning up temporary or **ephemeral environments** (e.g., a "sandbox" for a new team member, or a dedicated environment for a feature branch—like `pr-101`). They are best for configurations that are **nearly identical** except for simple variables (like size or name prefix).
+        - **Caution:** HashiCorp advises **against** using workspaces for managing long-lived, critical environments like `prod` and `staging` because they all share the exact same code base, which increases the risk of deploying a change intended for `dev` to `prod`.
+
+
+        This is a best practice to keep environment-specific settings—like the number of server instances, the database size, or a tag prefix—out of your main `.tf` files.
+
+        | Variable File | Use Case                   | Command                                 |
+        | :------------ | :------------------------- | :-------------------------------------- |
+        | `dev.tfvars`  | Small, cheap resources     | `terraform apply -var-file=dev.tfvars`  |
+        | `prod.tfvars` | Large, expensive resources | `terraform apply -var-file=prod.tfvars` |
+
     2. **Separate Directories (Recommended Best Practice)**: This is the most widely recommended and robust solution for managing **long-lived, distinct environments** like `dev`, `staging`, and `prod`. Instead of using a single configuration, you create a dedicated root module (a separate folder) for each environment.
 
         - **File Structure**:
@@ -563,33 +590,6 @@
         -   **Architectural Flexibility:** Because each folder is an independent configuration, you can deploy different resource types, providers, or even different architectural designs in one environment compared to another.
         -   **Clearer CI/CD Integration:** You can easily restrict who can run `terraform apply` on the `envs/prod` directory and ensure production deploys only run on the `main` branch.
 
-
-        - You keep one set of `.tf` files and use the built-in `terraform workspace` commands to switch context.
-
-            1. Create a new workspace: `terraform workspace new staging`
-            2. Switch to it: `terraform workspace select staging`
-            3. Run apply: `terraform apply`
-
-        - Workspaces rely on the `terraform.workspace` variable, which you reference in your code to change resource attributes:
-
-            ```terraform
-            # Example: Use the workspace name to set the instance size
-            resource "aws_instance" "app_server" {
-                instance_type = var.instance_sizes[terraform.workspace]
-                # ...
-            }
-            ```
-
-        - **Best Use Case:** Spinning up temporary or **ephemeral environments** (e.g., a "sandbox" for a new team member, or a dedicated environment for a feature branch—like `pr-101`). They are best for configurations that are **nearly identical** except for simple variables (like size or name prefix).
-        - **Caution:** HashiCorp advises **against** using workspaces for managing long-lived, critical environments like `prod` and `staging` because they all share the exact same code base, which increases the risk of deploying a change intended for `dev` to `prod`.
-
-
-        This is a best practice to keep environment-specific settings—like the number of server instances, the database size, or a tag prefix—out of your main `.tf` files.
-
-        | Variable File | Use Case                   | Command                                 |
-        | :------------ | :------------------------- | :-------------------------------------- |
-        | `dev.tfvars`  | Small, cheap resources     | `terraform apply -var-file=dev.tfvars`  |
-        | `prod.tfvars` | Large, expensive resources | `terraform apply -var-file=prod.tfvars` |
 
     3. **External Tools (Terragrunt)**:For large-scale infrastructure using the **Separate Directories** approach, you may find yourself repeating backend configuration or module calls in many directories.
 

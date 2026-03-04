@@ -1,175 +1,163 @@
--   [neetcode: System Design](https://www.youtube.com/playlist?list=PLot-Xpze53le35rQuIbRET3YwEtrcJfdt)
--   [How I Mastered Low Level Design Interviews](https://www.youtube.com/watch?v=OhCp6ppX6bg)
--   [How I Mastered System Design Interviews](https://www.youtube.com/watch?v=l3X1t3kpmwY)
--   [System Design Concepts Course and Interview Prep](https://www.youtube.com/watch?v=F2FmTdLtb_4&t=14s)
+### Software Design
 
-## 📌 System Design Key Concepts
+-   <details><summary style="font-size:25px;color:Orange">Application Design Architectures</summary>
 
--   [Scalability](https://blog.algomaster.io/p/scalability)
--   [Availability](https://blog.algomaster.io/p/system-design-what-is-availability)
--   [CAP Theorem](https://blog.algomaster.io/p/cap-theorem-explained)
--   [ACID Transactions](https://blog.algomaster.io/p/ecae03ba-1930-42ef-8796-83e2fa818989)
--   [Consistent Hashing](https://highscalability.com/consistent-hashing-algorithm/)
--   [Rate Limiting](https://blog.algomaster.io/p/rate-limiting-algorithms-explained-with-code)
--   [API Design](https://abdulrwahab.medium.com/api-architecture-best-practices-for-designing-rest-apis-bf907025f5f)
--   [Fault Tolerance](https://www.cockroachlabs.com/blog/what-is-fault-tolerance/)
--   [Consensus Algorithms](https://medium.com/@sourabhatta1819/consensus-in-distributed-system-ac79f8ba2b8c)
--   [Gossip Protocol](http://highscalability.com/blog/2023/7/16/gossip-protocol-explained.html)
--   [Service Discovery](https://blog.algomaster.io/p/0204da93-f0e9-49b9-a88a-cb20b9931575)
--   [Disaster Recovery](https://cloud.google.com/learn/what-is-disaster-recovery)
--   [Distributed Tracing](https://www.dynatrace.com/news/blog/what-is-distributed-tracing/)
+    -   <details><summary style="font-size:22px;color:Tomato">Monolithic Architecture</summary>
 
-## 🛠️ System Design Building Blocks
+        **Monolithic Architecture** is a software design approach where an application is built as a single, unified unit. All components, such as the user interface, business logic, and data access, are tightly integrated and operate together in one codebase and deployment package.
 
--   [Databases Types](https://blog.algomaster.io/p/15-types-of-databases)
--   [Content Delivery Network (CDN)](https://blog.algomaster.io/p/27c62e07-f25b-40ac-a397-101cc54f1f0a)
--   [Domain Name System (DNS)](https://www.cloudflare.com/learning/dns/what-is-dns/)
--   [Caching](https://blog.algomaster.io/p/4d7d6f8a-6803-4c7b-85ca-864c87c2cbf2)
--   [Distributed Caching](https://redis.com/glossary/distributed-caching/)
--   [Load Balancing](https://blog.algomaster.io/p/load-balancing-algorithms-explained-with-code)
--   [SQL vs NoSQL](https://blog.algomaster.io/p/5310f615-f6cc-46f4-8890-09fc82a04b7e)
--   [Database Indexes](https://blog.algomaster.io/p/a-detailed-guide-on-database-indexes)
--   [Consistency Patterns](https://systemdesign.one/consistency-patterns/)
--   [HeartBeats](https://blog.algomaster.io/p/heartbeats-in-distributed-systems)
--   [Circuit Breaker](https://medium.com/geekculture/design-patterns-for-microservices-circuit-breaker-pattern-276249ffab33)
--   [Idempotency](https://blog.algomaster.io/p/ff43e079-98db-428d-83f7-fd34697df678)
--   [Database Scaling](https://blog.algomaster.io/p/system-design-how-to-scale-a-database)
--   [Data Replication](https://redis.com/blog/what-is-data-replication/)
--   [Data Redundancy](https://blog.algomaster.io/p/489440f1-9c80-4241-9ec8-de156964c3b9)
--   [Database Sharding](https://blog.algomaster.io/p/what-is-database-sharding)
--   [Database Architectures](https://www.mongodb.com/developer/products/mongodb/active-active-application-architectures/)
--   [Failover](https://avinetworks.com/glossary/failover/)
--   [Proxy Server](https://www.fortinet.com/resources/cyberglossary/proxy-server)
--   [Message Queues](https://blog.algomaster.io/p/message-queues)
--   [Checksums](https://blog.algomaster.io/p/what-are-checksums)
--   [WebSockets](https://blog.algomaster.io/p/websockets)
--   [Bloom Filters](https://www.enjoyalgorithms.com/blog/bloom-filter)
--   [API Gateway](https://www.nginx.com/learn/api-gateway/)
--   [Microservices Guidelines](https://newsletter.systemdesign.one/p/netflix-microservices)
--   [Distributed Locking](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html)
+        A **Monolithic Architecture** refers to an application that is built as a single, indivisible unit. All components of the application, such as the user interface (UI), business logic, and database access, are packaged and deployed together.
 
-## ⚖️ System Design Tradeoffs
+        #### Characteristics:
 
--   [Top 15 Tradeoffs](https://blog.algomaster.io/p/system-design-top-15-trade-offs)
--   [Vertical vs Horizontal Scaling](https://blog.algomaster.io/p/system-design-vertical-vs-horizontal-scaling)
--   [Stateful vs Stateless Design](https://blog.algomaster.io/p/741dff8e-10ea-413e-8dd2-be57434917d2)
--   [Strong vs Eventual Consistency](https://blog.algomaster.io/p/7d9da525-fe25-4e16-94e8-8056e7c57934)
--   [Read-Through vs Write-Through Cache](https://blog.algomaster.io/p/59cae60d-9717-4e20-a59e-759e370db4e5)
--   [Push vs Pull Architecture](https://blog.algomaster.io/p/af5fe2fe-9a4f-4708-af43-184945a243af)
--   [Long-polling vs WebSockets](https://blog.algomaster.io/p/60bfcee4-8ac5-4500-a557-a04c8cbcaf48)
--   [REST vs RPC](https://blog.algomaster.io/p/106604fb-b746-41de-88fb-60e932b2ff68)
--   [Latency vs Throughput](https://aws.amazon.com/compare/the-difference-between-throughput-and-latency/)
--   [Synchronous vs. asynchronous communications](https://blog.algomaster.io/p/aec1cebf-6060-45a7-8e00-47364ca70761)
--   [Batch Processing vs Stream Processing](https://blog.algomaster.io/p/d9442268-03d8-4f55-a103-7a3d4fb54661)
+        -   **Single Codebase**: All the functionality resides in a single codebase and is deployed as one cohesive unit.
+        -   **Tight Coupling**: Different components (UI, logic, database, etc.) are tightly coupled.
+        -   **Single Deployment**: You deploy the entire application as one package. Any change requires redeploying the whole system.
+        -   **Shared Database**: Typically, a monolithic system uses a single, shared database.
 
-## 🖇️ System Design Architectural Patterns
+        #### Advantages:
 
--   [Client-Server Architecture](https://blog.algomaster.io/p/4585cf8e-30a4-4295-936f-308a25cb716c)
--   [Microservices Architecture](https://medium.com/hashmapinc/the-what-why-and-how-of-a-microservices-architecture-4179579423a9)
--   [Serverless Architecture](https://blog.algomaster.io/p/2edeb23b-cfa5-4b24-845e-3f6f7a39d162)
--   [Event-Driven Architecture](https://www.confluent.io/learn/event-driven-architecture/)
--   [Peer-to-Peer (P2P) Architecture](https://www.spiceworks.com/tech/networking/articles/what-is-peer-to-peer/)
+        -   **Simplicity**: Easy to develop and deploy as it’s a single unit.
+        -   **Performance**: Monolithic systems can perform well because everything runs in the same process.
+        -   **Fewer Cross-cutting Concerns**: Tools and libraries for security, logging, etc., can be easily integrated since there’s one shared codebase.
 
-## ✅ How to Answer a System Design Interview Problem
+        #### Disadvantages:
 
-<img src="../assets/interview-template.png" width="400" height="250">
+        -   **Scalability**: Scaling a monolithic application means scaling the entire application, even if only a small part of the system needs more resources.
+        -   **Limited Flexibility**: Changes in one part of the system can affect other parts, making it difficult to modify or update features.
+        -   **Slow Development and Deployment**: As the system grows, building, testing, and deploying the application becomes more complex and time-consuming.
 
-### [Read the Full Article](https://blog.algomaster.io/p/how-to-answer-a-system-design-interview-problem)
+        #### Use Cases:
 
-## 💻 System Design Interview Problems
+        -   Suitable for small applications with limited complexity.
+        -   Early stages of startups or applications with well-defined, simple features.
 
-### Easy
+        </details>
 
--   [Design URL Shortener like TinyURL](https://blog.algomaster.io/p/design-a-url-shortener)
--   [Design Text Storage Service like Pastebin](https://www.youtube.com/watch?v=josjRSBqEBI)
--   [Design Leaderboard](https://systemdesign.one/leaderboard-system-design/)
--   [Design Content Delivery Network (CDN)](https://www.youtube.com/watch?v=8zX0rue2Hic)
--   [Design Parking Garage](https://www.youtube.com/watch?v=NtMvNh0WFVM)
--   [Design Vending Machine](https://www.youtube.com/watch?v=D0kDMUgo27c)
--   [Design Distributed Key-Value Store](https://www.youtube.com/watch?v=rnZmdmlR-2M)
--   [Design Distributed Cache](https://www.youtube.com/watch?v=iuqZvajTOyA)
--   [Design Distributed Job Scheduler](https://towardsdatascience.com/ace-the-system-design-interview-job-scheduling-system-b25693817950)
--   [Design Authentication System](https://www.youtube.com/watch?v=uj_4vxm9u90)
--   [Design Unified Payments Interface (UPI)](https://www.youtube.com/watch?v=QpLy0_c_RXk)
+    -   <details><summary style="font-size:22px;color:Tomato">Multi-Tier Architecture</summary>
 
-### Medium
+        **Multi-tier Architecture** (also called N-tier Architecture) is a software design approach where an application is divided into separate layers (tiers), each responsible for a specific function. The most common tiers are the `presentation layer` (UI), the `application logic layer` (business logic), and the `data layer` (database). These tiers are physically or logically separated and communicate with each other.
 
--   [Design Instagram](https://www.youtube.com/watch?v=VJpfO6KdyWE)
--   [Design Tinder](https://www.youtube.com/watch?v=tndzLznxq40)
--   [Design WhatsApp](https://www.youtube.com/watch?v=vvhC64hQZMk)
--   [Design Facebook](https://www.youtube.com/watch?v=9-hjBGxuiEs)
--   [Design Twitter](https://www.youtube.com/watch?v=wYk0xPP_P_8)
--   [Design Reddit](https://www.youtube.com/watch?v=KYExYE_9nIY)
--   [Design Netflix](https://www.youtube.com/watch?v=psQzyFfsUGU)
--   [Design Youtube](https://www.youtube.com/watch?v=jPKTo1iGQiE)
--   [Design Google Search](https://www.youtube.com/watch?v=CeGtqouT8eA)
--   [Design E-commerce Store like Amazon](https://www.youtube.com/watch?v=EpASu_1dUdE)
--   [Design Spotify](https://www.youtube.com/watch?v=_K-eupuDVEc)
--   [Design TikTok](https://www.youtube.com/watch?v=Z-0g_aJL5Fw)
--   [Design Shopify](https://www.youtube.com/watch?v=lEL4F_0J3l8)
--   [Design Airbnb](https://www.youtube.com/watch?v=YyOXt2MEkv4)
--   [Design Autocomplete for Search Engines](https://www.youtube.com/watch?v=us0qySiUsGU)
--   [Design Rate Limiter](https://www.youtube.com/watch?v=mhUQe4BKZXs)
--   [Design Distributed Message Queue like Kafka](https://www.youtube.com/watch?v=iJLL-KPqBpM)
--   [Design Flight Booking System](https://www.youtube.com/watch?v=qsGcfVGvFSs)
--   [Design Online Code Editor](https://www.youtube.com/watch?v=07jkn4jUtso)
--   [Design Stock Exchange System](https://www.youtube.com/watch?v=dUMWMZmMsVE)
--   [Design an Analytics Platform (Metrics & Logging)](https://www.youtube.com/watch?v=kIcq1_pBQSY)
--   [Design Notification Service](https://www.youtube.com/watch?v=CUwt9_l0DOg)
--   [Design Payment System](https://www.youtube.com/watch?v=olfaBgJrUBI)
--   [Design a Digital Wallet](https://www.youtube.com/watch?v=4ijjIUeq6hE)
+        In **Multi-tier Architecture** (or **N-tier Architecture**), the application is divided into several distinct layers (tiers), each responsible for a specific function. The separation of concerns between these layers enhances maintainability, scalability, and flexibility. Here are the main and critical components of multi-tier architecture:
 
-### Hard
+        #### Components of Multi-tier Architecture
 
--   [Design Location Based Service like Yelp](https://www.youtube.com/watch?v=M4lR_Va97cQ)
--   [Design Uber](https://www.youtube.com/watch?v=umWABit-wbk)
--   [Design Food Delivery App like Doordash](https://www.youtube.com/watch?v=iRhSAR3ldTw)
--   [Design Google Docs](https://www.youtube.com/watch?v=2auwirNBvGg)
--   [Design Google Maps](https://www.youtube.com/watch?v=jk3yvVfNvds)
--   [Design Zoom](https://www.youtube.com/watch?v=G32ThJakeHk)
--   [Design Distributed Counter](https://systemdesign.one/distributed-counter-system-design/)
--   [Design File Sharing System like Dropbox](https://www.youtube.com/watch?v=U0xTu6E2CT8)
--   [Design Ticket Booking System like BookMyShow](https://www.youtube.com/watch?v=lBAwJgoO3Ek)
--   [Design Distributed Web Crawler](https://www.youtube.com/watch?v=BKZxZwUgL3Y)
--   [Design Code Deployment System](https://www.youtube.com/watch?v=q0KGYwNbf-0)
--   [Design Distributed Cloud Storage like S3](https://www.youtube.com/watch?v=UmWtcgC96X8)
--   [Design Distributed Locking Service](https://www.youtube.com/watch?v=v7x75aN9liM)
--   [Design Slack](https://systemdesign.one/slack-architecture/)
--   [Design Live Comments](https://systemdesign.one/live-comment-system-design/)
+        1. **Presentation Tier (UI Layer)**
 
-## 📚 Books
+            - This is the topmost layer responsible for interacting with users.
+            - Displays data to users and collects input through graphical interfaces (web, desktop, or mobile UI).
 
--   [Designing Data-Intensive Applications](https://www.amazon.com/Designing-Data-Intensive-Applications-Reliable-Maintainable/dp/B08VL1BLHB/)
--   [System Design Interview – An insider's guide](https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF/)
+        2. **Application Tier (Logic/Business Layer)**
 
-## 📺 YouTube Channels
+            - Contains the core business logic that processes requests, enforces rules, and performs computations.
+            - Acts as the middle layer that handles operations requested by the presentation tier and accesses data from the data tier.
 
--   [Tech Dummies Narendra L](https://www.youtube.com/@TechDummiesNarendraL)
--   [Gaurav Sen](https://www.youtube.com/@gkcs)
--   [codeKarle](https://www.youtube.com/@codeKarle)
--   [ByteByteGo](https://www.youtube.com/@ByteByteGo)
--   [System Design Interview](https://www.youtube.com/@SystemDesignInterview)
--   [sudoCODE](https://www.youtube.com/@sudocode)
--   [Success in Tech](https://www.youtube.com/@SuccessinTech/videos)
+        3. **Data Tier (Database Layer)**
+            - Manages data storage, retrieval, and updates.
+            - Handles interactions with the database, ensuring that data is stored and retrieved efficiently and securely.
 
-## 📜 Must-Read Engineering Articles
+        #### Characteristics:
 
--   [How Discord stores trillions of messages](https://discord.com/blog/how-discord-stores-trillions-of-messages)
--   [Building In-Video Search at Netflix](https://netflixtechblog.com/building-in-video-search-936766f0017c)
--   [How Canva scaled Media uploads from Zero to 50 Million per Day](https://www.canva.dev/blog/engineering/from-zero-to-50-million-uploads-per-day-scaling-media-at-canva/)
--   [How Airbnb avoids double payments in a Distributed Payments System](https://medium.com/airbnb-engineering/avoiding-double-payments-in-a-distributed-payments-system-2981f6b070bb)
--   [Stripe’s payments APIs - The first 10 years](https://stripe.com/blog/payment-api-design)
--   [Real time messaging at Slack](https://slack.engineering/real-time-messaging/)
+        -   **Layered Approach**: Each tier is physically or logically separated. Typical layers are the user interface, business logic, and data management.
+        -   **Modular**: Each tier performs a specific function, allowing for better separation of concerns.
+        -   **Client-Server Model**: Usually follows a client-server architecture where the client handles the presentation and interacts with the application server (which handles logic) and the database server (which handles data storage).
 
-## 🗞️ Must-Read Distributed Systems Papers
+        #### Typical Layers:
 
--   [Paxos: The Part-Time Parliament](https://lamport.azurewebsites.net/pubs/lamport-paxos.pdf)
--   [MapReduce: Simplified Data Processing on Large Clusters](https://research.google.com/archive/mapreduce-osdi04.pdf)
--   [The Google File System](https://static.googleusercontent.com/media/research.google.com/en//archive/gfs-sosp2003.pdf)
--   [Dynamo: Amazon’s Highly Available Key-value Store](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf)
--   [Kafka: a Distributed Messaging System for Log Processing](https://notes.stephenholiday.com/Kafka.pdf)
--   [Spanner: Google’s Globally-Distributed Database](https://static.googleusercontent.com/media/research.google.com/en//archive/spanner-osdi2012.pdf)
--   [Bigtable: A Distributed Storage System for Structured Data](https://static.googleusercontent.com/media/research.google.com/en//archive/bigtable-osdi06.pdf)
--   [ZooKeeper: Wait-free coordination for Internet-scale systems](https://www.usenix.org/legacy/event/usenix10/tech/full_papers/Hunt.pdf)
--   [The Log-Structured Merge-Tree (LSM-Tree)](https://www.cs.umb.edu/~poneil/lsmtree.pdf)
--   [The Chubby lock service for loosely-coupled distributed systems](https://static.googleusercontent.com/media/research.google.com/en//archive/chubby-osdi06.pdf)
+        1. **Presentation Tier**: This is the user interface layer where users interact with the application. It sends user requests to the logic tier and presents the response.
+        2. **Application Tier**: This layer contains the business logic of the application. It processes the data and enforces rules.
+        3. **Data Tier**: This tier manages the data storage, usually in a database. It retrieves, stores, and updates the data as requested by the application tier.
+
+        #### Advantages:
+
+        -   **Separation of Concerns**: Each tier focuses on its specific responsibility, making the system more maintainable and easier to manage.
+        -   **Scalability**: Each tier can be scaled independently based on its load. For example, the database layer can be scaled separately from the logic layer.
+        -   **Maintainability**: It is easier to maintain and update individual tiers without affecting others.
+
+        #### Disadvantages:
+
+        -   **Performance Overhead**: Communication between tiers can introduce latency, making the system slower compared to monolithic architecture.
+        -   **Complexity**: More moving parts (servers, connections, etc.) can increase the complexity of the system.
+        -   **Deployment Complexity**: Managing the deployment of multiple layers requires more planning and resources.
+
+        #### Use Cases:
+
+        -   Web applications that require a clear separation of concerns.
+        -   Enterprise-level applications where scalability and maintainability are important.
+
+        </details>
+
+    -   <details><summary style="font-size:22px;color:Tomato">Microservices Architecture</summary>
+
+        **Microservice Architecture** is a software design approach where an application is built as a collection of small, independent services, each responsible for a specific business function. These services operate autonomously, communicate through APIs (such as REST or messaging), and can be developed, deployed, and scaled independently of one another. This architecture promotes flexibility, scalability, and fault isolation.
+
+        In **Microservices Architecture**, the application is divided into small, independent services, each responsible for a specific business capability. Each microservice operates as a separate process, and they communicate with each other via well-defined APIs (such as REST or messaging queues).
+
+        #### Components of Microservice Architecture:
+
+        1. **Services**:
+
+            - **Independent Modules**: Each microservice is a self-contained, independent module responsible for a specific business function (e.g., user management, payment processing).
+            - **Autonomous Deployment**: Each service can be developed, deployed, and scaled independently.
+
+        2. **API Gateway**: Acts as a single entry point for clients to interact with various microservices. It handles routing, request aggregation, and can enforce security, rate limiting, and authentication.
+
+        3. **Service Discovery**: A mechanism that allows microservices to find each other dynamically within the system, usually through a registry (e.g., Eureka, Consul). This ensures flexibility in scaling and changing services.
+
+        4. **Load Balancer**: Distributes incoming requests across multiple instances of services to ensure even workload distribution and high availability.
+
+        5. **Database Per Service**: Each microservice has its own dedicated database, ensuring data autonomy and avoiding direct data sharing between services.
+
+        6. **Inter-Service Communication**: Microservices communicate with each other, usually via lightweight protocols such as HTTP/REST, gRPC, or messaging queues (e.g., Kafka, RabbitMQ) for asynchronous communication.
+
+        7. **Centralized Configuration Management**: A system that manages configurations for microservices across environments (development, production) without embedding them in the services (e.g., Spring Cloud Config).
+
+        8. **Logging and Monitoring**: Centralized logging (e.g., ELK stack) and monitoring (e.g., Prometheus, Grafana) to track service performance, detect failures, and analyze system health.
+
+        9. **Containerization & Orchestration**: **Containers** (e.g., Docker) package microservices, and **orchestration tools** (e.g., Kubernetes) manage the deployment, scaling, and operation of these containers in a distributed environment.
+
+        10. **Fault Tolerance**: Mechanisms like **circuit breakers** (e.g., Hystrix) and **retries** help maintain stability by isolating failing services and preventing cascading failures.
+
+        #### Characteristics:
+
+        -   **Loose Coupling**: Microservices are loosely coupled. Each service is independent of others, making the system highly modular.
+        -   **Autonomous Deployment**: Each microservice can be developed, deployed, and scaled independently.
+        -   **Technology Agnostic**: Each service can use different technologies, programming languages, and databases based on its needs.
+        -   **Service Isolation**: Each microservice has its own data store, so there's no need for a shared database.
+
+        #### Advantages:
+
+        -   **Scalability**: You can scale individual services as needed, improving resource efficiency.
+        -   **Flexibility**: Developers can choose different tools or languages for each service based on specific requirements.
+        -   **Fault Isolation**: Failure in one microservice typically doesn’t bring down the entire system. Other services can continue running.
+        -   **Agility**: Independent development and deployment of services enable faster iterations and continuous delivery.
+
+        #### Disadvantages:
+
+        -   **Complexity**: Managing multiple services, each with its own database and deployment, adds significant operational complexity.
+        -   **Distributed Systems Issues**: Communication between services introduces challenges like network latency, load balancing, and fault tolerance.
+        -   **Data Consistency**: Since each microservice manages its own database, ensuring consistency across services can be difficult.
+        -   **Deployment Overhead**: Managing and deploying multiple microservices requires sophisticated DevOps practices like containerization, orchestration (e.g., Kubernetes), and automated CI/CD pipelines.
+
+        #### Use Cases:
+
+        -   Large, complex applications that require scalability, flexibility, and frequent updates.
+        -   Organizations adopting continuous deployment practices and want the flexibility to update or change parts of the application independently.
+
+        </details>
+
+    #### Comparison Summary:
+
+    | Feature               | Monolithic                  | Multi-tier                           | Microservices                                |
+    | --------------------- | --------------------------- | ------------------------------------ | -------------------------------------------- |
+    | **Modularity**        | Low                         | Medium                               | High                                         |
+    | **Deployment**        | Single Unit                 | Multiple tiers but deployed together | Independent services                         |
+    | **Scalability**       | Difficult                   | Moderate                             | High, each service is scalable independently |
+    | **Development Speed** | Slower as app grows         | Moderate                             | Faster with independent teams                |
+    | **Fault Isolation**   | Low                         | Moderate                             | High                                         |
+    | **Technology Choice** | Limited to one stack        | May vary per tier                    | Freedom to use different stacks per service  |
+    | **Maintenance**       | More difficult as app grows | Moderate complexity                  | Easier but requires robust infrastructure    |
+
+    </details>
+
+---
