@@ -161,3 +161,36 @@
     </details>
 
 ---
+
+-   <details><summary style="font-size:25px;color:Orange">Lucidchart</summary>
+
+    -   [How to Use Lucidchart for System Design](https://www.youtube.com/watch?v=zoqUniosOLE)
+
+    Designing a web application involves several stages—from mapping out the user journey to building wireframes and technical architecture. Lucidchart is a versatile tool for all these steps.
+
+    1. **Planning User Journeys & Flows**: Before you design the interface, you need to understand how a user moves through the app.
+
+        * **User Flows:** Use standard flowchart shapes to map the sequence of steps a user takes (e.g., Login → Dashboard → Settings).
+        * **Logical Branching:** Use decision diamonds to show what happens if a user is logged in vs. logged out.
+
+    2. **Creating Wireframes (UI/UX)**: Lucidchart has built-in **UI Mockup** shape libraries that allow you to create low-fidelity wireframes.
+
+        * **Shape Libraries:** Press "M" on your keyboard and search for "UI Mockups," "iOS Mockups," or "Android Mockups."
+        * **Standard Elements:** Drag and drop browser windows, search bars, buttons, and text placeholders to build your page layout.
+        * **Interactivity:** Use **Hotspots** and **Layers** to make your wireframe interactive. For example, clicking a "Submit" button can trigger a layer that shows a "Success" popup.
+
+    3. **Designing Technical Architecture**: For the developers on your team, you can design the back-end structure.
+
+        * **ER Diagrams (ERDs):** Use the ERD shape library to design your database schema, showing tables, keys, and relationships.
+        * **UML Diagrams:** Create sequence diagrams or class diagrams to show how different parts of your software communicate.
+        * **Data Import:** You can even import data from your actual database to automatically generate a diagram in Lucidchart.
+
+    4. **Collaboration & Feedback**
+
+        * **Real-time Editing:** Multiple team members can work on the same wireframe at once.
+        * **Commenting:** Use the commenting feature to tag developers or stakeholders on specific design elements to get feedback without leaving the canvas.
+
+    </details>
+
+---
+

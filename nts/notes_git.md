@@ -9,6 +9,9 @@
 
 -   <details><summary style="font-size:25px;color:Orange;text-align:left">Git Terminology</summary>
 
+    -   ![Git Push/Pull Cycle](/assets/git/git_cycle.png)
+    -   ![Git Workflow](/assets/git/git_workflow.gif)
+
     #### KEY WORDS:
 
     -   **Repository (Repo)**:
@@ -369,8 +372,6 @@
 
         -   You cannot delete the branch you are on.
         -   If you checkout a branch and then commits, the branch’s label autometically updates to the new commits.
-        -   ![Git Push/Pull Cycle](/assets/git/git_cycle.png)
-        -   ![Git Workflow](/assets/git/git_workflow.gif)
 
     -   🔥**HELP**:
 
@@ -473,6 +474,32 @@
     -   `$ git add .` → Add changes of all files in the current & subdirectory to the Staging Area.
     -   `$ git commit` → Commit into the Repository.
     -   `$ git commit -m “Commit_Message”` → Commint into the Repository with Commit Message.
+
+    -   `git diff`: It is the primary tool for viewing changes between different "states" of your project—such as your working directory, your staging area, or different branches.Here is how to use it in common scenarios:
+
+        1. **View Unstaged Changes**: This is the most common use case. It shows you the changes you have made in your files that **have not yet been added** to the staging area (`git add`).
+            -   `$ git diff`
+            -   **Red text:** Lines that were removed.
+            -   **Green text:** Lines that were added.
+        2. **View Staged Changes**: If you have already run `git add`, a normal `git diff` will show nothing. To see what is sitting in the "waiting room" (staging area) ready to be committed, use:
+            -   `$ git diff --staged`
+            -   `$ gt diff --cached`
+
+        3. **Compare Two Branches**: This is useful for seeing exactly what is different between your current feature and the main project.
+            -   `$ git diff main..feature_branch`
+            -   `$ git diff main..feature_branch path/to/file.txt` -> You can also compare a specific file across branches:
+
+        4. **Compare Two Commits**: If you want to see what changed between two specific points in your project's history, use their commit hashes (shas).
+            -   `$ git diff [commit_hash_1] [commit_hash_2]`
+        5. **Summary and Formatting Options**: Sometimes the full output is too much. You can modify the view to be more concise:
+            | Command                      | Result                                                                      |
+            | ---------------------------- | --------------------------------------------------------------------------- |
+            | **`git diff --stat`**        | Shows a summary of which files changed and how many lines.                  |
+            | **`git diff --name-only`**   | Only lists the names of the files that have changed.                        |
+            | **`git diff --color-words`** | Shows changes word-by-word instead of line-by-line (much cleaner for text). |
+
+        -   **Pro-Tip: The "Three-Dot" Diff**: When you run `git diff main..feature`, you see all differences. If you run `git diff main...feature` (three dots), it shows the changes on the feature branch **since it diverged** from main. This is often what you actually want to see during a code review!
+
 
     ##### [git stash](https://www.youtube.com/watch?v=fXGug4itlTk)
 
