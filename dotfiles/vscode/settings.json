@@ -173,5 +173,6 @@
     },
     "jupyter.disableJupyterAutoStart": true,
     // Enable validating the currently open file on save
-    "terraform.experimentalFeatures.validateOnSave": true
+    "terraform.experimentalFeatures.validateOnSave": true,
+    "gitlens.rebaseEditor.ordering": "asc"
 }

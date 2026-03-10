@@ -421,44 +421,39 @@
         }
         ```
 
-    4. **variable**
+    4. **variable (Input Variables)**: These are the **parameters** of your Terraform module. They allow users to pass values into the configuration from the outside.
 
-        - The `variable` directive allows you to declare input variables that can be used to parameterize Terraform configurations, making them reusable and flexible.
-        - Variables can have default values, types, and descriptions.
-        - A parameter that can be passed to Terraform configurations to make them more dynamic and reusable.
-        - Variables are declared in the configuration and can be assigned values directly or through variable files.
-        - Input variables let you customize aspects of Terraform modules without altering the module's own source code. This functionality allows you to share modules across different Terraform configurations, making your module composable and reusable.
-        - When you declare variables in the root module of your configuration, you can set their values using CLI options and environment variables. When you declare them in child modules, the calling module should pass values in the module block.
-        - Each input variable accepted by a module must be declared using a variable block
+       -   **Analogy:** The arguments/parameters you pass into a function.
+       -   **Static:** Their values must be determined *before* Terraform starts its work. Hence assignment of an expression/function as a value to a variable name is not allowed.
+       -   **Source:** Assigned via `.tfvars` files, CLI flags, or environment variables.
 
         ```ini
         variable "instance_type" {
             description = "Type of EC2 instance"
             type        = string
             default     = "t2.micro"
+            # default     = aws_ec2_instane.instance_type # This is not allowed
         }
         ```
 
-    5. **locals**
+    5. **locals (Local Variables)**: While often called "variables" by beginners, these are actually **internal constants**. They are used to calculate values within the code to avoid repetition.
 
-        - The `locals` directive allows you to define local values, which are temporary and can be used within the configuration to reduce repetition or encapsulate logic.
-        - These values are computed once and then reused throughout the configuration.
-        - A local value assigns a name to an expression, so you can use the name multiple times within a module instead of repeating the expression.
+        -   **Analogy:** A variable declared *inside* the body of a function.
+        -   **Dynamic:** They can change based on the logic of other variables or resource attributes.
+        -   **Source:** Defined directly in the code using dynamic expressions and functions.
 
         ```ini
         locals {
+            instance_type = aws_ec2_instane.instance_type # This is allowed
             instance_name = "web-server"
             environment   = "production"
         }
         ```
 
-    6. **output**
+    6. **output**: These are like **return values** for your Terraform configuration. They highlight important information after a deployment.
 
-        - The `output` directive defines the information to be output after the Terraform run. This can include IP addresses, resource IDs, or any other relevant data generated during resource creation.
-        - It helps users access important details of their infrastructure easily.
-        - Values that are optionally exported from a Terraform configuration, providing a way to share information with other configurations.
-        - Outputs are defined using the `output` block and can be used to display or pass values between configurations.
-        - Output values make information about your infrastructure available on the command line, and can expose information for other Terraform configurations to use. Output values are similar to return values in programming languages.
+        -   **Analogy:** The "return" statement of a function.
+        -   **Purpose:** To print information to the console or share data with other configurations (via remote state).
 
         ```ini
             output "instance_ip" {
@@ -466,24 +461,23 @@
         }
         ```
 
-    7. **module**
+    7. **module**: A self-contained unit of Terraform configuration that groups multiple related resources together (e.g., a "Network" module containing VPC, Subnets, and Gateways).
+        -   **The Root Module**: Every Terraform project has at least one module, known as the **Root Module**, which consists of all `.tf` files in your main working directory.
+        -   **Child Modules**: These are external packages of code called by the root module. Using them allows you to keep your configuration concise and "DRY" (Don't Repeat Yourself).
+        -   **Encapsulation & Reusability**: Modules act as "containers," allowing you to share standardized infrastructure patterns across different teams or projects without rewriting code.
+        -   **Sources**: Modules can be pulled from **Local paths** (on your machine), **GitHub/GitLab**, or the **Terraform Registry**.
+        -   **Interface**:
+        -   **Inputs**: Defined by `variable` blocks in the child module; passed via the `module` block in the parent.
+        -   **Outputs**: Defined by `output` blocks in the child; used by the parent to retrieve information (like a Load Balancer's DNS).
+        -   **Calling a Module**: To "call" a module, you define a `module` block and provide the `source` location along with any required input variables.
 
-        - The `module` directive allows you to reuse Terraform code by encapsulating related resources and logic into a module, which can be called from other configurations.
-        - It helps in organizing and sharing infrastructure code.
-        - A self-contained unit of Terraform configuration that represents a set of resources and can be reused.
-        - Modules are defined using the module block and can be sourced locally or from external repositories.
-        - A module is a container for multiple resources that are used together.
-        - Every Terraform configuration has at least one module, known as its root module, which consists of the resources defined in the .tf files in the main working directory.
-        - A module can call other modules, which lets you include the child module's resources into the configuration in a concise way. Modules can also be called multiple times, either within the same configuration or in separate configurations, allowing resource configurations to be packaged and re-used.
-        - To call a module means to include the contents of that module into the configuration with specific values for its input variables. Modules are called from within other modules using module blocks:
-        - A module in Terraform is a set of Terraform configuration files that define a specific set of infrastructure resources and settings. It encapsulates related resources and configurations, making them reusable across multiple Terraform configurations.
-
-        ```ini
-        module "network" {
-            source = "./modules/network"
-            vpc_id = "vpc-12345678"
-        }
-        ```
+            ```ini
+            # Example: Calling a child module from the root module
+            module "network" {
+                source = "./modules/network"     # Location of the code
+                vpc_cidr = "10.0.0.0/16"         # Input variable passed to the module
+            }
+            ```
 
     8. **data**: The `data` directive is used to fetch or read data from external resources without creating or modifying them. This is useful for fetching details about existing infrastructure components (like AMIs, VPCs, etc.).
 
@@ -509,7 +503,7 @@
         }
         ```
 
-    10. **provisioner**: The provisioner directive allows you to execute scripts or commands on a resource after it has been created or updated. Provisioners are typically used to configure resources (such as virtual machines) beyond the basic setup provided by the Terraform resource block. This might include installing software, configuring files, or setting up the environment after an instance or other resource is provisioned.
+    10.  **provisioner**: The provisioner directive allows you to execute scripts or commands on a resource after it has been created or updated. Provisioners are typically used to configure resources (such as virtual machines) beyond the basic setup provided by the Terraform resource block. This might include installing software, configuring files, or setting up the environment after an instance or other resource is provisioned.
 
         ```ini
         provisioner "remote-exec" {
@@ -558,17 +552,13 @@
         - **Best Use Case:** Spinning up temporary or **ephemeral environments** (e.g., a "sandbox" for a new team member, or a dedicated environment for a feature branch—like `pr-101`). They are best for configurations that are **nearly identical** except for simple variables (like size or name prefix).
         - **Caution:** HashiCorp advises **against** using workspaces for managing long-lived, critical environments like `prod` and `staging` because they all share the exact same code base, which increases the risk of deploying a change intended for `dev` to `prod`.
 
-        -   This is a best practice to keep environment-specific settings—like the number of server instances, the database size, or a tag prefix—out of your main `.tf` files.
-
-            | Variable File | Use Case                   | Command                                 |
-            | :------------ | :------------------------- | :-------------------------------------- |
-            | `dev.tfvars`  | Small, cheap resources     | `terraform apply -var-file=dev.tfvars`  |
-            | `prod.tfvars` | Large, expensive resources | `terraform apply -var-file=prod.tfvars` |
-
         -   **Best Practices & Warnings**
 
-            -  **Environment Specific Vars:** Use workspaces in conjunction with `-var-file`.
-               -  `terraform apply -var-file="${terraform.workspace}.tfvars"`
+            -  **Environment Specific Vars:** This is a best practice to keep environment-specific settings—like the number of server instances, the database size, or a tag prefix—out of your main `.tf` files. Use workspaces in conjunction with `-var-file`.
+                | Variable File | Use Case                   | Command                                 |
+                | :------------ | :------------------------- | :-------------------------------------- |
+                | `dev.tfvars`  | Small, cheap resources     | `terraform apply -var-file=dev.tfvars`  |
+                | `prod.tfvars` | Large, expensive resources | `terraform apply -var-file=prod.tfvars` |
             -  **Avoid for Critical Isolation:** Most experts recommend using Workspaces for "similar" environments (Dev/QA/Staging) but using **separate directories or accounts** for Production to prevent accidental `terraform destroy` commands on the wrong workspace.
             -  **Shell Integration:** It is highly recommended to add the current Terraform workspace to your terminal prompt (Zsh/Bash) so you always know which environment you are currently "pointing" at.
             > **Peer Tip:** If you find yourself writing too many `if/else` statements using the `terraform.workspace` variable, your code might be getting too complex. At that point, consider using **Terraform Modules** instead.
@@ -682,7 +672,7 @@
 
     -   <details><summary style="font-size:20px;color:Magenta">Separate Directories (Recommended Best Practice)</summary>
 
-        > **Separate Directories (Recommended Best Practice)**: This is the most widely recommended and robust solution for managing **long-lived, distinct environments** like `dev`, `staging`, and `prod`. Instead of using a single configuration, you create a dedicated root module (a separate folder) for each environment.
+        > **Separate Directories** approch is the most widely recommended and robust solution for managing **long-lived, distinct environments** like `dev`, `staging`, and `prod`. Instead of using a single configuration, you create a dedicated root module (a separate folder) for each environment.
 
         - **File Structure**:
 
@@ -724,8 +714,7 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Setting Input variables in order of precedence</summary>
 
-    The order of precedence for setting **Input Variables** in Terraform determines which value is used when multiple sources attempt to define the same variable. Terraform uses the first value it finds, starting from the highest priority source and moving down.
-    Here is the complete order of precedence, from **highest priority (1)** to **lowest priority (6)**:
+    The order of precedence for setting **Input Variables** in Terraform determines which value is used when multiple sources attempt to define the same variable. Terraform uses the first value it finds, starting from the highest priority source and moving down. Here is the complete order of precedence, from **highest priority (1)** to **lowest priority (6)**:
 
     1. **The `-var` flag on the CLI (Highest)**: Values passed directly on the command line using the `-var` flag take the highest precedence. This is often used for quick overrides or sensitive values that shouldn't be committed to files.
 
@@ -747,8 +736,7 @@
 
         1. Files named **`terraform.tfvars`** (or `terraform.tfvars.json`)
         2. Files with names ending in **`.auto.tfvars`** (or `.auto.tfvars.json`)
-
-        If both file types are present, `terraform.tfvars` is processed first, followed by all files matching `*.auto.tfvars` in alphabetical order.
+        -   **NOTES**: If both file types are present, `terraform.tfvars` is processed first, followed by all files matching `*.auto.tfvars` in alphabetical order.
 
     5. **Variables in the `variables.tf` file (Default Values)**: If a variable block in your configuration (e.g., in `variables.tf`) includes a **`default`** value, that value is used if no value is provided by any of the higher-precedence sources (1 through 4).
 
@@ -762,7 +750,7 @@
 
     6. **Prompted Input (Lowest)**: If a variable is declared with **no default value** and is not set by any of the higher-precedence sources, Terraform will **prompt the user** to enter a value during execution.
 
-    The primary takeaway is that **command-line arguments and flags always override file-based or environment-based settings.**
+    > The primary takeaway is that **command-line arguments and flags always override file-based or environment-based settings.**
 
     </details>
 

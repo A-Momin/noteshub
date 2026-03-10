@@ -1,4 +1,4 @@
-<details><summary style="font-size:30px;color:White;text-align:center">Python Terminology</summary>
+<details><summary style="font-size:30px;color:White">Python Terminology</summary>
 
 -   **PYTHONPATH**:
     -   `PYTHONPATH` is an environment variable in Python that tells the interpreter where to locate the module files imported into a program. It is a colon-separated list of directories that the Python interpreter searches for modules when executing your code.
@@ -784,7 +784,7 @@
 
 ---
 
-<details><summary style="font-size:30px;color:White;text-align:center">Concurrency vs Parallelism</summary>
+<details><summary style="font-size:30px;color:White">Concurrency vs Parallelism</summary>
 
 -   [AsyncIO, await, and async - Concurrency in Python](https://www.youtube.com/watch?v=K56nNuBEd0c)
 -   [mCoding: Unlocking your CPU cores in Python (multiprocessing)](https://www.youtube.com/watch?v=X7vBbelRXn0&t=572s)
@@ -1141,7 +1141,7 @@ The choice among these concurrency approaches depends on your specific applicati
 
 ---
 
-<details><summary style="font-size:30px;color:White;text-align:center">Programming Terminology</summary>
+<details><summary style="font-size:30px;color:White">Programming Terminology</summary>
 
 -   **Syntex**: Syntax is like the rules of a language - how to write valid code using the correct keywords, punctuation, and structure. Imagine writing a sentence in English, Syntax ensures your sentence follows grammatical rules (subject-verb agreement, proper punctuation).
 -   **Sementics**: Semantics goes beyond syntax and asks what the code actually does. It's about the intended behavior or computation that the code defines.Imagine writing a sentence in English, Semantics conveys the actual meaning you're trying to express with the sentence. Semantic errors typically arise during runtime (when the program is actually running) because the code is syntactically correct but doesn't produce the intended outcome. For example, dividing by zero might be syntactically valid in some languages but would cause a semantic error at runtime.
@@ -1468,7 +1468,7 @@ Duck typing is a powerful concept that allows Python code to be more generic, ex
 
 ---
 
-<details><summary style="font-size:30px;color:White;text-align:center">MISC</summary>
+<details><summary style="font-size:30px;color:White">MISC</summary>
 
 ---
 

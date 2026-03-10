@@ -54,3 +54,143 @@ Apt # 3423
 
 ---
 ---
+
+To master **Poetry**, it’s best to build a project that utilizes its core strengths: dependency management, virtual environments, and packaging. We will build a "Weather CLI" application that fetches data from an API.
+
+Here is the industry-standard structure and workflow.
+
+---
+
+## 1. Project Initialization
+
+Instead of creating folders manually, let Poetry scaffold the project for you.
+
+```bash
+# Create a new project
+poetry new weather-cli
+cd weather-cli
+
+```
+
+**What this creates:**
+
+* `pyproject.toml`: The heart of your project (replaces `setup.py` and `requirements.txt`).
+* `weather_cli/`: The source code directory.
+* `tests/`: A pre-configured test suite folder.
+
+---
+
+## 2. Managing Dependencies
+
+Poetry makes adding libraries safer by resolving conflicts before installing.
+
+### Adding a standard dependency
+
+```bash
+poetry add requests click rich
+
+```
+
+* `requests`: For API calls.
+* `click`: To create the CLI interface.
+* `rich`: For beautiful terminal output.
+
+### Adding a development-only dependency
+
+You don't need testing tools in production. Poetry handles this with **Groups**.
+
+```bash
+poetry add pytest black --group dev
+
+```
+
+---
+
+## 3. The `poetry.lock` File
+
+This is the most critical part of Poetry.
+
+* **The Problem:** `requirements.txt` often leads to "it works on my machine" bugs because sub-dependencies change.
+* **The Poetry Solution:** The `.lock` file records the **exact version** of every single package and sub-package.
+* **Rule:** Always commit the `poetry.lock` file to Git.
+
+---
+
+## 4. Writing the Application
+
+Create a file at `weather_cli/main.py`:
+
+```python
+import click
+from rich.console import Console
+
+console = Console()
+
+@click.command()
+@click.option('--city', default='Dallas', help='City to check weather for.')
+def main(city):
+    """A simple CLI to check the weather."""
+    console.print(f"[bold blue]Checking weather for {city}...[/bold blue]")
+    # In a real app, you'd call an API here
+    console.print(f"The weather in [green]{city}[/green] is currently [bold]Sunny[/bold].")
+
+if __name__ == "__main__":
+    main()
+
+```
+
+---
+
+## 5. Configuring Executables (Scripts)
+
+One of Poetry's best features is the ability to create "binaries" or entry points automatically. Add this to your `pyproject.toml`:
+
+```toml
+[tool.poetry.scripts]
+weather = "weather_cli.main:main"
+
+```
+
+Now, instead of typing `python weather_cli/main.py`, you can just run:
+
+```bash
+poetry install
+poetry run weather --city "Plano"
+
+```
+
+---
+
+## 6. Virtual Environment Mastery
+
+Poetry manages environments so you don't have to deal with `venv` folders.
+
+| Command | Purpose |
+| --- | --- |
+| **`poetry shell`** | Activates the virtual environment in your current terminal. |
+| **`poetry env info`** | Shows where the environment is stored on your disk. |
+| **`poetry run <command>`** | Runs a command (like `pytest`) inside the environment without activating it. |
+| **`poetry update`** | Updates all packages to their latest compatible versions and refreshes the lock file. |
+
+---
+
+## 7. Packaging for Distribution
+
+If you wanted to share this tool on PyPI (Python Package Index), Poetry handles the build process perfectly.
+
+```bash
+# Build the source distribution and wheel
+poetry build
+
+```
+
+This generates a `dist/` folder containing your `.whl` and `.tar.gz` files, ready for upload.
+
+### Summary Checklist for Learning
+
+1. **Read the `pyproject.toml**`: Understand how `dependencies` differ from `dev` groups.
+2. **Inspect the `lock` file**: See how it maps out the entire dependency tree.
+3. **Try `poetry check**`: This validates your configuration for errors.
+4. **Try `poetry export**`: If you ever need to go back to `requirements.txt`, run `poetry export -f requirements.txt --output requirements.txt`.
+
+------\n---

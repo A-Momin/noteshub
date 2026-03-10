@@ -285,6 +285,48 @@
 
 ---
 
+-   <details><summary style="font-size:25px;color:Orange">poetry</summary>
+
+    -   **Poetry** is a **dependency management** and **packaging tool** for Python that simplifies the process of managing dependencies, packaging projects, and publishing to PyPI. It provides an easy way to create, build, and distribute Python packages while handling virtual environments automatically.
+
+    #### poetry commands
+
+    -   `$ poetry new my_project` → Create a new Python project with a standard structure
+    -   `$ source <(poetry env activate)` → Create virtual environment
+
+    -   `$ poetry init` → Initialize a Poetry project interactively in the current directory
+    -   `$ poetry add requests` → Add a package (e.g., requests) to the project dependencies
+    -   `$ poetry add numpy@latest` → Add the latest version of numpy
+    -   `$ poetry add flask --dev` → Add a package to the development dependencies
+    -   `$ poetry install` → Install all dependencies from `pyproject.toml`
+    -   `$ poetry update` → Update all dependencies to the latest allowed versions
+    -   `$ poetry lock` → Generate a new `poetry.lock` file based on `pyproject.toml`
+    -   `$ poetry show` → Show installed dependencies and their versions
+    -   `$ poetry show --tree` → Display dependencies in a tree format
+    -   `$ poetry remove pandas` → Remove a package from dependencies
+    -   `$ poetry build` → Build the project as a package
+    -   `$ poetry publish` → Publish the package to PyPI
+    -   `$ poetry publish --dry-run` → Simulate publishing without actually uploading
+    -   `$ poetry run python script.py` → Run a script inside the Poetry environment
+    -   `$ poetry shell` → Spawn a new shell within the virtual environment
+    -   `$ poetry self update` → Update Poetry to the latest version
+    -   `$ poetry cache clear --all` → Clear all cached dependencies
+    -   `$ poetry config --list` → Show current Poetry configuration
+    -   `$ poetry export -f requirements.txt > requirements.txt` → Export dependencies to a `requirements.txt` file
+
+    -   `$ poetry env` → 
+    -   `$ poetry env info` → 
+    -   `$ poetry env list` → List out the env
+    -   `$ poetry env use pythonX.Y` → 
+    -   `$ poetry env remove python3.11` → Remove the specific environment
+    -   `$ poetry config virtualenvs.in-project true` → 
+    -   `$ poetry self add poetry-plugin-shell` → 
+
+
+   </details>
+
+---
+
 -   <details><summary style="font-size:25px;color:Orange">uv</summary>
 
     -   [UV](https://docs.astral.sh/uv/)
@@ -818,39 +860,6 @@
        </details>
 
        </details>
-
----
-
--   <details><summary style="font-size:25px;color:Orange">poetry</summary>
-
-    -   **Poetry** is a dependency management and packaging tool for Python that simplifies the process of managing dependencies, packaging projects, and publishing to PyPI. It provides an easy way to create, build, and distribute Python packages while handling virtual environments automatically.
-
-    #### poetry commands
-
-    -   `$ poetry new my_project` → Create a new Python project with a standard structure
-    -   `$ poetry init` → Initialize a Poetry project interactively in the current directory
-    -   `$ poetry add requests` → Add a package (e.g., requests) to the project dependencies
-    -   `$ poetry add numpy@latest` → Add the latest version of numpy
-    -   `$ poetry add flask --dev` → Add a package to the development dependencies
-    -   `$ poetry install` → Install all dependencies from `pyproject.toml`
-    -   `$ poetry update` → Update all dependencies to the latest allowed versions
-    -   `$ poetry lock` → Generate a new `poetry.lock` file based on `pyproject.toml`
-    -   `$ poetry show` → Show installed dependencies and their versions
-    -   `$ poetry show --tree` → Display dependencies in a tree format
-    -   `$ poetry remove pandas` → Remove a package from dependencies
-    -   `$ poetry build` → Build the project as a package
-    -   `$ poetry publish` → Publish the package to PyPI
-    -   `$ poetry publish --dry-run` → Simulate publishing without actually uploading
-    -   `$ poetry run python script.py` → Run a script inside the Poetry environment
-    -   `$ poetry shell` → Spawn a new shell within the virtual environment
-    -   `$ poetry env list` → List available virtual environments
-    -   `$ poetry env remove python3.10` → Remove a specific virtual environment
-    -   `$ poetry self update` → Update Poetry to the latest version
-    -   `$ poetry cache clear --all` → Clear all cached dependencies
-    -   `$ poetry config --list` → Show current Poetry configuration
-    -   `$ poetry export -f requirements.txt > requirements.txt` → Export dependencies to a `requirements.txt` file
-
-   </details>
 
 ---
 

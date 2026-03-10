@@ -587,7 +587,7 @@
         -   `$ git tag < -l | --list >` → List all tags created so far.
         -   `$ git push --tags` → Push all the tags into remote (github.com)
 
-    - FETCH:
+    - **FETCH**:
         -   `$ git fetch origin <branch-name>` -> To fetch a specific branch from your remote (usually named `origin`)
         -   `$ git fetch` → retrieves the latest commits, branches, and tags from the remote repository **without merging** them into your current branch; updates your local view of the remote.
 
@@ -597,10 +597,38 @@
         -   `$ git merge <local_branch_name1> < local_branch_name2>` → Merges two branches in local repository.
         -   `$ git merge —abort` → Abort merge if it is not possible to merge for any reason.
 
-    -   Rebase & Squash:
+    -   **Rebase** & **Squash**:
+
+        -   **NOTE**: Never rebase a branch that has been already pushed into remote.
+        -   [Git Rebase in 6 minutes](https://www.youtube.com/watch?v=f1wnYdLEpgI)
+        -   [git interactive rebase - Undo, Edit & Squash git commits with a single command](https://www.youtube.com/watch?v=42392W7SgnE)
 
         -   `$ git checkout feature & git rebase main` → This sequence of commands is a common workflow used to keep a feature branch up to date with the main branch. Instead of "merging" (which creates a new commit joining the two branches), rebasing literally "rewrites" your branch history by moving your unique work to sit on top of the latest changes from main.
-        -   `$ git rebase -i HEAD~3` → This opens an editor showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
+
+        -   **How to edit previous commit on the local feature branch that has not been pushed yet**:
+            -   `$ git rebase -i HEAD~3` → This opens an editor in interactive mode (`-i`) showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
+            -   -   overwrite **PICK** with **EDIT** on the opened editor and close it.
+                -   `$ git add file_name_you_edited` ->
+                -   `$ git rebase --continue`
+
+        -   **How to split a previous commit into two on the local feature branch that has not been pushed yet**:
+            -   `$ git rebase -i HEAD~3` → This opens an editor in interactive mode (`-i`) showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
+            -   -   overwrite **PICK** with **EDIT** on the opened editor and close it.
+                -   `$ git reset HEAD~1` -> Remove the commit completely
+                -   `$ git status` -> 
+                -   `$ git add README.md` ->
+                -   `$ git commit -m "Add readme file"` ->
+                -   `$ git add index.js` ->
+                -   `$ git commit -m "Add login feature"` ->
+                -   `$ git rebase --continue`
+
+        -   **How to squash previous commits on the local feature branch that has not been pushed yet**:
+            -   `$ git rebase -i HEAD~4` → This opens an editor in interactive mode (`-i`) showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
+            -   -   overwrite **PICK** with **SQUASH** on the opened editor and close it.
+                -   `$ git add file_name_you_edited` ->
+                -   `$ git rebase --continue`
+
+        -   `$ git rebase -i commit_hash` → 
         -   `$ git rebase`
 
         -   ```bash
@@ -609,7 +637,7 @@
             git commit -m "Summarized feature description"
             ```
 
-    -   🔥 FETCH/PULL/PUSH:
+    -   🔥 **FETCH**/**PULL**/**PUSH**:
 
         -   `$ git pull --rebase origin cpecs-12147` → fetches the latest changes from `origin/cpecs-12147` and rebases your local branch on top of it (instead of merging).
         -   `$ git pull` → does everything `git fetch` does, **plus it merges** the fetched changes from the remote branch into your current branch (equivalent to `git fetch` followed by `git merge`).

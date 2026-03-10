@@ -1,52 +1,137 @@
--   Give that a try
--   Wrap up
-
--   under the weather
--   be in good hand
--   kudos
--   benchmark
--   gotcha
--   should/would have been
--   what so ever
--   get along
--   align on
--   seamless integration
--   baseline (deploy Baseline security policy)
--   Tools that monitor metrics and baselines (for example, GuardDuty, Systems Manager)
--   remediation/fixing
--   Timeline/Pipeline/Process/workflow
--   Schema/Scheme/Schemetic
--   having said that/ with that being said
-
--   clunky/fluffy/wacky
--   wirte-off
--   hand off / handoffs
--   rundown
--   redact
--   cutover
--   ideal
--   exploit
-
-
-
--   work out
--   lift off
--   roll off/out/back
--   based off/in/out
--   call out/off/in/over
--   push out/off
--   pull off
--   stand out
--   take up/on/off/out
--   plan/work out
--   back out
--   scale up/down/in/out
 
 - How to welcome someone into our team
 - How to see off someone from our team
 - how to encurage/appreciate someone for the work he has done
 - How to present/introduce myself to a new team
-- 
+
+---
+    -   take it garanted
+    -   kudos
+    -   benchmark
+    -   gotcha
+    -   should/would have been
+    -   what so ever
+    -   get along
+    -   align on
+    -   seamless integration
+    -   baseline (deploy Baseline security policy)
+    -   Tools that monitor metrics and baselines (for example, GuardDuty, Systems Manager)
+    -   remediation/fixing
+    -   Timeline/Pipeline/Process/workflow
+    -   Schema/Scheme/Schemetic
+    -   having said that/ with that being said
+
+    -   clunky/fluffy/wacky
+    -   wirte-off
+    -   hand off / handoffs
+    -   rundown
+    -   redact
+    -   cutover
+    -   ideal
+    -   exploit
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">Useful Phrase</summary>
+
+
+    -   Give that a try
+    -   Wrap up
+    -   Catch up
+    -   under the weather
+    -   be in good hand
+
+    -   **Starting Conversations**
+
+        -   "I hope this email/message finds you well."
+        -   "Thank you for taking the time to meet with me."
+        -   "I’d like to follow up on…"
+        -   "Could we schedule a time to discuss this further?"
+        -   "I wanted to touch base on…"
+
+    -   **Collaborating**
+
+        -   "Let’s align on our next steps."
+        -   "How can I support you with this?"
+        -   "Do you have the bandwidth to take this on?"
+        -   "Let’s circle back to this later."
+        -   "Can we brainstorm some ideas together?"
+
+    -   **In Meetings**
+
+        -   "Can everyone hear me okay?"
+        -   "Let’s do a quick round of introductions."
+        -   "Could you elaborate on that?"
+        -   "What are the key takeaways from this discussion?"
+        -   "Let’s table this topic for now and revisit it later."
+
+    -   **Requesting Help or Information**
+
+        -   "Could you provide more details on this?"
+        -   "I’d appreciate it if you could clarify..."
+        -   "Would you mind taking a look at this?"
+        -   "Do you have any insights on this matter?"
+        -   "Can you point me in the right direction?"
+
+    -   **Providing Feedback**
+
+        -   "I’d like to share some constructive feedback."
+        -   "What worked well here was..."
+        -   "One area for improvement could be..."
+        -   "This is great, but we might want to consider..."
+        -   "Have you thought about approaching it this way?"
+
+    -   **Acknowledging and Appreciating**
+
+        -   "Thank you for your hard work on this."
+        -   "I really appreciate your input."
+        -   "Great job on completing this ahead of schedule!"
+        -   "Your insights made a big difference."
+        -   "I value your perspective on this."
+
+    -   **Problem-Solving**
+
+        -   "Let’s identify the root cause of this issue."
+        -   "How can we prevent this from happening again?"
+        -   "What are our options here?"
+        -   "Let’s prioritize the most urgent tasks."
+        -   "Is there a way to simplify this process?"
+
+    -   **Making Suggestions**
+
+        -   "May I propose an alternative approach?"
+        -   "Here’s a potential solution to consider."
+        -   "What if we tried it this way instead?"
+        -   "This might be worth exploring further."
+        -   "Would it make sense to…?"
+
+    -   **Ending Conversations**
+
+        -   "Thank you for your time and input."
+        -   "Let’s reconnect on this next week."
+        -   "Please don’t hesitate to reach out if you have questions."
+        -   "Looking forward to our next discussion."
+        -   "I’ll follow up with you by [specific date/time]."
+
+    -   **Handling Disagreements**
+
+        -   "I see your point, but here’s another perspective..."
+        -   "Let’s focus on finding a common ground."
+        -   "I understand where you’re coming from, and here’s my thought process..."
+        -   "Could we revisit this with more data?"
+        -   "Let’s agree to disagree and move forward."
+
+    -   **Professional Etiquette**
+
+        -   "Excuse me, may I add something here?"
+        -   "Let me know if this time works for you."
+        -   "I’ll keep you updated on any changes."
+        -   "Can we revisit this once I have more information?"
+        -   "I appreciate your patience on this matter."
+
+    </details>
+
+---
 
 -   <details><summary style="font-size:25px;color:Orange">Word Comparison</summary>
 
@@ -134,6 +219,21 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Phrasal Verbs</summary>
 
+
+    -   work out
+    -   lift off
+    -   roll off/out/back
+    -   based off/in/out
+    -   call out/off/in/over
+    -   push out/off
+    -   pull off
+    -   stand out
+    -   take up/on/off/out
+    -   plan/work out
+    -   back out
+    -   scale up/down/in/out
+
+
     | Verbs     | On   | Off  | in   | Out  | Up   | down | Away | over |
     | :-------- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
     | **carve** |      |      |      |      |      |      |      |      |
@@ -150,6 +250,7 @@
     | **Hold**  |      |      |      |      |      |      |      |      |
     | **Come**  |      |      |      |      |      |      |      |      |
     | **Go**    |      |      |      |      |      |      |      |      |
+    | **Hand**  |      |      |      |      |      |      |      |      |
 
 
     | Verbs    | On                                                        | Out                                                        | Up                                                                 | Away                                                    | Off                                                                            |
@@ -838,104 +939,6 @@
     | **Clearly**     | Used to make your opinion seem like an obvious fact. | Assertive            |
     | **Necessarily** | Usually used in the negative: "Not **necessarily**." | Skeptical            |
 
-
-    </details>
-
----
-
--   <details><summary style="font-size:25px;color:Orange">Useful Phrase</summary>
-
-    #### Commonly used English phrases that are useful in professional settings
-
-    -   **Starting Conversations**
-
-        -   "I hope this email/message finds you well."
-        -   "Thank you for taking the time to meet with me."
-        -   "I’d like to follow up on…"
-        -   "Could we schedule a time to discuss this further?"
-        -   "I wanted to touch base on…"
-
-    -   **Collaborating**
-
-        -   "Let’s align on our next steps."
-        -   "How can I support you with this?"
-        -   "Do you have the bandwidth to take this on?"
-        -   "Let’s circle back to this later."
-        -   "Can we brainstorm some ideas together?"
-
-    -   **In Meetings**
-
-        -   "Can everyone hear me okay?"
-        -   "Let’s do a quick round of introductions."
-        -   "Could you elaborate on that?"
-        -   "What are the key takeaways from this discussion?"
-        -   "Let’s table this topic for now and revisit it later."
-
-    -   **Requesting Help or Information**
-
-        -   "Could you provide more details on this?"
-        -   "I’d appreciate it if you could clarify..."
-        -   "Would you mind taking a look at this?"
-        -   "Do you have any insights on this matter?"
-        -   "Can you point me in the right direction?"
-
-    -   **Providing Feedback**
-
-        -   "I’d like to share some constructive feedback."
-        -   "What worked well here was..."
-        -   "One area for improvement could be..."
-        -   "This is great, but we might want to consider..."
-        -   "Have you thought about approaching it this way?"
-
-    -   **Acknowledging and Appreciating**
-
-        -   "Thank you for your hard work on this."
-        -   "I really appreciate your input."
-        -   "Great job on completing this ahead of schedule!"
-        -   "Your insights made a big difference."
-        -   "I value your perspective on this."
-
-    -   **Problem-Solving**
-
-        -   "Let’s identify the root cause of this issue."
-        -   "How can we prevent this from happening again?"
-        -   "What are our options here?"
-        -   "Let’s prioritize the most urgent tasks."
-        -   "Is there a way to simplify this process?"
-
-    -   **Making Suggestions**
-
-        -   "May I propose an alternative approach?"
-        -   "Here’s a potential solution to consider."
-        -   "What if we tried it this way instead?"
-        -   "This might be worth exploring further."
-        -   "Would it make sense to…?"
-
-    -   **Ending Conversations**
-
-        -   "Thank you for your time and input."
-        -   "Let’s reconnect on this next week."
-        -   "Please don’t hesitate to reach out if you have questions."
-        -   "Looking forward to our next discussion."
-        -   "I’ll follow up with you by [specific date/time]."
-
-    -   **Handling Disagreements**
-
-        -   "I see your point, but here’s another perspective..."
-        -   "Let’s focus on finding a common ground."
-        -   "I understand where you’re coming from, and here’s my thought process..."
-        -   "Could we revisit this with more data?"
-        -   "Let’s agree to disagree and move forward."
-
-    -   **Professional Etiquette**
-
-        -   "Excuse me, may I add something here?"
-        -   "Let me know if this time works for you."
-        -   "I’ll keep you updated on any changes."
-        -   "Can we revisit this once I have more information?"
-        -   "I appreciate your patience on this matter."
-
-    This phrase helps you sound focused, purposeful, and structured in your communication!
 
     </details>
 
