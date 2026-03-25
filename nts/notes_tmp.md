@@ -1,23 +1,23 @@
-| Verbs     | On  | Off | in  | Out | Up  |down| Away | over|
-| :-------  | :-- | :-- | :-- | :-- | :-- |:-- | :--- | :-- |
-| **carve** |     |     |     |     |     |    |      |     |
-| **build** |     |     |     |     |     |    |      |     |
-| **page**  |     |     |     |     |     |    |      |     |
-| **cut**   |     |     |     |     |     |    |      |     |
-| **Take**  |     |     |     |     |     |    |      |     |
-| **Put**   |     |     |     |     |     |    |      |     |
-| **Get**   |     |     |     |     |     |    |      |     |
-| **Turn**  |     |     |     |     |     |    |      |     |
-| **Give**  |     |     |     |     |     |    |      |     |
-| **Look**  |     |     |     |     |     |    |      |     |
-| **Call**  |     |     |     |     |     |    |      |     |
-| **Hold**  |     |     |     |     |     |    |      |     |
-| **Come**  |     |     |     |     |     |    |      |     |
-| **Go**    |     |     |     |     |     |    |      |     |
-| **Scale** |     |     |     |     |     |    |      |     |
-| **Plan**  |     |     |     |     |     |    |      |     |
-| **Stand** |     |     |     |     |     |    |      |     |
-| **Sort**  |     |     |     |     |     |    |      |     |
+| Verbs     | On   | Off  | in   | Out  | Up   | down | Away | over |
+| :-------- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **carve** |      |      |      |      |      |      |      |      |
+| **build** |      |      |      |      |      |      |      |      |
+| **page**  |      |      |      |      |      |      |      |      |
+| **cut**   |      |      |      |      |      |      |      |      |
+| **Take**  |      |      |      |      |      |      |      |      |
+| **Put**   |      |      |      |      |      |      |      |      |
+| **Get**   |      |      |      |      |      |      |      |      |
+| **Turn**  |      |      |      |      |      |      |      |      |
+| **Give**  |      |      |      |      |      |      |      |      |
+| **Look**  |      |      |      |      |      |      |      |      |
+| **Call**  |      |      |      |      |      |      |      |      |
+| **Hold**  |      |      |      |      |      |      |      |      |
+| **Come**  |      |      |      |      |      |      |      |      |
+| **Go**    |      |      |      |      |      |      |      |      |
+| **Scale** |      |      |      |      |      |      |      |      |
+| **Plan**  |      |      |      |      |      |      |      |      |
+| **Stand** |      |      |      |      |      |      |      |      |
+| **Sort**  |      |      |      |      |      |      |      |      |
 
 
 Write an email to my apartment manager requesting pest control service mentioning all the following
@@ -165,12 +165,12 @@ poetry run weather --city "Plano"
 
 Poetry manages environments so you don't have to deal with `venv` folders.
 
-| Command | Purpose |
-| --- | --- |
-| **`poetry shell`** | Activates the virtual environment in your current terminal. |
-| **`poetry env info`** | Shows where the environment is stored on your disk. |
-| **`poetry run <command>`** | Runs a command (like `pytest`) inside the environment without activating it. |
-| **`poetry update`** | Updates all packages to their latest compatible versions and refreshes the lock file. |
+| Command                    | Purpose                                                                               |
+| -------------------------- | ------------------------------------------------------------------------------------- |
+| **`poetry shell`**         | Activates the virtual environment in your current terminal.                           |
+| **`poetry env info`**      | Shows where the environment is stored on your disk.                                   |
+| **`poetry run <command>`** | Runs a command (like `pytest`) inside the environment without activating it.          |
+| **`poetry update`**        | Updates all packages to their latest compatible versions and refreshes the lock file. |
 
 ---
 
@@ -193,4 +193,9 @@ This generates a `dist/` folder containing your `.whl` and `.tar.gz` files, read
 3. **Try `poetry check**`: This validates your configuration for errors.
 4. **Try `poetry export**`: If you ever need to go back to `requirements.txt`, run `poetry export -f requirements.txt --output requirements.txt`.
 
-------\n---
+---
+---
+
+
+
+

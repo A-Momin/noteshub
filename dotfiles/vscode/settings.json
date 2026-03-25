@@ -89,7 +89,8 @@
         "editor.formatOnSave": true,
         // "editor.defaultFormatter": "esbenp.prettier-vscode",
         // "editor.defaultFormatter": "mervin.markdown-formatter",
-        "editor.wordWrapColumn": 80
+        "editor.wordWrapColumn": 80,
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one"
     },
     // "markdown.extension.print.absoluteImgPath": false,
     "markdown.extension.print.theme": "dark",

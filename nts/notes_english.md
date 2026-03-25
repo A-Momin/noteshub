@@ -5,7 +5,6 @@
 - How to present/introduce myself to a new team
 
 ---
-    -   take it garanted
     -   kudos
     -   benchmark
     -   gotcha
@@ -16,7 +15,6 @@
     -   seamless integration
     -   baseline (deploy Baseline security policy)
     -   Tools that monitor metrics and baselines (for example, GuardDuty, Systems Manager)
-    -   remediation/fixing
     -   Timeline/Pipeline/Process/workflow
     -   Schema/Scheme/Schemetic
     -   having said that/ with that being said
@@ -34,7 +32,8 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Useful Phrase</summary>
 
-
+    -   take something for garanted
+    -   things are not adding up
     -   Give that a try
     -   Wrap up
     -   Catch up
@@ -135,26 +134,26 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Word Comparison</summary>
 
-    -   **Resources/Assets**:
+    -   **Resources** vs **Assets**:
         -   `Resources` can refer to any data or helper files used by the software, including dynamic or localized content, configuration files, and external dependencies — and sometimes even compute/storage/network capacity in cloud-native environments. Exmples: `.json`, `.xml`, `.properties`, `.env`, `.yaml`, `Templates`.
         -   `Assets` are usually static files or content that are packaged with your application or deployed alongside it. Examples: Images (.png, .svg), Fonts (.ttf, .woff), Videos, CSS files, JavaScript files, Favicon
 
-    -   **Cadence/Frequency**:
+    -   **Cadence** vs **Frequency**:
 
         -   `Cadence`:
         -   `Frequency`:
 
-    -   **Integration/Incorporation**:
+    -   **Integration** vs **Incorporation**:
 
         -   `Integration`:
         -   `Incorporation`:
 
-    -   **Parameters/Metrics**:
+    -   **Parameters** vs **Metrics**:
 
         -   `Parameters`:
         -   `Metrics`:
 
-    -   **compliction/complexity**:
+    -   **Compliction** vs **Complexity**:
 
         -   `compliction`: Because it is "folded," the surface is hidden and hard to see all at once. However, it is still one piece of material. If you have the patience and the "know-how," you can unfold it back to its original simple state.
         -   `complexity`: It is not made of one piece folded up; it is made of many different strands interwoven. You cannot "unbraid" a complex system to make it simple without destroying the system itself. The strands rely on each other to create the strength and pattern of the whole.
@@ -164,16 +163,23 @@
         | Complication | Plicāre    | Folding        | "Can be ""unfolded"" or solved through analysis." |
         | Complexity   | Plectere   | Braiding       | Parts are inseparable; the pattern is the system. |
 
-    -   **Provition**/**Provide**:
+    -   **Provition** vs **Provide**:
 
-    -   **setup**/**config**:
+    -   **Setup** vs **Config**:
 
-    -   **impact**/**effect**:
+    -   **Impact** vs **Effect**:
 
-    -   utileze/leverage
-    -   Sensible/Reasonable
+    -   **Utileze** vs **Leverage**:
+
+    -   **Sensible** vs **Reasonable**:
+
+    -   **Remediation** vs **Fixing**:
+
+    -   **Research** vs **Investigation**:
+
+
     -   Span/Embad/Encompass
-    -   vigilant/deligent
+    -   Vigilant/Deligent
 
     </details>
 
@@ -988,8 +994,8 @@
 
     -   🧠 Quick Visual (Confusion Matrix Perspective):
 
-        |                        | **Actual Positive**    | **Actual Negative**    |
-        | ---------------------- | ---------------------- | ---------------------- |
+        |                        | **Actual Positive**   | **Actual Negative**   |
+        | ---------------------- | --------------------- | --------------------- |
         | **Predicted Positive** | ✅ True Positive (TP)  | ❌ False Positive (FP) |
         | **Predicted Negative** | ❌ False Negative (FN) | ✅ True Negative (TN)  |
 

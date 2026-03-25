@@ -1,3 +1,7 @@
+-   [OWASP API Security Top 10 Course – Secure Your Web Apps](https://www.youtube.com/watch?v=YYe0FdfdgDU&t=89s)
+
+---
+---
 
 -   <details><summary style="font-size:25px;color:Orange">Security Measures & Vulnerabilitis</summary>
 

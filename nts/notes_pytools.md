@@ -367,7 +367,7 @@
     -   `$ uv `
     -   `$ uv `
 
-    #### Using a virtual environment
+    #### Creating & Using a virtual environment
 
     -   [uv Docs on virtual environment](https://docs.astral.sh/uv/pip/environments/#creating-a-virtual-environment)
     -   `$ uv venv --help`
