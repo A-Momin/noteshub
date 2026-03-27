@@ -448,7 +448,7 @@
             author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name="books")
         ```
 
-        -   `ForeignKey(to, on_delete, **options)` | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#foreignkey)
+        -   **`ForeignKey(to, on_delete, **options)`** | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#foreignkey)
 
             -   A `ForeignKey` is used to create a **one-to-many** relationship. It's used to associate one object with another, where one object (the "source" or "parent") can have multiple related objects (the "targets" or "children"). In this relationship, multiple instances of the related model (child) can reference the same parent instance.
             -   Example: A `Book` (Child) model with a `ForeignKey` to an `Author` (Parent) model establishes a relationship where each book is associated with one author, but an author can have multiple books.
@@ -481,19 +481,19 @@
                 -   For soft deletes or audit trails, combine `on_delete=models.PROTECT` and manual cleanup to avoid cascading data loss.
                 -   For self-referential relationships, use `ForeignKey('self', on_delete=...)`.
 
-        -   `OneToOneField(to, on_delete, parent_link=False, **options)` | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#onetoonefield)
+        -   **`OneToOneField(to, on_delete, parent_link=False, **options)`** | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#onetoonefield)
 
             -   A `OneToOneField` is a type of `ForeignKey` with a unique constraint. It creates a one-to-one relationship, ensuring that each source object is associated with only one target object, and vice versa.
             -   Example: A `Profile` model with a `OneToOneField` to a `User` model creates a one-to-one relationship, where each user has a single profile, and each profile belongs to only one user.
             -   `on_delete`: When an object referenced by a `ForeignKey` is deleted, Django will emulate the behavior of the SQL constraint specified by the `on_delete` argument.
             -   `parent_link`: When True and used in a model which inherits from another concrete model, indicates that this field should be used as the link back to the parent class, rather than the extra `OneToOneField` which would normally be implicitly created by subclassing.
 
-        -   `ManyToManyField(to, **options)` | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#manytomanyfield)
+        -   **`ManyToManyField(to, **options)`** | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#manytomanyfield)
 
             -   A `ManyToManyField` is used to create a many-to-many relationship between objects. This means that multiple objects from one model can be related to multiple objects from another model.
             -   Example: A `Student` model with a `ManyToManyField` to a `Course` model establishes a many-to-many relationship, where each student can enroll in multiple courses, and each course can have multiple students.
 
-        -   `GenericForeignKey` and `GenericRelation`:
+        -   **`GenericForeignKey`** and **`GenericRelation`**:
 
             -   These fields are used when you need to create a generic relationship that can link a model to any other model. It's typically used for scenarios where a model can be related to different types of objects.
             -   Example: A Comment model can have a `GenericForeignKey` to allow it to be associated with various other models like BlogPost, Video, and Image.
@@ -504,12 +504,30 @@
             -   By defining `related_name` on a `ForeignKey` or `ManyToManyField`, you get a clear and conflict-free reverse manager. Example:
 
                 ```python
+                class Author(models.Model):
+                    name = models.CharField(max_length=100)
+
                 class Book(models.Model):
-                    author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
+                    title = models.CharField(max_length=200)
+                    author = models.ForeignKey(
+                        Author,
+                        on_delete=models.CASCADE,
+                        related_name='books',            # reverse manager
+                        related_query_name='written'     # reverse filter name
+                    )
                     editor = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='edited_books')
+
+                # 1) get authors with one or more "Django" books (reverse filter via related_query_name)
+                authors = Author.objects.filter(written__title__icontains='Django')
+
+                # 2) same as:
+                authors = Author.objects.filter(book__title__icontains='Django')   # default if no related_query_name
+
+                # 3) with extra clarity / collision safety
+                authors = Author.objects.filter(written__title__contains='API').distinct()
                 ```
 
-                `author.books.all()` and `author.edited_books.all()` are both available.
+                -   `author.books.all()` and `author.edited_books.all()` are both available.
             -   `related_query_name` controls reverse queryset filtering (e.g. `Author.objects.filter(books__title__icontains='x')`). If unset, Django falls back to `related_name` or the source model name.
             -   `related_name='+'` disables reverse relation creation when you intentionally do not need backwards lookup or to avoid name collisions.
             -   For self-referential relations, use `ForeignKey('self', on_delete=models.CASCADE, related_name='children', null=True, blank=True)` and use `parent.children.all()` for reverse.
@@ -521,11 +539,28 @@
                 print(book.author.name)
                 ```
 
+                ```sql
+                SELECT "book"."id", "book"."title", "book"."author_id",
+                       "author"."id", "author"."name"
+                FROM "book"
+                INNER JOIN "author" ON ("book"."author_id" = "author"."id")
+                WHERE "book"."id" = 1;
+                ```
+
             -   Accessing reverse relations:
 
                 ```python
                 author = Author.objects.prefetch_related('books').get(id=1)
                 books = author.books.all()
+                ```
+
+                ```sql
+                -- First query: Get author
+                SELECT "author"."id", "author"."name" FROM "author" WHERE "author"."id" = 1;
+
+                -- Second query: Get related books
+                SELECT "book"."id", "book"."title", "book"."author_id"
+                FROM "book" WHERE "book"."author_id" IN (1);
                 ```
 
             -   Joins and performance:
@@ -548,7 +583,7 @@
         -   **Options** of Relationship Fields:
 
             -   `related_name`:
-            -   `ForeignKey.related_query_name`: The name to use for the reverse filter name from the target model. It defaults to the value of related_name or default_related_name if set, otherwise it defaults to the name of the model.
+            -   `ForeignKey.related_query_name`: The name to use for the reverse filter name from the target model. It defaults to the value of `related_name` or `default_related_name` if set, otherwise it defaults to the name of the model.
             -   `limit_choices_to`:
             -   `ForeignKey.to_field`: The field on the related object that the relation is to. By default, Django uses the primary key of the related object. If you reference a different field, that field must have `unique=True`.
             -   `symmetrical`:
@@ -1855,74 +1890,8 @@
 
     > The Django ORM abstracts away the underlying database and provides a consistent API for performing common database operations, such as creating, retrieving, updating, and deleting records. It simplifies the process of working with databases and helps ensure the security and integrity of data. The main components of Django ORM include:
 
-    -   **Models**: Models are Python classes that represent database tables. Each model class corresponds to a table in the database, and each attribute of the model class represents a column in the table. Models define the structure of the data and provide methods for interacting with the database.
-    -   **Fields**: Fields are the attributes of a model class that define the type and characteristics of the data stored in the corresponding database columns. Django provides a variety of built-in field types (e.g., CharField, IntegerField, DateField) for different data types and validation requirements.
-    -   **QuerySet**: a QuerySet object is essentially a container that holds the results of a database query. It represents a list of objects retrieved from the database based on a specific query. It provides intuitive APIs to filter, update, delete, and perform other operations on database records.
-    -   **Manager**: Manager is an interface through which you interact with the database using QuerySets. Each model class has a default manager that provides methods for performing database operations. You can also define custom managers to encapsulate common query logic or filter methods.
-    -   **Database Migration**: Database migration is the process of synchronizing changes in model definitions (e.g., adding new fields, renaming tables) with the underlying database schema. Django provides a built-in migration system (using manage.py commands) to automate the generation and execution of database migration scripts.
-    -   **Database Backend**: Database backend is the component responsible for communicating with the database. Django supports multiple database backends (e.g., PostgreSQL, MySQL, SQLite) and provides an abstraction layer that allows you to write database-agnostic code.
+    > Querying Django models is all about mastering the **QuerySet API**. Django uses a "lazy" evaluation system, meaning it doesn't actually hit the database until you try to use the results (like looping over them or printing them). Here is a breakdown of techniques from basic to advanced.
 
-    - **Manager()** vs **QuerySet()**: In Django, both Manager and QuerySet are integral parts of the Object-Relational Mapping (ORM) system, which allows you to interact with your database using Python objects instead of writing raw SQL queries. However, they serve different purposes within the Django ORM.
-
-        -   [`Manager()`](https://docs.djangoproject.com/en/4.0/topics/db/managers/): A Manager is an interface through which database queries are executed. It's like a higher-level API that provides methods for creating, retrieving, updating, and deleting objects in the database. By default, every Django model has a default manager called objects. You can also define your own custom managers to add specific methods or query functionality to your models.
-
-            -   For example, you might create a custom manager to encapsulate common queries that you frequently use with a specific model. This allows you to encapsulate logic and reusability within the manager's methods.
-
-            ```python
-            from django.db import models
-
-            class CustomManager(models.Manager):
-                def get_published(self):
-                    return self.filter(published=True)
-
-            class Post(models.Model):
-                title = models.CharField(max_length=100)
-                content = models.TextField()
-                published = models.BooleanField(default=False)
-
-                objects = CustomManager()  # Using the custom manager
-            ```
-
-            -   In the above example, the CustomManager class defines a method get_published() which returns published posts. The objects attribute is assigned an instance of CustomManager, making the method accessible as a query method on the model.
-
-        -   [`QuerySet`](https://docs.djangoproject.com/en/4.1/ref/models/querysets/): A QuerySet is a representation of a database query. When you perform a query using a Manager method, it returns a QuerySet object. A QuerySet allows you to chain methods together to build complex queries. It is lazy-evaluated, meaning that the actual database query is executed only when the results are needed, typically when you iterate over the QuerySet or retrieve data from it.
-
-            ```python
-            published_posts = Post.objects.get_published()
-            filtered_posts = published_posts.filter(title__icontains='Django')
-            ```
-
-            -   In the above example, `get_published()` returns a QuerySet of published posts, and then the `filter()` method is chained to further narrow down the selection to posts with titles containing "Django".
-            -   In summary, Manager is responsible for defining query methods on a model, while QuerySet is the representation of the actual query and allows you to chain methods to build and refine queries. They work together to provide a powerful way to interact with your database using Python code.
-
-        -   **model.Manager.create()** and **model.Model.save()**
-
-            -   [Django ORM - Difference between save() and create()](https://www.youtube.com/watch?v=Q7HlaH3a_zc&list=PLOLrQ9Pn6cayYycbeBdxHUFrzTqrNE7Pe&index=24)
-
-            -   `model.Manager.create(**kwargs)`: The `create()` method is a convenient way to create a new instance of a model and save it to the database in a single step. It's available on the model's default manager (usually named objects). Automatically creates and saves the object in a single call.
-
-                -   Limited flexibility compared to `save()`. You can't modify the instance after it's created before saving.
-                -   Does not allow easy handling of exceptions during creation and saving separately.
-
-                ```python
-                # Using create() to create and save a new instance
-                new_person = Person.objects.create(first_name='John', last_name='Doe')
-                ```
-
-            -   `model.Model.save()`: The `save()` method is used on an instance of a model to save changes to the database. It's available on any instance of a model. Offers more flexibility as you can modify the instance's attributes before saving. Allows you to handle exceptions more granularly (e.g., you can catch specific database-related exceptions).
-
-                ```python
-                # Creating an instance and saving it separately using save()
-                new_person = Person(first_name='John', last_name='Doe')
-                new_person.save()
-                ```
-
-                ```python
-                # Modifying an instance and then saving it using save()
-                person = Person.objects.get(pk=1)
-                person.first_name = 'Jane'
-                person.save()
-                ```
 
     -   **Check what sql query gets generated after each ORM query**
 
@@ -1966,9 +1935,81 @@
         ```
 
 
-    > Querying Django models is all about mastering the **QuerySet API**. Django uses a "lazy" evaluation system, meaning it doesn't actually hit the database until you try to use the results (like looping over them or printing them). Here is a breakdown of techniques from basic to advanced.
+    -   <details><summary style="font-size:20px;color:Red">Terms & Concepts</summary>
 
-    1. **Field Lookups (Magic Double Underscores)**: In the Django ORM, the "Magic Double Underscore" (`__`) is the syntax used to navigate **relationships** (joins) and apply **field lookups** (filters). It is the bridge between Pythonic attribute access and SQL clauses. Think of the double underscore as a "separator" that tells Django to dig deeper into a model's connections or to apply a specific operator to a field.
+        -   **Models**: Models are Python classes that represent database tables. Each model class corresponds to a table in the database, and each attribute of the model class represents a column in the table. Models define the structure of the data and provide methods for interacting with the database.
+        -   **Fields**: Fields are the attributes of a model class that define the type and characteristics of the data stored in the corresponding database columns. Django provides a variety of built-in field types (e.g., CharField, IntegerField, DateField) for different data types and validation requirements.
+        -   **QuerySet**: a QuerySet object is essentially a container that holds the results of a database query. It represents a list of objects retrieved from the database based on a specific query. It provides intuitive APIs to filter, update, delete, and perform other operations on database records.
+        -   **Manager**: Manager is an interface through which you interact with the database using QuerySets. Each model class has a default manager that provides methods for performing database operations. You can also define custom managers to encapsulate common query logic or filter methods.
+        -   **Database Migration**: Database migration is the process of synchronizing changes in model definitions (e.g., adding new fields, renaming tables) with the underlying database schema. Django provides a built-in migration system (using manage.py commands) to automate the generation and execution of database migration scripts.
+        -   **Database Backend**: Database backend is the component responsible for communicating with the database. Django supports multiple database backends (e.g., PostgreSQL, MySQL, SQLite) and provides an abstraction layer that allows you to write database-agnostic code.
+        - **Manager()** vs **QuerySet()**: In Django, both Manager and QuerySet are integral parts of the Object-Relational Mapping (ORM) system, which allows you to interact with your database using Python objects instead of writing raw SQL queries. However, they serve different purposes within the Django ORM.
+
+            -   [`Manager()`](https://docs.djangoproject.com/en/4.0/topics/db/managers/): A Manager is an interface through which database queries are executed. It's like a higher-level API that provides methods for creating, retrieving, updating, and deleting objects in the database. By default, every Django model has a default manager called objects. You can also define your own custom managers to add specific methods or query functionality to your models.
+
+                -   For example, you might create a custom manager to encapsulate common queries that you frequently use with a specific model. This allows you to encapsulate logic and reusability within the manager's methods.
+
+                ```python
+                from django.db import models
+
+                class CustomManager(models.Manager):
+                    def get_published(self):
+                        return self.filter(published=True)
+
+                class Post(models.Model):
+                    title = models.CharField(max_length=100)
+                    content = models.TextField()
+                    published = models.BooleanField(default=False)
+
+                    objects = CustomManager()  # Using the custom manager
+                ```
+
+                -   In the above example, the CustomManager class defines a method get_published() which returns published posts. The objects attribute is assigned an instance of CustomManager, making the method accessible as a query method on the model.
+
+            -   [`QuerySet`](https://docs.djangoproject.com/en/4.1/ref/models/querysets/): A QuerySet is a representation of a database query. When you perform a query using a Manager method, it returns a QuerySet object. A QuerySet allows you to chain methods together to build complex queries. It is lazy-evaluated, meaning that the actual database query is executed only when the results are needed, typically when you iterate over the QuerySet or retrieve data from it.
+
+                ```python
+                published_posts = Post.objects.get_published()
+                filtered_posts = published_posts.filter(title__icontains='Django')
+                ```
+
+                -   In the above example, `get_published()` returns a QuerySet of published posts, and then the `filter()` method is chained to further narrow down the selection to posts with titles containing "Django".
+                -   In summary, Manager is responsible for defining query methods on a model, while QuerySet is the representation of the actual query and allows you to chain methods to build and refine queries. They work together to provide a powerful way to interact with your database using Python code.
+
+            -   **model.Manager.create()** and **model.Model.save()**
+
+                -   [Django ORM - Difference between save() and create()](https://www.youtube.com/watch?v=Q7HlaH3a_zc&list=PLOLrQ9Pn6cayYycbeBdxHUFrzTqrNE7Pe&index=24)
+
+                -   `model.Manager.create(**kwargs)`: The `create()` method is a convenient way to create a new instance of a model and save it to the database in a single step. It's available on the model's default manager (usually named objects). Automatically creates and saves the object in a single call.
+
+                    -   Limited flexibility compared to `save()`. You can't modify the instance after it's created before saving.
+                    -   Does not allow easy handling of exceptions during creation and saving separately.
+
+                    ```python
+                    # Using create() to create and save a new instance
+                    new_person = Person.objects.create(first_name='John', last_name='Doe')
+                    ```
+
+                -   `model.Model.save()`: The `save()` method is used on an instance of a model to save changes to the database. It's available on any instance of a model. Offers more flexibility as you can modify the instance's attributes before saving. Allows you to handle exceptions more granularly (e.g., you can catch specific database-related exceptions).
+
+                    ```python
+                    # Creating an instance and saving it separately using save()
+                    new_person = Person(first_name='John', last_name='Doe')
+                    new_person.save()
+                    ```
+
+                    ```python
+                    # Modifying an instance and then saving it using save()
+                    person = Person.objects.get(pk=1)
+                    person.first_name = 'Jane'
+                    person.save()
+                    ```
+
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Red">Field Lookups (Magic Double Underscores)</summary>
+
+        > In the Django ORM, the "Magic Double Underscore" (`__`) is the syntax used to navigate **relationships** (joins) and apply **field lookups** (filters). It is the bridge between Pythonic attribute access and SQL clauses. Think of the double underscore as a "separator" that tells Django to dig deeper into a model's connections or to apply a specific operator to a field.
 
         1. **Field Lookups (The "How")**: By default, `filter(name="Alex")` performs an exact match (`=`). Double underscores allow you to use different SQL operators like `LIKE`, `IN`, `BETWEEN`, or `IS NULL`.
 
@@ -1989,13 +2030,35 @@
                 # Find all books where the author's name contains "Rowling"
                 books = Book.objects.filter(author__name__icontains="Rowling")
                 ```
-                * **Translation:** Django joins the `Book` and `Author` tables in SQL and filters by the `name` column in the `Author` table.
+                -   **Translation:** Django joins the `Book` and `Author` tables in SQL and filters by the `name` column in the `Author` table.
+
+                ```sql
+                SELECT "book"."id", "book"."title", "book"."author_id"
+                FROM "book"
+                INNER JOIN "author" ON ("book"."author_id" = "author"."id")
+                WHERE "author"."name" ILIKE '%Rowling%';
+                ```
 
             -   **Deep Nesting**: You can chain these indefinitely:
                 ```python
                 # Find comments on posts written by authors in the "Engineering" department
                 comments = Comment.objects.filter(post__author__department__name="Engineering")
                 ```
+
+                ```sql
+                SELECT "comment"."id", "comment"."text", "comment"."post_id"
+                FROM "comment"
+                INNER JOIN "post" ON ("comment"."post_id" = "post"."id")
+                INNER JOIN "author" ON ("post"."author_id" = "author"."id")
+                INNER JOIN "department" ON ("author"."department_id" = "department"."id")
+                WHERE "department"."name" = 'Engineering';
+                ```
+
+
+           -    **Performance Warning: The "Hidden Join"**: Every time you use `__` to cross a relationship in a filter, Django performs a SQL `JOIN`.
+               -   **The Risk:** Filtering through multiple `ManyToMany` relationships with `__` can lead to massive, slow queries.
+               -   **The Fix:** Use `.select_related()` or `.prefetch_related()` if you plan to *access* those fields later, to avoid the N+1 problem.
+
 
         3. **Date and Time Extraction**: The double underscore allows you to "reach inside" a DateTime field to filter by specific parts of the date.
 
@@ -2020,11 +2083,11 @@
             print(user.profile.city)
             ```
 
-        5. **Performance Warning: The "Hidden Join"**: Every time you use `__` to cross a relationship in a filter, Django performs a SQL `JOIN`.
-            -   **The Risk:** Filtering through multiple `ManyToMany` relationships with `__` can lead to massive, slow queries.
-            -   **The Fix:** Use `.select_related()` or `.prefetch_related()` if you plan to *access* those fields later, to avoid the N+1 problem we discussed earlier.
+        </details>
 
-    2. **Advanced Logic with Q and F Objects**: Standard filters use `AND` logic. For more complex queries, use `Q` for boolean combinators and `F` for field-to-field operations.
+    -   <details><summary style="font-size:20px;color:Red">Advanced Logic with Q and F Objects</summary>
+
+        > Standard filters use `AND` logic. For more complex queries, use `Q` for boolean combinators and `F` for field-to-field operations.
 
         -   **`Q` Objects:** Used to express complex lookups with **OR**, **AND**, and **NOT** in a single query. Also supports nested conditions and parentheses via Python operators `|`, `&`, and `~`.
 
@@ -2033,13 +2096,34 @@
 
             # Name is 'Alice' OR 'Bob'
             User.objects.filter(Q(name='Alice') | Q(name='Bob'))
+            ```
 
+            ```sql
+            SELECT "user"."id", "user"."name" FROM "user"
+            WHERE ("user"."name" = 'Alice' OR "user"."name" = 'Bob');
+            ```
+
+            ```python
             # Users created in 2024 OR with is_staff flag
             User.objects.filter(Q(date_joined__year=2024) | Q(is_staff=True))
+            ```
 
+            ```sql
+            SELECT "user"."id", "user"."name" FROM "user"
+            WHERE (EXTRACT(YEAR FROM "user"."date_joined") = 2024 OR "user"."is_staff" = true);
+            ```
+
+            ```python
             # Exclude inactive users OR blocked users: NOT of Q
             User.objects.filter(~Q(is_active=False) & ~Q(is_blocked=True))
+            ```
 
+            ```sql
+            SELECT "user"."id", "user"."name" FROM "user"
+            WHERE (NOT ("user"."is_active" = false) AND NOT ("user"."is_blocked" = true));
+            ```
+
+            ```python
             # Nested logic:
             Purchase.objects.filter(
                 Q(user__group='premium') &
@@ -2047,13 +2131,11 @@
             )
             ```
 
-            - `Q` can be reused for maintainability:
-                ```python
-                active_premium = Q(user__group='premium') & Q(user__is_active=True)
-                orders = Order.objects.filter(active_premium, total__gt=100)
-                ```
-
-            - For OR queries, `distinct()` may be required to avoid duplicate rows in many-to-many or reverse lookups.
+            ```sql
+            SELECT "purchase"."id", "purchase"."total" FROM "purchase"
+            INNER JOIN "user" ON ("purchase"."user_id" = "user"."id")
+            WHERE ("user"."group" = 'premium' AND ("purchase"."total" > 500 OR "purchase"."status" = 'complete'));
+            ```
 
         -   **`F` Objects:** Enables performing operations where one field is compared or combined with another field at the database level. Useful for avoiding extra round-trips and keeping logic in SQL.
 
@@ -2062,27 +2144,43 @@
 
             # Find products where stock is less than the minimum required
             Product.objects.filter(stock__lt=F('min_stock'))
+            ```
 
+            ```sql
+            SELECT "product"."id", "product"."name" FROM "product"
+            WHERE "product"."stock" < "product"."min_stock";
+            ```
+
+            ```python
             # Increase price by 10% in a query
             Product.objects.update(price=F('price') * 1.1)
+            ```
 
+            ```sql
+            UPDATE "product" SET "price" = "product"."price" * 1.1;
+            ```
+
+            ```python
             # Avoid race conditions with atomic updates
             from django.db import transaction
             with transaction.atomic():
                 Inventory.objects.filter(id=item_id).update(quantity=F('quantity') - 1)
             ```
 
-            - `F` supports arithmetic: `+`, `-`, `*`, `/`, `%`.
-            - `F` supports function transforms e.g., `Lower`, `Upper`:
-                ```python
-                from django.db.models.functions import Lower
-                Product.objects.filter(name__iexact=F('category__name'))
-                ```
+            ```sql
+            UPDATE "inventory" SET "quantity" = "inventory"."quantity" - 1
+            WHERE "inventory"."id" = %s;
+            ```
 
             - Comparing fields across relations
                 ```python
                 # Customers with credit limit greater than their balance
                 Customer.objects.filter(credit_limit__gt=F('balance'))
+                ```
+
+                ```sql
+                SELECT "customer"."id", "customer"."name" FROM "customer"
+                WHERE "customer"."credit_limit" > "customer"."balance";
                 ```
 
         -   **Combining `Q` and `F` Objects**: Use together for powerful SQL expressions.
@@ -2093,6 +2191,11 @@
             Product.objects.filter(
                 Q(sale_price__isnull=True) | Q(sale_price__gt=F('cost_price'))
             )
+            ```
+
+            ```sql
+            SELECT "product"."id", "product"."name" FROM "product"
+            WHERE ("product"."sale_price" IS NULL OR "product"."sale_price" > "product"."cost_price");
             ```
 
         -   **Best practices**:
@@ -2106,7 +2209,10 @@
             - `F` cannot be used in `.values()` directly in older Django versions; use `annotate()` first.
             - Beware of `F` with Tentative arithmetic on nullable fields; null behavior follows database semantics.
 
-    3. **Aggregation and Annotation**
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Red">Aggregation and Annotation</summary>
+
 
         -   **`aggregate()`**: Returns a dictionary of summary values (e.g., Average price of all books).
         -   **`annotate()`**: Adds a "virtual" field to every item in a QuerySet (e.g., Each author object gets a `book_count` field).
@@ -2121,6 +2227,35 @@
         print(authors[0].num_books)
         ```
 
+        </details>
+
+    -   <details><summary style="font-size:20px;color:Red">N+1 Problem Explained</summary>
+
+        > The **N+1 problem** is one of the most common performance killers in database-driven applications, including those built with Django and GraphQL. It occurs when your code executes one query to fetch a list of parent records, and then executes **additional** queries for every single child record in that list. If you have **N** items in your list, you end up making **N + 1** total calls to the database.
+
+        1. **How the Problem Happens**:
+
+            1.  **The "1" Query:** `SELECT * FROM books LIMIT 10;`
+                -   *The database returns 10 books.*
+            2.  **The "N" Queries:** For each post, your code looks for the author:
+                -   Post 1: `SELECT * FROM authors WHERE id = 1;`
+                -   Post 2: `SELECT * FROM authors WHERE id = 2;`
+                -   ... (this continues 8 more times)
+                -   Post 10: `SELECT * FROM authors WHERE id = 5;`
+
+                > **Total Hits: 11 Database Queries.** If you were showing 100 books, you’d hit the database 101 times. This creates massive latency and can crash a database under high traffic.
+
+
+        2. **How to Fix It**: There are two primary ways to solve this, depending on the relationship type:
+
+            -   **JOINing (Django's `select_related`)**: For **One-to-One** or **Many-to-One** relationships, you can use a SQL JOIN to get everything in exactly **one** query.
+                -   **SQL:** `SELECT * FROM books JOIN authors ON books.author_id = authors.id;`
+
+            -   **Batching (Django's `prefetch_related` / DataLoaders)**: For **Many-to-Many** or **One-to-Many** relationships, you fetch the parents, collect all the child IDs, and fetch the children in one bulk "IN" query.
+                -   **Step 1:** `SELECT * FROM books;`
+                -   **Step 2:** `SELECT * FROM authors WHERE id IN (1, 2, 5, ...);`
+
+        </details>
 
     -   <details><summary style="font-size:20px;color:Red">Useful ORM Methods</summary>
 
@@ -2247,35 +2382,10 @@
 
         </details>
 
-    -   <details><summary style="font-size:20px;color:Red"> How to perform `JOIN` query ?</summary>
+    -   <details><summary style="font-size:20px;color:Red">How to perform JOIN query?</summary>
 
         -   In Django's Object-Relational Mapping (ORM), you can perform JOIN operations to retrieve data from multiple database tables using various methods. Below are some common ways to perform a JOIN query in Django ORM.
         -   Assuming you have two Django models: `Author` and `Book`, and you want to join them based on a common field, such as author_id, here's a demonstration of multiple ways to perform a JOIN query:
-
-
-        -   **`N+1` Problem Explained**: The **N+1 problem** is one of the most common performance killers in database-driven applications, including those built with Django and GraphQL. It occurs when your code executes one query to fetch a list of parent records, and then executes **additional** queries for every single child record in that list. If you have **N** items in your list, you end up making **N + 1** total calls to the database.
-
-            1. **How the Problem Happens**:
-
-                1.  **The "1" Query:** `SELECT * FROM books LIMIT 10;`
-                    -   *The database returns 10 books.*
-                2.  **The "N" Queries:** For each post, your code looks for the author:
-                    -   Post 1: `SELECT * FROM authors WHERE id = 1;`
-                    -   Post 2: `SELECT * FROM authors WHERE id = 2;`
-                    -   ... (this continues 8 more times)
-                    -   Post 10: `SELECT * FROM authors WHERE id = 5;`
-
-                    > **Total Hits: 11 Database Queries.** If you were showing 100 books, you’d hit the database 101 times. This creates massive latency and can crash a database under high traffic.
-
-
-            2. **How to Fix It**: There are two primary ways to solve this, depending on the relationship type:
-
-                -   **JOINing (Django's `select_related`)**: For **One-to-One** or **Many-to-One** relationships, you can use a SQL JOIN to get everything in exactly **one** query.
-                    -   **SQL:** `SELECT * FROM books JOIN authors ON books.author_id = authors.id;`
-
-                -   **Batching (Django's `prefetch_related` / DataLoaders)**: For **Many-to-Many** or **One-to-Many** relationships, you fetch the parents, collect all the child IDs, and fetch the children in one bulk "IN" query.
-                    -   **Step 1:** `SELECT * FROM books;`
-                    -   **Step 2:** `SELECT * FROM authors WHERE id IN (1, 2, 5, ...);`
 
         -   **Using `.select_related()` for `ForeignKey` and `OneToOne` Relationships**: Use `.select_related()` to perform a single SQL `INNER JOIN` for forward one-to-one and many-to-one relationships, eliminating the N+1 query problem.
 
@@ -2293,25 +2403,33 @@
                 - **Large related object sets** → JOIN duplicates parent row for each related row (use `prefetch_related` instead).
                 - When accessing related data conditionally — may waste a JOIN if not all results use the related object.
 
-            -   **`N+1` Problem Solved****:
+            -   **`N+1` Problem Solved**:
 
-                    ```python
-                    # Bad: N+1 queries (1 for books + N queries for each book's author)
-                    books = Book.objects.all()
-                    for book in books:
-                        print(book.author.name)  # Separate query per book
+                ```python
+                # Bad: N+1 queries (1 for books + N queries for each book's author)
+                books = Book.objects.all()
+                for book in books:
+                    print(book.author.name)  # Separate query per book
 
-                    # Good: 1 query with JOIN
-                    books = Book.objects.select_related('author').all()
-                    for book in books:
-                        print(book.author.name)  # No additional query
-                    ```
+                # Good: 1 query with JOIN
+                books = Book.objects.select_related('author').all()
+                for book in books:
+                    print(book.author.name)  # No additional query
+                ```
 
             -   **Chaining multiple `.select_related()`**:
                 ```python
                 # Follow multiple ForeignKey chains in one query
                 books = Book.objects.select_related('author', 'publisher').all()
                 # Equivalent to: select_related('author').select_related('publisher')
+                ```
+
+                ```sql
+                SELECT "book"."id", "book"."title", "book"."author_id", "book"."publisher_id",
+                       "author"."id", "author"."name", "publisher"."id", "publisher"."name"
+                FROM "book"
+                INNER JOIN "author" ON ("book"."author_id" = "author"."id")
+                INNER JOIN "publisher" ON ("book"."publisher_id" = "publisher"."id");
                 ```
 
             -   **Deep/Nested relations** (following FK chains):
@@ -2322,6 +2440,15 @@
                     print(book.author.country.name)  # All loaded, no extra queries
                 ```
 
+                ```sql
+                SELECT "book"."id", "book"."title", "book"."author_id",
+                       "author"."id", "author"."name", "author"."country_id",
+                       "country"."id", "country"."name"
+                FROM "book"
+                INNER JOIN "author" ON ("book"."author_id" = "author"."id")
+                INNER JOIN "country" ON ("author"."country_id" = "country"."id");
+                ```
+
             -   **Real-world nested example**:
                 ```python
                 from myapp.models import Order
@@ -2330,6 +2457,15 @@
                 orders = Order.objects.select_related('customer__city').all()
                 for order in orders:
                     print(f"{order.customer.name} from {order.customer.city.name}")
+                ```
+
+                ```sql
+                SELECT "order"."id", "order"."total", "order"."customer_id",
+                       "customer"."id", "customer"."name", "customer"."city_id",
+                       "city"."id", "city"."name"
+                FROM "order"
+                INNER JOIN "customer" ON ("order"."customer_id" = "customer"."id")
+                INNER JOIN "city" ON ("customer"."city_id" = "city"."id");
                 ```
 
             -   **Performance implications**:
@@ -2391,7 +2527,10 @@
 
         -   **Using `.prefetch_related()` for Reverse Relations and `ManyToMany`**: When dealing with reverse `ForeignKey`, `ManyToMany`, or OneToOne relationships, use `.prefetch_related()` to retrieve related objects efficiently.
 
-            -   **How it works**: Executes **separate database queries** (one per prefetched relation) and caches results in Python memory. Unlike `select_related`, it does NOT perform JOIN at the database level.
+            -   **How it works**: Executes **separate database queries** (one per prefetched relation) and caches results in Python memory. Unlike `select_related`, it does NOT perform JOIN at the database level. When you use prefetch_related, Django performs two (or more) distinct steps:
+                -   **Main Query**: It fetches all the primary objects (e.g., all Authors).
+                -   **Prefetch Query**: It collects all the IDs from the first result, then runs a single query to fetch all related objects (e.g., all Books belonging to those specific authors) using an IN clause.
+                -   **The "Stitching"**: Django’s ORM joins these objects in memory, so when you loop through `author.book_set.all()`, no new database hits occur.
 
             -   **When to use**:
                 - Reverse ForeignKey lookups (e.g., `author.books` when Book has FK to Author).
@@ -2428,10 +2567,35 @@
                     print(f"Author: {author.name}, Books: {[book.title for book in books]}")
                 ```
 
+                ```sql
+                -- Query 1: Fetch all authors
+                SELECT "author"."id", "author"."name" FROM "author";
+
+                -- Query 2: Fetch all related books for the authors above
+                SELECT "book"."id", "book"."title", "book"."author_id"
+                FROM "book"
+                WHERE "book"."author_id" IN (1, 2, 3, ...);  -- IDs from Query 1
+                ```
+
             -   **Chaining multiple prefetch_related**:
                 ```python
                 # Prefetch multiple relations in one operation
                 authors = Author.objects.prefetch_related('books', 'awards').all()
+                ```
+
+                ```sql
+                -- Query 1: Fetch all authors
+                SELECT "author"."id", "author"."name" FROM "author";
+
+                -- Query 2: Fetch all books for authors
+                SELECT "book"."id", "book"."title", "book"."author_id"
+                FROM "book"
+                WHERE "book"."author_id" IN (1, 2, 3, ...);
+
+                -- Query 3: Fetch all awards for authors
+                SELECT "award"."id", "award"."title", "award"."author_id"
+                FROM "award"
+                WHERE "award"."author_id" IN (1, 2, 3, ...);
                 ```
 
             -   **Nested prefetch (related relations of related objects)**:
@@ -2443,6 +2607,18 @@
                     Prefetch('books', queryset=Book.objects.select_related('publisher'))
                 )
                 # Now: author.books.all() gives cached Book objects with publisher already loaded
+                ```
+
+                ```sql
+                -- Query 1: Fetch all authors
+                SELECT "author"."id", "author"."name" FROM "author";
+
+                -- Query 2: Fetch books with their publishers (JOIN for select_related)
+                SELECT "book"."id", "book"."title", "book"."author_id",
+                       "publisher"."id", "publisher"."name"
+                FROM "book"
+                INNER JOIN "publisher" ON ("book"."publisher_id" = "publisher"."id")
+                WHERE "book"."author_id" IN (1, 2, 3, ...);
                 ```
 
             -   **Using `Prefetch` object for filtering prefetched results**: Sometimes you don't want all related objects; you want a filtered subset. For this, Django provides the Prefetch object.
@@ -2457,6 +2633,17 @@
                 # author.books.all() now contains only highly_rated books, cached
                 ```
 
+                ```sql
+                -- Query 1: Fetch all authors
+                SELECT "author"."id", "author"."name"
+                FROM "author";
+
+                -- Query 2: Fetch only highly rated books for these authors
+                SELECT "book"."id", "book"."title", "book"."rating", "book"."author_id"
+                FROM "book"
+                WHERE "book"."rating" > 4 AND "book"."author_id" IN (1, 2, 3, ...);
+                ```
+
             -   **Performance implications**:
                 - `select_related`: 1 query with JOIN; slower if related volume is large (cartesian explosion).
                 - `prefetch_related`: 2+ queries (separate) but faster overall due to no duplication.
@@ -2468,6 +2655,21 @@
                 books = Book.objects.filter(title__icontains='Django').prefetch_related('author')
                 ```
 
+                -   Assuming **Author ↔ Book** is a **ManyToManyField** (via pivot table), `select_related()` is not available; `prefetch_related()` is the right ORM tool.
+                -   When **Book → Author** (forward FK), use select_related('author') for a true one-query JOIN.
+
+                ```sql
+                -- Query 1 (books)
+                SELECT "book"."id","book"."title","book"."author_id"
+                FROM "book"
+                WHERE "book"."title" ILIKE '%Django%';
+
+                -- Query 2 (authors)
+                SELECT "author"."id","author"."name",...
+                FROM "author"
+                WHERE "author"."id" IN (...book.author_id values...);
+                ```
+
             -   **Common pitfall**: Calling `.all()` on a prefetched reverse relation loses the cache:
                 ```python
                 # Good: uses cache
@@ -2477,12 +2679,12 @@
                 author.books.filter(published=True)
                 ```
 
-        -   **Custom Joins using `.filter()` and `annotate()`**: Custom joins in Django ORM allow you to query across related models with specific conditions, aggregations, and annotations without writing raw SQL. This is achieved through `.filter()` for conditions and `.annotate()` for adding computed fields. These methods leverage Django's ORM to perform implicit JOINs based on model relationships.
+        -   **Custom Joins using `.filter()` and `annotate()`**: Custom joins in Django ORM allow you to query across related models with specific conditions, aggregations, and annotations without writing raw SQL. This is achieved through `.filter()` for conditions and `.annotate()` for adding computed fields. These methods leverage Django's ORM to perform implicit **JOIN**s based on model relationships.
 
-            -   **How it works**: Django's ORM automatically generates JOINs when you traverse relationships using double underscores (`__`). `.filter()` applies WHERE conditions across joins, while `.annotate()` adds aggregated or computed fields using functions like `Count`, `Sum`, `Avg`, etc.
+            -   **How it works**: Django's ORM automatically generates **JOIN**s when you traverse relationships using double underscores (`__`). `.filter()` applies **WHERE** conditions across joins, while `.annotate()` adds aggregated or computed fields using functions like `Count`, `Sum`, `Avg`, etc.
 
             -   **When to use**:
-                - When you need conditional joins (e.g., filter based on related model fields).
+                - When you need conditional joins (e.g., **filter based on related model fields**).
                 - For aggregations across relationships (e.g., count related objects).
                 - To avoid N+1 queries by fetching related data in a single query.
                 - When `select_related` or `prefetch_related` aren't sufficient for complex conditions.
@@ -2494,6 +2696,13 @@
                 # Find authors who have books published after 2020
                 authors = Author.objects.filter(book__published_date__year__gt=2020).distinct()
                 # This performs an INNER JOIN: SELECT DISTINCT author.* FROM author INNER JOIN book ON author.id = book.author_id WHERE book.published_date > '2020-01-01'
+                ```
+
+                ```sql
+                SELECT DISTINCT "author"."id", "author"."name"
+                FROM "author"
+                INNER JOIN "book" ON ("author"."id" = "book"."author_id")
+                WHERE EXTRACT(YEAR FROM "book"."published_date") > 2020;
                 ```
 
             -   **Using `.annotate()` for Aggregations**:
@@ -2510,6 +2719,16 @@
                     print(f"{author.name}: {author.book_count} books, ${author.total_sales} sales")
                 ```
 
+                ```sql
+                SELECT "author"."id", "author"."name",
+                       COUNT("book"."id") AS "book_count",
+                       SUM("book"."sales") AS "total_sales"
+                FROM "author"
+                LEFT OUTER JOIN "book" ON ("author"."id" = "book"."author_id")
+                GROUP BY "author"."id", "author"."name"
+                HAVING COUNT("book"."id") > 5;
+                ```
+
             -   **Advanced: Combining `.filter()` and `.annotate()` with Q Objects**:
                 ```python
                 from django.db.models import Q
@@ -2523,6 +2742,16 @@
                 ).distinct()
                 ```
 
+                ```sql
+                SELECT DISTINCT "author"."id", "author"."name",
+                       COUNT(CASE WHEN "book"."genre" = 'Fiction' THEN 1 END) AS "fiction_books",
+                       COUNT(CASE WHEN EXTRACT(YEAR FROM "book"."published_date") = 2023 THEN 1 END) AS "recent_books"
+                FROM "author"
+                INNER JOIN "book" ON ("author"."id" = "book"."author_id")
+                WHERE ("book"."genre" = 'Fiction' OR EXTRACT(YEAR FROM "book"."published_date") = 2023)
+                GROUP BY "author"."id", "author"."name";
+                ```
+
             -   **Using F Objects for Field Comparisons Across Joins**:
                 ```python
                 from django.db.models import F
@@ -2533,6 +2762,14 @@
                 ).select_related('author')
                 ```
 
+                ```sql
+                SELECT "book"."id", "book"."title", "book"."sales", "book"."author_id",
+                       "author"."id", "author"."name", "author"."avg_sales"
+                FROM "book"
+                INNER JOIN "author" ON ("book"."author_id" = "author"."id")
+                WHERE "book"."sales" > "author"."avg_sales";
+                ```
+
             -   **Subqueries for Complex Custom Joins**:
                 ```python
                 from django.db.models import Subquery, OuterRef, Exists
@@ -2541,13 +2778,30 @@
                 authors = Author.objects.filter(
                     Exists(Book.objects.filter(author=OuterRef('pk'), sales__gt=1000))
                 )
+                ```
 
+                ```sql
+                SELECT "author"."id", "author"."name"
+                FROM "author"
+                WHERE EXISTS (
+                    SELECT 1 FROM "book"
+                    WHERE "book"."author_id" = "author"."id" AND "book"."sales" > 1000
+                );
+                ```
+
+                ```python
                 # Annotate with max book sales using subquery
                 authors = Author.objects.annotate(
                     max_book_sales=Subquery(
                         Book.objects.filter(author=OuterRef('pk')).aggregate(Max('sales'))['sales__max']
                     )
                 )
+                ```
+
+                ```sql
+                SELECT "author"."id", "author"."name",
+                       (SELECT MAX("book"."sales") FROM "book" WHERE "book"."author_id" = "author"."id") AS "max_book_sales"
+                FROM "author";
                 ```
 
             -   **Window Functions for Advanced Aggregations** (Django 2.0+):
@@ -2563,6 +2817,13 @@
                         order_by=F('sales').desc()
                     )
                 ).order_by('author', 'sales_rank')
+                ```
+
+                ```sql
+                SELECT "book"."id", "book"."title", "book"."sales", "book"."author_id",
+                       RANK() OVER (PARTITION BY "book"."author_id" ORDER BY "book"."sales" DESC) AS "sales_rank"
+                FROM "book"
+                ORDER BY "book"."author_id", "sales_rank";
                 ```
 
             -   **Performance Considerations**:
@@ -2592,6 +2853,18 @@
                     print(f"{customer.name}: {customer.total_orders} orders, ${customer.total_spent} spent, avg ${customer.avg_order_value}")
                 ```
 
+                ```sql
+                SELECT "customer"."id", "customer"."name",
+                       COUNT("order"."id") AS "total_orders",
+                       SUM("order"."total_amount") AS "total_spent",
+                       AVG("order"."total_amount") AS "avg_order_value"
+                FROM "customer"
+                LEFT OUTER JOIN "order" ON ("customer"."id" = "order"."customer_id")
+                GROUP BY "customer"."id", "customer"."name"
+                HAVING COUNT("order"."id") > 0
+                ORDER BY "total_spent" DESC;
+                ```
+
             -   **Comparison with Other Join Methods**:
                 | Method                      | Use Case                     | Queries       | Complexity |
                 | --------------------------- | ---------------------------- | ------------- | ---------- |
@@ -2608,8 +2881,6 @@
                 authors = Author.objects.filter(book__genre='Fiction').annotate(book_count=Count('book'))
                 print(connection.queries[-1]['sql'])  # View generated SQL
                 ```
-
-            This approach provides powerful, database-agnostic ways to perform custom joins, making Django ORM highly flexible for complex queries.
 
         -   **Using Raw SQL Queries**: In cases where you need to perform complex joins that are not easily expressible in Django's query syntax, you can use raw SQL queries. Be cautious when using raw SQL to ensure security and portability.
 
