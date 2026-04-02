@@ -639,6 +639,12 @@
 
     -   🔥 **FETCH**/**PULL**/**PUSH**:
 
+        -   **git pull --rebase**: This is the "clean history" approach. It is designed for when you have already committed your work locally.
+                -   **How it works**: It takes your local commits, "lifts" them up, pulls the new commits from the server, and then tries to stick your commits back on top of the new ones.
+                -   **Best for**: Keeping a linear project history without "Merge branch 'main' of..." commits clogging up the log.
+                -   **The Catch**: If your changes are uncommitted, `git pull --rebase` will often fail and tell you to "commit or stash" your changes anyway.
+                -   `git pull --rebase --autostash` -> ou can configure Git to automatically stash your uncommitted changes, perform a rebase, and then pop the stash for you in one command
+
         -   `$ git pull --rebase origin cpecs-12147` → fetches the latest changes from `origin/cpecs-12147` and rebases your local branch on top of it (instead of merging).
         -   `$ git pull` → does everything `git fetch` does, **plus it merges** the fetched changes from the remote branch into your current branch (equivalent to `git fetch` followed by `git merge`).
         -   `$ git pull origin master` → fetches the latest changes from the `master` branch on the remote named `origin` and **merges** them into your current local branch.

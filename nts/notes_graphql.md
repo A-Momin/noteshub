@@ -3,12 +3,20 @@
 - [Django](https://strawberry.rocks/docs/integrations/django)
 - []()
 
+---
+-   Abstract Syntax Tree (AST)
+-   base query
+-   GraphQL operators
+-   Django Lookup Suffix
+---
+
 -   <details><summary style="font-size:25px;color:Orange">Native GraphQL: Components, Terms and Concepts</summary>
 
     > GraphQL isn't just a "better REST"; it’s a completely different philosophy of data transfer. It’s a **Query Language for APIs** and a runtime for fulfilling those queries with your existing data.
 
     > Think of REST as a vending machine where you press a button and get a pre-packaged snack. GraphQL is more like a high-end buffet where you tell the chef exactly which ingredients you want on your plate, and they assemble it for you in one go.
 
+    ####  Abstract Syntax Tree (AST)
 
     ##### The Building Blocks: Schema & Type System
 
@@ -339,6 +347,31 @@
         </details>
 
     </details>
+
+---
+---
+
+```graphql
+query BooksWithRelations {
+    getBooks(
+        pagination: {limit: 20, offset:0},
+        filters: {name: Clinton, age: 60}
+    ){
+        pageInfo {
+            limit
+            offset
+        }
+        totalCount
+        results {
+            bookId
+            name
+            age
+        }
+
+    }
+}
+
+```
 
 
 ---
