@@ -40,69 +40,117 @@
         ENABLE_USER_SITE: True
         ```
 
-    -   **`.whl`** File: A `.whl` file (Wheel file) is a binary distribution format for Python packages. It is a pre-built, compressed package that allows for faster installation compared to building from source.
+    -   **PyPI**: It is stand for **Python Package Index** - the main public repository/catalog of Python packages that tools like **pip** install from.
 
-        -   `Pre-compiled`: Unlike setup.py, which requires building, a `.whl` fi le contains a pre-compiled package, making installation (`pip install package.whl`) faster.
+    -   **`.whl`** File: A `.whl` file (Wheel file) is a binary distribution format for Python packages. It is a **pre-built**, compressed package that allows for faster installation compared to building from source.
+
+        -   `Pre-compiled`: Unlike `setup.py`, which requires building, a `.whl` file contains a pre-compiled package, making installation (`pip install package.whl`) faster.
         -   `Faster Installation`: Since it avoids compilation, installing a wheel file with pip is significantly faster.
         -   `Standard Format`: `.whl` follows the PEP 427 (Wheel Standard), making it the preferred way to distribute Python packages.
 
-    #### setup.cfg:
+    - **wheel**/**source** distribution: In the Python ecosystem, when you want to share your code or install a package via `pip`, you generally deal with two types of distribution formats: **Source Distributions (sdist)** and **Wheels (bdist_wheel)**. Think of it like getting a meal: a **Source Distribution** is the recipe and raw ingredients, while a **Wheel** is the pre-cooked, ready-to-eat meal.
 
-    `setup.cfg` is a configuration file used to specify various options and metadata for a Python package. It is typically used in conjunction with the `setup.py` file or as an alternative to it. Some common settings that can be specified in `setup.cfg` include package metadata (name, version, author, etc.), dependencies, entry points, testing configurations, and more. It follows the INI file format with sections and key-value pairs.
+        1. **Source Distribution (sdist)**: A **Source Distribution** is an archive (usually a `.tar.gz` file) that contains the actual source code and any necessary metadata.
 
-    Using `setup.cfg` can help keep the `setup.py` file clean and focused on the essential setup logic, while the configuration details are stored in a separate file. To use `setup.cfg`, you typically run python `setup.py` commands that automatically read the configuration from `setup.cfg`.
+            -   **What’s inside:** The raw `.py` files, READMEs, and a `pyproject.toml` or `setup.py` file.
+            -   **The Installation Process:** When you run `pip install` on an sdist, your computer has to do the heavy lifting. If the package contains C or C++ extensions (like NumPy), your system must have the correct compilers and libraries installed to build it from scratch.
+            -   **Pros:** Highly portable across different operating systems because the code isn't "built" yet.
+            -   **Cons:** Installation is much slower and can fail if your environment is missing the required build tools.
 
-    #### setup.py:
+        2. **Built Distribution: The Wheel (.whl)**: A **Wheel** is a "Built Distribution." It is a ZIP-format archive that is already compiled and ready to be moved directly into your site-packages folder.
 
-    `setup.py` is a Python script that contains the setup logic for a Python package. It is commonly used to define the package structure, dependencies, installation instructions, and other details required for packaging and distribution. The `setup.py` file typically imports the setuptools or distutils module to define the package and its associated metadata.
+            -   **What’s inside:** Usually compiled bytecode (`.pyc` files) and, for packages with C extensions, pre-compiled binary files.
+            -   **The Installation Process:** Pip simply unzips the file and moves it to the right place. There is no "building" phase.
+            -   **Pros:** * **Speed:** Blazing fast installation.
+                -   **Consistency:** You don't need a compiler on the machine where you are installing the package.
+            -   **Cons:** Wheels are often platform-specific. A wheel built for **Windows 64-bit** will not work on **macOS** or **Linux**.
 
-    Running commands like python `setup.py` install or python `setup.py` sdist executes the setup script to perform actions such as package installation, building source distributions, running tests, and more.
+        3. **Why does this matter to you?**: When you run `pip install some-package`, Pip looks for a **Wheel** that matches your specific operating system and Python version first. If it finds one, it downloads it and you're done in seconds. 
 
-    While `setup.cfg` is focused on configuration settings, `setup.py` contains the executable logic for package setup. It is usually more customizable and can handle complex scenarios, such as dynamic generation of code or custom setup steps.
+            -   If no compatible Wheel exists (perhaps you are using a very new version of Python or an obscure Linux distro), Pip falls back to the **Source Distribution**, tries to compile it on the fly, and—if you don't have the right tools installed—this is usually when you see those long, scary red error messages in your terminal.
 
-    #### pyproject.toml
+    -   **Wheel Compatibility Tag**: A Wheel Compatibility Tag is a string embedded in the wheel filename that specifies which Python implementations, versions, and platforms the wheel is compatible with. It determines whether a wheel can be installed on a particular Python environment.
 
-    `pyproject.toml` is a configuration file used in Python projects that adhere to the PEP 517 and PEP 518 standards. It is primarily used for specifying build and distribution tooling configurations, such as build system dependencies, build tool configuration, and project metadata. The file is written in the TOML (Tom's Obvious, Minimal Language) format.
+        -   **Format**: Wheel filenames follow the pattern: `{distribution}-{version}(-{build tag})?-{python}-{abi}-{platform}.whl`
+            - Example: 
+                -   `numpy-1.21.0-cp39-cp39-win_amd64.whl` (Compatibility Tag: `cp39-cp39-win_amd64`)
+                -   `psycopg2-2.9.9-cp311-cp311-manylinux_2_28_x86_64.whl` (Compatibility Tag: `cp311-cp311-manylinux_2_28_x86_64`)
 
-    Here are the key aspects and purposes of pyproject.toml:
+        -   **Components of Compatibility Tag**:
+            - `{python}`: Python implementation and version (e.g., `py3`, `cp39`, `pp37`):
+                - `py2`, `py3`: Generic Python versions (no implementation-specific features)
+                - `cp37`, `cp38`, `cp39`: CPython 3.7, 3.8, 3.9
+                - `pp37`: PyPy 3.7
+                - `ip27`: IronPython 2.7
+                - `jy27`: Jython 2.7
+            - `{abi}`: Application Binary Interface tag (e.g., `cp39`, `abi3`, `none`):
+                - `cp39`: CPython 3.9's C API
+                - `abi3`: Stable ABI (compatible across multiple Python versions)
+                - `none`: Pure Python (no compiled extensions)
+            - `{platform}`: Operating system and architecture (e.g., `win_amd64`, `macosx_10_15_x86_64`, `linux_x86_64`):
+                - `manylinux_2_28_x86_64` → Linux (portable across distros)
+                - `linux_x86_64`: Linux with x86_64 architecture
+                - `macosx_10_15_x86_64`: macOS 10.15 with x86_64 architecture
+                - `win32`, `win_amd64`: Windows 32-bit, 64-bit
+                - `any`: Platform-independent (pure Python)
 
-    -   `Build System Configuration`: pyproject.toml allows you to specify the build system requirements and configuration for your project. This includes the build backend to be used (e.g., setuptools, flit, poetry), as well as any required build tools, such as compilers or transpilers.
-    -   `Dependency Declarations`: You can declare the dependencies required for building and testing your project. This includes both runtime dependencies (specified in install_requires) and build/test dependencies (specified in build-system.requires or build-system.build-backend.requires). These dependencies are typically resolved and managed by the build tool.
-    -   `Project Metadata`: pyproject.toml allows you to specify project metadata, such as the package name, version, author, license, and other relevant information. This metadata is used during packaging and distribution processes.
-    -   `Tool Configuration`: The file provides a place to configure specific build tools or plugins used in your project. For example, you can configure code linters, code formatters, testing frameworks, or other development tools specific to your project.
-    -   `Standardized Project Structure`: By using pyproject.toml, you adhere to the PEP 517 and PEP 518 standards, which define a standardized approach to Python project build and distribution. This helps ensure compatibility and consistency across different build tools and environments.
+        -   **Examples**:
+            - `requests-2.28.0-py3-none-any.whl`: Pure Python package compatible with any Python 3 version on any platform
+            - `numpy-1.23.0-cp39-cp39-win_amd64.whl`: Compiled extension built for CPython 3.9 on Windows 64-bit
+            - `cryptography-37.0.2-cp37-abi3-macosx_10_10_x86_64.whl`: Uses stable ABI, works on CPython 3.7+ on macOS
 
-    It's important to note that pyproject.toml alone does not perform any build or distribution actions. Instead, it provides the necessary configuration for build tools (specified in build-system.build-backend) to execute the build and distribution processes.
+        -   **How pip Uses Compatibility Tags**: When installing a package, `pip` compares the wheel's compatibility tag against the current Python environment's:
+            - Python implementation (CPython, PyPy, etc.)
+            - Python version (3.8, 3.9, 3.10, etc.)
+            - Operating system (Windows, macOS, Linux)
+            - Architecture (x86_64, ARM, etc.)
+            - If tags match, the wheel is compatible and can be installed; otherwise, pip skips it
 
-    Popular build tools that utilize pyproject.toml include `setuptools`, `flit`, and `poetry`. These tools interpret the configuration in pyproject.toml and perform actions such as building source distributions (sdist), building binary distributions (bdist), installing the package (install), running tests (test), and more.
+        -   **Common Tag Patterns**:
+            - `py3-none-any`: Universal pure Python package for Python 3
+            - `py2.py3-none-any`: Pure Python compatible with both Python 2 and 3
+            - `cp{version}-cp{version}-{platform}`: Compiled extension for specific CPython version
+            - `cp{version}-abi3-{platform}`: Uses stable ABI (works across multiple Python versions)
 
-    Overall, pyproject.toml serves as a central configuration file for build and distribution tooling in Python projects, enabling standardized build processes and providing a consistent way to specify project metadata and dependencies.
+        -   **Checking Wheel Compatibility**: You can check which wheels are compatible with your environment:
+            ```bash
+            python -c "from wheel.vendored.packaging import tags; print(list(tags.sys_tags()))"
+            # Or use pip debug
+            pip debug --verbose
+            ```
 
-    #### MANIFEST.in
+    -   **setup.cfg:**:`setup.cfg` is a configuration file used to specify various options and metadata for a Python package. It is typically used in conjunction with the `setup.py` file or as an alternative to it. Some common settings that can be specified in `setup.cfg` include package metadata (name, version, author, etc.), dependencies, entry points, testing configurations, and more. It follows the INI file format with sections and key-value pairs.
 
-    The `MANIFEST.in` file is used in Python projects to specify additional files that should be included when creating source distributions or packaging the project. It is commonly used in conjunction with the "`setup.py`" script and build tools like "setuptools" to define the contents of the distribution package.
+        -   Using `setup.cfg` can help keep the `setup.py` file clean and focused on the essential setup logic, while the configuration details are stored in a separate file. To use `setup.cfg`, you typically run python `setup.py` commands that automatically read the configuration from `setup.cfg`.
 
-    The purpose of the "MANIFEST.in" file is to provide explicit instructions on what files and directories should be included in the distribution, beyond the default inclusion rules specified by the build tool. By default, build tools like "setuptools" include only the necessary files based on the Python package's structure and metadata specified in "`setup.py`". However, there might be additional files or directories that are required for the package to function correctly or need to be distributed with the package.
+    -   **setup.py:**:`setup.py` is a Python script that contains the setup logic for a Python package. It is commonly used to define the package structure, dependencies, installation instructions, and other details required for packaging and distribution. The `setup.py` file typically imports the setuptools or distutils module to define the package and its associated metadata.
 
-    Here are some common use cases and directives that can be specified in the "MANIFEST.in" file:
+        -   Running commands like python `setup.py` install or python `setup.py` sdist executes the setup script to perform actions such as package installation, building source distributions, running tests, and more.
+        -   While `setup.cfg` is focused on configuration settings, `setup.py` contains the executable logic for package setup. It is usually more customizable and can handle complex scenarios, such as dynamic generation of code or custom setup steps.
 
-    #### pytest.ini
+    -   **pyproject.toml**:`pyproject.toml` is a configuration file used in Python projects that adhere to the PEP 517 and PEP 518 standards. It is primarily used for specifying build and distribution tooling configurations, such as build system dependencies, build tool configuration, and project metadata. The file is written in the TOML (Tom's Obvious, Minimal Language) format.
 
-    The `pytest.ini` file is a configuration file used by the pytest testing framework. It allows you to customize the behavior and settings of pytest for your project. When pytest runs, it looks for a `pytest.ini` file in the current directory or any of its parent directories.
+        -   `Build System Configuration`: pyproject.toml allows you to specify the build system requirements and configuration for your project. This includes the build backend to be used (e.g., setuptools, flit, poetry), as well as any required build tools, such as compilers or transpilers.
+        -   `Dependency Declarations`: You can declare the dependencies required for building and testing your project. This includes both runtime dependencies (specified in install_requires) and build/test dependencies (specified in build-system.requires or build-system.build-backend.requires). These dependencies are typically resolved and managed by the build tool.
+        -   `Project Metadata`: pyproject.toml allows you to specify project metadata, such as the package name, version, author, license, and other relevant information. This metadata is used during packaging and distribution processes.
+        -   `Tool Configuration`: The file provides a place to configure specific build tools or plugins used in your project. For example, you can configure code linters, code formatters, testing frameworks, or other development tools specific to your project.
+        -   `Standardized Project Structure`: By using pyproject.toml, you adhere to the PEP 517 and PEP 518 standards, which define a standardized approach to Python project build and distribution. This helps ensure compatibility and consistency across different build tools and environments.
+        -   It's important to note that pyproject.toml alone does not perform any build or distribution actions. Instead, it provides the necessary configuration for build tools (specified in build-system.build-backend) to execute the build and distribution processes.
+        -   Popular build tools that utilize pyproject.toml include `setuptools`, `flit`, and `poetry`. These tools interpret the configuration in pyproject.toml and perform actions such as building source distributions (sdist), building binary distributions (bdist), installing the package (install), running tests (test), and more.
+        -   Overall, pyproject.toml serves as a central configuration file for build and distribution tooling in Python projects, enabling standardized build processes and providing a consistent way to specify project metadata and dependencies.
 
-    The `pytest.ini` file is written in the INI file format and typically includes various sections and options that define how pytest should discover and execute tests, specify test paths, configure plugins, and more. Some commonly used options in `pytest.ini` include:
+    -   **MANIFEST.in**:The `MANIFEST.in` file is used in Python projects to specify additional files that should be included when creating source distributions or packaging the project. It is commonly used in conjunction with the "`setup.py`" script and build tools like "setuptools" to define the contents of the distribution package.
+        -   The purpose of the "MANIFEST.in" file is to provide explicit instructions on what files and directories should be included in the distribution, beyond the default inclusion rules specified by the build tool. By default, build tools like "setuptools" include only the necessary files based on the Python package's structure and metadata specified in "`setup.py`". However, there might be additional files or directories that are required for the package to function correctly or need to be distributed with the package.
+        -   Here are some common use cases and directives that can be specified in the "MANIFEST.in" file:
 
-    -   `[pytest] section`: This section is used to configure general pytest options, such as the test discovery behavior, test naming conventions, test markers, and output settings.
+    -   **pytest.ini**:The `pytest.ini` file is a configuration file used by the pytest testing framework. It allows you to customize the behavior and settings of pytest for your project. When pytest runs, it looks for a `pytest.ini` file in the current directory or any of its parent directories. The `pytest.ini` file is written in the INI file format and typically includes various sections and options that define how pytest should discover and execute tests, specify test paths, configure plugins, and more. Some commonly used options in `pytest.ini` include:
 
-    -   `[testpaths] section`: This section allows you to specify the directories or paths where pytest should search for tests. You can define multiple test paths separated by line breaks.
-
-    -   `[pytest-watch] section`: If you have the pytest-watch plugin installed, you can use this section to configure its behavior, such as the files to watch for changes and the commands to run when changes occur.
-
-    -   `Other sections and options`: Depending on your project's needs and installed plugins, you may have additional sections and options in your `pytest.ini` file. For example, if you use plugins like `pytest-cov` for code coverage or `pytest-html` for HTML test reports, you may have sections to configure those plugins.
-
-    By configuring options in the `pytest.ini` file, you can set project-specific defaults and avoid passing command-line options to pytest every time you run tests. It helps in maintaining consistent test configurations across different environments and makes it easier to share your project with other developers.
-
-    Note that the `pytest.ini` file is optional, and if it's not present, pytest will use its default settings.
+        -   `[pytest] section`: This section is used to configure general pytest options, such as the test discovery behavior, test naming conventions, test markers, and output settings.
+        -   `[testpaths] section`: This section allows you to specify the directories or paths where pytest should search for tests. You can define multiple test paths separated by line breaks.
+        -   `[pytest-watch] section`: If you have the pytest-watch plugin installed, you can use this section to configure its behavior, such as the files to watch for changes and the commands to run when changes occur.
+        -   `Other sections and options`: Depending on your project's needs and installed plugins, you may have additional sections and options in your `pytest.ini` file. For example, if you use plugins like `pytest-cov` for code coverage or `pytest-html` for HTML test reports, you may have sections to configure those plugins.
+        -   By configuring options in the `pytest.ini` file, you can set project-specific defaults and avoid passing command-line options to pytest every time you run tests. It helps in maintaining consistent test configurations across different environments and makes it easier to share your project with other developers.
+        -   Note that the `pytest.ini` file is optional, and if it's not present, pytest will use its default settings.
 
    </details>
 
@@ -246,9 +294,14 @@
 
     -   `$ pip install somepackage.whl` → Install from a Local `.whl` File
     -   `$ pip install numpy --index-url https://pypi.org/simple` → Use a Specific Index (Alternative PyPI)
-    -   `$ `
-    -   `$ `
-    -   `$ `
+
+    -   `$ pip config list` → 
+    -   `$ pip debug --verbose` → 
+    -   `$ pip index versions psycopg` → queries Python Package Index and lists all available versions of a package.
+    -   `$ pip show psycopg` → 
+    -   `$ pip install -vvv --dry-run psycopg` → 
+    -   `$ pip install --only-binary=:all: --dry-run psycopg` → `--only-binary=:all:` tells pip to install only prebuilt wheels (`.whl`), never build from source.
+    -   `$ ` → 
 
     -   **Install the Packages from GitHub Using `pip`**:
 
@@ -281,6 +334,8 @@
         | **Global Installation**          | Safe for installing global CLI tools                                       | Not recommended for global installation (can lead to dependency conflicts) |
         | **Uninstallation**               | Clean and removes all traces of a package                                  | May leave behind dependencies that are no longer needed                    |
 
+
+
    </details>
 
 ---
@@ -288,8 +343,6 @@
 -   <details><summary style="font-size:25px;color:Orange">poetry</summary>
 
     -   **Poetry** is a **dependency management** and **packaging tool** for Python that simplifies the process of managing dependencies, packaging projects, and publishing to PyPI. It provides an easy way to create, build, and distribute Python packages while handling virtual environments automatically.
-
-    #### poetry commands
 
     -   `$ poetry new my_project` → Create a new Python project with a standard structure
     -   `$ source <(poetry env activate)` → Create virtual environment
@@ -322,8 +375,385 @@
     -   `$ poetry config virtualenvs.in-project true` → 
     -   `$ poetry self add poetry-plugin-shell` → 
 
+   -   <details><summary style="font-size:25px;color:#C71585">Configure and Publish Python package using Poetry</summary>
 
-   </details>
+        > This guide demonstrates how to create, configure, and publish a Python package using Poetry from start to finish.
+
+        ### Step 1: Install Poetry
+
+        First, install Poetry if you haven't already:
+
+        ```bash
+        # Using pipx (recommended)
+        pipx install poetry
+
+        # Or using pip
+        pip install poetry
+
+        # Verify installation
+        poetry --version
+        ```
+
+        ### Step 2: Create a New Poetry Project
+
+        Create a new Python project with Poetry:
+
+        ```bash
+        # Create a new project
+        poetry new my-awesome-package
+
+        # Navigate to the project directory
+        cd my-awesome-package
+        ```
+
+        This creates a project structure like:
+        ```
+        my-awesome-package/
+        ├── pyproject.toml          # Project configuration
+        ├── README.md               # Project description
+        ├── my_awesome_package/     # Package directory
+        │   └── __init__.py
+        └── tests/                  # Test directory
+            ├── __init__.py
+            └── test_my_awesome_package.py
+        ```
+
+        ### Step 3: Configure pyproject.toml
+
+        The `pyproject.toml` file is automatically created. Let's examine and modify it:
+
+        ```toml
+        [tool.poetry]
+        name = "my-awesome-package"
+        version = "0.1.0"
+        description = "A brief description of your package"
+        authors = ["Your Name <your.email@example.com>"]
+        readme = "README.md"
+        packages = [{include = "my_awesome_package"}]
+
+        [tool.poetry.dependencies]
+        python = "^3.8"
+        requests = "^2.25.1"  # Add runtime dependencies
+
+        [tool.poetry.group.dev.dependencies]
+        pytest = "^6.2.4"
+        black = "^21.12b0"
+        flake8 = "^4.0.1"
+
+        [build-system]
+        requires = ["poetry-core"]
+        build-backend = "poetry.core.masonry.api"
+        ```
+
+        **Key configuration options:**
+
+        - `name`: Package name (must be unique on PyPI)
+        - `version`: Semantic version (follows SemVer)
+        - `description`: Short description
+        - `authors`: List of authors with email
+        - `packages`: List of packages to include
+        - `dependencies`: Runtime dependencies
+        - `dev-dependencies`: Development-only dependencies
+
+        ### Step 4: Add Dependencies
+
+        Add dependencies to your project:
+
+        ```bash
+        # Add runtime dependencies
+        poetry add requests numpy
+
+        # Add development dependencies
+        poetry add --group dev pytest black flake8 mypy
+
+        # Add specific version
+        poetry add "pandas>=1.3.0,<2.0.0"
+
+        # View current dependencies
+        poetry show
+        ```
+
+        ### Step 7: Configure Additional Settings
+
+        Update `pyproject.toml` with more configuration:
+
+        ```toml
+        [tool.poetry]
+        name = "my-awesome-package"
+        version = "0.1.0"
+        description = "A demonstration Python package using Poetry"
+        authors = ["Your Name <your.email@example.com>"]
+        license = "MIT"
+        readme = "README.md"
+        homepage = "https://github.com/yourusername/my-awesome-package"
+        repository = "https://github.com/yourusername/my-awesome-package"
+        documentation = "https://my-awesome-package.readthedocs.io/"
+        keywords = ["demo", "poetry", "python"]
+        classifiers = [
+            "Development Status :: 3 - Alpha",
+            "Intended Audience :: Developers",
+            "License :: OSI Approved :: MIT License",
+            "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 3.8",
+            "Programming Language :: Python :: 3.9",
+            "Programming Language :: Python :: 3.10",
+            "Programming Language :: Python :: 3.11",
+        ]
+        packages = [{include = "my_awesome_package"}]
+
+        [tool.poetry.urls]
+        "Bug Reports" = "https://github.com/yourusername/my-awesome-package/issues"
+        "Source" = "https://github.com/yourusername/my-awesome-package"
+
+        [tool.poetry.dependencies]
+        python = "^3.8"
+        requests = "^2.25.1"
+
+        [tool.poetry.group.dev.dependencies]
+        pytest = "^6.2.4"
+        pytest-cov = "^3.0.0"
+        black = "^21.12b0"
+        flake8 = "^4.0.1"
+        mypy = "^0.931"
+        isort = "^5.10.1"
+
+        [build-system]
+        requires = ["poetry-core"]
+        build-backend = "poetry.core.masonry.api"
+
+        # Tool configurations
+        [tool.black]
+        line-length = 88
+        target-version = ['py38']
+
+        [tool.isort]
+        profile = "black"
+
+        [tool.mypy]
+        python_version = "3.8"
+        warn_return_any = true
+        warn_unused_configs = true
+        disallow_untyped_defs = true
+        disallow_incomplete_defs = true
+        ```
+
+        ### Step 8: Set Up Development Environment
+
+        Install dependencies and set up the development environment:
+
+        ```bash
+        # Install all dependencies
+        poetry install
+
+        # Activate the virtual environment
+        poetry shell
+
+        # Or run commands in the environment without activating
+        poetry run python --version
+        ```
+
+        ### Step 9: Run Tests and Quality Checks
+
+        Run your tests and code quality tools:
+
+        ```bash
+        # Run tests
+        poetry run pytest
+
+        # Run tests with coverage
+        poetry run pytest --cov=my_awesome_package
+
+        # Format code
+        poetry run black my_awesome_package tests
+        poetry run isort my_awesome_package tests
+
+        # Lint code
+        poetry run flake8 my_awesome_package tests
+
+        # Type check
+        poetry run mypy my_awesome_package
+        ```
+
+        ### Step 10: Build the Package
+
+        Build your package for distribution:
+
+        ```bash
+        # Build both wheel and source distribution
+        poetry build
+
+        # Check the built files
+        ls dist/
+        ```
+
+        This creates:
+        - `dist/my-awesome-package-0.1.0.tar.gz` (source distribution)
+        - `dist/my-awesome-package-0.1.0-py3-none-any.whl` (wheel)
+
+        ### Step 11: Prepare for Publishing
+
+        Before publishing, ensure you have:
+
+        1. **PyPI Account**: Create an account at https://pypi.org/
+
+        2. **API Token**: Generate an API token from your PyPI account settings
+
+        3. **Configure Poetry**:
+        ```bash
+        # Configure PyPI credentials
+        poetry config pypi-token.pypi your-api-token-here
+
+        # Or for Test PyPI first
+        poetry config pypi-token.testpypi your-testpypi-token-here
+        ```
+
+        ### Step 12: Publish to PyPI
+
+        Publish your package:
+
+        ```bash
+        # First, publish to Test PyPI for testing
+        poetry publish --build -r testpypi
+
+        # Check if it uploaded correctly
+        # Visit: https://test.pypi.org/project/my-awesome-package/
+
+        # If everything looks good, publish to real PyPI
+        poetry publish --build
+        ```
+
+        ### Step 13: Verify Installation
+
+        Test that your package can be installed:
+
+        ```bash
+        # Create a new virtual environment
+        python -m venv test_env
+        source test_env/bin/activate
+
+        # Install from PyPI
+        pip install my-awesome-package
+
+        # Test the package
+        python -c "from my_awesome_package import hello_world; print(hello_world('PyPI'))"
+        ```
+
+        ### Step 14: Version Management
+
+        Update version and publish new releases:
+
+        ```bash
+        # Update version
+        poetry version patch  # 0.1.0 -> 0.1.1
+        poetry version minor  # 0.1.1 -> 0.2.0
+        poetry version major  # 0.2.0 -> 1.0.0
+
+        # Or set specific version
+        poetry version 1.0.0
+
+        # Build and publish
+        poetry build
+        poetry publish
+        ```
+
+        ### Step 15: Maintenance
+
+        Keep your package updated:
+
+        ```bash
+        # Update dependencies
+        poetry update
+
+        # Update Poetry itself
+        poetry self update
+
+        # Clear cache if needed
+        poetry cache clear --all pypi
+        ```
+
+        ### Complete Workflow Script
+
+        Here's a complete script you can use as a reference:
+
+        ```bash
+        #!/bin/bash
+
+        # Create new project
+        poetry new my-package
+        cd my-package
+
+        # Add dependencies
+        poetry add requests click
+        poetry add --group dev pytest black
+
+        # Write some code
+        cat > my_package/main.py << 'EOF'
+        import requests
+        import click
+
+        @click.command()
+        @click.argument('url')
+        def fetch_url(url):
+            """Fetch and display the content of a URL."""
+            response = requests.get(url)
+            click.echo(response.text)
+
+        if __name__ == '__main__':
+            fetch_url()
+        EOF
+
+        # Update pyproject.toml with entry points
+        cat >> pyproject.toml << 'EOF'
+
+        [tool.poetry.scripts]
+        fetch-url = "my_package.main:main"
+        EOF
+
+        # Install and test
+        poetry install
+        poetry run pytest
+
+        # Build and publish (after setting up PyPI token)
+        poetry build
+        poetry publish --dry-run  # Test run first
+        # poetry publish  # Real publish
+        ```
+
+        ### Common Issues and Solutions
+
+        4. **"Package name already exists on PyPI"**
+        - Choose a unique name or use a namespace (e.g., `yourname-mypackage`)
+
+        5. **"Version already exists"**
+        - Update version with `poetry version patch/minor/major`
+
+        6. **"Build failed"**
+        - Check that all files are included in `packages` in `pyproject.toml`
+        - Ensure `__init__.py` exists in package directories
+
+        7. **"Import errors after installation"**
+        - Verify package structure matches `pyproject.toml`
+        - Check for missing dependencies
+
+        8. **"Permission denied"**
+        - Ensure you have the correct PyPI API token
+        - Check token scope (pypi vs. testpypi)
+
+        ### Best Practices
+
+        - Use semantic versioning
+        - Keep `README.md` updated with installation and usage instructions
+        - Include a `LICENSE` file
+        - Write comprehensive tests
+        - Use type hints for better code quality
+        - Keep dependencies minimal
+        - Test on multiple Python versions
+        - Use Test PyPI for testing before real PyPI
+
+
+        </details>
+
+    </details>
 
 ---
 
@@ -459,7 +889,7 @@
         | Purpose              | Run the actual Python app     | Run dev tools like `black`, `pytest` |
         | Created by           | `uv venv`, `uv sync`          | Auto-created by `uv`                 |
         | Location             | Project folder or manual path | `~/.cache/uv/tools/`                 |
-        | Shared between repos | ❌ (project-specific)         | ✅ (cached and reused)               |
+        | Shared between repos | ❌ (project-specific)          | ✅ (cached and reused)                |
 
    </details>
 
@@ -1122,11 +1552,11 @@
 
         | Feature                        | **Sphinx (Core)**              | **Napoleon (Extension)**                          |
         | ------------------------------ | ------------------------------ | ------------------------------------------------- |
-        | Parses reStructuredText        | ✅ Yes                         | 🚫 No                                             |
-        | Parses Google-style docstrings | ❌ No (native)                 | ✅ Yes                                            |
-        | Parses NumPy-style docstrings  | ❌ No (native)                 | ✅ Yes                                            |
-        | HTML/LaTeX/PDF output          | ✅ Yes                         | ➖ Not its role (relies on Sphinx)                |
-        | Auto-generates API docs        | ✅ (via `autodoc`)             | ✅ (works with `autodoc`)                         |
+        | Parses reStructuredText        | ✅ Yes                          | 🚫 No                                              |
+        | Parses Google-style docstrings | ❌ No (native)                  | ✅ Yes                                             |
+        | Parses NumPy-style docstrings  | ❌ No (native)                  | ✅ Yes                                             |
+        | HTML/LaTeX/PDF output          | ✅ Yes                          | ➖ Not its role (relies on Sphinx)                 |
+        | Auto-generates API docs        | ✅ (via `autodoc`)              | ✅ (works with `autodoc`)                          |
         | Setup complexity               | Medium                         | Low (just add to `extensions` list)               |
         | Best use case                  | Full control, official formats | Modern, readable docstring formats (Google/NumPy) |
 

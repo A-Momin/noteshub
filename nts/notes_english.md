@@ -32,6 +32,7 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Useful Phrase</summary>
 
+    -   Per Se
     -   take something for garanted
     -   things are not adding up
     -   Give that a try

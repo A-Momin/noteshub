@@ -197,14 +197,20 @@
 
         -   **The Golden Rule of Rebasing**: Never rebase commits that you have already pushed to a public/shared server. Because rebasing **rewrites history** (it actually creates brand new commits with new IDs), if you rebase something that others are already working on, you will break their version of the repository. Only rebase work that is still local to your machine.
 
-        -   **Rebase vs. Merge**
+        -   **Rebase with Merge Conflict**
 
-            | Feature        | Git Merge                                | Git Rebase                            |
-            | -------------- | ---------------------------------------- | ------------------------------------- |
-            | **History**    | Preserves the exact chronological order. | Creates a **clean, linear line**.     |
-            | **Complexity** | Simple and safe.                         | Can be complex if conflicts occur.    |
-            | **Commits**    | Adds a new "Merge Commit."               | **Rewrites** existing commits.        |
-            | **Best For**   | Joining finished features into `main`.   | Keeping your local branch up-to-date. |
+            -   `git pull --rebase origin develop` → fetch remote changes and replay your local commits on top.
+            -   If a conflict occurs, Git pauses the rebase and shows the conflicted files.
+            -   Use `git status` to see which files need attention and which commit is being applied.
+            -   Open each conflicted file, resolve the `<<<<<<<`, `=======`, and `>>>>>>>` sections, then save the file.
+            -   Stage the resolved files with `git add <file>`.
+            -   Continue the rebase with `git rebase --continue`.
+            -   If a conflict is too difficult or you want to abandon the rebase, use `git rebase --abort` to restore the branch to its original state.
+            -   If you want to skip the current patch entirely, use `git rebase --skip`.
+            -   `git rebase --edit-todo` lets you adjust the remaining rebase plan before continuing.
+            -   Use `git diff` or `git diff --cached` to inspect unresolved changes during the rebase.
+            -   For a cleaner workflow with local uncommitted changes, use `git pull --rebase --autostash` so Git temporarily stashes your work, rebases, then reapplies it.
+
 
     -   **Squashing**: In Git, **squashing** is the process of taking multiple commits and condensing them into a single, clean commit. Think of it as "editing" your history to remove the messy trail of small, intermediate changes before sharing your work with the rest of the team.
 
@@ -644,6 +650,7 @@
                 -   **Best for**: Keeping a linear project history without "Merge branch 'main' of..." commits clogging up the log.
                 -   **The Catch**: If your changes are uncommitted, `git pull --rebase` will often fail and tell you to "commit or stash" your changes anyway.
                 -   `git pull --rebase --autostash` -> ou can configure Git to automatically stash your uncommitted changes, perform a rebase, and then pop the stash for you in one command
+                -   `git pull --rebase origin develop`
 
         -   `$ git pull --rebase origin cpecs-12147` → fetches the latest changes from `origin/cpecs-12147` and rebases your local branch on top of it (instead of merging).
         -   `$ git pull` → does everything `git fetch` does, **plus it merges** the fetched changes from the remote branch into your current branch (equivalent to `git fetch` followed by `git merge`).

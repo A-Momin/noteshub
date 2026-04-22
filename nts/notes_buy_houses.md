@@ -63,9 +63,9 @@ If a contingency is not satisfied within a set timeframe, the buyer usually has 
     -   **Your Right:** As a buyer, you are legally given a **10-day period** to conduct a lead inspection if you want to.
     -   **The Reality:** Most sellers will simply check a box saying they "have no knowledge" of lead paint. It doesn't mean it isn't there; it just means they haven't officially tested for it.
 
--   **Offer Contract**: This is the formal, legal document (in Texas, usually a "One to Four Family Residential Contract") that outlines the exact terms of your "proposal" to the seller.
+-   **Offer Contract**: This is the formal, legal document (in Texas, usually a "**One to Four Family Residential Contract**") that outlines the exact terms of your "proposal" to the seller.
 
-    -   **It’s a Proposal:** Right now, it is just an "offer." It does not become a binding **Sales Contract** until both you and the seller have signed it.
+    -   **It’s a Proposal:** Right now, it is just an "offer". It does not become a binding **Sales Contract** until both you and the seller have signed it.
     -   **What's inside:** It includes your offered price ($195,000), your closing date (January 27), and how much earnest money you are putting down.
     -   **The Risk:** Once both parties sign, you are legally committed to those terms. This is why Anna mentioned you could have an attorney look at it first.
 
@@ -77,11 +77,59 @@ If a contingency is not satisfied within a set timeframe, the buyer usually has 
 
 -   **The Survey**: A **Survey** is a professional map of the property lines. In Texas, if the seller doesn't have an existing one that the title company accepts, **you** will have to pay for a new one. This usually costs between **$400 and $700** and is an out-of-pocket expense you'll see at closing.
 
--   **Title Company**: A Title Company is a third party hired to ensure that when you pay $195,000 for 1400 Ridgecrest, you actually own it "free and clear." They don't work for you or the seller; they work for the **transaction**.
+-    **Title**: 
+     
+    -    A **Title Fee** is a broad term used to describe the various costs associated with ensuring a property's title is clear of legal issues and can be legally transferred from the seller to the buyer. These fees are a standard part of closing costs in a real estate transaction. Because "Title Fee" can refer to several different line items on a closing disclosure, it is helpful to break them down into the most common categories:
 
-    1. **The Title Search:** They dig through decades of public records to make sure the seller actually has the right to sell the house and that there are no "hidden" owners (like a long-lost heir) or unpaid debts (liens) attached to the house.
-    2. **Title Insurance:** They provide an insurance policy that protects you if someone comes forward years later claiming they own part of your house.
-    3. **The Closing Agent:** They are the ones who sit with you at the table, make sure every legal document is signed correctly, and officially record your deed with Collin County.
+    1. **Title Insurance Premiums**: This is typically the largest portion of the title fees. In Texas, these rates are set by the State Board of Insurance and are based on the purchase price of the property.
+        * **Owner’s Policy:** Protects the buyer against hidden title defects (such as unknown heirs, forged signatures, or unpaid liens) that occurred before they purchased the home.
+        * **Lender’s Policy:** Almost always required by the mortgage company to protect their investment in the property.
+
+    2. **Title Search and Examination Fee**: This fee covers the labor involved in searching public records—such as deeds, mortgages, and tax records—to verify that the seller has the legal right to sell the property and that no outstanding claims exist.
+
+    3. **Escrow or Settlement Fee**: This is paid to the title company or escrow agent for coordinating the closing process. It covers the administrative work of:
+        * Acting as a neutral third party to hold funds.
+        * Preparing the closing documents.
+        * Disbursing payments to the appropriate parties (agents, lenders, tax authorities).
+
+    4. **Recording Fees**: These are government fees charged by the county clerk's office to officially record the new deed and mortgage in the public record.
+
+    5. **Who Typically Pays These Fees?**
+        In Texas, who pays which fee is often a matter of negotiation in the sales contract, though there are common local practices:
+        * **Owner’s Title Policy:** Often paid by the **seller** in North Texas.
+        * **Lender’s Title Policy:** Usually paid by the **buyer**.
+        * **Escrow Fee:** Frequently split **50/50** between the buyer and seller.
+
+    6. **Title Company**: A Title Company is a third party hired to ensure that when you pay $195,000 for 1400 Ridgecrest, you actually own it "free and clear." They don't work for you or the seller; they work for the **transaction**.
+        > In Texas, it is very common for the seller to pay for the title insurance and, as a result, select the title company. While this may feel like the seller is "hiring" their own advocate, the title company actually functions as a **neutral third party** bound by strict state regulations and fiduciary duties. Here is how the buyer's interests remain protected even when the seller chooses and pays for the company.
+
+        1. **The Title Search:** They dig through decades of public records to make sure the seller actually has the right to sell the house and that there are no "hidden" owners (like a long-lost heir) or unpaid debts (liens) attached to the house.
+        2. **Title Insurance:** They provide an insurance policy that protects you if someone comes forward years later claiming they own part of your house.
+        3. **The Closing Agent:** They are the ones who sit with you at the table, make sure every legal document is signed correctly, and officially record your deed with Collin County.
+        4. **Neutral Third-Party Status (Escrow)**: A title company does not "represent" the seller in the way an attorney or a real estate agent does. Instead, they act as an **Escrow Agent**.
+            -   **Impartiality:** They are legally bound to follow the written instructions of the **sales contract** signed by both parties.
+            -   **Fund Security:** They hold your earnest money and the lender's funds in a neutral account, ensuring money only changes hands once all legal conditions (like repairs or clear title) are met.
+        5. **State-Regulated Rates and Forms**: In Texas, the **Texas Department of Insurance (TDI)** strictly regulates the title industry.
+            -   **No Price War:** Every title company in Texas charges the exact same premium for a title policy (based on the home's sales price). The seller cannot "shop around" for a cheaper, lower-quality policy to save money; the coverage is identical regardless of the company.
+            -   **Standardized Paperwork:** The language in the title policy is set by the state. The seller cannot ask the title company to remove standard protections for the buyer.
+        6. **The Title Commitment (The "Under-the-Hood" Check)**: Before closing, the title company issues a **Title Commitment**. This is a crucial document for the buyer because it:
+            -   **Discloses "Clouds":** It lists every lien, unpaid tax, or legal judgment currently attached to the house.
+            -   **Sets Requirements:** It explicitly states what the seller **must** fix (e.g., paying off an old mortgage or clearing a contractor lien) before the title company will agree to insure the transfer.
+            -   **Buyer's Review:** You and your agent have a specific window (usually defined in Paragraph 6 of the TREC contract) to object to anything found in this commitment.
+        7. **The Owner’s Title Policy (OTP)**: Even though the seller pays the premium, the **Buyer** is the named "Insured" on the policy.
+            -   **Financial Protection:** If an undisclosed heir or a forgotten lien surfaces two years after you move in, the title company is financially responsible for defending your ownership or compensating you for the loss.
+            -   **Long-term Benefit:** The policy protects you (and your heirs) for as long as you own the property.
+        8. **Federal Protections (RESPA Section 9)**: It is worth noting that under the federal **Real Estate Settlement Procedures Act (RESPA)**, a seller cannot *force* a buyer to use a specific title company as a condition of the sale **if the buyer is paying for their own title insurance**.
+
+        > However, because the seller customarily pays for the **Owner’s Policy** in North Texas, they usually retain the right to choose. If you (the buyer) feel strongly about using a different company, you can negotiate this in your offer, but you may be expected to pay for the policy yourself to secure that choice.
+
+        -   **Summary of Protections**
+            | Protection Mechanism | How it works for the Buyer                                                                 |
+            | :------------------- | :----------------------------------------------------------------------------------------- |
+            | **Title Search**     | The company must find and clear all "garbage" (liens/claims) before you sign.              |
+            | **Escrow Service**   | They won't give your money to the seller until the deed is ready to be recorded.           |
+            | **Duty of Care**     | They have a legal responsibility to ensure the deed is recorded correctly with the County. |
+            | **Indemnity**        | If they miss a title defect, their insurance pays for the legal battle, not you.           |
 
 -   **Escrow Account**: An **Escrow Account** is a temporary holding tank for money. It ensures that neither the buyer nor the seller can "run away" with the cash or the house until everything is perfect. In your deal, you will encounter two different types of escrow:
 

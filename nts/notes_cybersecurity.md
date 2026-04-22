@@ -3,6 +3,107 @@
 ---
 ---
 
+-   <details><summary style="font-size:25px;color:Orange">JWT Authorizations</summary>
+
+    -   [www.jwt.io](https://www.jwt.io/)
+
+    ##### JWT Anatomy
+
+    > A **JWT (JSON Web Token)** is built on a "compact and self-contained" design. It is essentially a digitally signed JSON object that allows two parties to exchange information securely. A JWT is always composed of three distinct parts, separated by dots (`.`): `xxxxx.yyyyy.zzzzz`
+
+    -   1. **The Header (The Metadata)**: The header typically consists of two parts: the type of the token (JWT) and the signing algorithm being used, such as **HMAC SHA256 (HS256)** or **RSA**.
+
+        -   **Purpose:** Tells the server how to parse and verify the token.
+        -   **Example JSON:**
+            ```json
+            {
+            "alg": "HS256",
+            "typ": "JWT"
+            }
+            ```
+        -   **Encoding:** This JSON is **Base64Url** encoded to form the first part of the JWT.
+
+    -   2. **The Payload (The Claims)**: The payload contains the **claims**. Claims are statements about an entity (typically, the user) and additional data. There are three types of claims:
+
+        -   **Registered claims:** Predefined industrial standards (e.g., `iss` for Issuer, `exp` for Expiration time, `sub` for Subject).
+        -   **Public claims:** Custom claims defined by the users of the JWT (e.g., `email`, `role`).
+        -   **Private claims:** Custom claims created to share information between parties that agree on using them.
+
+        -   **Example JSON:**
+            ```json
+            {
+                "iss": "https://auth.yourbank.com",
+                "sub": "user_987654321",
+                "aud": "https://api.yourbank.com",
+                "exp": 1712535000,
+                "nbf": 1712534400,
+                "iat": 1712534400,
+                "jti": "b3f2a1c5-8e9d-4c3b-a2b1-e0f9d8c7b6a5",
+                "name": "Clinton Bill",
+                "role": "senior_architect",
+                "mfa_authenticated": true,
+                "scopes": ["read:accounts", "write:transfers"],
+                "cnf": {
+                    "x5t#S256": "vS9oY9H-3_j9_j9_j9_j9_j9_j9_j9_j9_j9_j9_j9"
+                }
+            }
+            ```
+        -   **Encoding:** This is also **Base64Url** encoded to form the second part. 
+        > **Warning:** Base64 is NOT encryption. Anyone can decode the payload. Never put sensitive data like passwords in the payload.
+
+    -   3. **The Signature (The Security)**: This is the most critical part. To create the signature part, you must take the encoded header, the encoded payload, a **secret key**, and the algorithm specified in the header.
+
+        -   **Purpose:** It is used to verify that the sender of the JWT is who it says it is and to ensure that the message wasn't changed along the way.
+        -   **How it's built:**
+            $$Signature = HMACSHA256(base64UrlEncode(header) + "." + base64UrlEncode(payload), secret)$$
+
+    -   🚀 **The Authorization Flow**: When a user successfully logs in, a JWT is returned. For all subsequent requests, the user sends the JWT (usually in the **Authorization header** using the **Bearer** schema).
+
+        1.  **Client** requests access with credentials.
+        2.  **Server** validates credentials and creates a JWT using a **Private Secret**.
+        3.  **Client** receives the JWT and stores it (Local Storage or Cookies).
+        4.  **Client** sends the JWT in the Header: `Authorization: Bearer <token>`.
+        5.  **Server** checks the signature using the **Secret**. If valid, the user is authorized.
+
+    ##### JWT in Financial Industries
+
+    > In the financial industry (FinTech, Banking, and Payments), JWT authorization isn't just about "logging in"—it is a critical component of **Zero Trust Architecture**. Because financial data is highly sensitive, the implementation of JWTs is significantly more rigorous than in standard web apps.
+
+    1. **The Multi-Tiered Token Strategy**: Financial systems almost never use a single, long-lived JWT. They utilize a **Dual-Token System** to minimize the "blast radius" if a token is stolen.
+
+        * **Access Token (Short-Lived):** Typically expires in **5–15 minutes**. It is used for active API requests.
+        * **Refresh Token (Long-Lived):** Stored in a secure, HTTP-only cookie or a hardware-backed keystore. It is used only to request a new Access Token.
+        * **Rotation:** Every time a Refresh Token is used, it is revoked and a new one is issued (**Refresh Token Rotation**). This detects if a token has been intercepted by a malicious actor.
+
+
+
+    2. **Advanced Security Layers (The "Financial" Twist)**: Standard JWTs are often just Signed (**JWS**). In Finance, they are often both **Signed and Encrypted**.
+
+        ### JWE (JSON Web Encryption)
+        While a standard JWT payload can be read by anyone (Base64), a **JWE** ensures that even if a hacker intercepts the token, they cannot see the user's account ID or balance because the payload is encrypted with a public/private key pair.
+
+        ### Certificate-Based Signing (RS256/ES256)
+        Financial institutions avoid **HS256** (Shared Secret) because if the secret leaks, every token can be forged. Instead, they use **Asymmetric Encryption**:
+        * **Identity Provider (IdP):** Signs the JWT with a **Private Key**.
+        * **Microservices:** Verify the JWT using a **Public Key**.
+
+    3. **The "Sender Constrained" Token**: A major risk in finance is a "Token Theft" attack. To prevent this, banks use **mTLS (Mutual TLS)** or **DPoP (Demonstration of Proof-of-Possession)**.
+
+        * **How it works:** The JWT is "bound" to the specific client (e.g., your specific mobile phone). 
+        * **The Result:** Even if a hacker steals your JWT, they cannot use it from their own computer because they don't have the unique hardware key or SSL certificate associated with your device.
+
+
+
+    4. **Compliance and "Claims" (The Audit Trail)**: Financial JWT payloads include specific "Claims" required for regulatory compliance (like **GDPR** or **PCI-DSS**):
+
+        * **`acr` (Authentication Context Class Reference):** Indicates *how* the user logged in (e.g., "MFA" vs "Password"). High-value transfers might require a JWT that proves MFA was used.
+        * **`jti` (JWT ID):** A unique nonce for every token to prevent **Replay Attacks**.
+        * **`client_id`:** Identifies exactly which application (Mobile App, Web, or Third-party Partner) initiated the request.
+
+    </details>
+
+---
+
 -   <details><summary style="font-size:25px;color:Orange">Security Measures & Vulnerabilitis</summary>
 
     -   [Ethical Hacking 101: Web App Penetration Testing - a full course for beginners](https://www.youtube.com/watch?v=2_lswM1S264)
@@ -248,8 +349,8 @@
 
     AWS cybersecurity can be divided into **6 major domains**:
 
-    | Domain                            | Focus                                                |
-    | :-------------------------------- | :--------------------------------------------------- |
+    | Domain                           | Focus                                                |
+    | :------------------------------- | :--------------------------------------------------- |
     | 🔐 Identity & Access Management   | Controlling who can access what                      |
     | 🌐 Network Security               | Protecting VPCs, subnets, load balancers, endpoints  |
     | 🧱 Data Protection                | Encryption, key management, DLP                      |
