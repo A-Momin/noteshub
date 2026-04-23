@@ -211,7 +211,6 @@
             -   Use `git diff` or `git diff --cached` to inspect unresolved changes during the rebase.
             -   For a cleaner workflow with local uncommitted changes, use `git pull --rebase --autostash` so Git temporarily stashes your work, rebases, then reapplies it.
 
-
     -   **Squashing**: In Git, **squashing** is the process of taking multiple commits and condensing them into a single, clean commit. Think of it as "editing" your history to remove the messy trail of small, intermediate changes before sharing your work with the rest of the team.
 
         1. **Why Squash?**
@@ -328,7 +327,6 @@
             | **ISO/IEC 12207** | Software Lifecycle Processes    | Describes software development processes.                    |
 
             These are typically mentioned in **README files**, **project documentation**, or **compliance badges**.
-
 
     -   **SHA**: SHA stands for Secure Hash Algorithm, usually referring to the SHA-1 hash Git uses to identify each object uniquely.
 
@@ -487,6 +485,7 @@
             -   `$ git diff`
             -   **Red text:** Lines that were removed.
             -   **Green text:** Lines that were added.
+
         2. **View Staged Changes**: If you have already run `git add`, a normal `git diff` will show nothing. To see what is sitting in the "waiting room" (staging area) ready to be committed, use:
             -   `$ git diff --staged`
             -   `$ gt diff --cached`
@@ -497,6 +496,7 @@
 
         4. **Compare Two Commits**: If you want to see what changed between two specific points in your project's history, use their commit hashes (shas).
             -   `$ git diff [commit_hash_1] [commit_hash_2]`
+
         5. **Summary and Formatting Options**: Sometimes the full output is too much. You can modify the view to be more concise:
             | Command                      | Result                                                                      |
             | ---------------------------- | --------------------------------------------------------------------------- |

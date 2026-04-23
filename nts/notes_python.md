@@ -37,6 +37,49 @@
         -   ✅ Fix: Run using the `-m` flag:
         -   `python -m package.module`
 
+        > In Python, relative imports use dot notation to specify the location of the module you want to import relative to the current file. A single dot `.` refers to the current package, while double dots `..` refer to the parent package.
+
+        > However, you can't just use them anywhere. There are two "golden rules" for relative imports to work.
+
+        -   **1. The File Must Be Part of a Package**: A relative import only works if the files involved are recognized as part of a Python package. Usually, this means the directory contains an `__init__.py` file (though modern Python often treats directories as packages implicitly).
+
+        -   **You Must Run the Code as a Module**: This is where most people get stuck. If you try to run a script containing relative imports directly (e.g., `python my_script.py`), it will fail with a `ImportError: attempted relative import with no known parent package`.
+
+            -   **Why?** Because when you run a file directly, Python sets its name to `__main__`. In this state, the file has no "parent" context; it thinks it is the root of the universe. To use relative imports, you must run your code using the module flag from **outside** the package:
+
+            -   `python -m my_package.subpackage.my_script`
+
+        -   **Visualizing the Structure**
+            Imagine a project folder named `project_root`:
+
+            ```text
+            project_root/
+            │
+            ├── main.py
+            └── my_package/
+                ├── __init__.py
+                ├── utils.py (contains 'helper')
+                └── sub/
+                    ├── __init__.py
+                    └── script.py  <-- You are writing code here
+            ```
+
+
+
+            In `script.py`, if you want to access `helper` inside `utils.py`, you are moving "up" one level to the `my_package` folder and then looking for `utils`.
+            **The Code:** `from ..utils import helper`
+
+        -   **When to Use Them vs. Absolute Imports**
+
+            | Feature         | Relative Import (`from .. import x`)                                                | Absolute Import (`from pkg.mod import x`)                             |
+            | :-------------- | :---------------------------------------------------------------------------------- | :-------------------------------------------------------------------- |
+            | **Refactoring** | **Easier.** You can rename the top-level package without breaking internal imports. | **Harder.** You must update every import if the package name changes. |
+            | **Clarity**     | Can get confusing with many dots (`....`).                                          | Very clear; you always know exactly where the module is.              |
+            | **Execution**   | Requires running via `python -m`.                                                   | Works more easily with direct script execution.                       |
+
+        **The Bottom Line:** Use relative imports primarily when building large, redistributable libraries where the internal structure is tightly coupled. If you are building a simple application or a script you intend to run directly, **absolute imports** (starting from the project root) are usually much less of a headache.
+
+
     -   **Circular Import Errors**
 
         ```python

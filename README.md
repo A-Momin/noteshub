@@ -1,3 +1,4 @@
+-   `$ runsshagent` -> Run SSH Agent (an alias to run SSH Agent)
 -   `$ git clone git@gh1:Aminul-Momin/noteshub.git` → Clone the project
 -   `$ git add .`
 -   `$ git commit -m " reguular update"`
