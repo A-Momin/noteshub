@@ -501,6 +501,26 @@
 
         </details>
 
+    -   <details><summary style="font-size:20px;color:#FF1493">Per Se</summary>
+
+        > In everyday conversation, we use it to distinguish between something in its most basic, isolated form versus that thing in a specific context or connection.
+
+        > You use per se when you want to say that something isn't necessarily true or bad on its own, but there might be other factors at play.
+
+        -   **The Job**: "It’s not the job per se that I hate; it’s the long commute."
+            -   The work itself is fine, but the travel is the problem.
+
+        -   **The Song**: "She isn't a bad singer per se, but this song is definitely out of her range."
+            -   She has talent in a general sense, but this specific performance is lacking.
+
+        -   **The Food**: "The dish wasn't spicy per se, it just had a lot of flavorful herbs."
+            -   It didn't have heat, but it had complexity.
+
+        </details>
+
+---
+
+
     </details>
 
 ---

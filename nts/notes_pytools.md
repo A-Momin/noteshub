@@ -48,7 +48,7 @@
         -   `Faster Installation`: Since it avoids compilation, installing a wheel file with pip is significantly faster.
         -   `Standard Format`: `.whl` follows the PEP 427 (Wheel Standard), making it the preferred way to distribute Python packages.
 
-    - **wheel**/**source** distribution: In the Python ecosystem, when you want to share your code or install a package via `pip`, you generally deal with two types of distribution formats: **Source Distributions (sdist)** and **Wheels (bdist_wheel)**. Think of it like getting a meal: a **Source Distribution** is the recipe and raw ingredients, while a **Wheel** is the pre-cooked, ready-to-eat meal.
+    -   **wheel**/**source** distribution: In the Python ecosystem, when you want to share your code or install a package via `pip`, you generally deal with two types of distribution formats: **Source Distributions (sdist)** and **Wheels (bdist_wheel)**. Think of it like getting a meal: a **Source Distribution** is the recipe and raw ingredients, while a **Wheel** is the pre-cooked, ready-to-eat meal.
 
         1. **Source Distribution (sdist)**: A **Source Distribution** is an archive (usually a `.tar.gz` file) that contains the actual source code and any necessary metadata.
 
