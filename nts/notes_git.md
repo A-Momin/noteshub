@@ -414,6 +414,9 @@
     -   `$ git remote` → List out all the remote this git repo has been added to
     -   `$ git remote -v` → Listout all the remote’s URL this git repo has been added to
 
+    -   `$ git branch --set-upstream-to=origin/develop NETSEC-11111` → a feature branch (like one named after a ticket number) tracks its corresponding branch on the remote (e.g., origin/NETSEC-11111). By setting the upstream to origin/develop, your future git pull and git push commands (without arguments) will interact directly with the develop branch.
+
+
     ## CONFIGURATIONS
 
     -   `$ Which git` → Print the full path to the git command
@@ -466,6 +469,7 @@
     -   `$ git diff branch` → Show a diff between the current working directory and the named branch.
     -   `$ git diff --staged` → Difference between Staging Area and Repository.
     -   `$ git diff --stat` → Shows an overview of changes.
+    -   `$ git diff other-branch path/to/this_file` → Shows diff of this_file between this and it's other branch.
     -   `$ git diff <commit_id1 commit_id2>` → Difference between two commits.
     -   `$ git show <commit_id>` → Show the changes in commits compared to it’s parrents
     -   `$ git log <command>`
