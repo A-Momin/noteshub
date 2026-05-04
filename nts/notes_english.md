@@ -518,9 +518,6 @@
 
         </details>
 
----
-
-
     </details>
 
 ---
@@ -711,6 +708,7 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Common Technical Vocabulary</summary>
 
+    -   Curated
     -   Streamline
     -   Sluggish
     -   seamless

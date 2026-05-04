@@ -1328,7 +1328,7 @@
             | Feature                | VPC Peering         | Transit Gateway    | VPN/Direct Connect    |
             | ---------------------- | ------------------- | ------------------ | --------------------- |
             | **Type**               | Point-to-point      | Hub-and-spoke      | External connectivity |
-            | **Transitive Routing** | ❌ No               | ✅ Yes             | N/A                   |
+            | **Transitive Routing** | ❌ No                | ✅ Yes              | N/A                   |
             | **Scale**              | 1:1 connections     | 1000s of VPCs      | Limited               |
             | **Use Case**           | Small-medium setups | Large/multi-region | Hybrid cloud          |
 
@@ -2529,6 +2529,66 @@
     -   supports cross region replication using DynamoDB streams which leverages Kinesis and provides time-ordered sequence of item-level changes and can help for lower RPO, lower RTO disaster recovery
     -   Data Pipeline jobs with EMR can be used for disaster recovery with higher RPO, lower RTO requirements
     -   supports triggers to allow execution of custom actions or notifications based on item-level updates
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">RDS</summary>
+
+    Amazon Relational Database Service (RDS) is a managed service that makes it easy to set up, operate, and scale a relational database in the AWS Cloud. It removes the "undifferentiated heavy lifting" of database management, such as hardware provisioning, patching, and backups.
+
+    1. **Core Components**: These are the fundamental building blocks of any RDS setup.
+
+        *   **DB Instance:** An isolated database environment in the cloud. It is the basic building block of RDS. You select the CPU, memory, and storage capacity based on your needs.
+        *   **DB Engine:** The specific relational database software running on the instance. RDS currently supports:
+            *   **Amazon Aurora** (AWS-native, MySQL/PostgreSQL compatible)
+            *   **PostgreSQL**
+            *   **MySQL**
+            *   **MariaDB**
+            *   **Oracle**
+            *   **Microsoft SQL Server**
+        *   **DB Instance Class:** Determines the computation and memory capacity of the instance (e.g., `db.t3.micro`, `db.m5.large`).
+
+    2. **High Availability & Scalability**: AWS uses specific architectures to ensure your database stays online and can handle growth.
+
+        *   **Multi-AZ Deployment:** RDS automatically provisions and maintains a synchronous "standby" replica in a different Availability Zone. If the primary instance fails, RDS automatically fails over to the standby.
+        *   **Read Replicas:** These are "read-only" copies of your database. They are used to offload read traffic from the primary instance, increasing the application's overall performance. Unlike Multi-AZ, these use *asynchronous* replication.
+        *   **Storage Autoscaling:** When enabled, RDS automatically increases storage capacity when it detects you are running out of space, preventing downtime.
+
+    3. **Storage Types**: The performance of your database is heavily tied to the underlying storage volume.
+
+        *   **General Purpose SSD (gp2/gp3):** Cost-effective storage suitable for a broad range of workloads.
+        *   **Provisioned IOPS SSD (io1):** Designed for I/O-intensive workloads (like large production databases) that require low latency and consistent throughput.
+        *   **Magnetic:** A legacy option for small, infrequent-access workloads.
+
+    4. **Connectivity & Security**: RDS is designed to be secure by default, living inside your Virtual Private Cloud (VPC).
+
+        *   **DB Subnet Group:** A collection of subnets (usually private) that you designate for your clusters in a VPC.
+        *   **Security Groups:** Act as a virtual firewall, controlling which IP addresses or EC2 instances are allowed to connect to the database port (e.g., 3306 for MySQL or 5432 for PostgreSQL).
+        *   **KMS Encryption:** RDS can encrypt your databases "at rest" using keys managed through the AWS Key Management Service (KMS).
+        *   **IAM Database Authentication:** Instead of using a password, you can authenticate to your DB instance using AWS IAM users or roles.
+
+    5. **Maintenance & Backup**: One of the primary benefits of a managed service is automated data protection.
+
+        *   **Automated Backups:** RDS takes a daily full snapshot of your data and captures transaction logs. This allows for **Point-in-Time Recovery (PITR)** to any second within your retention period (up to 35 days).
+        *   **DB Snapshots:** These are user-initiated backups. Unlike automated backups, snapshots are kept until you explicitly delete them.
+        *   **Maintenance Window:** A weekly time block during which AWS performs system changes, such as OS patching or DB engine upgrades.
+
+    6. **Advanced Concepts**:
+        *   **RDS Proxy:** A fully managed, highly available database proxy that makes applications more scalable by pooling and sharing established database connections.
+        *   **Option Groups:** Used to enable extra features provided by the specific DB engine (e.g., Memcached for MySQL or Transparent Data Encryption for Oracle).
+        *   **Parameter Groups:** Act as a "container" for engine configuration values. Instead of editing a `my.cnf` or `postgresql.conf` file, you modify values in the Parameter Group.
+
+    -   **Comparison: Multi-AZ vs. Read Replicas**:
+
+        | Feature             | Multi-AZ                            | Read Replica                        |
+        | :------------------ | :---------------------------------- | :---------------------------------- |
+        | **Primary Purpose** | High Availability/Disaster Recovery | Scalability (Read performance)      |
+        | **Replication**     | Synchronous                         | Asynchronous                        |
+        | **Access**          | St  is not accessible               | Replica is accessible for Reads     |
+        | **Failover**        | Automatic                           | Manual (can be promoted to primary) |
+
 
     </details>
 
