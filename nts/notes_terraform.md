@@ -64,9 +64,9 @@
             | **`terraform.tfstate`**        | The primary **State File** and the single source of truth. It maps your configuration to the real-world infrastructure created on your cloud provider, storing the current status and IDs of all managed resources. **Never edit manually.**                                                         |
             | **`terraform.tfstate.backup`** | A **backup of the state file** created automatically by Terraform whenever a successful operation modifies the primary state file. It serves as a safety mechanism to prevent data loss if the primary state file is corrupted during an operation.                                                  |
             | **`terraform.lock.hcl`**       | The **Dependency Lock File**. It records the exact versions of the **providers** downloaded and used for the configuration. This ensures that everyone working on the project uses the same provider versions to avoid unexpected changes or state drift. It should be committed to version control. |
-            | **`terraform.tfvars`**         | A **default**. If present, Terraform **automatically** loads all variable values defined within it during execution. It's typically used to store common, non-sensitive input variables for a configuration.                                                              |
+            | **`terraform.tfvars`**         | A **default**. If present, Terraform **automatically** loads all variable values defined within it during execution. It's typically used to store common, non-sensitive input variables for a configuration.                                                                                         |
             | **`*.auto.tfvars`**            | **Automatically loaded variable files**. Any file ending with `.auto.tfvars` or `.auto.tfvars.json` is automatically loaded by Terraform. This is commonly used for injecting values from external systems or for environment-specific variables (e.g., `prod.auto.tfvars`).                         |
-            | **`__________.tfvars`**         | A **manually-loaded variable file**. If present, Terraform will ignore it unless you manually add them with your `terraform` command (e.g. `$ terraform apply -var-file="global.tfvars" -var-file="dev.tfvars"`).|
+            | **`__________.tfvars`**        | A **manually-loaded variable file**. If present, Terraform will ignore it unless you manually add them with your `terraform` command (e.g. `$ terraform apply -var-file="global.tfvars" -var-file="dev.tfvars"`).                                                                                    |
 
 
         -   **Infrastructure as Code (IaC)**:
@@ -1538,3 +1538,79 @@
         </details>
 
     </details>
+
+---
+---
+
+It looks like you are setting up a **Terraform Remote State** data source. This is the standard way to share information (outputs) between two completely separate Terraform configurations.
+
+Here is the proper syntax and a breakdown of how to configure it depending on where your state is stored.
+
+### 1. The Syntax (Standard S3 Backend)
+If your "source" project stores its state in AWS S3, your data source block should look like this:
+
+```hcl
+data "terraform_remote_state" "trs" {
+  backend = "s3"
+
+  config = {
+    bucket = "your-terraform-state-bucket"
+    key    = "path/to/source/project/terraform.tfstate"
+    region = "us-east-1" # Or your specific region
+  }
+}
+```
+
+### 2. How to access the data
+To actually use the data from the remote state, the source project **must** have defined `output` blocks. You access them like this:
+
+```hcl
+# Example: Using a VPC ID from the remote state
+resource "aws_instance" "app_server" {
+  ami           = "ami-xxxxxxxx"
+  instance_type = "t3.micro"
+  subnet_id     = data.terraform_remote_state.trs.outputs.subnet_id
+}
+```
+
+---
+
+### 3. Common Backend Configurations
+
+| Backend              | Key Config Requirements                                                |
+| :------------------- | :--------------------------------------------------------------------- |
+| **S3**               | `bucket`, `key`, `region`. (Optional: `profile` or `role_arn`)         |
+| **Remote (TFC/TFE)** | `organization` and `workspaces = { name = "workspace-name" }`          |
+| **Local**            | `path = "../other-project/terraform.tfstate"`                          |
+| **Azure (azurerm)**  | `resource_group_name`, `storage_account_name`, `container_name`, `key` |
+
+---
+
+### 4. Important Troubleshooting Tips
+*   **Outputs Only:** You can *only* access what was explicitly defined in an `output` block in the source project. You cannot reach into the remote state to grab a resource attribute that wasn't exported.
+*   **Permissions:** The IAM role or user running the *current* Terraform plan must have `s3:GetObject` permissions on the bucket and key of the *source* state file.
+*   **State Locking:** Using a data source does not typically trigger a state lock on the remote file, but it’s good practice to ensure your backends are configured consistently.
+
+---
+
+```ini
+resource "aws_resourcegroups_group" "test" {
+  name = "test-group"
+
+  resource_query {
+    query = <<JSON
+{
+  "ResourceTypeFilters": [
+    "AWS::EC2::Instance"
+  ],
+  "TagFilters": [
+    {
+      "Key": "Stage",
+      "Values": ["Test"]
+    }
+  ]
+}
+JSON
+  }
+}
+```

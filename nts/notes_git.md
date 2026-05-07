@@ -137,6 +137,37 @@
 
     #### KEY Terminology
 
+    -   **Tracking** and **Upstream**: In Git, "tracking" and "upstream" are the glue that connects your local environment to a remote server like GitHub. Without them, Git wouldn't know which branch on your computer belongs to which branch on the internet.
+
+        1. **What is an "Upstream" Branch?**: An **upstream branch** is the authoritative version of a branch hosted on a remote repository (usually named `origin`). 
+
+            -   When you clone a repository from GitHub, Git automatically sets up a relationship between your local `main` branch and the remote `origin/main` branch. In this relationship:
+                -   **The Remote** `origin/main` is the **Upstream**.
+                -   **The Local** `main` is the **Tracking Branch**.
+            _   Think of the upstream as the "source of truth." When you run `git pull`, Git looks at the upstream to see what work you’re missing.
+
+        2. **What is "Tracking"?**: **Tracking** is the active link between your local branch and its upstream counterpart. When a branch is "tracking" another, Git can provide helpful status updates, such as:
+            -   *"Your branch is ahead of 'origin/main' by 2 commits."*
+            -   *"Your branch is behind 'origin/main' by 5 commits."*
+            -   Why does tracking matter?
+                -   If your branch is tracking an upstream, you don't have to type out the full names every time. Instead of typing `git push origin feature-branch`, you can just type **`git push`**. Git already knows where it's supposed to go.
+
+        3. **How to Set Upstream/Tracking**: Sometimes you create a branch locally that doesn't exist on GitHub yet. You have to tell Git to create the link manually.
+
+            -   **The First Push**: When you push a new branch for the first time, use the `-u` (or `--set-upstream`) flag: `git push -u origin feature-name`
+                -   *This creates the branch on GitHub AND links your local branch to it permanently.*
+
+            -   **Checking Relationships**: To see which local branches are tracking which remotes, use: `git branch -vv`
+
+        -   **Summary Table**
+
+            | Term         | Definition                                           | Context                                                 |
+            | :----------- | :--------------------------------------------------- | :------------------------------------------------------ |
+            | **Upstream** | The "parent" branch on the remote server (GitHub).   | "I need to fetch the latest changes from **upstream**." |
+            | **Tracking** | The ongoing connection between local and remote.     | "My local branch is **tracking** origin/main."          |
+            | **Origin**   | The default nickname for your GitHub repository URL. | "Push my code to **origin**."                           |
+
+
     -   **Fast-forward merge**: Fast-forward merge is the simplest and cleanest way to combine two branches. It occurs when the base branch (like main) hasn't had any new commits since you created your feature branch. Instead of creating a new "merge commit," Git simply moves the pointer of your current branch forward to the latest commit of the feature branch.
 
         -   **How it Works Visually**: Imagine your project is a book. You are on Page 10 (main) and you write Pages 11 and 12 on a separate notepad (feature). If nobody else wrote anything in the book while you were gone, you can just glue your new pages directly to the end of Page 10.
