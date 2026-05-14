@@ -304,7 +304,6 @@ tmxnew(){
     fi
 }
 
-
 tmxkill(){
     if [[ -n $1 ]]; then tmux kill-ses -t $1 
     else tmux kill-ses -t main

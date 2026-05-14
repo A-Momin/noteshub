@@ -135,6 +135,8 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Word Comparison</summary>
 
+    -   **Comparative** vs **Relative**:
+
     -   **Resources** vs **Assets**:
         -   `Resources` can refer to any data or helper files used by the software, including dynamic or localized content, configuration files, and external dependencies — and sometimes even compute/storage/network capacity in cloud-native environments. Exmples: `.json`, `.xml`, `.properties`, `.env`, `.yaml`, `Templates`.
         -   `Assets` are usually static files or content that are packaged with your application or deployed alongside it. Examples: Images (.png, .svg), Fonts (.ttf, .woff), Videos, CSS files, JavaScript files, Favicon
@@ -707,6 +709,16 @@
 ---
 
 -   <details><summary style="font-size:25px;color:Orange">Common Technical Vocabulary</summary>
+
+    -   Default/Defaulter/Defaulted
+        -   **As a Verb**: "The company defaulted on its high-interest loans after sales plummeted."
+        -   **As a Noun**: "The bank seized the property following the homeowner's default."
+        -   **Common Phrasing**: Always use the preposition on when specifying the debt (e.g., "defaulted on the payment").
+
+    -   Disclaimer: A disclaimer is a formal statement designed to limit legal liability or to clarify that you are not responsible for certain outcomes. It essentially says, "I am providing this, but use it at your own risk."
+        -   **As a Subject**: "The disclaimer at the bottom of the page protects the company from lawsuits."
+        -   **As an Object**: "The website includes a long disclaimer regarding the accuracy of its health advice."
+        -   **With "Standard"**: "Before we begin the investment presentation, I must give the standard disclaimer that past performance does not guarantee future results."
 
     -   Curated
     -   Streamline

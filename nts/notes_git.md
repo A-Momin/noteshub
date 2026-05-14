@@ -648,13 +648,13 @@
 
         -   **How to edit previous commit on the local feature branch that has not been pushed yet**:
             -   `$ git rebase -i HEAD~3` → This opens an editor in interactive mode (`-i`) showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
-            -   -   overwrite **PICK** with **EDIT** on the opened editor and close it.
+                -   overwrite **PICK** with **EDIT** on the opened editor and close it.
                 -   `$ git add file_name_you_edited` ->
                 -   `$ git rebase --continue`
 
         -   **How to split a previous commit into two on the local feature branch that has not been pushed yet**:
             -   `$ git rebase -i HEAD~3` → This opens an editor in interactive mode (`-i`) showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
-            -   -   overwrite **PICK** with **EDIT** on the opened editor and close it.
+                -   overwrite **PICK** with **EDIT** on the opened editor and close it.
                 -   `$ git reset HEAD~1` -> Remove the commit completely
                 -   `$ git status` -> 
                 -   `$ git add README.md` ->
@@ -665,7 +665,7 @@
 
         -   **How to squash previous commits on the local feature branch that has not been pushed yet**:
             -   `$ git rebase -i HEAD~4` → This opens an editor in interactive mode (`-i`) showing your last 3 commits. You can change the word `pick` to `squash` to combine them or `reword` to fix a typo in a commit message.
-            -   -   overwrite **PICK** with **SQUASH** on the opened editor and close it.
+                -   overwrite **PICK** with **SQUASH** on the opened editor and close it.
                 -   `$ git add file_name_you_edited` ->
                 -   `$ git rebase --continue`
 
