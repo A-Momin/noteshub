@@ -1,3 +1,7 @@
+What technical professions are highly related to Stock Markets and Online Trading? What technical profession I should chose to work on so that It can make me expert and very successful on Stock Marker and Online Trading?
+
+---
+
 List out and explain all Components, Resources, Features around AWS Organization in vivid details.
 
 ---

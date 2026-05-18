@@ -1,0 +1,146 @@
+
+-   <details><summary style="font-size:25px;color:Orange">Common Technical Vocabulary</summary>
+
+    -   Default/Defaulter/Defaulted
+        -   **As a Verb**: "The company defaulted on its high-interest loans after sales plummeted."
+        -   **As a Noun**: "The bank seized the property following the homeowner's default."
+        -   **Common Phrasing**: Always use the preposition on when specifying the debt (e.g., "defaulted on the payment").
+
+    -   Disclaimer: A disclaimer is a formal statement designed to limit legal liability or to clarify that you are not responsible for certain outcomes. It essentially says, "I am providing this, but use it at your own risk."
+        -   **As a Subject**: "The disclaimer at the bottom of the page protects the company from lawsuits."
+        -   **As an Object**: "The website includes a long disclaimer regarding the accuracy of its health advice."
+        -   **With "Standard"**: "Before we begin the investment presentation, I must give the standard disclaimer that past performance does not guarantee future results."
+
+    -   Curated
+    -   Streamline
+    -   Sluggish
+    -   seamless
+    -   ephemeral
+    -   breach
+    -   abstrus
+    -   albeit
+    -   allegory
+    -   augment
+    -   anticipate
+    -   belabor
+    -   blasphemers
+    -   canonical
+    -   cast
+    -   caveat
+    -   clumsy
+    -   conglomarate
+    -   contengency
+    -   crappy
+    -   introspection
+    -   deprecate
+    -   drasticly
+    -   deceive
+    -   bashfull
+    -   automagically
+    -   stale
+    -   hurtle
+    -   tentative
+    -   tungsten
+    -   facet
+    -   debunk
+    -   atrocity
+    -   buyout
+    -   denounce
+    -   relentless
+    -   ramification
+    -   perseverance
+    -   rhetoric
+    -   obsolete
+    -   subjugate
+    -   flurry
+    -   anticipate
+    -   prorate
+    -   rigorous
+    -   nuisance
+    -   paranoid
+    -   procurement
+    -   earnest
+    -   indigenous
+    -   transient
+    -   incentive
+    -   autonony
+    -   scheme
+    -   deplete
+    -   subbing
+    -   exacerbate
+    -   tenacity
+    -   hindsight
+    -   semaphore
+    -   mangle
+    -   kinesis
+    -   demeanor
+    -   enduring
+    -   coalesce
+    -   debunk
+    -   baffle
+    -   streamline
+    -   emulate
+    -   endever
+    -   evocative
+    -   fidelity
+    -   foster
+    -   funkey
+    -   harness
+    -   heuristic
+    -   horendous
+    -   incarnation
+    -   incur
+    -   ironic
+    -   logistic
+    -   obsolete
+    -   occuluded
+    -   padagogy
+    -   paradigm
+    -   paranoid
+    -   perpatrator
+    -   perseverance
+    -   pertain
+    -   plusible
+    -   podcast
+    -   pragmatic
+    -   profound
+    -   prone
+    -   ramify
+    -   resitient
+    -   rhetoric
+    -   scrap
+    -   sorcastic
+    -   streamline
+    -   indigenous
+    -   gruesome
+    -   infallible
+    -   blaspheme
+    -   succinctly
+    -   synthesis
+    -   tangible
+    -   tentative
+    -   undertake
+    -   voluminous
+    -   whimsical
+    -   tailor
+    -   denounce
+    -   galvanize
+    -   disclaimer
+    -   obsolete
+    -   reinstate
+    -   resonate
+    -   envy
+    -   despise
+    -   ascribe
+    -   hindsight
+    -   pitfall
+    -   nuisance
+    -   dissent
+    -   scumbag
+    -   bashing
+    -   packer
+    -   redact
+
+    </details>
+
+---
