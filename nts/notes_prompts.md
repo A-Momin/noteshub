@@ -1,3 +1,11 @@
+I have moved into a new Apartment community two weeks ago. Write an email to the apartment manager concerning the followin issues in vivid details.
+    -   I found the balcony very muddy, dirty, unclean with no new paint.
+    -   I was shown an unit with fireplace but given an unit without fireplace. I always use the fire place during winter. this is a big loss for me.
+    -   I found a bathroom sink (drain stopper is not functional) which is not fully functional; it was not fixed even after placing an maintainance work order.
+    -   I found all the water-flow-controling-valves of the foucets lick if you turn it.
+    -   the toilet seat is brocken.
+    -   The bathtub drain stopper is not functional
+
 What technical professions are highly related to Stock Markets and Online Trading? What technical profession I should chose to work on so that It can make me expert and very successful on Stock Marker and Online Trading?
 
 ---

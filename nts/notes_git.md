@@ -580,9 +580,10 @@
             -   It can be used to undo the effects of `git add` and unstage changes you have previously added to the Staging Area.
             -   It can also be used to discard local changes in a file, thereby restoring its last committed state.
 
-        -   `$ git restore <path/to/filefile_name>` → just want to discard your recent edits to return to the last committed state
-        -   `$ git restore --staged <path/to/filefile_name>` → Unstage the given file from Staging Area into Working Directory.
-        -   `$ git restore --source <commit_hash> <file_name>` → You want to revert to a version from a specific commit without affecting the rest of your project.
+        -   `$ git restore <path/to/filefile_name>` → Discard all the changes of the file.
+        -   `$ git restore --source=HEAD~1 -- <path/to/filefile_name>` → Restore a file to exactly how it was in the previous commit (i,e HEAD~1)
+        -   `$ git restore --source <COMMIT_ID> <file_name>` → Revert the file to how it is in the specified commit.
+        -   `$ git restore --staged <path/to/filefile_name>` → Reset the file in the staging area (Index) back to what's in HEAD (your last commit)
         -   `$ git clean -f` → Remove untracked files from the working tree.
         -   `$ git rm --cached <file_name>` → Unstage the specified file (`file_name`) from Staging Area.
         -   `$ git rm --cached *_initial.py` → Unstage all the files name ended with `_initial.py` from Staging Area.

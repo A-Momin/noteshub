@@ -45,6 +45,7 @@
     -   **Remediation** vs **Fixing**:
 
     -   **Research** vs **Investigation**:
+    -   **Minimize** vs **minimalize**:
 
 
     -   Span/Embad/Encompass
