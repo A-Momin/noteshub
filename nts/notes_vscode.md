@@ -162,10 +162,10 @@
     5. **Configuration Shortcuts**:
 
         | MAC         | Action                                            | Windows     |
-        | :---------- | :------------------------------------------------ | :-----      |
+        | :---------- | :------------------------------------------------ | :---------- |
         | `⌘ + k + t` | Toggle between themes.                            | `^ + k + t` |
         | `⌘ + ,`     | Open the default `settings.json`-file for VSCode. | `^ + ,`     |
-        | `⌘ + ⇧ + P` | type 'Default Keyboard Shortcuts (JSON)' ↦ ⮐     | `^ + ⇧ + P` |
+        | `⌘ + ⇧ + P` | type 'Default Keyboard Shortcuts (JSON)' ↦ ⮐      | `^ + ⇧ + P` |
         | `⌘ + k + r` | OPEN KEYBOARD SHORTCUTS Reference.                | `^ + k + r` |
         | `⌘ + k + s` | Open Keyboard Shortcuts.                          | `^ + k + s` |
 
@@ -346,6 +346,15 @@
             - `$ code --extensions-dir <dir>` → Set the root path for extensions.
 
         </details>
+
+    </details>
+
+---
+
+-   <details><summary style="font-size:25px;color:Orange">VS Code Agentic Development Shortcuts</summary>
+
+    -   `/` -> 
+    -   `#` -> 
 
     </details>
 

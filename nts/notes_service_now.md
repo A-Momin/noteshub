@@ -166,116 +166,83 @@ In an ITIL-aligned IT Service Management (ITSM) framework, **Incident Management
 
 In ServiceNow, this process centers around the **Incident table (`incident`)**, which serves as the core record for documenting, investigating, and resolving disruptions.
 
----
+1. **The Incident Form Structure**: The incident record captures vital details needed for triage. It is divided into several main sections:
 
-## 1. Core Architecture & Components
+    -   **The Header Context:** Contains the incident number (`INC00XXXXX`), the current **State**, and the calculated **Priority**.
+    -   **Caller Information:** The user experiencing the issue. This pulls data from the User table (`sys_user`), displaying their department, location, and contact details.
+    -   **Configuration Item (CI):** The specific asset in the Configuration Management Database (CMDB) that is malfunctioning (e.g., a specific database server, an email gateway, or a laptop).
+    -   **Service / Service Offering:** The broader business capability affected (e.g., *Online Banking* or *Corporate Email*). This helps determine business impact and visibility.
 
-The ServiceNow Incident Management ecosystem relies on several integrated components across the platform to ensure tickets are routed and managed efficiently.
+    -   **Activity Stream and Communication Logs**
 
-### The Incident Form Structure
+        * **Additional Comments (Customer Visible):** Public-facing updates. Anything typed here is sent directly to the Caller via email or displayed on their Service Portal.
+        * **Work Notes:** Technical logs visible only to IT service desk workers and engineers. This is used to document troubleshooting steps, script executions, and internal collaboration.
 
-The incident record captures vital details needed for triage. It is divided into several main sections:
+    -   **Assignment Matrix**: ServiceNow automatically or manually routes incidents using a two-tier ownership structure:
 
-* **The Header Context:** Contains the incident number (`INC00XXXXX`), the current **State**, and the calculated **Priority**.
-* **Caller Information:** The user experiencing the issue. This pulls data from the User table (`sys_user`), displaying their department, location, and contact details.
-* **Configuration Item (CI):** The specific asset in the Configuration Management Database (CMDB) that is malfunctioning (e.g., a specific database server, an email gateway, or a laptop).
-* **Service / Service Offering:** The broader business capability affected (e.g., *Online Banking* or *Corporate Email*). This helps determine business impact and visibility.
+        * **Assignment Group:** The team responsible for resolving the ticket (e.g., *Network Support*, *Database Admin*, *Service Desk*).
+        * **Assigned To:** The specific IT agent within that group who owns the ticket's resolution.
 
-### Activity Stream and Communication Logs
+2. **Key Terms and Concepts**: To navigate ServiceNow Incident Management effectively, it is essential to understand its specific terminology and foundational logic.
 
-* **Additional Comments (Customer Visible):** Public-facing updates. Anything typed here is sent directly to the Caller via email or displayed on their Service Portal.
-* **Work Notes:** Technical logs visible only to IT service desk workers and engineers. This is used to document troubleshooting steps, script executions, and internal collaboration.
+    -   **Incident vs. Problem vs. Request**: ServiceNow keeps these modules strictly separated to ensure proper metrics:
 
-### Assignment Matrix
+        * **Incident:** A single disruption or reduction in quality of an IT service (e.g., *"My outlook won't open"*).
+        * **Problem:** The underlying, unknown root cause of one or more incidents (e.g., *"The Exchange mail server crashed"*).
+        * **Service Request:** A routine request for something new, handled via the Service Catalog (e.g., *"I need a new mouse"* or *"Requesting access to a folder"*).
 
-ServiceNow automatically or manually routes incidents using a two-tier ownership structure:
+    -   **The Priority Matrix (Impact vs. Urgency)**: IT agents do not manually assign a ticket's Priority. Instead, ServiceNow dynamically calculates it using an OOTB matrix based on two distinct inputs:
 
-* **Assignment Group:** The team responsible for resolving the ticket (e.g., *Network Support*, *Database Admin*, *Service Desk*).
-* **Assigned To:** The specific IT agent within that group who owns the ticket's resolution.
+        1. **Impact:** The business scope of the disruption (e.g., `1 - Entire Organization`, `2 - Multiple Users/Department`, `3 - Single User`).
+        2. **Urgency:** The time sensitivity of the issue or how long the business can tolerate the delay (e.g., `1 - High/Critical Critical System Down`, `2 - Medium`, `3 - Low`).
 
----
+        $$\text{Impact} \times \text{Urgency} = \text{Priority (P1 to P5)}$$
 
-## 2. Key Terms and Concepts
+        * **P1 (Critical)**: A major outage affecting core infrastructure or revenue streams.
+        * **P1S1 ()**: 
+        * **P1S2 ()**: 
+        * **P1S3 ()**: 
+        * **P1S4 ()**: 
+        * **P2 ()**: 
+        * **P3 ()**: 
+        * **P4 ()**: 
+        * **P5 (Planning)**: A minor issue with an easy workaround affecting a single user.
 
-To navigate ServiceNow Incident Management effectively, it is essential to understand its specific terminology and foundational logic.
+    -   **Major Incident Management (MIM)**: A dedicated workbench and workflow inside ServiceNow triggered when a **P1 or P2** incident occurs. It introduces a specialized role—the **Major Incident Manager**—and opens a collaborative workspace featuring integrated communications, quick-link bridge lines, and targeted impact dashboards to coordinate rapid restoration teams.
 
-### Incident vs. Problem vs. Request
+3. **The Lifecycle States of an Incident**: An incident record transitions through a prescriptive state model as it moves from creation to final archive.
 
-ServiceNow keeps these modules strictly separated to ensure proper metrics:
+    ```
+    [ New ] ➔ [ In Progress ] ➔ [ On Hold ] ➔ [ Resolved ] ➔ [ Closed ]
 
-* **Incident:** A single disruption or reduction in quality of an IT service (e.g., *"My outlook won't open"*).
-* **Problem:** The underlying, unknown root cause of one or more incidents (e.g., *"The Exchange mail server crashed"*).
-* **Service Request:** A routine request for something new, handled via the Service Catalog (e.g., *"I need a new mouse"* or *"Requesting access to a folder"*).
+    ```
 
-### The Priority Matrix (Impact vs. Urgency)
+    -   **New**: The incident has been logged (via Service Portal, inbound email, an integration monitor, or a Service Desk call) but has not yet been triaged or worked on by an engineer.
 
-IT agents do not manually assign a ticket's Priority. Instead, ServiceNow dynamically calculates it using an OOTB matrix based on two distinct inputs:
+    -   **In Progress**: The ticket has been assigned to an engineer, and active investigation or troubleshooting has begun.
 
-1. **Impact:** The business scope of the disruption (e.g., `1 - Entire Organization`, `2 - Multiple Users/Department`, `3 - Single User`).
-2. **Urgency:** The time sensitivity of the issue or how long the business can tolerate the delay (e.g., `1 - High/Critical Critical System Down`, `2 - Medium`, `3 - Low`).
+    -   **On Hold**: Work on the incident is temporarily paused. When a ticket is placed **On Hold**, a mandatory **On Hold Reason** dropdown must be populated. This state pauses specific SLA clocks depending on the selection:
 
-$$\text{Impact} \times \text{Urgency} = \text{Priority (P1 to P5)}$$
+        * **Awaiting Caller:** The engineer is waiting for the user to provide more information, logs, or verify a fix. *(SLA typically pauses)*
+        * **Awaiting Evidence:** The team is waiting for logs or hardware diagnostics to complete.
+        * **Awaiting Problem:** The incident is tied to an active, underlying Problem investigation.
+        * **Awaiting Vendor:** The issue requires a fix or hardware replacement from an external third-party vendor (e.g., Microsoft or AWS).
 
-* **P1 (Critical):** A major outage affecting core infrastructure or revenue streams.
-* **P5 (Planning):** A minor issue with an easy workaround affecting a single user.
+    -   **Resolved**: The engineer has identified and applied a workaround or a permanent fix, and service is restored.
 
-### Major Incident Management (MIM)
+        * **Required Fields:** The agent must provide a **Resolution Code** (e.g., *Solved by Workaround, Solved Permanently, Hardware Replaced*) and detailed **Resolution Notes**.
+        * **The User Clock:** Moving a ticket to Resolved stops the resolution SLA clock and notifies the Caller.
 
-A dedicated workbench and workflow inside ServiceNow triggered when a **P1 or P2** incident occurs. It introduces a specialized role—the **Major Incident Manager**—and opens a collaborative workspace featuring integrated communications, quick-link bridge lines, and targeted impact dashboards to coordinate rapid restoration teams.
+    -   **Closed**: The final state of the record. After an incident sits in *Resolved* for a predefined number of days (typically 5 to 7 days OOTB) without the user contesting the fix, ServiceNow automatically runs a background script to update the state to **Closed**. Once Closed, the record is locked and cannot be reopened; any recurring issues require a new incident ticket.
 
----
+4. **Platform Automation & SLA Integration**: ServiceNow uses background intelligence to ensure incidents are resolved within agreed timeframes.
 
-## 3. The Lifecycle States of an Incident
+    -   **Service Level Agreements (SLAs)**: Every incident evaluates against defined **SLA Definitions (`contract_sla`)** based on its Priority.
 
-An incident record transitions through a prescriptive state model as it moves from creation to final archive.
+        * **SLA Timers:** A P1 incident might trigger a 1-hour resolution SLA, while a P3 might have a 3-day SLA.
+        * **Visual Indicators:** The incident form displays an embedded *Task SLAs* related list showing elapsed time, remaining time, and a color-coded percentage bar indicating how close the ticket is to breaching its contract.
 
-```
-[ New ] ➔ [ In Progress ] ➔ [ On Hold ] ➔ [ Resolved ] ➔ [ Closed ]
+    -   **Knowledge Management Integration**:
 
-```
-
-### 1. New
-
-The incident has been logged (via Service Portal, inbound email, an integration monitor, or a Service Desk call) but has not yet been triaged or worked on by an engineer.
-
-### 2. In Progress
-
-The ticket has been assigned to an engineer, and active investigation or troubleshooting has begun.
-
-### 3. On Hold
-
-Work on the incident is temporarily paused. When a ticket is placed **On Hold**, a mandatory **On Hold Reason** dropdown must be populated. This state pauses specific SLA clocks depending on the selection:
-
-* **Awaiting Caller:** The engineer is waiting for the user to provide more information, logs, or verify a fix. *(SLA typically pauses)*
-* **Awaiting Evidence:** The team is waiting for logs or hardware diagnostics to complete.
-* **Awaiting Problem:** The incident is tied to an active, underlying Problem investigation.
-* **Awaiting Vendor:** The issue requires a fix or hardware replacement from an external third-party vendor (e.g., Microsoft or AWS).
-
-### 4. Resolved
-
-The engineer has identified and applied a workaround or a permanent fix, and service is restored.
-
-* **Required Fields:** The agent must provide a **Resolution Code** (e.g., *Solved by Workaround, Solved Permanently, Hardware Replaced*) and detailed **Resolution Notes**.
-* **The User Clock:** Moving a ticket to Resolved stops the resolution SLA clock and notifies the Caller.
-
-### 5. Closed
-
-The final state of the record. After an incident sits in *Resolved* for a predefined number of days (typically 5 to 7 days OOTB) without the user contesting the fix, ServiceNow automatically runs a background script to update the state to **Closed**. Once Closed, the record is locked and cannot be reopened; any recurring issues require a new incident ticket.
-
----
-
-## 4. Platform Automation & SLA Integration
-
-ServiceNow uses background intelligence to ensure incidents are resolved within agreed timeframes.
-
-### Service Level Agreements (SLAs)
-
-Every incident evaluates against defined **SLA Definitions (`contract_sla`)** based on its Priority.
-
-* **SLA Timers:** A P1 incident might trigger a 1-hour resolution SLA, while a P3 might have a 3-day SLA.
-* **Visual Indicators:** The incident form displays an embedded *Task SLAs* related list showing elapsed time, remaining time, and a color-coded percentage bar indicating how close the ticket is to breaching its contract.
-
-### Knowledge Management Integration
-
-* **Agent Assist:** An embedded contextual search panel on the incident form. As the agent types the short description, ServiceNow automatically surface relevant entries from the **Knowledge Base (KB)**.
-* **Knowledge Creation:** If an engineer resolves a novel or complex issue, they can check a **"Knowledge"** box upon resolution to automatically generate a draft KB article from their resolution notes, streamlining future troubleshooting.
+        * **Agent Assist:** An embedded contextual search panel on the incident form. As the agent types the short description, ServiceNow automatically surface relevant entries from the **Knowledge Base (KB)**.
+        * **Knowledge Creation:** If an engineer resolves a novel or complex issue, they can check a **"Knowledge"** box upon resolution to automatically generate a draft KB article from their resolution notes, streamlining future troubleshooting.

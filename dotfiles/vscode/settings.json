@@ -175,5 +175,7 @@
     "jupyter.disableJupyterAutoStart": true,
     // Enable validating the currently open file on save
     "terraform.experimentalFeatures.validateOnSave": true,
-    "gitlens.rebaseEditor.ordering": "asc"
+    "gitlens.rebaseEditor.ordering": "asc",
+    "chat.viewSessions.orientation": "stacked",
+    "chat.mcp.gallery.enabled": true
 }

@@ -587,9 +587,7 @@
         -   `$ git clean -f` → Remove untracked files from the working tree.
         -   `$ git rm --cached <file_name>` → Unstage the specified file (`file_name`) from Staging Area.
         -   `$ git rm --cached *_initial.py` → Unstage all the files name ended with `_initial.py` from Staging Area.
-        -   `$ git rm -r --cached */migrations/` → Unstage all (`migrations/*`) files recursively from Staging Area.
-
-            -   NOTE: `--cached` option tells Git to only remove the folder from the Git repository's index (staging area) and not from the file system. The files in the folder will no longer be tracked by Git, but they will remain on your local disk.
+        -   `$ git rm -r --cached */migrations/` → Unstage all (`migrations/*`) files recursively from Staging Area. (`--cached` refere to 'Staging Area')
 
         -   <span style="color:orange">How to discard committed files? Extra care should be given using the reset command?</span>
             -   `$ git reset` → Removes all files from the staging area, but keeps the changes in your working directory. It effectively "unstages" all changes.
@@ -691,7 +689,7 @@
         -   `$ git pull --rebase origin cpecs-12147` → fetches the latest changes from `origin/cpecs-12147` and rebases your local branch on top of it (instead of merging).
         -   `$ git pull` → does everything `git fetch` does, **plus it merges** the fetched changes from the remote branch into your current branch (equivalent to `git fetch` followed by `git merge`).
         -   `$ git pull origin master` → fetches the latest changes from the `master` branch on the remote named `origin` and **merges** them into your current local branch.
-        -   `$ git pull upstream Master` → fetches and merges the `Master` branch from the `upstream` remote into your current local branch. - `$ git pull upstream Master` →
+        -   `$ git pull upstream Master` → fetches and merges the `Master` branch from the `upstream` remote into your current local branch.
 
         -   `$ git push origin master` → Pushes the master branch of local repository to master branch of remote repository.
         -   `$ git push -u origin master` → Push the commits from my local master branch to the master branch on the remote repository named origin, and set up tracking information for the master branch on the remote repository.

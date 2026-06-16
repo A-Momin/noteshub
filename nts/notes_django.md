@@ -289,7 +289,6 @@
             ```
         -   This allows you to integrate management commands into your application logic or scripts.
 
-    -   <details><summary style="font-size:20px;color:#C71585">Django Utilities (Django CLI)</summary>
 
         > **Pro Tip:** You can always run `$ python manage.py help` to see all available commands (including those added by third-party apps) or `$ python manage.py help <command>` for detailed documentation on a specific utility.
 
