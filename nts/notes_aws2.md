@@ -2621,8 +2621,8 @@
 
 -   <details><summary style="font-size:25px;color:Orange">AWS Redshift</summary>
 
-    Amazon Redshift is a fully managed, petabyte-scale data warehousing service provided by AWS (Amazon Web Services). It is designed to handle large-scale analytics workloads, allowing users to analyze vast amounts of data quickly and cost-effectively.
-    Amazon Redshift is a fully managed data warehousing service provided by AWS, designed for running analytics queries on large datasets. Here are some key terms and concepts associated with AWS Redshift:
+    > Amazon Redshift is a fully managed, petabyte-scale data warehousing service provided by AWS (Amazon Web Services). It is designed to handle large-scale analytics workloads, allowing users to analyze vast amounts of data quickly and cost-effectively.
+    > Amazon Redshift is a fully managed data warehousing service provided by AWS, designed for running analytics queries on large datasets. Here are some key terms and concepts associated with AWS Redshift:
 
     -   **Cluster**: A cluster is the main computing and storage infrastructure in Amazon Redshift. It consists of one or more compute nodes (instances) and an optional leader node. The leader node manages query execution and optimization, while the compute nodes store data and perform parallel query processing.
 

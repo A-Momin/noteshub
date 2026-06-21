@@ -213,7 +213,7 @@
 
     ##### Rehydration
 
-    In the context of AWS, **rehydration** typically refers to the process of **restoring or reinitializing data or resources** that were previously "dried out" or removed. This can apply to various AWS services where data or configurations might have been removed, suspended, or cached, and now need to be **reloaded or reactivated**. Common contexts where **rehydration** might be used in AWS:
+    > In the context of AWS, **rehydration** typically refers to the process of **restoring or reinitializing data or resources** that were previously "dried out" or removed. This can apply to various AWS services where data or configurations might have been removed, suspended, or cached, and now need to be **reloaded or reactivated**. Common contexts where **rehydration** might be used in AWS:
 
     1. **Elastic Load Balancer (ELB)**: If an application or service experiences changes or updates, **rehydration** can refer to **restoring the configuration** or applying the latest configuration to resources like load balancers or target groups.
 
@@ -225,6 +225,29 @@
     3. **Elasticache**: For services like **Amazon ElastiCache**, **rehydration** may refer to **restoring the cache** after it is invalidated or cleared, either automatically or through manual intervention.
     4. **Data Pipelines**: In cases where there are **data transformations or ETL (Extract, Transform, Load) processes** in AWS (e.g., with AWS Glue), **rehydration** might refer to **reloading or refreshing data** from the source system back into the pipeline after a failure or cleanup event.
     5. **General Example**: If a **serverless function** was previously paused or removed and then restarted, rehydration would be the process of bringing the function back into a working state.
+
+    ##### Pave/Repave
+
+    > In the world of DevOps, AWS, and Terraform, **"Pave"** and **"Repave"** are concepts deeply tied to **Infrastructure as Code (IaC)** and the philosophy of **Immutable Infrastructure**. Instead of fixing servers or infrastructure when they drift or break, you completely tear them down and rebuild them from scratch.
+
+    -   **Paving (The Initial Build)**: **Paving** is the act of provisioning your infrastructure for the very first time. You are laying down the foundation, much like paving a brand-new road.
+
+        * **In Terraform:** This is when you write your initial `.tf` files (defining VPCs, EC2 instances, RDS databases, etc.) and run `terraform apply`. Terraform talks to the AWS APIs to build your environment from nothing.
+        * **The Outcome:** You get a pristine, known, and version-controlled environment in AWS.
+
+    -   **Repaving (The Lifecycle & Healing)**: **Repaving** is the practice of periodically destroying existing infrastructure and replacing it with a brand-new copy generated from your code.
+
+        > Instead of patching an EC2 instance that has an outdated OS or a misconfigured setting, you kill it and let Terraform/AWS spin up a fresh one. There are two main reasons to repave in AWS:
+
+        -   **Fixing Configuration Drift (Self-Healing)**: If someone logs into the AWS Console and manually changes a security group rule (known as **Configuration Drift**), your infrastructure is no longer in sync with your code.
+
+            * **The Repave:** Running `terraform apply` will detect the manual change and revert the AWS infrastructure back to exactly what is defined in your code.
+
+        -   **Routine Maintenance & Security (Immutable Infrastructure)**: Many advanced engineering teams repave their entire application infrastructure on a schedule (e.g., every week or even every deployment).
+
+            * **The Repave:** Triggering a CI/CD pipeline that runs `terraform destroy` (or uses rolling updates like AWS Auto Scaling Blue/Green deployments) and then `terraform apply`.
+            * **Why do this?** It guarantees that no unauthorized changes, malware, or "temporary fixes" survive. If a server is compromised or leaking memory, a repave wipes the slate clean.
+
 
     ##### Bastion Host (Jump Box)
 

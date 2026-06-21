@@ -595,16 +595,16 @@
 
         -   **Options** of Relationship Fields:
 
-            -   `related_name`:
-            -   `ForeignKey.related_query_name`: The name to use for the reverse filter name from the target model. It defaults to the value of `related_name` or `default_related_name` if set, otherwise it defaults to the name of the model.
-            -   `limit_choices_to`:
-            -   `ForeignKey.to_field`: The field on the related object that the relation is to. By default, Django uses the primary key of the related object. If you reference a different field, that field must have `unique=True`.
-            -   `symmetrical`:
-            -   `through`:
-            -   `through_fields`:
-            -   `db_table`:
-            -   `db_constraint`:
-            -   `swappable`:
+            -   `related_name`: the name used to access related objects from the opposite side of the relationship.
+            -   `ForeignKey.related_query_name`: a filter name used when searching from the related object back to this model.
+            -   `limit_choices_to`: restricts which related objects can be selected in forms or the admin.
+            -   `ForeignKey.to_field`: uses a different unique field on the related object instead of its default ID.
+            -   `symmetrical`: for self-referential many-to-many relationships, controls whether the relation is mutual.
+            -   `through`: specifies a custom intermediate table used to store many-to-many relationships.
+            -   `through_fields`: defines which two fields on the intermediate table connect the two related models.
+            -   `db_table`: sets the actual database table name for the relationship table.
+            -   `db_constraint`: turns the database-level foreign key constraint on or off.
+            -   `swappable`: allows this relationship to be replaced by another model at install time.
 
     -   **Options** of Fields: In Django, a Model represents a table in a database and its fields represent columns. Each field in a Django Model can have various options (parameters) to customize its behavior. Here are some commonly used Django model field options:
 
@@ -665,42 +665,40 @@
             class Meta:
                 unique_together = ('name', 'category')
         ```
-
     -   `Verbose Name and Plural Name`: You can provide human-readable names for the model and its plural form using `verbose_name` and `verbose_name_plural` attributes. By default, Django uses the class name and adds an 's' for the plural form.
     -   `App Label`: The Meta class allows you to specify the label of the app using `app_label` attribute to which the model belongs. This can be useful when dealing with models from different apps.
 
     > The Meta class provides a way to configure various aspects of a Django model, including database-level options, permissions, and human-readable names. It helps in customizing the behavior and presentation of the model to fit the specific requirements of your project.
 
     -   **Model Meta options**:
-
-        -   `verbose_name`
-        -   `verbose_name_plural`
-        -   `ordering`
-        -   `abstract`
-        -   `app_label`
-        -   `base_manager_name`
-        -   `db_table`
-        -   `Table names`
-        -   `db_tablespace`
-        -   `default_manager_name`
-        -   `default_related_name`
-        -   `get_latest_by`
-        -   `managed`
-        -   `order_with_respect_to`
-        -   `permissions`
-        -   `default_permissions`
-        -   `proxy`
-        -   `required_db_features`
-        -   `required_db_vendor`
-        -   `select_on_save`
-        -   `indexes`
-        -   `unique_together`
-        -   `index_together`
-        -   `constraints`
+        -   `verbose_name`: human-readable singular name for the model.
+        -   `verbose_name_plural`: human-readable plural name for the model.
+        -   `ordering`: default ordering for querysets on this model.
+        -   `abstract`: marks the model as an abstract base class.
+        -   `app_label`: overrides the application label used for the model.
+        -   `base_manager_name`: manager used by inheritance and related queries.
+        -   `db_table`: custom database table name for the model.
+        -   `Table names`: notes how Django derives table names for models.
+        -   `db_tablespace`: database tablespace for the model's table.
+        -   `default_manager_name`: name of the default manager for the model.
+        -   `default_related_name`: default reverse accessor name for relations.
+        -   `get_latest_by`: field used by `latest()` / `earliest()` methods.
+        -   `managed`: whether Django should manage the database table.
+        -   `order_with_respect_to`: preserves ordering relative to another model.
+        -   `permissions`: custom permission tuples for the model.
+        -   `default_permissions`: default built-in permissions created for the model.
+        -   `proxy`: marks the model as a proxy model without a new table.
+        -   `required_db_features`: require DB features before using the model.
+        -   `required_db_vendor`: require a specific DB backend vendor.
+        -   `select_on_save`: force a select before saving model instances.
+        -   `indexes`: database indexes to create for the model.
+        -   `unique_together`: legacy tuple defining composite uniqueness.
+        -   `index_together`: legacy tuple defining composite indexes.
+        -   `constraints`: database constraints such as UniqueConstraint.
 
         -   **Read-only Meta attributes**:
-            -   `label`
-            -   `label_lower`
+            -   `label`: read-only model label (app_label.model_name).
+            -   `label_lower`: read-only lowercase model label.
 
     #### [Model Inheritance Options](https://www.youtube.com/watch?v=4Xag2FzmN60&list=PLOLrQ9Pn6cazjoDEnwzcdWWf4SNS0QZml&index=9)
 
