@@ -545,17 +545,17 @@
     ##### [git stash](https://www.youtube.com/watch?v=fXGug4itlTk)
 
     -   `git stash` temporarily shelves (or stashes) changes you've made to your working copy so you can work on something else, and then come back and re-apply them later on. Stashing is handy if you need to quickly switch context and work on something else, but you're mid-way through a code change and aren't quite ready to commit.
-    -   You cannot directly apply a stash by its name — Git identifies stashes by their index (like stash@{0}), even if you gave them a custom message.
+    -   You cannot directly apply a stash by its name — Git identifies stashes by their index (like `stash@{0}`), even if you gave them a custom message.
+
     -   `$ git stash show` → show the content of your most recent stash.
+    -   `$ git stash show stash@{n}` → show the content of specified stash. (`n` is a integer and specefying stash-index)
     -   `$ git stash list` → List out all your repository's stashes.
-    -   `git stash show stash@{index}`
     -   `$ git stash` → stash uncommited local changes
     -   `$ git stash push -m stash_name` → name and retrieve a Git stash by the name?
-    -   `$ git stash save "my_stash_name"` → name and retrieve a Git stash by the name? (deprecated since v2.16)
+    -   `$ git stash apply stash@{n}` → To apply (bring back) specified stash. You cannot directly apply a stash by its name.
+    -   `$ git stash pop stash@{n}` → pop (bring back and drop) specified stash - see `git stash list` 
     -   `$ git stash pop` → Popping your stash removes the changes from your stash and reapplies them to your working copy.
-    -   `$ git stash pop stash@{n}` → pop specified stash - see `git stash list` (`n` is a integer and specefying index)
-    -   `$ git stash apply stash@{0}` →
-    -   `$ git stash drop stash@{n}` → drop specific stash - see `git stash list` (`n` is a integer)
+    -   `$ git stash drop stash@{n}` → drop specific stash.
     -
 
     ##### [Resetting, Reverting, and Checking Out](https://www.atlassian.com/git/tutorials/resetting-checking-out-and-reverting)
