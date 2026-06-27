@@ -554,13 +554,11 @@
 
 -   <details><summary style="font-size:25px;color:Orange">ECS</summary>
 
-    Amazon Elastic Container Service (**ECS**) is a fully managed container orchestration service that makes it easy for you to deploy, manage, and scale Docker containers on AWS. It abstracts away the complexity of managing the underlying infrastructure, allowing you to focus on building and running your applications. ECS eliminates the need to install, operate, and scale your own container management infrastructure.
-
-    AWS ECS offers different ways to run your containers, catering to various needs and levels of control:
+    > Amazon Elastic Container Service (**ECS**) is a fully managed container orchestration service that makes it easy for you to deploy, manage, and scale Docker containers on AWS. It abstracts away the complexity of managing the underlying infrastructure, allowing you to focus on building and running your applications. ECS eliminates the need to install, operate, and scale your own container management infrastructure. AWS ECS offers different ways to run your containers, catering to various needs and levels of control:
 
     -   <details><summary style="font-size: 25px;color:#C71585">Launch Types or Capacity Providers</summary>
 
-        Amazon Elastic Container Service (ECS) offers two primary **Compute Options** (often referred to as **Launch Types** or **Capacity Providers**) for running your containerized workloads: **AWS Fargate** (Serverless) and **Amazon EC2** (Customer-Managed). The choice depends heavily on your team's operational model, control requirements, and cost optimization strategy.
+        > Amazon Elastic Container Service (ECS) offers two primary **Compute Options** (often referred to as **Launch Types** or **Capacity Providers**) for running your containerized workloads: **AWS Fargate** (Serverless) and **Amazon EC2** (Customer-Managed). The choice depends heavily on your team's operational model, control requirements, and cost optimization strategy.
 
         1. **AWS Fargate (Serverless Launch Type)**: **AWS Fargate** is a **serverless compute engine** for containers that removes the need for you to provision, configure, or manage the underlying virtual machines (EC2 instances). You simply define the CPU and memory requirements for your containerized application, and AWS handles the rest.
 
@@ -596,10 +594,9 @@
 
         -   **Capacity Providers**: AWS recommends using **Capacity Providers** as the modern way to manage compute in an ECS cluster, allowing you to define the infrastructure capacity in a flexible way and use both Fargate and EC2 capacity within the same cluster.
 
+            -   Capacity Providers enable **automatic managed scaling** for EC2, and allow ECS to use a **capacity provider strategy** to determine which capacity type (Fargate or EC2) to use when placing a new task.
             -   **Fargate Capacity Provider:** Points to the AWS Fargate infrastructure.
             -   **EC2 Capacity Provider:** Points to an Auto Scaling Group (ASG) of EC2 instances that you manage. ECS automatically manages the scaling of the ASG and the registration of instances into the cluster.
-
-            Capacity Providers enable **automatic managed scaling** for EC2, and allow ECS to use a **capacity provider strategy** to determine which capacity type (Fargate or EC2) to use when placing a new task.
 
             | Feature               | AWS Fargate                                  | Amazon EC2                                              |
             | :-------------------- | :------------------------------------------- | :------------------------------------------------------ |
@@ -753,7 +750,7 @@
 
     -   <details><summary style="font-size: 25px;color:#C71585">Task Definition (The Blueprint)</summary>
 
-        The **Task Definition** acts as a blueprint or template for your application. It is a JSON file that specifies all the necessary configurations for one or more containers that should run together as a single application unit.
+        > The **Task Definition** acts as a blueprint or template for your application. It is a JSON file that specifies all the necessary configurations for one or more containers that should run together as a single application unit.
 
         -   The **Docker images** to use for each container.
         -   **CPU and memory** allocation for the entire task and for individual containers.
@@ -777,7 +774,7 @@
 
     -   <details><summary style="font-size: 25px;color:#C71585">Service (The Manager) </summary>
 
-        An **ECS Service** is a mechanism used to manage **long-running, highly available** applications. It ensures that a specified number of Tasks (instances of a Task Definition) are always running in the cluster.
+        > An **ECS Service** is a mechanism used to manage **long-running, highly available** applications. It ensures that a specified number of Tasks (instances of a Task Definition) are always running in the cluster.
 
         -   **Core Responsibilities:**
             -   **Maintenance and Self-Healing:** The Service acts as a scheduler and manager. If a Task fails, stops, or becomes unhealthy for any reason, the Service automatically replaces it to maintain the **Desired Count** of running Tasks.
@@ -797,7 +794,7 @@
 
     -   <details><summary style="font-size: 25px;color:#C71585">Cluster</summary>
 
-        A **Cluster** is a logical grouping of the resources that run your containerized applications. It acts as the organizational boundary for your ECS components.
+        > A **Cluster** is a logical grouping of the resources that run your containerized applications. It acts as the organizational boundary for your ECS components.
 
         -   **Logical Grouping:** It groups the compute capacity (either Amazon EC2 instances or AWS Fargate) on which your tasks and services run.
         -   **Availability:** Clusters are region-specific, but they facilitate high availability by allowing tasks to be spread across multiple **Availability Zones** within that region.
@@ -819,7 +816,7 @@
 
     -   <details><summary style="font-size: 25px;color:#C71585">Task Placement Constraints</summary>
 
-        **Constraints** are _hard-and-fast rules_ used to filter the list of eligible Container Instances. An instance must meet all specified constraints to be considered for task placement.
+        > **Constraints** are _hard-and-fast rules_ used to filter the list of eligible Container Instances. An instance must meet all specified constraints to be considered for task placement.
 
         | Constraint             | Description                                                                        | Use Case                                                                                   |
         | :--------------------- | :--------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------- |
@@ -830,7 +827,7 @@
 
     -   <details><summary style="font-size: 25px;color:#C71585">Task Placement Strategies</summary>
 
-        **Strategies** are _algorithms_ used to select the final instance from the list of eligible instances remaining after the constraints have been applied. They define _how_ tasks are distributed.
+        > **Strategies** are _algorithms_ used to select the final instance from the list of eligible instances remaining after the constraints have been applied. They define _how_ tasks are distributed.
 
         | Strategy      | Goal                                                                                                             | Use Case                                                                                                   |
         | :------------ | :--------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- |
@@ -842,7 +839,7 @@
 
     -   <details><summary style="font-size: 25px;color:#C71585">Capacity Providers</summary>
 
-        **Capacity Providers** simplify the management and scaling of the compute capacity that your ECS tasks use. They automate the process of provisioning and scaling the underlying infrastructure (EC2 instances or Fargate).
+        > **Capacity Providers** simplify the management and scaling of the compute capacity that your ECS tasks use. They automate the process of provisioning and scaling the underlying infrastructure (EC2 instances or Fargate).
 
         -   **Launch Type Abstraction:** They standardize how ECS interacts with the two main compute options:
             1.  **EC2 Auto Scaling Group:** Manages scaling for EC2 capacity. The Capacity Provider ensures the Auto Scaling Group scales _in_ and _out_ based on task demand.
@@ -851,7 +848,7 @@
             -   **Base:** The minimum number of tasks to run on a specific capacity provider.
             -   **Weight:** The relative portion of the _remaining_ desired task count that should be placed on a capacity provider.
 
-        Capacity Providers shift the focus from managing the compute layer to simply defining the **desired capacity ratio** for your application.
+        > Capacity Providers shift the focus from managing the compute layer to simply defining the **desired capacity ratio** for your application.
 
         </details>
 

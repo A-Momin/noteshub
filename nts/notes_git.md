@@ -14,11 +14,6 @@
 
     #### KEY WORDS:
 
-    -   **Repository (Repo)**:
-
-        -   A Git repository is a collection of files and directories along with the version history of those files.
-        -   There are two types of repositories: local (on your computer) and `remote` (typically hosted on a server).
-
     -   **Working Directory**:
 
         -   The working directory is the directory on your local machine where you edit, create, delete, and organize files.
@@ -49,58 +44,6 @@
     -   **Master**:
 
         -   The default branch name in Git is master. For both `remote` and local repository.
-
-    -   **Commit**:
-
-        -   A commit is a snapshot of the project's state at a particular point in time.
-        -   Each commit has a unique identifier (a hash) and includes changes made to files since the last commit.
-        -   Commits create a chronological history of your project. - `$ git pull --ff-only` - `$ git config pull.ff only` → Set Fast-Forward Only as Default
-
-    -   **Clone**:
-
-        -   Cloning is the process of creating a copy of a `remote` repository on your local machine.
-        -   It sets up a connection between your local repository and the `remote` repository, enabling you to fetch and push changes.
-
-    -   **Branch**:
-
-        -   A branch is a separate line of development within a Git repository.
-        -   Branches allow multiple users to work on different features or fixes simultaneously without affecting each other's work.
-        -   The default branch is usually called master or main.
-
-    -   **Checkout**:
-
-        -   Checkout: Switching between different commit, branches or tags.
-        -   Checkout a Branch means changing Head Pointer from current branch to the branch to be checkedout.
-
-    -   **Pull**:
-
-        -   Pulling refers to fetching changes from a `remote` repository and integrating them into your local branch.
-        -   It combines the git fetch and git merge commands into a single operation.
-
-    -   **Push**:
-
-        -   Pushing is the process of uploading your local commits to a `remote` repository.
-        -   It makes your changes available to others and updates the `remote` repository's history.
-
-    -   **Merge**:
-
-        -   Merging is the process of combining changes from one branch into another.
-        -   It is often used to integrate features or bug fixes from one branch into the main branch.
-
-    -   **Conflict**:
-
-        -   A conflict occurs when Git cannot automatically merge changes because there are conflicting changes in the same part of a file.
-        -   Conflicts must be manually resolved by the user before proceeding with the merge or commit.
-
-    -   **Pull Request (PR)**:
-
-        -   A pull request is a feature commonly found on platforms like GitHub and GitLab.
-        -   It allows developers to propose changes to a project and request that those changes be reviewed and merged into the main branch.
-
-    -   **Fork**:
-
-        -   Forking is the process of creating a personal copy of a repository in which you can make changes without affecting the original repository.
-        -   It's commonly used for contributing to open-source projects.
 
     -   **Tag**: A **Tag** is a permanent "bookmark" pointing to a specific point in your repository's history. While branches move every time you add a new commit, a tag **stays put**. It is typically used to mark specific release points (like **v1.0** or **v2.1**).
 
@@ -137,6 +80,39 @@
 
     #### KEY Terminology
 
+    -   **HEAD** Pointer: To understand Git, you can think of your project's history as a timeline of commits (snapshots of your code), and the **HEAD** pointer as a **"You Are Here"** marker on a map.
+
+        > It is a reference that tells Git which commit, and which branch, you are currently working on in your local workspace.
+
+        -   **How HEAD Works Locally**: In almost all cases, HEAD points directly to a **branch name** (like `main` or `feature-login`), and that branch name points to the **latest commit** on that branch.
+
+            ```
+            [Commit A] ───> [Commit B] ───> [Commit C]
+                                            ▲
+                                            │
+                                        [  main  ]  <─── [ HEAD ]
+
+            ```
+
+            -   When you perform common Git actions, HEAD moves automatically:
+
+                * **Making a new commit:** When you run `git commit`, Git records a new snapshot. Your active branch moves forward to this new commit, and **HEAD moves right along with it**.
+                * **Switching branches:** When you run `git checkout feature-abc` or `git switch feature-abc`, HEAD detaches from your old branch and hooks onto the new one. Git immediately updates the files in your editor to match what that branch looks like.
+
+        -   **What is a "Detached HEAD"?**: Sometimes you want to look at an old version of your code, so you checkout a specific commit hash instead of a branch name (e.g., `git checkout a1b2c3d`).
+
+            > When you do this, Git will give you a warning that you are in a **"detached HEAD" state**. This simply means:
+
+            * HEAD is now pointing **directly to a specific commit** instead of pointing to a branch name.
+            * **The Risk:** You can look around and even make experimental changes here. However, if you make new commits while in a detached HEAD state, those commits aren't saved to any branch. If you switch back to `main`, those experimental commits will become "orphaned" and very difficult to find again.
+            * *How to fix it:* If you made changes in a detached HEAD state that you want to keep, just run `git switch -c my-new-experimental-branch` to create a brand new branch right where HEAD is sitting.
+
+        -   **The GitHub Context: Local vs. Remote HEAD**: Because Git is entirely decentralized, your **local HEAD** and GitHub’s **remote HEAD** operate independently until you sync them.
+
+            * **Diverged HEADs:** You might be working on your laptop and make two new commits on your local `main` branch. Your local HEAD has moved forward. Meanwhile, on GitHub, the `main` branch is still sitting on the older commit.
+            * **Syncing with Push/Pull:** When you run `git push`, you send your new commits to GitHub and tell the remote repository to advance its branch pointer to match your local HEAD.
+            * **The Default Branch:** When you visit a repository on GitHub's website, the files you see on the main screen are determined by GitHub's `HEAD` definition for the default branch (usually `main` or `master`).
+
     -   **Tracking** and **Upstream**: In Git, "tracking" and "upstream" are the glue that connects your local environment to a remote server like GitHub. Without them, Git wouldn't know which branch on your computer belongs to which branch on the internet.
 
         1. **What is an "Upstream" Branch?**: An **upstream branch** is the authoritative version of a branch hosted on a remote repository (usually named `origin`). 
@@ -167,6 +143,44 @@
             | **Tracking** | The ongoing connection between local and remote.     | "My local branch is **tracking** origin/main."          |
             | **Origin**   | The default nickname for your GitHub repository URL. | "Push my code to **origin**."                           |
 
+    -   **Soft**/**Hard Reset**: A `reset` is a powerful tool used to undo changes by moving your current branch head to a specific commit.
+
+        > To understand the difference between a **Soft** and a **Hard** reset, you first need to understand the three distinct trees or areas that Git manages on your local machine:
+
+        1. **The Commit History (HEAD):** The timeline of recorded snapshots.
+        2. **The Staging Area (Index):** The launchpad where files are prepared before a commit.
+        3. **The Working Directory:** The actual files you are editing on your computer.
+
+        -   **1. Git Reset --soft (Keep Your Work)**: A **Soft Reset** moves the `HEAD` pointer back to a previous commit, but it **does not touch your files**.
+
+            * **What it does:** It undoes the *commit* action itself, but keeps all the changes you made staged and ready to go.
+            * **The Result:** Your Working Directory and Staging Area remain exactly as they were. If you run `git status` right after, you will see your changes sitting in green, ready to be recommitted.
+            * **Best Used For:** Squashing recent commits or fixing a typo in your last commit message. For example, if you made three messy commits and want to combine them into one clean commit:
+            ```bash
+            git reset --soft HEAD~3
+            git commit -m "One clean commit message"
+
+            ```
+
+        -   **2. Git Reset --hard (Destroy Your Work)**: A **Hard Reset** is the nuclear option. It moves the `HEAD` pointer back to a previous commit and **completely overwrites everything else**.
+
+            * **What it does:** It rolls back the Commit History, wipes out the Staging Area, and overwrites your Working Directory to match that exact past commit perfectly.
+            * **The Result:** Any uncommitted changes, staged files, or commits made after that target commit are completely erased from your workspace.
+            * **Best Used For:** Throwing away bad ideas and starting over. If you started hacking on a feature, completely broke the code, and just want to reset your local environment back to exactly how it looked at the last successful commit:
+            ```bash
+            git reset --hard HEAD
+
+            ```
+
+        -   **The GitHub Context: When to Reset (and When Not To)**: Because Git is local and GitHub is remote, using `git reset` introduces a golden rule regarding collaboration:
+
+            > ⚠️ **Never perform a hard reset on a commit that has already been pushed to a shared GitHub repository.**
+
+            * **The Local Problem:** If you do a hard reset locally and try to run a standard `git push`, GitHub will reject it. This happens because your local history is now *behind* the remote history.
+            * **The Nuclear Push:** To force GitHub to accept your reset, you would have to use `git push --force`.
+            * **The Team Consequence:** If your teammates have already pulled down those commits, forcing a rewrite of the GitHub history will break *their* local repositories, causing massive merge conflicts and headaches for the team.
+
+            **The Alternative:** If you need to undo a commit that is already public on GitHub, use **`git revert <commit-id>`** instead. Revert doesn't rewrite history; it creates a brand new commit that does the exact opposite of the bad commit, making it safe for collaboration.
 
     -   **Fast-forward merge**: Fast-forward merge is the simplest and cleanest way to combine two branches. It occurs when the base branch (like main) hasn't had any new commits since you created your feature branch. Instead of creating a new "merge commit," Git simply moves the pointer of your current branch forward to the latest commit of the feature branch.
 
@@ -341,7 +355,6 @@
                 * **VS Code:** Has a built-in "Merge Editor" with easy-to-click buttons.
                 * **GitKraken:** A visual GUI that makes dragging and dropping changes very intuitive.
                 * **`git mergetool`:** A command that launches external software like Meld, KDiff3, or P4Merge.
-
 
     -   **ISO (International Organization for Standardization)**:
 

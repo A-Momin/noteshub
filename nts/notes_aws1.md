@@ -2605,7 +2605,7 @@
         - **Licensing:** Some options require additional licensing fees or specific DB engine versions.
         - **Compatibility:** Option groups are engine-specific (e.g., MySQL options can't be used with PostgreSQL).
         - **Management:** Can be created, modified, and associated with DB instances via the AWS Management Console, CLI, or API.
-        - **Backup and Restore:** Options are included in DB snapshots and restored with the instance.
+        - **Backup and Restore:** Options are included in DB snapshots and restored with the instance
         - **Limitations:** Not all options are available for all DB engines or instance classes; some may require specific configurations.
 
     7.   **Parameter Groups:** Act as a "container" for engine configuration values, allowing you to customize database behavior without directly editing configuration files like `my.cnf` or `postgresql.conf`. Instead, you modify parameters in the Parameter Group, which are then applied to the DB instance. Key details include:

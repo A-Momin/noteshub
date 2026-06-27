@@ -118,7 +118,7 @@ alias ntdatabricks="code $NTHUB/nts/notes_databricks.md"
 alias ntcb="code $NTHUB/nts/notes_cybersecurity.md"
 alias ntdos="code $NTHUB/nts/notes_windows.md"
 
-alias ntcoltl="code $NTHUB/nts/notes_colaboration_tools.md"
+alias ntcolabtl="code $NTHUB/nts/notes_colaboration_tools.md"
 alias ntwbapi="code $NTHUB/nts/notes_web_api.md"
 alias ntsysdgn="code $NTHUB/nts/notes_system_designs.md"
 alias ntserverless="code $NTHUB/nts/notes_serverless.md"

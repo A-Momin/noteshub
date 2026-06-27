@@ -353,8 +353,21 @@
 
 -   <details><summary style="font-size:25px;color:Orange">VS Code Agentic Development Shortcuts</summary>
 
-    -   `/` -> 
-    -   `#` -> 
+    -   `/` -> Commands
+    -   `#` -> Add Context
+    -   `@` -> Extensions
+
+    -   Participents
+    -   Agent Session
+    -   Tools
+
+    | MacOS Commands | Achivements              | Windows Commands |
+    | :------------- | :----------------------- | :--------------- |
+    | ``             | Run propmt in new Window | `Win + ⌥ + /`    |
+    | ``             | Generate prompt          | `⌥ + Win + /`    |
+    | ``             |                          | ----             |
+    | ----           | ----                     | ----             |
+
 
     </details>
 

@@ -177,5 +177,7 @@
     "terraform.experimentalFeatures.validateOnSave": true,
     "gitlens.rebaseEditor.ordering": "asc",
     "chat.viewSessions.orientation": "stacked",
-    "chat.mcp.gallery.enabled": true
+    "chat.mcp.gallery.enabled": true,
+    "gitlens.ai.model": "vscode",
+    "gitlens.ai.vscode.model": "copilotcli:"
 }
