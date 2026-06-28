@@ -3167,13 +3167,23 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Route-53</summary>
 
-    AWS Route 53 is a highly available and scalable Domain Name System (DNS) web service provided by Amazon Web Services (AWS). It is designed to route end-user requests efficiently by translating domain names into numerical IP addresses used for internet communication.
+    > AWS Route 53 is a highly available and scalable Domain Name System (DNS) web service provided by Amazon Web Services (AWS). It is designed to route end-user requests efficiently by translating domain names into numerical IP addresses used for internet communication.
 
-    #### Hosted Zone
+    -   **How AWS Route 53 Works**:
+        -   **Step 1: Domain Registration (Optional)**: Register a domain using AWS Route 53 or transfer an existing domain.
+        -   **Step 2: Create a Hosted Zone**: Create either a **Public** or **Private Hosted Zone** for managing DNS records.
+        -   **Step 3: Configure DNS Records**: Add **A, CNAME, MX, TXT, or Alias Records** to route traffic appropriately.
+        -   **Step 4: Update Name Servers (If Using an External Registrar)**: Update the domain’s **NS Records** to point to AWS Route 53.
+        -   **Step 5: Configure Routing Policies**: Select the appropriate routing policy (e.g., Simple, Weighted, Failover).
+        -   **Step 6: Set Up Health Checks (Optional)**: Monitor application availability and enable failover mechanisms.
+        -   **Step 7: Test and Validate**: Verify domain resolution using tools like `nslookup`, `dig`, or AWS console.
 
-    A **Hosted Zone** is an essential component of DNS (Domain Name System), specifically within AWS Route 53. It represents a container for managing DNS records associated with a specific domain or subdomain.
+    -   **Domain Name Registration**:
+        -   Allows users to purchase and manage domain names directly from AWS.
+        -   Supports automatic DNS configuration with AWS-hosted services.
+        -   Provides domain transfer and renewal options.
 
-    1. **Hosted Zone**
+    -   **Hosted Zone**: A **Hosted Zone** is an essential component of DNS (Domain Name System), specifically within AWS Route 53. It represents a container for managing DNS records associated with a specific domain or subdomain.
 
         - A Hosted Zone is an AWS Route 53 configuration that holds DNS records for a domain (e.g., `example.com`).
         - It acts as a DNS database, defining how traffic is routed for that domain.
@@ -3192,7 +3202,7 @@
             - Used when instances inside a VPC need custom domain names.
             - Example: `internal.example.com` resolves to private EC2 instances.
 
-    2. **Hosted Zone Components**: Each Hosted Zone contains:
+    -   **Hosted Zone Components**: Each Hosted Zone contains:
 
         - **DNS Records**: A DNS record is a structured entry in the DNS database that defines how to handle queries for a domain or subdomain. It Controls how domain names are mapped to IPs or AWS services.
 
@@ -3203,103 +3213,78 @@
             - `TXT Record` → Stores arbitrary text data, often used for verification and security keys.
             - `NS Record` → **Name Server Record** Assigns AWS Route 53 name servers for the domain. These servers are responsible to route your traffic according to DNS Records.
             - `SOA Record` → **Start of Authority Record** defines essential details about the domain, including primary name server and **TTL** (Time-To-Live).
+            - **Alias Records**: While standard DNS only permits pointing a name to a hardcoded string or IP address, Route 53 includes a highly specialized internal component: Alias Records.
+                - Maps domain names to AWS resources like ELB, CloudFront, and S3.
+                - Unlike CNAME records, alias records work at the root domain level.
 
-        - **Alias Records**:
+            - **Sample Route-53 DNS Record Set**:
 
-            - Maps domain names to AWS resources like ELB, CloudFront, and S3.
-            - Unlike CNAME records, alias records work at the root domain level.
+                | **Record Name**         | **Routing Policy**   | **Differentiator**        | **Type**  | **Alias** | **Value / Route traffic to**            |
+                | ----------------------- | -------------------- | ------------------------- | --------- | --------- | --------------------------------------- |
+                | `example.com.`          | Simple               | —                         | A         | No        | `192.0.2.10`                            |
+                | `www.example.com.`      | Simple               | —                         | CNAME     | No        | `example.com.`                          |
+                | `api.example.com.`      | Weighted             | Weight: 80                | A         | No        | `203.0.113.5`                           |
+                | `api.example.com.`      | Weighted             | Weight: 20                | A         | No        | `203.0.113.6`                           |
+                | `cdn.example.com.`      | Simple (Alias)       | CloudFront Distribution   | A (Alias) | Yes       | `d1234abcd.cloudfront.net`              |
+                | `static.example.com.`   | Simple (Alias)       | S3 Static Website Hosting | A (Alias) | Yes       | `s3-website-us-east-1.amazonaws.com`    |
+                | `example.com.`          | Simple               | —                         | TXT       | No        | `"v=spf1 include:_spf.google.com ~all"` |
+                | `us.example.com.`       | Geolocation          | Location: US              | A         | No        | `192.0.2.55`                            |
+                | `eu.example.com.`       | Geolocation          | Location: Europe          | A         | No        | `192.0.2.66`                            |
+                | `failover.example.com.` | Failover (Primary)   | Failover: Primary         | A         | No        | `198.51.100.10`                         |
+                | `failover.example.com.` | Failover (Secondary) | Failover: Secondary       | A         | No        | `198.51.100.20`                         |
+                | `latency.example.com.`  | Latency-based        | Region: us-east-1 latency | A         | No        | `192.0.2.101`                           |
 
-        - **Sample Route 53 DNS Record Set**:
+        -   **Routing Policies**:
 
-            | **Record Name**         | **Routing Policy**   | **Differentiator**        | **Type**  | **Alias** | **Value / Route traffic to**            |
-            | ----------------------- | -------------------- | ------------------------- | --------- | --------- | --------------------------------------- |
-            | `example.com.`          | Simple               | —                         | A         | No        | `192.0.2.10`                            |
-            | `www.example.com.`      | Simple               | —                         | CNAME     | No        | `example.com.`                          |
-            | `api.example.com.`      | Weighted             | Weight: 80                | A         | No        | `203.0.113.5`                           |
-            | `api.example.com.`      | Weighted             | Weight: 20                | A         | No        | `203.0.113.6`                           |
-            | `cdn.example.com.`      | Simple (Alias)       | CloudFront Distribution   | A (Alias) | Yes       | `d1234abcd.cloudfront.net`              |
-            | `static.example.com.`   | Simple (Alias)       | S3 Static Website Hosting | A (Alias) | Yes       | `s3-website-us-east-1.amazonaws.com`    |
-            | `example.com.`          | Simple               | —                         | TXT       | No        | `"v=spf1 include:_spf.google.com ~all"` |
-            | `us.example.com.`       | Geolocation          | Location: US              | A         | No        | `192.0.2.55`                            |
-            | `eu.example.com.`       | Geolocation          | Location: Europe          | A         | No        | `192.0.2.66`                            |
-            | `failover.example.com.` | Failover (Primary)   | Failover: Primary         | A         | No        | `198.51.100.10`                         |
-            | `failover.example.com.` | Failover (Secondary) | Failover: Secondary       | A         | No        | `198.51.100.20`                         |
-            | `latency.example.com.`  | Latency-based        | Region: us-east-1 latency | A         | No        | `192.0.2.101`                           |
+            -   **Simple Routing**
+                -   Maps a single domain name to a single resource.
 
-    #### Routing Policies
+            -   **Weighted Routing**
+                -   Distributes traffic based on assigned weights (percentage).
+                -   Useful for A/B testing and gradual deployments.
 
-    -   **Simple Routing**
+            -   **Failover Routing**
+                -   Directs traffic to a secondary resource if the primary fails.
+                -   Requires health checks to monitor resource availability.
 
-        -   Maps a single domain name to a single resource.
+            -   **Latency-Based Routing**
+                -   Routes DNS queries to the AWS Region with the lowest latency for the user.
+                -   To optimize performance for users by serving content from the nearest (fastest) AWS region.
+                -   Useful when you have multiple endpoints (e.g., EC2, ELB) across different regions and want to deliver the best possible experience based on geography and network conditions.
+                -   Enhances user experience by reducing response time.
 
-    -   **Weighted Routing**
+            -   **Geolocation Routing**
+                -   Routes traffic based on the geographic location of the user.
+                -   Useful for content localization and regulatory compliance.
 
-        -   Distributes traffic based on assigned weights (percentage).
-        -   Useful for A/B testing and gradual deployments.
+            -   **Geoproximity Routing**
+                -   Adjusts routing based on the user's geographic location and bias settings.
+                -   Allows shifting traffic dynamically to preferred locations.
 
-    -   **Failover Routing**
+            -   **Multivalue Answer Routing**
+                -   Returns multiple IP addresses for a domain.
+                -   Provides basic load balancing without an additional load balancer.
 
-        -   Directs traffic to a secondary resource if the primary fails.
-        -   Requires health checks to monitor resource availability.
 
-    -   **Latency-Based Routing**
+       -   **Health Checks and Monitoring**: A component linking a record to an Route 53 Health Check. If the health check flags an endpoint as down, the hosted zone automatically stops returning that record and falls back to a healthy resource.
 
-        -   Routes DNS queries to the AWS Region with the lowest latency for the user.
-        -   To optimize performance for users by serving content from the nearest (fastest) AWS region.
-        -   Useful when you have multiple endpoints (e.g., EC2, ELB) across different regions and want to deliver the best possible experience based on geography and network conditions.
-        -   Enhances user experience by reducing response time.
+           -   Monitors the health of websites, servers, or applications by sending periodic requests.
+           -   Configurable with HTTP, HTTPS, and TCP health checks.
+           -   Can trigger failover mechanisms when a resource becomes unresponsive.
 
-    -   **Geolocation Routing**
+    -   **DNSSEC (Domain Name System Security Extensions)**: DNSSEC ensures that DNS responses come unchanged from their authoritative source by using digital signatures. It is a security feature that helps protect your domain from DNS spoofing, cache poisoning, and man-in-the-middle attacks by enabling cryptographic verification of DNS data.
 
-        -   Routes traffic based on the geographic location of the user.
-        -   Useful for content localization and regulatory compliance.
+        -   Protects against DNS spoofing and cache poisoning attacks.
+        -   Provides cryptographic signatures to validate DNS responses.
+        -   **When DNSSEC is enabled**:
+            -   Your hosted zone (via Route 53) signs DNS records with private keys.
+            -   DNS resolvers validate those signatures using public keys stored in the parent zone (like .com).
+            -   If a response is tampered with, validation will fail, and the client will discard it.
 
-    -   **Geoproximity Routing**
+    -   **Integration with AWS Services**:
 
-        -   Adjusts routing based on the user's geographic location and bias settings.
-        -   Allows shifting traffic dynamically to preferred locations.
-
-    -   **Multivalue Answer Routing**
-        -   Returns multiple IP addresses for a domain.
-        -   Provides basic load balancing without an additional load balancer.
-
-    #### Health Checks and Monitoring
-
-    -   Monitors the health of websites, servers, or applications by sending periodic requests.
-    -   Configurable with HTTP, HTTPS, and TCP health checks.
-    -   Can trigger failover mechanisms when a resource becomes unresponsive.
-
-    #### Domain Name Registration
-
-    -   Allows users to purchase and manage domain names directly from AWS.
-    -   Supports automatic DNS configuration with AWS-hosted services.
-    -   Provides domain transfer and renewal options.
-
-    #### DNSSEC (Domain Name System Security Extensions)
-
-    **DNSSEC** ensures that DNS responses come unchanged from their authoritative source by using digital signatures. It is a security feature that helps protect your domain from DNS spoofing, cache poisoning, and man-in-the-middle attacks by enabling cryptographic verification of DNS data.
-
-    -   Protects against DNS spoofing and cache poisoning attacks.
-    -   Provides cryptographic signatures to validate DNS responses.
-    -   **When DNSSEC is enabled**:
-        -   Your hosted zone (via Route 53) signs DNS records with private keys.
-        -   DNS resolvers validate those signatures using public keys stored in the parent zone (like .com).
-        -   If a response is tampered with, validation will fail, and the client will discard it.
-
-    #### Integration with AWS Services
-
-    -   Works seamlessly with EC2, S3, CloudFront, Elastic Load Balancer (ELB), AWS WAF, and Shield.
-    -   Supports routing to AWS resources using Alias Records, reducing query costs.
-
-    #### How AWS Route 53 Works
-
-    -   **Step 1: Domain Registration (Optional)**: Register a domain using AWS Route 53 or transfer an existing domain.
-    -   **Step 2: Create a Hosted Zone**: Create either a **Public** or **Private Hosted Zone** for managing DNS records.
-    -   **Step 3: Configure DNS Records**: Add **A, CNAME, MX, TXT, or Alias Records** to route traffic appropriately.
-    -   **Step 4: Update Name Servers (If Using an External Registrar)**: Update the domain’s **NS Records** to point to AWS Route 53.
-    -   **Step 5: Configure Routing Policies**: Select the appropriate routing policy (e.g., Simple, Weighted, Failover).
-    -   **Step 6: Set Up Health Checks (Optional)**: Monitor application availability and enable failover mechanisms.
-    -   **Step 7: Test and Validate**: Verify domain resolution using tools like `nslookup`, `dig`, or AWS console.
+        -   Works seamlessly with EC2, S3, CloudFront, Elastic Load Balancer (ELB), AWS WAF, and Shield.
+        -   Supports routing to AWS resources using Alias Records, reducing query costs.
 
     </details>
 
@@ -3307,14 +3292,13 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Load balancer</summary>
 
-    A **Load Balancer** is a managed service provided by Elastic Load Balancing (ELB) that automatically distributes incoming application traffic across multiple targets, such as EC2 instances, containers, IP addresses, and Lambda functions, in one or more Availability Zones. This ensures high availability, fault tolerance, and scalability for your applications. AWS provides the following types of load balancers, each suited to different use cases:
+    > A **Load Balancer** is a managed service provided by Elastic Load Balancing (ELB) that automatically distributes incoming application traffic across multiple targets, such as EC2 instances, containers, IP addresses, and Lambda functions, in one or more Availability Zones. This ensures high availability, fault tolerance, and scalability for your applications. AWS provides the following types of load balancers, each suited to different use cases:
 
     -   **Hosted zone (CanonicalHostedZoneId)**: The Amazon Route 53 hosted zone ID associated with a Load Balancer depends on the type of load balancer and the AWS region it's deployed in. AWS manages these hosted zones for its ELBs internally.
 
     -   <details><summary style="font-size:20px;color:#FF1493">Classification of Load Balancer</summary>
 
         1. **Application Load Balancer (ALB)**
-
             - Designed for HTTP and HTTPS traffic.
             - Operates at **Layer 7** (Application Layer) of the OSI model.
             - Content-based or path-based routing (e.g., route based on URL path or hostname).
@@ -3324,7 +3308,6 @@
             - Integration with AWS Web Application Firewall (WAF).
 
         2. **Network Load Balancer (NLB)**
-
             - Designed for **TCP, UDP, and TLS** traffic.
             - Operates at **Layer 4** (Transport Layer).
             - High-performance handling of millions of requests per second.
@@ -3333,18 +3316,65 @@
             - Ideal for low-latency, high-throughput workloads.
 
         3. **Gateway Load Balancer (GWLB)**
-
             - Designed for deploying and managing third-party virtual appliances (e.g., firewalls, monitoring tools).
             - Operates at **Layer 3** (Network Layer).
             - Scalable and elastic traffic distribution for appliances.
             - Integrates with Virtual Private Cloud (VPC) Ingress Routing.
 
         4. **Classic Load Balancer (CLB)**
-
             - Legacy load balancer that supports both **Layer 4** and **Layer 7** traffic.
             - Limited features compared to ALB and NLB.
             - Basic routing and health checks.
             - Supports legacy applications.
+
+
+        -   **AWS ALB vs. NLB**: Component-by-component comparison of the differences between an AWS NLB and ALB
+
+            -   **Core Architecture and Layer**:
+                -   **Application Load Balancer (ALB):** Operates at **Layer 7 (Application)** of the OSI model. It terminates connections and inspects individual HTTP/HTTPS headers, cookies, content types, and payloads to make routing decisions.
+                -   **Network Load Balancer (NLB):** Operates at **Layer 4 (Transport)** of the OSI model. It routes raw network packets purely based on protocol, source IP address, and destination port without looking inside the application payload.
+
+            -   **Performance and Scalability**:
+                -   **Application Load Balancer (ALB):** Engineered to handle millions of requests per second. Because it performs deep packet inspection and manages connection pools, it introduces a slight amount of processing latency compared to Layer 4 routing.
+                -   **Network Load Balancer (NLB):** Engineered for **ultra-low, sub-millisecond latency**. It scales instantaneously to handle tens of millions of concurrent requests per second, making it the choice for massive, volatile traffic spikes.
+
+            -   **IP Address and Network Layout**:
+                -   **Application Load Balancer (ALB):** Uses **Dynamic IP Addresses**. As the ALB auto-scales up or down to handle load, AWS changes its underlying IP addresses. Because of this, you must always route traffic to an ALB using its assigned DNS name rather than a hardcoded IP.
+                -   **Network Load Balancer (NLB):** Uses **Static IP Addresses**. It provides one fixed, unchanging IP address per enabled Availability Zone. You can also assign your own **Elastic IP (EIP)** to each zone, allowing external clients to easily whitelist your load balancer in their firewalls.
+
+            -   **Traffic Routing Capabilities**:
+                -   **Application Load Balancer (ALB):** Features **Advanced Content-Based Routing**. You can write rules to send traffic to different backend target groups based on:
+                    -   URL paths (e.g., `/api` vs `/static`)
+                    -   Hostnames (e.g., `api.example.com` vs `web.example.com`)
+                    -   HTTP headers, cookies, query parameters, or source IP ranges
+
+                -   **Network Load Balancer (NLB):** Features **Connection-Based Routing**. It cannot read URLs or headers. It takes incoming connections and forwards them directly to targets based purely on the listener port and protocol.
+
+            -   **Client IP Preservation**:
+                -   **Application Load Balancer (ALB):** Modifies the packet headers. Because the ALB terminates the client connection, the backend target sees the ALB's internal IP as the source. The ALB automatically injects the original client IP into the **`X-Forwarded-For`** and **`X-Forwarded-Proto`** HTTP headers.
+                -   **Network Load Balancer (NLB):** Preserves the network packet. It routes packets transparently to the backend. Your backend servers see the **exact public client IP address** directly at the operating system or network socket layer (when utilizing IP target types or instance targets without proxy protocol).
+
+            -   **upported Protocols and Targets**:
+                -   **Application Load Balancer (ALB):** Strictly handles **HTTP, HTTPS, and HTTP/2** (including gRPC). Targets include EC2 instances, ECS container tasks, private IP addresses, and AWS Lambda functions.
+                -   **Network Load Balancer (NLB):** Handles **TCP, UDP, and TLS** traffic. This makes it ideal for non-web protocols like FTP, SMTP, MQTT (IoT setups), streaming protocols, or raw WebSockets. Targets include EC2 instances, ECS tasks, private IPs, and other Application Load Balancers.
+
+            -   **Detailed Comparison Table**:
+
+                | Feature Component       | Application Load Balancer (ALB)            | Network Load Balancer (NLB)               |
+                | ----------------------- | ------------------------------------------ | ----------------------------------------- |
+                | **OSI Layer**           | Layer 7 (Application)                      | Layer 4 (Transport)                       |
+                | **Primary Use Case**    | Web applications, REST APIs, Microservices | High throughput, TCP/UDP apps, Static IPs |
+                | **Latency Profile**     | Low (milliseconds)                         | Ultra-low (sub-milliseconds)              |
+                | **IP Management**       | Dynamic IPs (Requires DNS routing)         | Static IPs (Supports Elastic IPs)         |
+                | **Client IP Strategy**  | Injected into `X-Forwarded-For` header     | Preserved directly in the network packet  |
+                | **Sticky Sessions**     | Supported via cookies                      | Supported via Source IP Affinity          |
+                | **Routing Options**     | Path, Host, Header, and Query rules        | Port and Protocol rules only              |
+                | **Supported Protocols** | HTTP, HTTPS, HTTP/2, gRPC                  | TCP, UDP, TLS                             |
+
+            -   **Architectural Flow Summary**:
+                -   **Choose an ALB** when you are building modern microservices, containerized web applications (like a Django web app), or APIs that require intelligent routing rules, path-based mapping, or direct integration with AWS Lambda.
+                -   **Choose an NLB** when your application requires extreme performance, handles raw TCP/UDP traffic, needs to expose a single whitelistable static/Elastic IP address to your clients, or needs to preserve client source IPs all the way to the OS layer of your backend instances.
+
 
         </details>
 
@@ -3355,19 +3385,16 @@
         2. **Listeners**: A listener is a process configured on the load balancer to check for incoming client connection requests. It listens for connections using a specified protocol and port and forwards these requests to the appropriate targets based on the rules configured.
 
             - **Protocols Supported**:
-
                 - HTTP/HTTPS (Application Load Balancer)
                 - TCP/TLS/UDP (Network Load Balancer)
 
             - **Ports**:
-
                 - Common ports include **80** (HTTP) and **443** (HTTPS).
                 - You can define custom ports if needed.
 
             - **Rules**: Define how the load balancer routes traffic to different target groups.
 
                 - `Criteria`: Rules can be based on various criteria.
-
                     - _Path_: Route traffic based on the path of the incoming request (e.g., `/api`, `/images`).
                     - _Host Header_: Route traffic based on the host header in the request (e.g., `www.example.com`).
                     - _HTTP Headers_: Route traffic based on specific HTTP headers in the request.
@@ -3382,30 +3409,25 @@
         3. **Target Groups**: A Target Group is a configuration object used by Elastic Load Balancing (ELB) to route requests to one or more registered targets (e.g., `EC2 instances`, `Lambda functions`, `IP addresses`, or `ALB/NLB`). Target groups are central to how Application Load Balancers (ALBs) and Network Load Balancers (NLBs) direct traffic.
 
             - **Types of Targets**:
-
                 - **Instances**: Routes traffic to specific EC2 instances.
                 - **IP Addresses**: Targets specific IP addresses. Useful for hybrid architectures.
                 - **Lambda Functions**: ALB supports invoking Lambda functions for serverless applications.
 
             - **Port**
-
                 - Each target group has a default port (e.g., 80 or 443).
                 - Traffic sent to registered targets uses this port unless overridden per target.
 
             - **Protocol**: Defines what protocol the load balancer uses to communicate with targets:
-
                 - HTTP or HTTPS (for ALB)
                 - TCP, TLS, UDP, or TCP_UDP (for NLB)
 
             - **Health Checks**:
-
                 - Automatically perform health checks on the targets to ensure only healthy ones receive traffic.
                 - Parameters include the protocol, ping path, interval, and thresholds.
 
             - **Routing**: You can associate multiple target groups with different listeners and rules to route traffic intelligently.
 
             - **Example**:
-
                 - A web app running on multiple EC2 instances can have a target group configured with all those instances.
                 - A microservices architecture could have separate target groups for APIs, user interfaces, and static content.
 
@@ -3414,22 +3436,17 @@
                 - API Gateway itself is designed to manage traffic, apply security policies, rate limiting, and integrate with AWS services. A Load Balancer in front of API Gateway is **redundant**.
 
         4. **Load Balancer Nodes**: Load balancer nodes are the actual physical or virtual machines that handle the traffic within AWS. They are managed by AWS and operate behind the scenes to distribute traffic effectively.
-
             - **Distributed Across AZs**:
-
                 - ELB automatically deploys load balancer nodes in multiple Availability Zones (AZs) for high availability and fault tolerance.
 
             - **Scaling**:
-
                 - Load balancer nodes automatically scale to handle increases in traffic.
                 - When traffic reduces, nodes are scaled down.
 
             - **Connection Handling**:
-
                 - These nodes terminate client connections and forward requests to the target.
 
             - **How It Works**:
-
                 - A DNS name (e.g., `my-load-balancer-12345.elb.amazonaws.com`) is provided by AWS.
                 - This name resolves to the IP addresses of the load balancer nodes.
                 - Clients connect to these nodes, which distribute the traffic to healthy targets.
@@ -3441,25 +3458,21 @@
         1. **Health Checks**: Health checks are critical for ensuring that traffic is only sent to healthy targets. ELB continuously monitors the health of targets in a target group and routes traffic to only those that are healthy.
 
             - **Health Check Configuration**:
-
                 - **Protocol**: HTTP, HTTPS, TCP, or UDP.
                 - **Port**: The port on which the health check is performed.
                 - **Path**: The specific path for HTTP/HTTPS checks (e.g., `/healthcheck`).
 
             - **Interval and Timeout**:
-
                 - The interval defines how often the health check is performed.
                 - The timeout specifies the time allowed for the target to respond.
 
             - **Thresholds**:
-
                 - Healthy threshold: Number of consecutive successful responses required to mark the target as healthy.
                 - Unhealthy threshold: Number of consecutive failures required to mark the target as unhealthy.
 
             - **Example**: A target is considered healthy if it returns a `200 OK` HTTP response for 3 consecutive health check requests within the interval.
 
         2. **Security Groups**: Security groups act as virtual firewalls that control inbound and outbound traffic for the load balancer.
-
             - **Inbound Rules**: Specify the type of traffic allowed to reach the load balancer (e.g., allow HTTP traffic on port 80 or HTTPS on port 443).
             - **Outbound Rules**: Define the type of traffic that the load balancer can send to targets.
             - **Granular Control**: You can restrict access to specific IP ranges, CIDR blocks, or other AWS resources.
@@ -3469,7 +3482,6 @@
                 - For an internal-only NLB, restrict traffic to your VPC CIDR range.
 
         3. **Access Logs**: Access logs provide detailed information about requests processed by the load balancer. These logs are invaluable for debugging, analyzing traffic patterns, and monitoring security.
-
             - **Stored in S3**: Logs are automatically saved in an S3 bucket that you specify.
             - **Log Contents**: Includes information like the request time, client IP, target details, response status, latency, and more.
             - **Analysis**: Can be analyzed using tools like Amazon Athena, AWS Glue, or third-party log analysis tools.
@@ -3479,7 +3491,6 @@
                 - Monitor and analyze application performance.
 
         4. **Elastic IPs (NLB Only)**: Elastic IPs (EIPs) are static IP addresses that can be assigned to the Network Load Balancer for predictable and consistent access.
-
             - **Static IPs**:
                 - NLB can assign Elastic IPs to its nodes in each AZ.
             - **Use Cases**:
@@ -3487,32 +3498,28 @@
                 - Useful for firewall configurations and hybrid environments.
 
         5. **DNS Name**: AWS ELB provides a DNS name for each load balancer, which clients use to send requests. The DNS name is associated with the IPs of the load balancer nodes.
-
             - **Dynamic Resolution**:
                 - The DNS name resolves to the IP addresses of the load balancer nodes.
                 - AWS handles changes in the underlying infrastructure automatically.
             - **Example**: `my-load-balancer-12345.us-west-2.elb.amazonaws.com`.
 
         6. **Sticky Sessions (Session Affinity)**: Sticky sessions, Also known as **session affinity**, ensure that requests from the same client are routed to the same target for the duration of the session.
-
             - **Session Duration**: Controlled by cookies (either AWS-generated or custom).
             - **Use Cases**: Applications that maintain session state (e.g., user login or shopping cart).
 
-        7. **Host-Based and Path-Based Routing (ALB)**
-
+        7. **Host-Based and Path-Based Routing (ALB)**:
             - `Host-based routing`: Route requests to different target groups based on the **Host** header (e.g., `api.example.com` vs. `app.example.com`).
             - `Path-based routing`: Route requests based on the URL path (e.g., `/api` vs. `/login`).
 
-        8. **SSL/TLS Termination**
-
+        8. **SSL/TLS Termination**:
             - Load balancers can terminate SSL/TLS connections, offloading the encryption and decryption process from the targets.
             - Managed using **AWS Certificate Manager (ACM)** or custom certificates.
 
         9. **Cross-Zone Load Balancing**: Distributes traffic evenly across all targets in all enabled AZs, regardless of the AZ in which the load balancer node resides.
 
-        10. **Load Balancer Capacity Units (LCU)**
+        10. **Load Balancer Capacity Units (LCU)**:
 
-        11. **Load Balancer Attributes**
+        11. **Load Balancer Attributes**:
 
         </details>
 
@@ -3623,7 +3630,7 @@
 
 -   <details><summary style="font-size:25px;color:Orange">Trust Store</summary>
 
-    The AWS Trust Store is a centralized repository of trusted certificates that allows AWS services to verify the identity of clients and servers during secure communication. It plays a crucial role in establishing secure connections using protocols like Transport Layer Security (TLS) and mutual TLS (mTLS).
+    > The AWS Trust Store is a centralized repository of trusted certificates that allows AWS services to verify the identity of clients and servers during secure communication. It plays a crucial role in establishing secure connections using protocols like **Transport Layer Security** (TLS) and **mutual TLS** (mTLS).
 
     ### Core Concepts
 
@@ -4219,7 +4226,7 @@
 
     1. **Core Concepts and Components**: Understanding KMS starts with the hierarchy of how keys are structured and managed.
 
-        - **AWS KMS Keys (KMS Keys)**: The primary resource in KMS. A KMS key is a logical representation of a cryptographic key. It contains metadata (key ID, creation date, description, state) and a reference to the **Key Material** used for cryptographic operations.
+        -   **AWS KMS Keys (KMS Keys)**: The primary resource in KMS. A KMS key is a logical representation of a cryptographic key. It contains metadata (key ID, creation date, description, state) and a reference to the **Key Material** used for cryptographic operations.
 
             * **Customer Master Key (CMK):** This is the older term for a KMS key. While the console now just uses "KMS Key," you will still see CMK in documentation.
             * **Backing Key:** This is the actual library of bytes used for encryption, stored securely within the HSM. You never see or export this material in plaintext.
@@ -4230,8 +4237,7 @@
             2. **EXTERNAL:** You import your own key material (BYOK).
             3. **AWS_CLOUDHSM:** The key material is generated and stored in a custom key store (CloudHSM cluster).
 
-        -   **Key Types: Symmetric vs. Asymmetric**:
-
+        -   **Symmetric vs. Asymmetric Key Types**:
             -   **Symmetric KMS Keys:** Use a single 256-bit key for both encryption and decryption (AES-GCM). The data never leaves KMS in plaintext.
             -   **Asymmetric KMS Keys:** Represent a mathematically related public/private key pair (RSA or Elliptic Curve). You can share the public key with anyone to encrypt data, but only KMS can use the private key to decrypt it.
 
@@ -4251,19 +4257,15 @@
     3. **Advanced Features**:
 
         -   **Envelope Encryption**: This is the practice of encrypting data with a **Data Key**, and then encrypting that Data Key with a **KMS Key**.
-
             * **Why?** KMS cannot encrypt more than 4 KB of data directly. Envelope encryption allows you to encrypt massive datasets (like a 10TB S3 bucket) locally using the Data Key, while KMS only handles the small, encrypted version of that key.
 
         -   **Multi-Region Keys**: Standard KMS keys are regional. However, **Multi-Region Keys** allow you to replicate a primary key into other AWS regions. They share the same Key ID and key material, making it easy to move encrypted data between regions (e.g., for Disaster Recovery) without re-encrypting it.
 
         -   **Key Rotation**
-
             * **Automatic:** For Customer Managed Keys, AWS can rotate the backing key material once per year. KMS keeps the old material to decrypt older data, but uses the new material for new requests.
             * **Manual:** You create a new KMS key and update your application code or aliases to point to the new Key ID.
 
-
     4. **Security and Access Control**: KMS does not use IAM roles alone; it relies heavily on **Key Policies**.
-
         * **Key Policy:** The primary way to control access. A KMS key *must* have a policy. If the policy doesn't explicitly allow an IAM user or the root account, even an Administrator cannot access the key.
         * **Grants:** A temporary, granular permission mechanism. Often used by AWS services (like EBS) to gain permission to use your key to encrypt a volume on your behalf.
         * **Encryption Context:** A set of non-secret key-value pairs (e.g., `"AppName": "Finance"`) that act as "additional authenticated data." If you provide it during encryption, you **must** provide the exact same context during decryption, or it will fail. This prevents "substitution attacks."
@@ -4277,7 +4279,6 @@
 
     - **Prerequisites**: You will need to install the following library:
         -   `$ pip install boto3 cryptography`
-
 
     1. **The Encryption Workflow**: The goal is to request a **Data Key** from KMS. KMS returns a plaintext version (for immediate use) and an encrypted version (to store with your data).
 
