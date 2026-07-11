@@ -126,7 +126,7 @@ alias ntserverless="code $NTHUB/nts/notes_serverless.md"
 ###############################################################################
 alias ntcarlog="code $NTHUB/nts/notes_car_log.md"
 alias ntislam="code $NTHUB/nts/notes_islam.md"
-alias nteng="code $NTHUB/nts/notes_english.md"
+alias nteng="code $NTHUB/eng/notes_english.md"
 alias nttmp="code $NTHUB/nts/notes_tmp.md"
 ###############################################################################
 alias cmdnpm="code $NTHUB/nts/cmd_npm.txt"

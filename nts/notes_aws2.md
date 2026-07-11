@@ -843,7 +843,7 @@
 
         -   **Launch Type Abstraction:** They standardize how ECS interacts with the two main compute options:
             1.  **EC2 Auto Scaling Group:** Manages scaling for EC2 capacity. The Capacity Provider ensures the Auto Scaling Group scales _in_ and _out_ based on task demand.
-            2.  **AWS Fargate:** Uses Fargate and Fargate Spot capacity, abstracting infrastructure management entirely.
+            2.  **AWS Fargate:** Uses **Fargate** and **Fargate Spot** capacity, abstracting infrastructure management entirely.
         -   **Capacity Provider Strategy:** This is a key feature that allows you to define how tasks are distributed across **multiple Capacity Providers** (e.g., 80% on Fargate, 20% on Fargate Spot). This distribution is controlled by two parameters:
             -   **Base:** The minimum number of tasks to run on a specific capacity provider.
             -   **Weight:** The relative portion of the _remaining_ desired task count that should be placed on a capacity provider.

@@ -11,6 +11,137 @@
         -   **As an Object**: "The website includes a long disclaimer regarding the accuracy of its health advice."
         -   **With "Standard"**: "Before we begin the investment presentation, I must give the standard disclaimer that past performance does not guarantee future results."
 
+    -   introspection
+    -   fusion
+    -   entourage
+    -   overlay
+    -   normative
+    -   facade
+    -   instigate
+    -   silo
+    -   apostasy
+    -   ferment
+    -   bastion
+    -   contended
+    -   de facto
+    -   impersonate
+    -   seizure
+    -   errand
+    -   chord
+    -   ceder
+    -   homestead
+    -   chum
+    -   trilogy
+    -   haul
+    -   proliferate
+    -   breach
+    -   contingent
+    -   pantry
+    -   surge
+    -   deterirate
+    -   stalemate
+    -   extradite
+    -   bereaved
+    -   incentive
+    -   sigh
+    -   afflicted
+    -   intranet
+    -   pave
+    -   malign
+    -   fleged
+    -   rhetoric
+    -   invincible
+    -   stumble
+    -   harmony
+    -   arbitrary
+    -   ingrained
+    -   cognitive
+    -   impulse
+    -   resonate
+    -   despise
+    -   gaslight
+    -   emerge
+    -   thrive
+    -   fluffy
+    -   galvanise
+    -   disclaimer
+    -   obsolete
+    -   reinstate
+    -   envy
+    -   intrusion
+    -   trampoling
+    -   nuisance
+    -   dissent
+    -   bashing
+    -   packer
+    -   splat
+    -   signage
+    -   stale
+    -   debrief
+    -   ordinance
+    -   retroactive
+    -   acclimate
+    -   spoof
+    -   evade
+    -   interdict
+    -   headwind
+    -   concession
+    -   envision
+    -   piggyback
+    -   spawn
+    -   inclement
+    -   misnomer
+    -   endearment
+    -   automomous
+    -   hinder
+    -   quagmire
+    -   purge
+    -   unsolicited
+    -   steep
+    -   capitation
+    -   pertainent
+    -   flappy
+    -   prospectus
+    -   leaner
+    -   sneak
+    -   hoard
+    -   curate
+    -   divest
+    -   savvy
+    -   debris
+    -   churn
+    -   sturdy
+    -   diligence
+    -   niche
+    -   extraneous
+    -   circumvent
+    -   loom
+    -   tassel
+    -   sage
+    -   holistic
+    -   procure
+    -   commence
+    -   staggering
+    -   garnish
+    -   gushing
+    -   frenemy
+    -   burnout
+    -   furlough
+    -   deemed
+    -   stagnate
+    -   agonize
+    -   glitch
+    -   outreach
+    -   tangible
+    -   status quo
+    -   fiasco
+    -   endowment
+    -   clunky/fluffy/wacky
+    -   rundown
+    -   redact
+    -   cutover
+    -   ideal
+    -   exploit
     -   Curated
     -   Streamline
     -   Sluggish
@@ -49,6 +180,7 @@
     -   relentless
     -   ramification
     -   perseverance
+    -   decapitate
     -   rhetoric
     -   obsolete
     -   subjugate

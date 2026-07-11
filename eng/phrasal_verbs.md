@@ -9,6 +9,16 @@
     -   Catch up
     -   under the weather
     -   be in good hand
+    -   wirte-off
+    -   hand off / handoffs
+    -   what so ever
+    -   get along
+    -   align on
+    -   bog down
+    -   pin down
+    -   read out
+    -   ramp up
+
 
     -   **Starting Conversations**
 

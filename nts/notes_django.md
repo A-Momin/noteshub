@@ -2022,7 +2022,6 @@
 
         > In the Django ORM, the "Magic Double Underscore" (`__`) is the syntax used to navigate **relationships** (joins) and apply **field lookups** (filters). It is the bridge between Pythonic attribute access and SQL clauses. Think of the double underscore as a "separator" that tells Django to dig deeper into a model's connections or to apply a specific operator to a field.
 
-
         1. **Field Lookups (The "How")**: By default, `filter(name="Alex")` performs an exact match (`=`). Double underscores allow you to use different SQL operators like `LIKE`, `IN`, `BETWEEN`, or `IS NULL`.
 
             | Lookup           | SQL Equivalent  | Usage                                                                |
@@ -2810,7 +2809,7 @@
                 | Cartesian explosion | Risk with large sets     | No risk                  |
                 | Speed               | Fast for small relations | Fast for large relations |
 
-        -   **Using `.prefetch_related()` for Reverse Relations and `ManyToMany`**: When dealing with reverse `ForeignKey`, `ManyToMany`, or OneToOne relationships, use `.prefetch_related()` to retrieve related objects efficiently.
+        -   **Using `.prefetch_related()` for Reverse Relations and `ManyToMany`**: When dealing with reverse `ForeignKey`, `ManyToMany`, or `OneToOne` relationships, use `.prefetch_related()` to retrieve related objects efficiently.
 
             -   **How it works**: Executes **separate database queries** (one per prefetched relation) and caches results in Python memory. Unlike `select_related`, it does NOT perform **JOIN** at the database level. When you use `prefetch_related`, Django performs two (or more) distinct steps:
                 -   **Main Query**: It fetches all the primary objects (e.g., all Authors).

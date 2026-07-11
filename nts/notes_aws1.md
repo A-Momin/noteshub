@@ -1104,7 +1104,7 @@
     -   [VPC Assignments](https://www.youtube.com/playlist?list=PLIUhw5xEbE-UzGtDn5yBfXBTkJR6QgWIi)
     -   [3.Terraform : Provision VPC using Terraform | Terraform Manifest file to Create VPC and EC2 Instance](https://www.youtube.com/watch?v=wx7L6snkrTU)
 
-    Amazon VPC (Virtual Private Cloud) is a service that enables you to launch Amazon Web Services (AWS) resources into a virtual network that you define. Here are some common terms and concepts related to AWS VPC:
+    > Amazon VPC (Virtual Private Cloud) is a service that enables you to launch Amazon Web Services (AWS) resources into a virtual network that you define. Here are some common terms and concepts related to AWS VPC:
 
     -   **VPC**: AWS VPC (Amazon Virtual Private Cloud) is a service provided by Amazon Web Services (AWS) that allows you to create a virtual network in the AWS cloud. It enables you to define a logically isolated section of the AWS cloud where you can launch AWS resources such as EC2 instances, RDS databases, and more. Here are some key aspects and features of AWS VPC:
 
@@ -1184,7 +1184,7 @@
 
     -   <details><summary style="font-size:20px;color:Magenta">Network Access Control List (NACL)</summary>
 
-        AWS Network Access Control Lists (NACLs) are stateless, optional security layers that control inbound and outbound traffic at the subnet level in an Amazon VPC. They act as a firewall for controlling traffic entering and leaving one or more subnets within a VPC. Here's an explanation of the key aspects of AWS NACLs:
+        > AWS Network Access Control Lists (NACLs) are stateless, optional security layers that control inbound and outbound traffic at the subnet level in an Amazon VPC. They act as a firewall for controlling traffic entering and leaving one or more subnets within a VPC. Here's an explanation of the key aspects of AWS NACLs:
 
         -   `Subnet-Level Security`: NACLs are associated with individual subnets within a VPC. Each subnet can have its own NACL, which allows you to customize the network security policies for different parts of your VPC.
         -   `Stateless Inspection`: Unlike security groups, which are stateful, NACLs are stateless. This means that they evaluate each network packet independently, without considering the state of previous packets. As a result, you must explicitly configure rules for both inbound and outbound traffic in both directions.
@@ -1523,7 +1523,7 @@
     -   [AWS IAM Core Concepts You NEED to Know](https://www.youtube.com/watch?v=_ZCTvmaPgao)
     -   [AWS IAM Guides](https://www.youtube.com/playlist?list=PL9nWRykSBSFjJK9mFrIP_BPWaC0hAL9dZ)
 
-        **AWS IAM** is a service that enables you to manage access to AWS resources securely. IAM allows you to create and manage users, groups, roles, and permissions that define what actions are allowed or denied for AWS resources. Here are the key components of AWS IAM:
+    > **AWS IAM** is a service that enables you to manage access to AWS resources securely. IAM allows you to create and manage users, groups, roles, and permissions that define what actions are allowed or denied for AWS resources. Here are the key components of AWS IAM:
 
     -   `Entities`: In AWS, an entity refers to any object or resource that can be managed by AWS services. Entities can include a wide variety of resources, including IAM users, EC2 instances, S3 buckets, RDS databases, Lambda functions, and more. AWS entities can be created, configured, and managed using AWS management tools such as the AWS Management Console, AWS CLI, and AWS SDKs. Depending on the type of entity, different AWS services may be used to manage it.
     -   `Identity`: In the context of AWS (Amazon Web Services), "identity" refers to the concept of uniquely identifying and authenticating users or entities within the AWS ecosystem.
@@ -1532,384 +1532,382 @@
     -   `Roles`: IAM roles are similar to users but are intended for use by AWS services, applications, or other AWS accounts. Roles allow you to grant temporary access to resources across different accounts and services without having to create long-term credentials like access keys. IAM roles are a way to delegate permissions to entities that you trust. A role does not have any credentials, but instead, it is assumed by an entity that has credentials. This entity could be an AWS service, an EC2 instance, or an IAM user in another account. IAM roles can be used for a variety of purposes, such as granting permissions to AWS services or resources, allowing cross-account access, or providing permissions to an external identity provider (IdP).
     -   `Permissions`: Permissions are the actions that users, groups, and roles are allowed or denied to perform on AWS resources. They are defined by IAM policies.
 
-    #### IAM Policies
+    -   <details><summary style="font-size:25px;color:#C71585">IAM Policies</summary>
 
-    **IAM policies** are documents that define permissions. They are attached to users, groups, and roles to determine what actions they can perform on AWS resources. A policy is a set of permissions that can be attached to an identity to define its overall access to AWS resources. A policy can include one or more permissions and can be attached to multiple identities. For example, a policy might allow all members of a certain group to access a specific set of EC2 instances.
+        **IAM policies** are documents that define permissions. They are attached to users, groups, and roles to determine what actions they can perform on AWS resources. A policy is a set of permissions that can be attached to an identity to define its overall access to AWS resources. A policy can include one or more permissions and can be attached to multiple identities. For example, a policy might allow all members of a certain group to access a specific set of EC2 instances.
 
-    The file `policy` is a JSON document in the current folder that grants read only access to the shared folder in an Amazon S3 bucket named my-bucket:
-
-    ```json
-    {
-        "Version": "2012-10-17",
-        "Id": "default",
-        "Statement": [
-            {
-                "Sid": "lambda-a75c4b44-4416-4229-91af-350e53bb044c",
-                "Effect": "Allow",
-                "Principal": {
-                    "Service": "events.amazonaws.com"
-                },
-                "Action": "lambda:InvokeFunction",
-                "Resource": "arn:aws:lambda:us-east-1:554116157557:function:lambda_canary",
-                "Condition": {
-                    "ArnLike": {
-                        "AWS:SourceArn": "arn:aws:events:us-east-1:554116157557:rule/canary"
-                    }
-                }
-            }
-        ]
-    }
-    ```
-
-    -   **Common Attributes of AWS Policy Documents**:
-
-        -   `Version`: The "Version" field specifies the version of the AWS policy language being used. It is required and indicates the syntax and structure of the policy. The version is typically specified as a date, such as "2012-10-17" or "2016-10-17."
-        -   `Id`: The optional "Id" field is used to give a unique identifier to the policy. It is often used for managing and organizing policies in the AWS Management Console.
-        -   `Statement`: The "Statement" field is the most important part of an AWS policy document. It contains an array of individual statements, each of which defines a permission or access control rule. A policy can have multiple statements.
-        -   `Sid`: The optional "Sid" (Statement ID) field is used to provide a unique identifier for each statement within a policy. It is helpful for referencing or managing specific statements within the policy.
-        -   `Effect`: The "Effect" field specifies whether the statement grants ("Allow") or denies ("Deny") permissions. It is a required field in each statement.
-        -   `Principal`: The "Principal" field identifies the AWS identity (user, group, role, or AWS service) to which the permissions are granted or denied. It can also specify the **\*** wildcard to apply the permission to all identities.
-        -   `Action`: The "Action" field defines the AWS service actions that are allowed or denied by the statement. It can specify a single action or a list of actions. AWS actions are typically named using a combination of the service name and the action name (e.g., "s3:GetObject," "ec2:CreateInstance").
-        -   `Resource`: The "Resource" field specifies the AWS resources to which the actions are applied. It defines the scope of the permissions and can use Amazon Resource Names (ARNs) to identify specific resources.
-        -   `Condition`: The optional "Condition" field allows you to define additional conditions that must be met for the permission to take effect. You can use various condition operators to check attributes like time, IP address, encryption status, and more.
-        -   `NotAction, NotResource, NotPrincipal`: These fields are used to specify exceptions or negations in the policy. For example, "NotAction" can be used to allow all actions except the ones listed.
-        -   `Resources and Actions ARN Format`: When specifying resources or actions in a policy, Amazon Resource Names (ARNs) are used. ARNs uniquely identify AWS resources and follow a specific format.
-        -   `IAM Policies and Resource Policies`: AWS policy documents can be attached to IAM users, groups, and roles to manage access control. They can also be used as resource policies to manage permissions on individual AWS resources (e.g., S3 bucket policy).
-
-    -   **Managed Policy**: A managed policy in AWS is a standalone policy that you can attach to multiple IAM users, groups, or roles. Managed policies allow you to create and maintain a single policy that you can reuse across different entities, simplifying policy management and ensuring consistency in permissions across your AWS environment.
-
-        -   `AWS Managed Policies`: Created and maintained by AWS, these policies are designed to provide permissions for common use cases, such as full access to a specific AWS service or read-only access to certain resources.
-        -   `Customer Managed Policies`: Created and maintained by the user, these policies provide custom permissions tailored to specific organizational needs.
-
-    -   **Inline Policy**: An inline policy in AWS is a policy that's embedded directly within a single IAM user, group, or role. Unlike managed policies, which can be attached to multiple entities and reused, an inline policy is specific to the entity to which it is attached.
+        The file `policy` is a JSON document in the current folder that grants read only access to the shared folder in an Amazon S3 bucket named my-bucket:
 
         ```json
         {
             "Version": "2012-10-17",
+            "Id": "default",
             "Statement": [
                 {
-                    "Effect": "Allow",
-                    "Action": ["s3:GetObject", "s3:ListBucket"],
-                    "Resource": [
-                        "arn:aws:s3:::example-bucket",
-                        "arn:aws:s3:::example-bucket/*"
-                    ]
-                }
-            ]
-        }
-        ```
-
-    -   **Trust Policy** (**Assume-Role Policy**): A trust policy in AWS is a JSON document that specifies which principals (users, accounts, services, etc.) are allowed to assume a specific role. It defines the conditions under which a role can be assumed and the actions that are allowed as a result.
-
-        ```json
-        {
-            "Version": "2012-10-17",
-            "Statement": [
-                {
-                    "Effect": "Allow",
-                    "Principal": { "Service": "lambda.amazonaws.com" },
-                    "Action": "sts:AssumeRole"
-                }
-            ]
-        }
-        ```
-
-    -   **Principle-Based Policy**: A principal-based policy is a policy that is designed to allow or restrict actions based on the **principal** (i.e., the AWS account, user, role, or service) that is making the request. These policies specify what actions a specific principal can perform on a resource. Principals are at the center of AWS Identity and Access Management (IAM) policies, defining "who" has permission to do "what" on "which" resources. Following are key types of principal-based policies:
-
-        1. `Identity-Based Policies`:
-
-            - `Attached to Users, Groups, or Roles`: Identity-based policies are created to allow or deny access to AWS resources by attaching them directly to an IAM user, group, or role.
-            - `Defines Permissions of the Principal`: These policies specify which actions and resources the principal (user, group, or role) can interact with.
-            - `Flexible Scope`: You can make identity-based policies broad (like granting S3 access to a role) or specific (like restricting certain S3 actions).
-
-        2. `Service-Control Policies (SCPs)`:
-
-            - `Applied at the Organization Level`: In AWS Organizations, SCPs set boundaries for accounts within the organization or organizational units (OUs), limiting or allowing actions for all IAM users, groups, and roles within those accounts.
-            - `Permissions Boundary`: SCPs act as a boundary layer, meaning even if a user has broader permissions in their IAM policy, SCPs can restrict certain actions, effectively setting the upper limit of permissions.
-
-        3. `Resource-Based Policies`:
-            - `Attached Directly to AWS Resources`: Some resources (like S3 buckets, Lambda functions, etc.) allow policies to be attached directly to them, defining who can access them. These policies also define the allowed actions on the resource.
-            - `Granting Cross-Account Access`: Resource-based policies are often used to grant cross-account access, specifying who (in another account) can access a resource.
-
-    -   **Resource-Based Policy**:
-
-    #### Role
-
-    An AWS IAM Role is a set of permissions that define what actions are allowed (or denied) in AWS. It is not associated with a specific user or group, but instead, it can be assumed by any trusted entity (like an AWS service, user, or application).
-
-    In simple terms, an IAM role allows you to grant temporary access to AWS resources to other services or users without sharing long-term credentials like access keys. The role specifies:
-
-    -   Who can assume the role (the trusted entity).
-    -   What permissions are granted to that entity while they use the role.
-
-    -   A role is an IAM identity that you can create in your account that has specific permissions. An IAM role has some similarities to an IAM user. Roles and users are both AWS identities with permissions policies that determine what the identity can and cannot do in AWS. However, instead of being uniquely associated with one person, a role can be assumed by anyone who needs it. A role does not have standard long-term credentials such as a password or access keys associated with it. Instead, when you assume a role, it provides you with temporary security credentials for your role session. You can use roles to delegate access to users, applications, or services that don't normally have access to your AWS resources.
-
-    -   **service role**: A **Service Role** in AWS Identity and Access Management (IAM) is an IAM role that an **AWS service assumes** to perform actions on your behalf. This mechanism is crucial for the security and functionality of numerous AWS services, as it allows them to interact with other AWS resources without using your permanent user credentials.
-
-        -   **Core Concepts of an IAM Role**: An IAM role, in general, is an AWS identity with permission policies, similar to an IAM user. However, a role is designed to be **assumed** by a trusted entity rather than being permanently associated with a single person. The two essential components of any IAM role, including a Service Role, are:
-
-            -   **Trust Policy:** This policy defines **which entities** (principals) are allowed to assume the role. For a Service Role, the trust policy is configured to trust a specific AWS service principal (e.g., `lambda.amazonaws.com` for AWS Lambda or `ec2.amazonaws.com` for Amazon EC2).
-            -   **Permissions Policy:** This policy specifies **what actions** the entity can perform on **which AWS resources** once the role is assumed. This is where you define the permissions needed for the service to carry out its function (e.g., allow `s3:GetObject` on a specific S3 bucket).
-
-        -   **How a Service Role Works**
-
-            1.  **Creation:** An administrator creates the IAM Service Role, attaching the necessary permissions policies and defining the trust policy to allow a specific AWS service (the **principal**) to assume it.
-            2.  **Assumption:** When the AWS service needs to perform an action on a resource (like an EC2 instance needing to read data from S3, or a Lambda function needing to write logs to CloudWatch), the service automatically _assumes_ the Service Role.
-            3.  **Temporary Credentials:** When the service assumes the role, it receives **temporary security credentials**. These credentials are automatically managed, rotated, and have a defined expiration time, adhering to the principle of least privilege and enhancing security.
-            4.  **Action:** The service uses these temporary credentials to execute the allowed actions on your behalf (e.g., creating a network interface, launching an EC2 instance, or writing logs).
-
-        -   **Types of Service Roles**: There are two main categories of service roles you will encounter:
-
-            | Type of Role            | Description                                                                                                                                                                                                  | Management                                                                                                                                                   | Example Use Case                                                                                  |
-            | :---------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
-            | **Service Role**        | A custom role created by an administrator to grant specific, scoped permissions for an AWS service (like Lambda or EC2) to access resources in your account.                                                 | **Customer-Managed**. You define and control both the trust and permissions policies.                                                                        | An **AWS Lambda function** needs to read data from a DynamoDB table and write logs to CloudWatch. |
-            | **Service-Linked Role** | A unique type of IAM role that is **directly linked** to an AWS service. These roles are pre-defined by the service and automatically contain all permissions required for the service to operate correctly. | **AWS-Managed**. The service automatically creates and updates the role, and you typically cannot modify its permissions or trust policy (only view/delete). | An **Auto Scaling Group** needs to manage EC2 instances or Elastic Load Balancers on your behalf. |
-
-    -   **Service-Linked Role**:
-
-    -   **Assumed Role**:
-
-    -   **Pass Role**:
-
-    -   **assume-role-policy-document**: An assume-role-policy-document is a policy attached to an IAM role that defines who (which entities) can assume the role. This policy, also known as a trust policy, specifies the conditions under which the role can be assumed and the permissions granted to those entities.
-
-        ```json
-        {
-            "Version": "2012-10-17",
-            "Statement": [
-                {
+                    "Sid": "lambda-a75c4b44-4416-4229-91af-350e53bb044c",
                     "Effect": "Allow",
                     "Principal": {
-                        "Service": "ec2.amazonaws.com"
+                        "Service": "events.amazonaws.com"
                     },
-                    "Action": "sts:AssumeRole"
+                    "Action": "lambda:InvokeFunction",
+                    "Resource": "arn:aws:lambda:us-east-1:554116157557:function:lambda_canary",
+                    "Condition": {
+                        "ArnLike": {
+                            "AWS:SourceArn": "arn:aws:events:us-east-1:554116157557:rule/canary"
+                        }
+                    }
                 }
             ]
         }
         ```
 
-        -   `Version`: Specifies the version of the policy language.
-        -   `Statement`: Contains one or more statements that define the principals and the actions allowed.
-        -   `Effect`: Specifies whether the statement allows or denies access (usually "Allow").
-        -   `Principal`: Specifies the AWS account, user, role, or service that can assume the role.
-        -   `Action`: Specifies the action that is allowed (usually "sts ").
-        -   `Condition`: (Optional) Specifies conditions under which the role can be assumed.
+        -   **Common Attributes of AWS Policy Documents**:
 
-    -   **Example**:
+            -   `Version`: The "Version" field specifies the version of the AWS policy language being used. It is required and indicates the syntax and structure of the policy. The version is typically specified as a date, such as "2012-10-17" or "2016-10-17."
+            -   `Id`: The optional "Id" field is used to give a unique identifier to the policy. It is often used for managing and organizing policies in the AWS Management Console.
+            -   `Statement`: The "Statement" field is the most important part of an AWS policy document. It contains an array of individual statements, each of which defines a permission or access control rule. A policy can have multiple statements.
+            -   `Sid`: The optional "Sid" (Statement ID) field is used to provide a unique identifier for each statement within a policy. It is helpful for referencing or managing specific statements within the policy.
+            -   `Effect`: The "Effect" field specifies whether the statement grants ("Allow") or denies ("Deny") permissions. It is a required field in each statement.
+            -   `Principal`: The "Principal" field identifies the AWS identity (user, group, role, or AWS service) to which the permissions are granted or denied. It can also specify the **\*** wildcard to apply the permission to all identities.
+            -   `Action`: The "Action" field defines the AWS service actions that are allowed or denied by the statement. It can specify a single action or a list of actions. AWS actions are typically named using a combination of the service name and the action name (e.g., "s3:GetObject," "ec2:CreateInstance").
+            -   `Resource`: The "Resource" field specifies the AWS resources to which the actions are applied. It defines the scope of the permissions and can use Amazon Resource Names (ARNs) to identify specific resources.
+            -   `Condition`: The optional "Condition" field allows you to define additional conditions that must be met for the permission to take effect. You can use various condition operators to check attributes like time, IP address, encryption status, and more.
+            -   `NotAction, NotResource, NotPrincipal`: These fields are used to specify exceptions or negations in the policy. For example, "NotAction" can be used to allow all actions except the ones listed.
+            -   `Resources and Actions ARN Format`: When specifying resources or actions in a policy, Amazon Resource Names (ARNs) are used. ARNs uniquely identify AWS resources and follow a specific format.
+            -   `IAM Policies and Resource Policies`: AWS policy documents can be attached to IAM users, groups, and roles to manage access control. They can also be used as resource policies to manage permissions on individual AWS resources (e.g., S3 bucket policy).
 
-        -   Let's say we have an ec2 instance (which is a service as opposed to a user) where softwares are running and that softwares nees to access information that is in an s3 bucket. So we have one AWS service trying to communicate and talk with another AWS service. You may just think, well, let's just assign the s3 policy and that will grant access to the s3 bucket. But with AWS services you can't directly assign policies to other AWS services.
-        -   First you need to attach a role to a service and then to the role you could attach policies. What the role does in essence is give permissions to another AWS service to almost act as a user. So we can assign a role to an EC2 instance that has the s3 full access policy attached to it, thus granting the ec2 instance access to s3. So you can almost think of roles as a group but for other AWS services as opposed to AWS users.
+        -   **Managed Policy**: A managed policy in AWS is a standalone policy that you can attach to multiple IAM users, groups, or roles. Managed policies allow you to create and maintain a single policy that you can reuse across different entities, simplifying policy management and ensuring consistency in permissions across your AWS environment.
 
-        -   Create Role:
+            -   `AWS Managed Policies`: Created and maintained by AWS, these policies are designed to provide permissions for common use cases, such as full access to a specific AWS service or read-only access to certain resources.
+            -   `Customer Managed Policies`: Created and maintained by the user, these policies provide custom permissions tailored to specific organizational needs.
 
-            ```bash
-            aws iam create-role
-            --role-name Test-Role
-            --assume-role-policy-document file://Test-Role-Trust-Policy.json
+        -   **Inline Policy**: An inline policy in AWS is a policy that's embedded directly within a single IAM user, group, or role. Unlike managed policies, which can be attached to multiple entities and reused, an inline policy is specific to the entity to which it is attached.
+
+            ```json
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": ["s3:GetObject", "s3:ListBucket"],
+                        "Resource": [
+                            "arn:aws:s3:::example-bucket",
+                            "arn:aws:s3:::example-bucket/*"
+                        ]
+                    }
+                ]
+            }
             ```
 
-    #### Security Group:
+        -   **Trust Policy** (**Assume-Role Policy**): A trust policy in AWS is a JSON document that specifies which principals (users, accounts, services, etc.) are allowed to assume a specific role. It defines the conditions under which a role can be assumed and the actions that are allowed as a result.
 
-    In Amazon Web Services (AWS), a security group is a virtual firewall that controls the inbound and outbound traffic for one or more instances. A security group acts as a set of firewall rules for your instances, controlling the traffic that is allowed to reach them. When you create an instance in AWS, you can assign it to one or more security groups. The following are some key terms and concepts related to AWS Security Groups:
-
-    -   `Inbound rules`: Inbound rules are used to control incoming traffic to an EC2 instance. Each rule specifies the source IP address, protocol (TCP/UDP/ICMP), port range, and action (allow/deny) for incoming traffic.
-    -   `Outbound rules`: Outbound rules are used to control outgoing traffic from an EC2 instance. Each rule specifies the destination IP address, protocol (TCP/UDP/ICMP), port range, and action (allow/deny) for outgoing traffic.
-    -   `IP address`: An IP address is a unique identifier assigned to devices on a network. In the context of AWS Security Groups, IP addresses can be used to specify the source or destination of traffic in inbound and outbound rules.
-    -   `CIDR block`: A Classless Inter-Domain Routing (`CIDR`) block is a range of IP addresses. It is used to specify a range of IP addresses in an inbound or outbound rule.
-    -   `Security Group ID`: A Security Group ID is a unique identifier assigned to an AWS Security Group. It is used to reference the Security Group in other AWS resources, such as EC2 instances.
-    -   `Stateful`: AWS Security Groups are stateful, which means that any traffic that is allowed in is automatically allowed out, and any traffic that is denied in is automatically denied out.
-    -   `Default Security Group`: Every VPC comes with a default security group. This security group is applied to all instances that are launched in the VPC if no other security group is specified.
-    -   `Port`: A port is a communication endpoint in an operating system. In the context of AWS Security Groups, it is used to specify the network port number for incoming or outgoing traffic.
-    -   `Protocol`: Protocol is a set of rules that govern how data is transmitted over a network. In the context of AWS Security Groups, it is used to specify the transport protocol (TCP/UDP/ICMP) for incoming or outgoing traffic.
-    -   `Network ACLs`: Network Access Control Lists (ACLs) are another layer of security at a VPC subnet level that can be used to control inbound and outbound traffic to the subnet. Unlike Security Groups, Network ACLs are stateless and can be used to filter traffic based on source/destination IP addresses, protocol, and port number.
-
-    -   **Security Groups**:
-
-        -   `Ingress`: Security groups define inbound rules to control incoming traffic to your instances.
-        -   `Egress`: Security groups also define outbound rules to control outgoing traffic from your instances.
-
-    -   **Network Access Control Lists (NACLs)**:
-
-        -   `Ingress and Egress`: NACLs operate at the subnet level and provide additional control over inbound and outbound traffic. They are stateless, meaning rules for ingress and egress must be defined separately.
-
-    -   **Application Load Balancers (ALB) and Network Load Balancers (NLB)**:
-
-        -   `Ingress`: Load balancers handle incoming traffic and distribute it across multiple instances. ALBs are used for routing HTTP/HTTPS traffic, while NLBs handle TCP/UDP traffic.
-        -   `Egress`: Load balancers themselves don't generate egress traffic, but instances behind load balancers might generate egress traffic.
-
-    -   **Amazon VPC**:
-
-        -   `Ingress and Egress`: VPCs allow you to define routing tables, which control the flow of traffic within and outside the VPC. Ingress and egress routes can be specified to direct traffic to specific destinations.
-
-    #### STS (Security Token Service)
-
-    AWS Security Token Service (STS) is a web service that enables you to request temporary, limited-privilege credentials for AWS Identity and Access Management (IAM) users or for users that you authenticate (federated users). These temporary security credentials work almost identically to long-term access key credentials, with the following differences:
-
-    -   **Temporary**: Temporary security credentials are short-lived. You configure expiration from a few minutes to several hours. After the credentials expire, AWS no longer recognizes them or allows any kind of access from API requests made with them.
-
-    -   **Dynamic**: These credentials are dynamically generated and can be used to provide access to AWS resources for a limited amount of time, making them a secure way to grant access to resources.
-
-    -   **Key Use Cases for STS**:
-
-        1. `Identity Federation`: Allows users to access AWS resources using credentials from an external identity provider (IdP), such as Microsoft Active Directory, Facebook, or any other supported IdP.
-        2. `Cross-Account Access`: Enables users to access resources in a different AWS account without having to create additional user identities.
-        3. `IAM Roles for EC2 Instances`: Grants EC2 instances temporary security credentials to access AWS resources.
-        4. `Temporary Elevated Access`: Allows you to provide users with temporary elevated access to resources without having to modify their long-term credentials.
-
-    -   **Main STS API Operations**
-
-        -   `AssumeRole`: Requests temporary security credentials and associates them with a specified IAM role.
-        -   `AssumeRoleWithSAML`: Returns temporary security credentials for users who have been authenticated via a SAML authentication response.
-        -   `AssumeRoleWithWebIdentity`: Returns temporary security credentials for users authenticated via a web identity provider, such as Login with Amazon, Facebook, Google, or any OpenID Connect-compatible provider.
-        -   `GetFederationToken`: Returns temporary security credentials for a federated user.
-        -   `GetSessionToken`: Returns temporary security credentials for an AWS account or IAM user.
-
-    There are two main ways for an **IAM User** to request an AWS STS token, which grants **temporary, limited-privilege credentials**:
-
-    1.  **Requesting a Token with `GetSessionToken` (Same Permissions)**: The `GetSessionToken` API call generates temporary credentials that are based on the calling IAM user's long-term credentials and have the exact same permissions. This is primarily used to provide temporary, MFA-protected credentials.
-
-        -   **Prerequisites**:
-
-            -   The IAM user must have long-term access keys configured.
-            -   (Optional but recommended) The IAM user must have an MFA device configured, and the policy controlling access must require MFA.
-
-        -   **AWS CLI Example (with MFA)**: Use the `aws sts get-session-token` command, providing the MFA details:
-
-            ```bash
-            aws sts get-session-token \
-                --duration-seconds 3600 \
-                --serial-number arn:aws:iam::123456789012:mfa/user-name \
-                --token-code 123456
+            ```json
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": { "Service": "lambda.amazonaws.com" },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
             ```
 
-            -   `--duration-seconds`: The duration for the temporary credentials (e.g., 3600 seconds = 1 hour). Max is 36 hours for IAM users.
-            -   `--serial-number`: The ARN of the IAM user's MFA device.
-            -   `--token-code`: The current 6-digit code from the MFA device.
+        -   **Principle-Based Policy**: A principal-based policy is a policy that is designed to allow or restrict actions based on the **principal** (i.e., the AWS account, user, role, or service) that is making the request. These policies specify what actions a specific principal can perform on a resource. Principals are at the center of AWS Identity and Access Management (IAM) policies, defining "who" has permission to do "what" on "which" resources. Following are key types of principal-based policies:
 
-            **Output:** The command returns a `Credentials` object containing the `AccessKeyId`, `SecretAccessKey`, and `SessionToken`.
+            1. `Identity-Based Policies`:
 
-    2.  **Requesting a Token with `AssumeRole` (Delegated Permissions)**: The `AssumeRole` API call allows an IAM user to temporarily take on the permissions defined in an **IAM Role**. This is the standard method for delegating permissions within the same account or across accounts.
+                - `Attached to Users, Groups, or Roles`: Identity-based policies are created to allow or deny access to AWS resources by attaching them directly to an IAM user, group, or role.
+                - `Defines Permissions of the Principal`: These policies specify which actions and resources the principal (user, group, or role) can interact with.
+                - `Flexible Scope`: You can make identity-based policies broad (like granting S3 access to a role) or specific (like restricting certain S3 actions).
 
-        -   **Prerequisites**:
+            2. `Service-Control Policies (SCPs)`:
 
-            1.  **IAM Role:** An IAM Role must exist with the desired permissions (via a permissions policy).
-            2.  **Role Trust Policy:** The Role's **Trust Policy** must explicitly allow the IAM User to assume it. This is done by specifying the IAM User's ARN in the `Principal` element of the trust policy, allowing the `sts:AssumeRole` action.
-                ```json
-                {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "AWS": "arn:aws:iam::123456789012:user/target-user"
-                            },
-                            "Action": "sts:AssumeRole"
-                        }
-                    ]
-                }
+                - `Applied at the Organization Level`: In AWS Organizations, SCPs set boundaries for accounts within the organization or organizational units (OUs), limiting or allowing actions for all IAM users, groups, and roles within those accounts.
+                - `Permissions Boundary`: SCPs act as a boundary layer, meaning even if a user has broader permissions in their IAM policy, SCPs can restrict certain actions, effectively setting the upper limit of permissions.
+
+            3. `Resource-Based Policies`:
+                - `Attached Directly to AWS Resources`: Some resources (like S3 buckets, Lambda functions, etc.) allow policies to be attached directly to them, defining who can access them. These policies also define the allowed actions on the resource.
+                - `Granting Cross-Account Access`: Resource-based policies are often used to grant cross-account access, specifying who (in another account) can access a resource.
+
+        -   **Resource-Based Policy**:
+
+        </details>
+
+    -   <details><summary style="font-size:25px;color:#C71585">Role</summary>
+
+        An AWS IAM Role is a set of permissions that define what actions are allowed (or denied) in AWS. It is not associated with a specific user or group, but instead, it can be assumed by any trusted entity (like an AWS service, user, or application).
+
+        In simple terms, an IAM role allows you to grant temporary access to AWS resources to other services or users without sharing long-term credentials like access keys. The role specifies:
+
+        -   Who can assume the role (the trusted entity).
+        -   What permissions are granted to that entity while they use the role.
+
+        -   A role is an IAM identity that you can create in your account that has specific permissions. An IAM role has some similarities to an IAM user. Roles and users are both AWS identities with permissions policies that determine what the identity can and cannot do in AWS. However, instead of being uniquely associated with one person, a role can be assumed by anyone who needs it. A role does not have standard long-term credentials such as a password or access keys associated with it. Instead, when you assume a role, it provides you with temporary security credentials for your role session. You can use roles to delegate access to users, applications, or services that don't normally have access to your AWS resources.
+
+        -   **service role**: A **Service Role** in AWS Identity and Access Management (IAM) is an IAM role that an **AWS service assumes** to perform actions on your behalf. This mechanism is crucial for the security and functionality of numerous AWS services, as it allows them to interact with other AWS resources without using your permanent user credentials.
+
+            -   **Core Concepts of an IAM Role**: An IAM role, in general, is an AWS identity with permission policies, similar to an IAM user. However, a role is designed to be **assumed** by a trusted entity rather than being permanently associated with a single person. The two essential components of any IAM role, including a Service Role, are:
+
+                -   **Trust Policy:** This policy defines **which entities** (principals) are allowed to assume the role. For a Service Role, the trust policy is configured to trust a specific AWS service principal (e.g., `lambda.amazonaws.com` for AWS Lambda or `ec2.amazonaws.com` for Amazon EC2).
+                -   **Permissions Policy:** This policy specifies **what actions** the entity can perform on **which AWS resources** once the role is assumed. This is where you define the permissions needed for the service to carry out its function (e.g., allow `s3:GetObject` on a specific S3 bucket).
+
+            -   **How a Service Role Works**
+
+                1.  **Creation:** An administrator creates the IAM Service Role, attaching the necessary permissions policies and defining the trust policy to allow a specific AWS service (the **principal**) to assume it.
+                2.  **Assumption:** When the AWS service needs to perform an action on a resource (like an EC2 instance needing to read data from S3, or a Lambda function needing to write logs to CloudWatch), the service automatically _assumes_ the Service Role.
+                3.  **Temporary Credentials:** When the service assumes the role, it receives **temporary security credentials**. These credentials are automatically managed, rotated, and have a defined expiration time, adhering to the principle of least privilege and enhancing security.
+                4.  **Action:** The service uses these temporary credentials to execute the allowed actions on your behalf (e.g., creating a network interface, launching an EC2 instance, or writing logs).
+
+            -   **Types of Service Roles**: There are two main categories of service roles you will encounter:
+
+                | Type of Role            | Description                                                                                                                                                                                                  | Management                                                                                                                                                   | Example Use Case                                                                                  |
+                | :---------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------ |
+                | **Service Role**        | A custom role created by an administrator to grant specific, scoped permissions for an AWS service (like Lambda or EC2) to access resources in your account.                                                 | **Customer-Managed**. You define and control both the trust and permissions policies.                                                                        | An **AWS Lambda function** needs to read data from a DynamoDB table and write logs to CloudWatch. |
+                | **Service-Linked Role** | A unique type of IAM role that is **directly linked** to an AWS service. These roles are pre-defined by the service and automatically contain all permissions required for the service to operate correctly. | **AWS-Managed**. The service automatically creates and updates the role, and you typically cannot modify its permissions or trust policy (only view/delete). | An **Auto Scaling Group** needs to manage EC2 instances or Elastic Load Balancers on your behalf. |
+
+        -   **Service-Linked Role**:
+
+        -   **Assumed Role**:
+
+        -   **Pass Role**:
+
+        -   **assume-role-policy-document**: An assume-role-policy-document is a policy attached to an IAM role that defines who (which entities) can assume the role. This policy, also known as a trust policy, specifies the conditions under which the role can be assumed and the permissions granted to those entities.
+
+            ```json
+            {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": "ec2.amazonaws.com"
+                        },
+                        "Action": "sts:AssumeRole"
+                    }
+                ]
+            }
+            ```
+
+            -   `Version`: Specifies the version of the policy language.
+            -   `Statement`: Contains one or more statements that define the principals and the actions allowed.
+            -   `Effect`: Specifies whether the statement allows or denies access (usually "Allow").
+            -   `Principal`: Specifies the AWS account, user, role, or service that can assume the role.
+            -   `Action`: Specifies the action that is allowed (usually "sts ").
+            -   `Condition`: (Optional) Specifies conditions under which the role can be assumed.
+
+        -   **Example**:
+
+            -   Let's say we have an ec2 instance (which is a service as opposed to a user) where softwares are running and that softwares nees to access information that is in an s3 bucket. So we have one AWS service trying to communicate and talk with another AWS service. You may just think, well, let's just assign the s3 policy and that will grant access to the s3 bucket. But with AWS services you can't directly assign policies to other AWS services.
+            -   First you need to attach a role to a service and then to the role you could attach policies. What the role does in essence is give permissions to another AWS service to almost act as a user. So we can assign a role to an EC2 instance that has the s3 full access policy attached to it, thus granting the ec2 instance access to s3. So you can almost think of roles as a group but for other AWS services as opposed to AWS users.
+
+            -   Create Role:
+
+                ```bash
+                aws iam create-role
+                --role-name Test-Role
+                --assume-role-policy-document file://Test-Role-Trust-Policy.json
                 ```
-            3.  **IAM User Permissions:** The IAM User must have an **identity-based policy** that grants them the `sts:AssumeRole` permission on the specific Role ARN.
 
-        -   **AWS CLI Example**: The IAM User uses their own long-term credentials to call the `assume-role` command, specifying the Role they want to assume:
+            </details>
 
-            ```bash
-            aws sts assume-role \
-                --role-arn arn:aws:iam::123456789012:role/TargetRoleName \
-                --role-session-name AWSCLI-Session
-            ```
+    -   <details><summary style="font-size:25px;color:#C71585">Security Group</summary>
 
-            -   `--role-arn`: The Amazon Resource Name (ARN) of the Role you want to assume.
-            -   `--role-session-name`: A unique identifier for the session (visible in CloudTrail logs).
+        In Amazon Web Services (AWS), a security group is a virtual firewall that controls the inbound and outbound traffic for one or more instances. A security group acts as a set of firewall rules for your instances, controlling the traffic that is allowed to reach them. When you create an instance in AWS, you can assign it to one or more security groups. The following are some key terms and concepts related to AWS Security Groups:
 
-            **Output:** The command returns an `AssumedRoleUser` object and a `Credentials` object containing the temporary `AccessKeyId`, `SecretAccessKey`, and `SessionToken`.
+        -   `Inbound rules`: Inbound rules are used to control incoming traffic to an EC2 instance. Each rule specifies the source IP address, protocol (TCP/UDP/ICMP), port range, and action (allow/deny) for incoming traffic.
+        -   `Outbound rules`: Outbound rules are used to control outgoing traffic from an EC2 instance. Each rule specifies the destination IP address, protocol (TCP/UDP/ICMP), port range, and action (allow/deny) for outgoing traffic.
+        -   `IP address`: An IP address is a unique identifier assigned to devices on a network. In the context of AWS Security Groups, IP addresses can be used to specify the source or destination of traffic in inbound and outbound rules.
+        -   `CIDR block`: A Classless Inter-Domain Routing (`CIDR`) block is a range of IP addresses. It is used to specify a range of IP addresses in an inbound or outbound rule.
+        -   `Security Group ID`: A Security Group ID is a unique identifier assigned to an AWS Security Group. It is used to reference the Security Group in other AWS resources, such as EC2 instances.
+        -   `Stateful`: AWS Security Groups are stateful, which means that any traffic that is allowed in is automatically allowed out, and any traffic that is denied in is automatically denied out.
+        -   `Default Security Group`: Every VPC comes with a default security group. This security group is applied to all instances that are launched in the VPC if no other security group is specified.
+        -   `Port`: A port is a communication endpoint in an operating system. In the context of AWS Security Groups, it is used to specify the network port number for incoming or outgoing traffic.
+        -   `Protocol`: Protocol is a set of rules that govern how data is transmitted over a network. In the context of AWS Security Groups, it is used to specify the transport protocol (TCP/UDP/ICMP) for incoming or outgoing traffic.
+        -   `Network ACLs`: Network Access Control Lists (ACLs) are another layer of security at a VPC subnet level that can be used to control inbound and outbound traffic to the subnet. Unlike Security Groups, Network ACLs are stateless and can be used to filter traffic based on source/destination IP addresses, protocol, and port number.
 
-        -   **Next Step**: Once you receive the temporary credentials (Access Key ID, Secret Access Key, and Session Token), you must set them as environment variables or configure them in your AWS CLI/SDK profile to use them for subsequent AWS API calls.
+        -   **Security Groups**:
 
-    #### Instance Profile
+            -   `Ingress`: Security groups define inbound rules to control incoming traffic to your instances.
+            -   `Egress`: Security groups also define outbound rules to control outgoing traffic from your instances.
 
-    An instance profile is an AWS Identity and Access Management (IAM) entity that allows EC2 instances to obtain temporary AWS credentials and interact with other AWS services. It acts as a bridge between an IAM role and an EC2 instance, facilitating secure access to AWS resources.
+        -   **Network Access Control Lists (NACLs)**:
 
-    An instance profile is a container for an IAM role that you can use to pass role information to an EC2 instance when it is launched.
-    An instance profile is associated with only one IAM role, and it allows EC2 instances to assume the role and obtain temporary credentials.
+            -   `Ingress and Egress`: NACLs operate at the subnet level and provide additional control over inbound and outbound traffic. They are stateless, meaning rules for ingress and egress must be defined separately.
 
-    -   **Create an Instance Profile**:
+        -   **Application Load Balancers (ALB) and Network Load Balancers (NLB)**:
 
-        -   An instance profile is created in IAM and is associated with the IAM role.
-        -   You can create an instance profile using the AWS Management Console, AWS CLI, or AWS SDKs.
+            -   `Ingress`: Load balancers handle incoming traffic and distribute it across multiple instances. ALBs are used for routing HTTP/HTTPS traffic, while NLBs handle TCP/UDP traffic.
+            -   `Egress`: Load balancers themselves don't generate egress traffic, but instances behind load balancers might generate egress traffic.
 
-    -   **Associate the Instance Profile with an EC2 Instance**:
+        -   **Amazon VPC**:
 
-        -   When launching an EC2 instance, specify the instance profile.
-        -   The instance profile enables the EC2 instance to assume the IAM role and obtain temporary credentials from the AWS Security Token Service (STS).
+            -   `Ingress and Egress`: VPCs allow you to define routing tables, which control the flow of traffic within and outside the VPC. Ingress and egress routes can be specified to direct traffic to specific destinations.
 
-    -   **Access AWS Services**:
+        </details>
 
-        -   Once the EC2 instance has assumed the role through the instance profile, it can use the temporary credentials to access AWS services based on the permissions defined in the role's policies.
+    -   <details><summary style="font-size:25px;color:#C71585">Security Token Service (STS)</summary>
 
-    #### IAM Users
+        AWS Security Token Service (STS) is a web service that enables you to request temporary, limited-privilege credentials for AWS Identity and Access Management (IAM) users or for users that you authenticate (federated users). These temporary security credentials work almost identically to long-term access key credentials, with the following differences:
 
-    An **IAM user** is an identity with specific permissions within an AWS account. IAM users are used to represent individuals or services that need to interact with AWS resources.
+        -   **Temporary**: Temporary security credentials are short-lived. You configure expiration from a few minutes to several hours. After the credentials expire, AWS no longer recognizes them or allows any kind of access from API requests made with them.
 
-    -   **Attributes**:
-        -   **Login credentials**: Users can have a username and password for the AWS Management Console and access keys for API access.
-        -   **Permissions**: Users can be assigned policies that define what actions they are allowed to perform.
-        -   **Best practice**: For individuals, create IAM users instead of sharing the root account credentials.
-    -   **Federated Users**: Federated users are users that are authenticated by an external identity provider (IdP). AWS supports various IdPs, such as Active Directory, Google, or Facebook to grant temporary access to AWS resources. This allows you to integrate existing authentication systems with AWS, reducing the need to create separate IAM users for each individual. Federated users can be granted access to AWS resources using IAM roles.
+        -   **Dynamic**: These credentials are dynamically generated and can be used to provide access to AWS resources for a limited amount of time, making them a secure way to grant access to resources.
 
-    #### IAM Groups
+        -   **Key Use Cases for STS**:
 
-    An **IAM group** is a collection of IAM users. You can attach policies to groups to apply common permissions to multiple users at once. Users in a group inherit the permissions assigned to the group.
+            1. `Identity Federation`: Allows users to access AWS resources using credentials from an external identity provider (IdP), such as Microsoft Active Directory, Facebook, or any other supported IdP.
+            2. `Cross-Account Access`: Enables users to access resources in a different AWS account without having to create additional user identities.
+            3. `IAM Roles for EC2 Instances`: Grants EC2 instances temporary security credentials to access AWS resources.
+            4. `Temporary Elevated Access`: Allows you to provide users with temporary elevated access to resources without having to modify their long-term credentials.
 
-    -   **Attributes**:
-        -   Simplifies the management of permissions.
-        -   Commonly used to assign permissions based on job functions (e.g., Admins, Developers, and Read-Only Users).
+        -   **Main STS API Operations**
 
-    #### IAM Access Keys
+            -   `AssumeRole`: Requests temporary security credentials and associates them with a specified IAM role.
+            -   `AssumeRoleWithSAML`: Returns temporary security credentials for users who have been authenticated via a SAML authentication response.
+            -   `AssumeRoleWithWebIdentity`: Returns temporary security credentials for users authenticated via a web identity provider, such as Login with Amazon, Facebook, Google, or any OpenID Connect-compatible provider.
+            -   `GetFederationToken`: Returns temporary security credentials for a federated user.
+            -   `GetSessionToken`: Returns temporary security credentials for an AWS account or IAM user.
 
-    **Access keys** are credentials that IAM users or roles use to make programmatic requests to AWS APIs. These consist of:
-    Access keys consist of an access key ID and a secret access key. They are used to authenticate an AWS API request made by an IAM user, an AWS service, or an application.
+        There are two main ways for an **IAM User** to request an AWS STS token, which grants **temporary, limited-privilege credentials**:
 
-    -   **Access Key ID**: A unique identifier.
-    -   **Secret Access Key**: A secret key that is used with the access key ID to sign requests securely.
+        1.  **Requesting a Token with `GetSessionToken` (Same Permissions)**: The `GetSessionToken` API call generates temporary credentials that are based on the calling IAM user's long-term credentials and have the exact same permissions. This is primarily used to provide temporary, MFA-protected credentials.
 
-    -   **Attributes**:
-        -   **Best practice**: Rotate keys regularly, and avoid embedding them directly into code (use tools like AWS Secrets Manager).
-        -   **Usage**: Typically used for CLI or API access to AWS services.
+            -   **Prerequisites**:
 
-    #### IAM Identity Providers
+                -   The IAM user must have long-term access keys configured.
+                -   (Optional but recommended) The IAM user must have an MFA device configured, and the policy controlling access must require MFA.
 
-    **IAM identity providers** allow users from an external identity system (such as corporate directories or web identity providers) to access AWS resources without creating an IAM user for each one.
+            -   **AWS CLI Example (with MFA)**: Use the `aws sts get-session-token` command, providing the MFA details:
 
-    -   **Types of Identity Providers**:
-        -   **SAML 2.0**: Integrates with corporate directories like Microsoft Active Directory for single sign-on (SSO).
-        -   **Web Identity Federation**: Supports providers like Google, Facebook, and Amazon for web identity-based authentication.
-        -   **OIDC (OpenID Connect)**: Allows external identity providers that support the OIDC standard to be used for access to AWS.
+                ```bash
+                aws sts get-session-token \
+                    --duration-seconds 3600 \
+                    --serial-number arn:aws:iam::123456789012:mfa/user-name \
+                    --token-code 123456
+                ```
 
-    #### IAM Permissions Boundaries
+                -   `--duration-seconds`: The duration for the temporary credentials (e.g., 3600 seconds = 1 hour). Max is 36 hours for IAM users.
+                -   `--serial-number`: The ARN of the IAM user's MFA device.
+                -   `--token-code`: The current 6-digit code from the MFA device.
 
-    A **permissions boundary** is a feature that allows you to define the maximum permissions an IAM role or user can have. Even if the user or role has broader permissions in their assigned policies, they cannot exceed the permissions set in the boundary.
+                **Output:** The command returns a `Credentials` object containing the `AccessKeyId`, `SecretAccessKey`, and `SessionToken`.
 
-    -   **Attributes**:
-        -   Useful for limiting permissions that roles or users can grant to themselves or others.
-        -   Helps prevent privilege escalation attacks.
+        2.  **Requesting a Token with `AssumeRole` (Delegated Permissions)**: The `AssumeRole` API call allows an IAM user to temporarily take on the permissions defined in an **IAM Role**. This is the standard method for delegating permissions within the same account or across accounts.
 
-    #### Multi-Factor Authentication (MFA)
+            -   **Prerequisites**:
 
-    MFA adds an extra layer of security by requiring users to enter a second form of authentication (e.g., one-time passcode) in addition to their credentials.
+                1.  **IAM Role:** An IAM Role must exist with the desired permissions (via a permissions policy).
+                2.  **Role Trust Policy:** The Role's **Trust Policy** must explicitly allow the IAM User to assume it. This is done by specifying the IAM User's ARN in the `Principal` element of the trust policy, allowing the `sts:AssumeRole` action.
+                    ```json
+                    {
+                        "Version": "2012-10-17",
+                        "Statement": [
+                            {
+                                "Effect": "Allow",
+                                "Principal": {
+                                    "AWS": "arn:aws:iam::123456789012:user/target-user"
+                                },
+                                "Action": "sts:AssumeRole"
+                            }
+                        ]
+                    }
+                    ```
+                3.  **IAM User Permissions:** The IAM User must have an **identity-based policy** that grants them the `sts:AssumeRole` permission on the specific Role ARN.
 
-    Multi-Factor Authentication (MFA) adds an extra layer of security to your AWS account. It requires users to provide a second form of authentication, such as a one-time password generated by a hardware or software token.
+            -   **AWS CLI Example**: The IAM User uses their own long-term credentials to call the `assume-role` command, specifying the Role they want to assume:
 
-    -   **Attributes**:
-        -   **Virtual MFA devices**: Can be implemented using applications like Google Authenticator.
-        -   **Hardware MFA devices**: AWS supports physical MFA devices like hardware tokens.
+                ```bash
+                aws sts assume-role \
+                    --role-arn arn:aws:iam::123456789012:role/TargetRoleName \
+                    --role-session-name AWSCLI-Session
+                ```
 
-    #### Best Practices for AWS IAM
+                -   `--role-arn`: The Amazon Resource Name (ARN) of the Role you want to assume.
+                -   `--role-session-name`: A unique identifier for the session (visible in CloudTrail logs).
 
-    -   Use **IAM roles** instead of IAM users for accessing AWS resources when possible.
-    -   Implement **Multi-Factor Authentication (MFA)** for all privileged accounts.
-    -   Follow the **principle of least privilege**: Assign only the permissions necessary for the task.
-    -   Regularly rotate **access keys** and monitor usage with IAM credential reports.
-    -   Use **permissions boundaries** to limit the scope of permissions assigned to roles and users.
+                **Output:** The command returns an `AssumedRoleUser` object and a `Credentials` object containing the temporary `AccessKeyId`, `SecretAccessKey`, and `SessionToken`.
+
+            -   **Next Step**: Once you receive the temporary credentials (Access Key ID, Secret Access Key, and Session Token), you must set them as environment variables or configure them in your AWS CLI/SDK profile to use them for subsequent AWS API calls.
+
+        </details>
+
+    -   <details><summary style="font-size:25px;color:#C71585">Instance Profile</summary>
+
+        > An instance profile is an AWS Identity and Access Management (IAM) entity that allows EC2 instances to obtain temporary AWS credentials and interact with other AWS services. It acts as a bridge between an IAM role and an EC2 instance, facilitating secure access to AWS resources.
+        > An instance profile is a container for an IAM role that you can use to pass role information to an EC2 instance when it is launched.
+        > An instance profile is associated with only one IAM role, and it allows EC2 instances to assume the role and obtain temporary credentials.
+
+        -   **Create an Instance Profile**:
+
+            -   An instance profile is created in IAM and is associated with the IAM role.
+            -   You can create an instance profile using the AWS Management Console, AWS CLI, or AWS SDKs.
+
+        -   **Associate the Instance Profile with an EC2 Instance**:
+
+            -   When launching an EC2 instance, specify the instance profile.
+            -   The instance profile enables the EC2 instance to assume the IAM role and obtain temporary credentials from the AWS Security Token Service (STS).
+
+        -   **Access AWS Services**:
+
+            -   Once the EC2 instance has assumed the role through the instance profile, it can use the temporary credentials to access AWS services based on the permissions defined in the role's policies.
+
+        </details>
+
+
+    -   **IAM Users**: An **IAM user** is an identity with specific permissions within an AWS account. IAM users are used to represent individuals or services that need to interact with AWS resources.
+
+        -   **Attributes**:
+            -   **Login credentials**: Users can have a username and password for the AWS Management Console and access keys for API access.
+            -   **Permissions**: Users can be assigned policies that define what actions they are allowed to perform.
+            -   **Best practice**: For individuals, create IAM users instead of sharing the root account credentials.
+        -   **Federated Users**: Federated users are users that are authenticated by an external identity provider (IdP). AWS supports various IdPs, such as Active Directory, Google, or Facebook to grant temporary access to AWS resources. This allows you to integrate existing authentication systems with AWS, reducing the need to create separate IAM users for each individual. Federated users can be granted access to AWS resources using IAM roles.
+
+    -   **IAM Groups**: An **IAM group** is a collection of IAM users. You can attach policies to groups to apply common permissions to multiple users at once. Users in a group inherit the permissions assigned to the group.
+
+        -   **Attributes**:
+            -   Simplifies the management of permissions.
+            -   Commonly used to assign permissions based on job functions (e.g., Admins, Developers, and Read-Only Users).
+
+    -   **IAM Access Keys**: **Access keys** are credentials that IAM users or roles use to make programmatic requests to AWS APIs. These consist of:
+        Access keys consist of an access key ID and a secret access key. They are used to authenticate an AWS API request made by an IAM user, an AWS service, or an application.
+
+        -   **Access Key ID**: A unique identifier.
+        -   **Secret Access Key**: A secret key that is used with the access key ID to sign requests securely.
+
+        -   **Attributes**:
+            -   **Best practice**: Rotate keys regularly, and avoid embedding them directly into code (use tools like AWS Secrets Manager).
+            -   **Usage**: Typically used for CLI or API access to AWS services.
+
+    -   **IAM Identity Providers**: **IAM identity providers** allow users from an external identity system (such as corporate directories or web identity providers) to access AWS resources without creating an IAM user for each one.
+
+        -   **Types of Identity Providers**:
+            -   **SAML 2.0**: Integrates with corporate directories like Microsoft Active Directory for single sign-on (SSO).
+            -   **Web Identity Federation**: Supports providers like Google, Facebook, and Amazon for web identity-based authentication.
+            -   **OIDC (OpenID Connect)**: Allows external identity providers that support the OIDC standard to be used for access to AWS.
+
+    -   **IAM Permissions Boundaries**: A **permissions boundary** is a feature that allows you to define the maximum permissions an IAM role or user can have. Even if the user or role has broader permissions in their assigned policies, they cannot exceed the permissions set in the boundary.
+
+        -   **Attributes**:
+            -   Useful for limiting permissions that roles or users can grant to themselves or others.
+            -   Helps prevent privilege escalation attacks.
+
+    -   **Multi-Factor Authentication (MFA)**: MFA adds an extra layer of security by requiring users to enter a second form of authentication (e.g., one-time passcode) in addition to their credentials.
+
+        Multi-Factor Authentication (MFA) adds an extra layer of security to your AWS account. It requires users to provide a second form of authentication, such as a one-time password generated by a hardware or software token.
+
+        -   **Attributes**:
+            -   **Virtual MFA devices**: Can be implemented using applications like Google Authenticator.
+            -   **Hardware MFA devices**: AWS supports physical MFA devices like hardware tokens.
+
+    -   **Best Practices for AWS IAM**:
+
+        -   Use **IAM roles** instead of IAM users for accessing AWS resources when possible.
+        -   Implement **Multi-Factor Authentication (MFA)** for all privileged accounts.
+        -   Follow the **principle of least privilege**: Assign only the permissions necessary for the task.
+        -   Regularly rotate **access keys** and monitor usage with IAM credential reports.
+        -   Use **permissions boundaries** to limit the scope of permissions assigned to roles and users.
 
     </details>
 
@@ -1920,7 +1918,7 @@
     -   [Be a Better Dev: AWS Cloudwatch Guides - Learn AWS Monitoring Techniques](https://www.youtube.com/playlist?list=PL9nWRykSBSFir2FLla2thQkEwmLpxPega)
     -   [What is AWS CloudWatch? Metric | Alarms | Logs Custom Metric](https://www.youtube.com/watch?v=G4_ay2_h9GI)
 
-    Amazon CloudWatch is a monitoring service provided by Amazon Web Services (AWS) that allows you to monitor and collect metrics, collect and monitor log files, and set alarms. Here are some important terms and concepts related to AWS CloudWatch:
+    > Amazon CloudWatch is a monitoring service provided by Amazon Web Services (AWS) that allows you to monitor and collect metrics, collect and monitor log files, and set alarms. Here are some important terms and concepts related to AWS CloudWatch:
 
     -   `Metrics`: A metric is a variable that you want to monitor, such as CPU usage, disk space usage, or network traffic. CloudWatch provides a set of predefined metrics for AWS resources, and you can also create your own custom metrics.
     -   `Events`: CloudWatch Events is a service that allows you to monitor and respond to changes in your AWS resources. You can create rules that trigger automated actions when certain events occur, such as launching an EC2 instance or creating a new S3 bucket.
@@ -4277,8 +4275,7 @@
 
     > Here is a practical implementation of **Envelope Encryption** using Python and `boto3`. In this scenario, we use the `cryptography` library to handle the actual data encryption (AES-GCM), while KMS manages the keys.
 
-    - **Prerequisites**: You will need to install the following library:
-        -   `$ pip install boto3 cryptography`
+    - **Prerequisites**: You will need to install the following library: `$ pip install boto3 cryptography`
 
     1. **The Encryption Workflow**: The goal is to request a **Data Key** from KMS. KMS returns a plaintext version (for immediate use) and an encrypted version (to store with your data).
 

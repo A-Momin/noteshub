@@ -47,6 +47,7 @@
     -   **Research** vs **Investigation**:
     -   **Minimize** vs **minimalize**:
 
+    -   corrosion / stain
 
     -   Span/Embad/Encompass
     -   Vigilant/Deligent

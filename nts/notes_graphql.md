@@ -16,38 +16,45 @@
 
     > Think of REST as a vending machine where you press a button and get a pre-packaged snack. GraphQL is more like a high-end buffet where you tell the chef exactly which ingredients you want on your plate, and they assemble it for you in one go.
 
-    ####  Abstract Syntax Tree (AST)
+    -   **Abstract Syntax Tree (AST)** is how GraphQL parses and represents a query internally. When you send a GraphQL query string like:
+        -   ```graphql
+            query GetUser {
+                user(id: "1") {
+                    name
+                    email
+                }
+            }
+            ```
+        -   The GraphQL server converts this text into a tree structure (the AST) where each part of the query—operations, fields, arguments, etc.—becomes a node. This tree representation allows the server to:
+            1. **Validate** the query against the schema
+            2. **Execute** the query by traversing the tree and calling resolvers
+            3. **Optimize** the execution path
 
-    ##### The Building Blocks: Schema & Type System
-
-    The **Schema** is the contract between the client and the server. It defines what data exists and how a client can ask for it.
-
-    -   **Schema Design Strategy**: The schema is the contract between the client and the server. How you build it determines your long-term maintenance burden.
-
-        -   **Code-First**: You write the schema using your programming language’s native types (e.g., Python classes or TypeScript decorators). The SDL (Schema Definition Language) is auto-generated. This is great for keeping your implementation and schema in sync.
-        -   **Schema-First**: You write the .graphql SDL file first, then write "resolvers" to match. This is often better for team collaboration, as frontend and backend developers can agree on the contract before coding starts.
-
+    -   The **Schema** is the contract between the client and the server. It defines what data exists and how a client can ask for it.
+        -   **Schema Design Strategy**: The schema is the contract between the client and the server. How you build it determines your long-term maintenance burden.
+            -   **Code-First**: You write the schema using your programming language’s native types (e.g., Python classes or TypeScript decorators). The SDL (Schema Definition Language) is auto-generated. This is great for keeping your implementation and schema in sync.
+            -   **Schema-First**: You write the .graphql SDL file first, then write "resolvers" to match. This is often better for team collaboration, as frontend and backend developers can agree on the contract before coding starts.
 
     -   **SDL (Schema Definition Language):** The human-readable syntax used to write GraphQL schemas.
+
     -   **Object Types:** The basic components representing an object you can fetch (e.g., `User`, `Post`).
+
     -   **Fields:** The specific pieces of data on an object (e.g., `name`, `email`).
+
     -   **Scalars:** The "leaf" nodes of the tree. Built-in types include `ID`, `String`, `Int`, `Float`, and `Boolean`.
+
     -   **Enums:** A special scalar that is restricted to a particular set of allowed values.
 
-
-    ##### Operation Types (The "Requests")
-
-    There are three main types of operations a client can perform:
-
-    | Operation        | Purpose                                | Analogy                                                      |
-    | ---------------- | -------------------------------------- | ------------------------------------------------------------ |
-    | **Query**        | Fetch data (Read-only).                | Asking for a menu.                                           |
-    | **Mutation**     | Modify data (Create, Update, Delete).  | Placing an order.                                            |
-    | **Subscription** | Real-time data updates via WebSockets. | The waiter telling you "the soup is ready" the moment it is. |
-
+    -   **Operation Types (The "Requests")**: There are three main types of operations a client can perform:
+        | Operation        | Purpose                                | Analogy                                                      |
+        | ---------------- | -------------------------------------- | ------------------------------------------------------------ |
+        | **Query**        | Fetch data (Read-only).                | Asking for a menu.                                           |
+        | **Mutation**     | Modify data (Create, Update, Delete).  | Placing an order.                                            |
+        | **Subscription** | Real-time data updates via WebSockets. | The waiter telling you "the soup is ready" the moment it is. |
 
     ##### Core Concepts & Features
 
+    -   **Resolvers**: The "brains" of the operation. A resolver is a function on the server that is responsible for fetching the data for a single field. If you ask for a user's name, the `User.name` resolver runs to find that string in the database.
 
     -   **Operations**: In GraphQL, an **Operation** is a formal request sent by a client to a server. While people often use the word "query" to describe everything, "Operation" is the technically correct term that encompasses the three different ways you can interact with a GraphQL API. Think of an Operation as a **Unit of Work**. Every operation must have a **Type**, a **Name** (recommended), and a **Selection Set** (the fields you want back).
 
@@ -88,26 +95,22 @@
             -   **Operation Idempotency**: Queries should always be **idempotent** (running them 10 times gives the same result). Mutations are not.
             -   **Single Responsibility**: A single operation should ideally represent one specific UI intent (e.g., "Load Dashboard") rather than trying to fetch every piece of data the app might ever need.
 
-    -   **Selection Sets**:
-
-        > In GraphQL, the **Selection Set** is the core of the request. It is the list of fields that you, the client, "select" to be returned by the server. If the **Operation** (Query, Mutation, Subscription) is the envelope, the **Selection Set** is the specific list of contents you are requesting inside that envelope.
+    -   **Selection Sets**: Selection Set is the core of the request. It is the list of fields that you, the client, "select" to be returned by the server. If the **Operation** (Query, Mutation, Subscription) is the envelope, the **Selection Set** is the specific list of contents you are requesting inside that envelope.
 
         1. **The Anatomy of a Selection Set**: A selection set is wrapped in curly braces `{ }`. Every level of a GraphQL query—from the root down to the deepest child—is a selection set.
 
             ```graphql
-            query GetUser {
-                # --- Start of Root Selection Set ---
+            query GetUser { # Start of Root Selection Set
                 user(id: "1") {
-                    id         # Scalar field
-                    username   # Scalar field
+                    id
+                    username
                     
-                    friends {  # Object field (Starts a nested Selection Set)
-                    name
-                    onlineStatus
-                    }
+                    friends { # Start of a nested Selection Set
+                        name
+                        onlineStatus
+                    } # End of the nested Selection Set
                 }
-                # --- End of Root Selection Set ---
-            }
+            } # --- End of Root Selection Set ---
             ```
 
         2. **Key Rules of Selection Sets**:
@@ -133,42 +136,21 @@
                 }
                 ```
 
-            1.  **Efficiency:** Mobile users on slow networks only download the 3 fields they need for the screen, rather than a massive 50-field JSON object from a REST API.
-            2.  **Predictability:** Frontend developers know exactly what the data shape will look like before the API call even returns.
-            3.  **Evolution without Versioning:** You can add new fields to the server's schema without breaking old clients, because old clients simply won't include those new fields in their **Selection Sets**.
-
-
     -   **Arguments**: Every field and nested object can get its own set of arguments, eliminating the need for complex URL parameters.
-        * *Example:* `user(id: "123") { profile_pic(size: 100) }`
-
-    -   **Fragments**: Reusable units of logic. If you find yourself requesting the same 10 fields for a "User" in different parts of your app, you create a Fragment to keep your code DRY (Don't Repeat Yourself).
-        ```graphql
-        fragment UserDetails on User {
-            id
-            username
-            email
-        }
-        ```
+        -   *Example:* `user(id: "123") { profile_pic(size: 100) }`
 
     -   **Variables**: Instead of hardcoding values into the query string, you use variables to make queries dynamic and secure.
 
     -   **Directives**: Special instructions that tell the server to change the execution of a query.
-
-        * `@include(if: Boolean)`: Only include this field if the argument is true.
-        * `@skip(if: Boolean)`: Skip this field if the argument is true.
+        -   `@include(if: Boolean)`: Only include this field if the argument is true.
+        -   `@skip(if: Boolean)`: Skip this field if the argument is true.
 
     -   **Aliases**: Used when you want to query for the same field with different arguments in the same request.
-
-        * *Example:* `smallPic: profile_pic(size: 50)` and `largePic: profile_pic(size: 500)`.
+        -   `smallPic: profile_pic(size: 50)` and `largePic: profile_pic(size: 500)`.
 
     -   **Unions and Interfaces**:
-
         -   **Interfaces**: A set of common fields multiple types must implement (e.g., Node interface).
-
         -   **Unions**: A field can return one of several different types (e.g., a Search result could be a User OR a Post).
-
-    -   **Resolvers**: The "brains" of the operation. A resolver is a function on the server that is responsible for fetching the data for a single field. If you ask for a user's name, the `User.name` resolver runs to find that string in the database.
-
 
     </details>
 
@@ -179,25 +161,20 @@
 
     -   <details><summary style="font-size:25px;color:#C71585">Django GraphQL Libraries</summary>
 
-        1. **GraphQL-Core** (The Engine): `graphql-core` is the "low-level" implementation of GraphQL for Python. It is a direct port of the reference JavaScript implementation, `graphql-js`.
+        -   **GraphQL-Core** (The Engine): `graphql-core` is the "low-level" implementation of GraphQL for Python. It is a direct port of the reference JavaScript implementation, `graphql-js`.
+            -   **Role:** It handles the heavy lifting: parsing query strings, validating them against a schema, and executing them.
+            -   **Syntax:** It uses a very verbose, "manual" syntax. You define types by instantiating classes like `GraphQLObjectType` and `GraphQLField`.
+            -   **Who uses it?** You rarely use this directly unless you are building your own GraphQL library. Both **Strawberry** and **Graphene** are built on top of `graphql-core`.
 
-        -    **Role:** It handles the heavy lifting: parsing query strings, validating them against a schema, and executing them.
-        -    **Syntax:** It uses a very verbose, "manual" syntax. You define types by instantiating classes like `GraphQLObjectType` and `GraphQLField`.
-        -    **Who uses it?** You rarely use this directly unless you are building your own GraphQL library. Both **Strawberry** and **Graphene** are built on top of `graphql-core`.
+        -   **Strawberry-GraphQL** (The Developer Experience (DX) Layer): `strawberry-graphql` (often just called **Strawberry**) is a "code-first" library that wraps `graphql-core` to make it "Pythonic."
+            -   **Role:** It allows you to define your GraphQL schema using standard **Python Type Hints** and **Dataclasses**.
+            -   **Key Feature:** Instead of manual type definitions, you use the `@strawberry.type` decorator. It automatically generates the `graphql-core` objects for you.
+            -   **Framework Agnostic:** It doesn't care if you use FastAPI, Flask, Sanic, or even just a plain script. It focuses purely on turning Python classes into a GraphQL API.
 
-
-
-        2. **Strawberry-GraphQL** (The Developer Experience (DX) Layer): `strawberry-graphql` (often just called **Strawberry**) is a "code-first" library that wraps `graphql-core` to make it "Pythonic."
-
-        -    **Role:** It allows you to define your GraphQL schema using standard **Python Type Hints** and **Dataclasses**.
-        -    **Key Feature:** Instead of manual type definitions, you use the `@strawberry.type` decorator. It automatically generates the `graphql-core` objects for you.
-        -    **Framework Agnostic:** It doesn't care if you use FastAPI, Flask, Sanic, or even just a plain script. It focuses purely on turning Python classes into a GraphQL API.
-
-        3. **Strawberry-GraphQL-Django** (The Integration Layer): `strawberry-graphql-django` (or `strawberry-django`) is an extension built specifically for the **Django** web framework.
-
-        -    **Role:** It bridges the gap between **Django Models** and **Strawberry Types**.
-        -    **The "Magic":** In standard Strawberry, you have to manually map your database fields to your GraphQL fields. `strawberry-django` automates this. You can say "Give me a GraphQL type based on this Django User model," and it will automatically handle the fields, relationships (ForeignKeys), and even create Filters/Ordering/Pagination logic.
-        -    **Optimization:** It includes a "Query Optimizer" that automatically adds `.select_related()` and `.prefetch_related()` to your database calls to prevent the N+1 performance problem.
+        -   **Strawberry-GraphQL-Django** (The Integration Layer): `strawberry-graphql-django` (or `strawberry-django`) is an extension built specifically for the **Django** web framework.
+            -   **Role:** It bridges the gap between **Django Models** and **Strawberry Types**.
+            -   **The "Magic":** In standard Strawberry, you have to manually map your database fields to your GraphQL fields. `strawberry-django` automates this. You can say "Give me a GraphQL type based on this Django User model," and it will automatically handle the fields, relationships (ForeignKeys), and even create Filters/Ordering/Pagination logic.
+            -   **Optimization:** It includes a "Query Optimizer" that automatically adds `.select_related()` and `.prefetch_related()` to your database calls to prevent the N+1 performance problem.
 
         -   **Summary Comparison**
 
@@ -210,41 +187,166 @@
             | **Best For**    | Library Authors         | FastAPI, Flask, general apps | **Django Projects**       |
 
         -   **Which one should you use?**
-
-            1.  **If you are using Django:** Use `strawberry-graphql-django`. It will save you hundreds of lines of boilerplate code by reusing your existing models.
-            2.  **If you are using FastAPI/Flask:** Use `strawberry-graphql`. It gives you the best balance of speed, type safety, and flexibility.
-            3.  **If you want to understand how GraphQL works under the hood:** Read the source code of `graphql-core`.
+            -   **If you are using Django:** Use `strawberry-graphql-django`. It will save you hundreds of lines of boilerplate code by reusing your existing models.
+            -   **If you are using FastAPI/Flask:** Use `strawberry-graphql`. It gives you the best balance of speed, type safety, and flexibility.
+            -   **If you want to understand how GraphQL works under the hood:** Read the source code of `graphql-core`.
 
         </details>
 
+    -   <details><summary style="font-size:25px;color:#C71585">GraphQL Design & Implementation Guide in Django</summary>
 
-    #### Advanced Components & Design Patterns
+        -   **What Are GraphQL Types and Inputs?**: In GraphQL, every piece of data is part of a **Type System**.
+            -   **Input Types:** These are special types used as arguments in mutations or queries. They define the shape of the data being *sent* to the server.
+            -   **Object (Output) Types:** These define the shape of the data you can fetch from the service (the **Output**). They represent the nodes in your graph.
 
-    -   **Introspection**: is **self-documenting**. You can query the server itself to ask what types and operations it supports. This is what powers tools like **GraphiQL** and **Apollo Studio**.
+            > **Note:** You cannot use an Object Type as an input or an Input Type as an output. They are strictly separated to maintain clear API boundaries.
 
-    -   **Interfaces & Union Types**
+        -   **Creating Manual Types with `@strawberry.type`**: Manual types allow you to define a specific contract that doesn't necessarily map to a database.
 
-        * **Interface:** An abstract type that includes a certain set of fields that a type must include (e.g., `Character` interface used by `Human` and `Droid`).
-        * **Union:** Represents an object that could be one of several types, but those types don't necessarily share any fields.
+            ```python
+            import strawberry
 
-    -   **The  Problem & Dataloader**: A common performance pitfall in GraphQL. If you fetch 10 posts and their authors, a naive implementation might run 1 query for the posts and 10 separate queries for the authors.
+            @strawberry.type
+            class UserProfile:
+                username: str
+                email: str
+                age: int
+            ```
 
-        * **The Solution:** **Dataloader**, a utility that batches and caches these requests into a single database hit.
+        -   **Controlling Nullability and Optional Fields**: By default, in Strawberry, a field is **Required** (Non-nullable) unless specified. To make a field nullable (optional), use the `Optional` type hint from the `typing` module.
 
+            ```python
+            from typing import Optional
 
-    #### Infrastructure & Tooling
+            @strawberry.type
+            class Product:
+                name: str  # Required
+                description: Optional[str] = None  # Nullable
+            ```
+            > In the generated GraphQL Schema:* `name: String!` vs `description: String`.
 
-    * **Execution:** The process of the server traversing the query tree and calling resolvers.
-    * **Validation:** Ensuring the query is syntactically correct and matches the schema before running it.
-    * **Transport:** Most GraphQL travels over **HTTP** (usually a single `POST` endpoint at `/graphql`), but Subscriptions require **WebSockets**.
+        -   **Using a Field-Level Resolver to Clean Data**: Field-level resolvers allow you to intercept the data before it is returned to the client. This is perfect for "cleaning" strings, such as converting empty strings to `None`.
 
-    #### Summary of Benefits
+            ```python
+            @strawberry.type
+            class Comment:
+                text: str
 
-    * **No Over-fetching:** You get only the fields you asked for.
-    * **No Under-fetching:** You get all the data you need in a single round-trip.
-    * **Strong Typing:** Errors are caught at the schema level, not at runtime.
+                @strawberry.field
+                def clean_text(self) -> Optional[str]:
+                    if not self.text.strip():
+                        return None
+                    return self.text
+            ```
 
-    #### Questions & Answers
+        -   **Defining Types from Django Models in Strawberry**: When using `strawberry-django`, you can automatically map Django models to GraphQL types, saving significant boilerplate.
+
+            ```python
+            from strawberry_django import type as django_type
+            from .models import Book
+
+            @django_type(Book)
+            class BookType:
+                id: strawberry.ID
+                title: str
+                author: str
+            ```
+
+        -   **Field-Level Resolvers with Django Model Auto-Types**: Even when using auto-types, you can override specific fields with custom logic. This is useful for calculated fields that don't exist in the database (e.g., a "full name" field).
+
+            ```python
+            @django_type(Author)
+            class AuthorType:
+                first_name: str
+                last_name: str
+
+                @strawberry.field
+                def full_name(self) -> str:
+                    return f"{self.first_name} {self.last_name}"
+            ```
+
+        -   **Defining Input Types with `@strawberry.input`**: Input types group arguments together, making mutations cleaner and more maintainable.
+
+            ```python
+            @strawberry.input
+            class CreateUserInput:
+                username: str
+                password: str
+                email: Optional[str] = None
+            ```
+
+        -   **Input Type Default Values**: You can set defaults directly in the input class. If the client doesn't provide a value, the server uses the default.
+
+            ```python
+            @strawberry.input
+            class PaginationInput:
+                limit: int = 10
+                offset: int = 0
+            ```
+
+        -   **Defining Input Types from Django Models**: Using `strawberry-django`, you can create inputs that automatically include the fields from your model, which is highly efficient for CRUD operations.
+
+            ```python
+            from strawberry_django import input as django_input
+
+            @django_input(Book)
+            class BookInput:
+                title: str
+                isbn: str
+                # You can choose to exclude fields like 'id' which are auto-generated
+            ```
+
+        -   **Example of a Library API**: Here is a complete look at how these concepts fit together in a mini-application.
+
+            ```python
+            import strawberry
+            from typing import List, Optional
+
+            # 1. Manual Type
+            @strawberry.type
+            class Author:
+                name: str
+
+            # 2. Input Type with Defaults
+            @strawberry.input
+            class BookCreateInput:
+                title: str
+                author_name: str
+                pages: Optional[int] = 0
+
+            # 3. Object Type with Resolver
+            @strawberry.type
+            class Book:
+                title: str
+                pages: int
+                
+                @strawberry.field
+                def summary(self) -> str:
+                    return f"{self.title} is {self.pages} pages long."
+
+            # 4. The Query and Mutation
+            @strawberry.type
+            class Query:
+                @strawberry.field
+                def get_books(self) -> List[Book]:
+                    return [Book(title="GraphQL 101", pages=150)]
+
+            @strawberry.type
+            class Mutation:
+                @strawberry.mutation
+                def add_book(self, data: BookCreateInput) -> Book:
+                    # Business logic: cleaning empty strings
+                    clean_title = data.title if data.title.strip() else "Untitled"
+                    return Book(title=clean_title, pages=data.pages)
+
+            schema = strawberry.Schema(query=Query, mutation=Mutation)
+            ```
+
+        </details>
+
+    </details>
+
+-   <details><summary style="font-size:25px;color:Orange">Questions & Answers</summary>
 
     -   <details><summary style="font-size:15px;color:#C71585">What is a`*.graphql` file? How is it generated within a Django-with-graphql project?</summary>
 
@@ -347,217 +449,3 @@
         </details>
 
     </details>
-
----
----
-
-```graphql
-query BooksWithRelations {
-    getBooks(
-        pagination: {limit: 20, offset:0},
-        filters: {name: Clinton, age: 60}
-    ){
-        pageInfo {
-            limit
-            offset
-        }
-        totalCount
-        results {
-            bookId
-            name
-            age
-        }
-
-    }
-}
-
-```
-
-
----
----
-
-This comprehensive guide covers the architecture and implementation of GraphQL types, inputs, and Django integration using the **Strawberry** library.
-
----
-
-## 📋 GraphQL Design & Implementation Guide
-
-### 1. What Are GraphQL Types and Inputs?
-In GraphQL, every piece of data is part of a **Type System**.
-* **Object Types:** These define the shape of the data you can fetch from the service (the **Output**). They represent the nodes in your graph.
-* **Input Types:** These are special types used as arguments in mutations or queries. They define the shape of the data being *sent* to the server.
-
-> **Note:** You cannot use an Object Type as an input or an Input Type as an output. They are strictly separated to maintain clear API boundaries.
-
----
-
-### 2. Creating Manual Types with `@strawberry.type`
-Manual types allow you to define a specific contract that doesn't necessarily map to a database.
-
-```python
-import strawberry
-
-@strawberry.type
-class UserProfile:
-    username: str
-    email: str
-    age: int
-```
-
----
-
-### 3. Controlling Nullability and Optional Fields
-By default, in Strawberry, a field is **Required** (Non-nullable) unless specified.
-* To make a field nullable (optional), use the `Optional` type hint from the `typing` module.
-
-```python
-from typing import Optional
-
-@strawberry.type
-class Product:
-    name: str  # Required
-    description: Optional[str] = None  # Nullable
-```
-*In the generated Schema:* `name: String!` vs `description: String`.
-
----
-
-### 4. Using a Field-Level Resolver to Clean Data
-Field-level resolvers allow you to intercept the data before it is returned to the client. This is perfect for "cleaning" strings, such as converting empty strings to `None`.
-
-```python
-@strawberry.type
-class Comment:
-    text: str
-
-    @strawberry.field
-    def clean_text(self) -> Optional[str]:
-        if not self.text.strip():
-            return None
-        return self.text
-```
-
----
-
-### 5. Defining Types from Django Models in Strawberry
-When using `strawberry-django`, you can automatically map Django models to GraphQL types, saving significant boilerplate.
-
-
-
-```python
-from strawberry_django import type as django_type
-from .models import Book
-
-@django_type(Book)
-class BookType:
-    id: strawberry.ID
-    title: str
-    author: str
-```
-
----
-
-### 6. Field-Level Resolvers with Django Model Auto-Types
-Even when using auto-types, you can override specific fields with custom logic. This is useful for calculated fields that don't exist in the database (e.g., a "full name" field).
-
-```python
-@django_type(Author)
-class AuthorType:
-    first_name: str
-    last_name: str
-
-    @strawberry.field
-    def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"
-```
-
----
-
-### 7. Defining Input Types with `@strawberry.input`
-Input types group arguments together, making mutations cleaner and more maintainable.
-
-```python
-@strawberry.input
-class CreateUserInput:
-    username: str
-    password: str
-    email: Optional[str] = None
-```
-
----
-
-### 8. Input Type Default Values
-You can set defaults directly in the input class. If the client doesn't provide a value, the server uses the default.
-
-```python
-@strawberry.input
-class PaginationInput:
-    limit: int = 10
-    offset: int = 0
-```
-
----
-
-### 9. Defining Input Types from Django Models
-Using `strawberry-django`, you can create inputs that automatically include the fields from your model, which is highly efficient for CRUD operations.
-
-```python
-from strawberry_django import input as django_input
-
-@django_input(Book)
-class BookInput:
-    title: str
-    isbn: str
-    # You can choose to exclude fields like 'id' which are auto-generated
-```
-
----
-
-## 🛠 Live Demo Example: The "Library" API
-
-Here is a complete look at how these concepts fit together in a mini-application.
-
-```python
-import strawberry
-from typing import List, Optional
-
-# 1. Manual Type
-@strawberry.type
-class Author:
-    name: str
-
-# 2. Input Type with Defaults
-@strawberry.input
-class BookCreateInput:
-    title: str
-    author_name: str
-    pages: Optional[int] = 0
-
-# 3. Object Type with Resolver
-@strawberry.type
-class Book:
-    title: str
-    pages: int
-    
-    @strawberry.field
-    def summary(self) -> str:
-        return f"{self.title} is {self.pages} pages long."
-
-# 4. The Query and Mutation
-@strawberry.type
-class Query:
-    @strawberry.field
-    def get_books(self) -> List[Book]:
-        return [Book(title="GraphQL 101", pages=150)]
-
-@strawberry.type
-class Mutation:
-    @strawberry.mutation
-    def add_book(self, data: BookCreateInput) -> Book:
-        # Business logic: cleaning empty strings
-        clean_title = data.title if data.title.strip() else "Untitled"
-        return Book(title=clean_title, pages=data.pages)
-
-schema = strawberry.Schema(query=Query, mutation=Mutation)
-```

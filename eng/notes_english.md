@@ -5,13 +5,11 @@
 - How to present/introduce myself to a new team
 
 ---
+    -   book of work
     -   kudos
     -   benchmark
     -   gotcha
     -   should/would have been
-    -   what so ever
-    -   get along
-    -   align on
     -   seamless integration
     -   baseline (deploy Baseline security policy)
     -   Tools that monitor metrics and baselines (for example, GuardDuty, Systems Manager)
@@ -19,14 +17,6 @@
     -   Schema/Scheme/Schemetic
     -   having said that/ with that being said
 
-    -   clunky/fluffy/wacky
-    -   wirte-off
-    -   hand off / handoffs
-    -   rundown
-    -   redact
-    -   cutover
-    -   ideal
-    -   exploit
 
 ---
 
@@ -225,6 +215,9 @@
     -   drastically
     -   Ironicly
     -   Idealy
+    -   advertantly
+    -   inadvertently
+    -   unequivocally
 
     ### 1. The "Power" Adverbs (Strategic & High-Level)
 
