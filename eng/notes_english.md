@@ -5,17 +5,18 @@
 - How to present/introduce myself to a new team
 
 ---
-    -   book of work
-    -   kudos
-    -   benchmark
-    -   gotcha
-    -   should/would have been
-    -   seamless integration
-    -   baseline (deploy Baseline security policy)
-    -   Tools that monitor metrics and baselines (for example, GuardDuty, Systems Manager)
-    -   Timeline/Pipeline/Process/workflow
-    -   Schema/Scheme/Schemetic
-    -   having said that/ with that being said
+
+-   book of work
+-   kudos
+-   benchmark
+-   gotcha
+-   should/would have been
+-   seamless integration
+-   baseline (deploy Baseline security policy)
+-   Tools that monitor metrics and baselines (for example, GuardDuty, Systems Manager)
+-   Timeline/Pipeline/Process/workflow
+-   Schema/Scheme/Schemetic
+-   having said that/ with that being said
 
 
 ---

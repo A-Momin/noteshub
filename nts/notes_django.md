@@ -452,10 +452,10 @@
 
             -   The `ForeignKey` field is used to associate one object with another, where one object (the "source" or "parent") can have multiple related objects (the "targets" or "children"). In this relationship, multiple instances of the related model (child) can reference the same parent instance.
             -   A `Book` (Child) model with a `ForeignKey` to an `Author` (Parent) model establishes a relationship where each book is associated with one author, but an author can have multiple books.
-            -   The Relationship it creates is **Many-to-One** from **the perspective of the model (Book) where you define the field**, which inherently creates a **One-to-Many** relationship from **the perspective of the model (Author) being referenced**.
+            -   The relationship created is a **many-to-one** relationship from the perspective of the model where the field is defined (Book), which naturally appears as a **one-to-many** relationship from the perspective of the related model (Author).
             -   Behind the scenes, Django appends `_id` to the field name by default to create the database column name (can be overridden with `db_column`).
             -   Related model reference can be a class or string in the form `"app_label.ModelName"`, enabling forward declarations and circular dependency avoidance.
-            -   A `ForeignKey` is not unique by default; if you need one-to-one semantics, use `OneToOneField` or set `unique=True` on the `ForeignKey` (but OneToOneField is preferred).
+            -   A ForeignKey is not unique by default, because it is meant to allow many rows in the child table to point to the same parent row. If you want a true **one-to-one** relationship, you should use **OneToOneField**, or you can add `unique=True` to the **ForeignKey** field. In practice, **OneToOneField** is the clearer and more explicit choice.
             -   **Special Case: `primary_key=True` on ForeignKey converts to One-to-One**:
                 -   If you set `primary_key=True` on a `ForeignKey`, the foreign key becomes the primary key of the child model.
                 -   Since a primary key must be unique, this enforces a **One-to-One** relationship: each child can reference only one parent, and each parent can be referenced by at most one child.
@@ -474,11 +474,11 @@
             -   For self-referential relationships, use `ForeignKey('self', on_delete=...)`.
             -   Forward access: `book.author` (one-to-one object reference).
             -   Reverse access: `author.books.all()` using `related_name` or `author.book_set.all()`.
-            -   Use `select_related('author')` when you fetch child rows and need parent data in same query (join) for performance.
-            -   Use `prefetch_related` for reverse or many queries where joined results produce duplicates.
+            -   Use `.select_related('author')` when you fetch child rows and need parent data in same query (join) for performance.
+            -   Use `.prefetch_related()` for reverse or many queries where joined results produce duplicates.
             -   Common options:
                 -   `on_delete`: controls behavior when the related object is deleted. Supported values:
-                    -   `models.CASCADE` -> delete dependent rows
+                    -   `models.CASCADE` -> delete dependent rows; if the parent row is deleted, Django will also delete all related child rows automatically.
                     -   `models.PROTECT` -> prevent deletion by raising `ProtectedError`
                     -   `models.SET_NULL` -> set FK field to NULL (requires `null=True`)
                     -   `models.SET_DEFAULT` -> set FK field to `default` (requires `default`)
@@ -504,8 +504,71 @@
 
         -   **`ManyToManyField(to, **options)`** | [doc](https://docs.djangoproject.com/en/4.1/ref/models/fields/#manytomanyfield)
 
-            -   A `ManyToManyField` is used to create a many-to-many relationship between objects. This means that multiple objects from one model can be related to multiple objects from another model.
-            -   Example: A `Student` model with a `ManyToManyField` to a `Course` model establishes a many-to-many relationship, where each student can enroll in multiple courses, and each course can have multiple students.
+            -   A `ManyToManyField` is used to create a many-to-many relationship between objects. This means that multiple objects from one model can be related to multiple objects from another model, and vice versa.
+            -   In database terms, **Django creates an intermediate join table automatically behind the scenes** to store the associations.
+            -   Common examples include: `Student` ↔ `Course`, `Author` ↔ `Book`, `Tag` ↔ `Post`.
+            -   Example: A `Student` model with a `ManyToManyField` to a `Course` model establishes a **many-to-many** relationship, where each student can enroll in multiple courses, and each course can have multiple students.
+
+            ```python
+            from django.db import models
+
+
+            class Student(models.Model):
+                name = models.CharField(max_length=100)
+
+
+            class Course(models.Model):
+                title = models.CharField(max_length=200)
+                students = models.ManyToManyField(Student, related_name='courses')
+            ```
+
+            ```python
+            # Create objects
+            s1 = Student.objects.create(name='Alice')
+            s2 = Student.objects.create(name='Bob')
+            c1 = Course.objects.create(title='Django Basics')
+            c2 = Course.objects.create(title='REST APIs')
+
+            # Add relationships
+            s1.courses.add(c1, c2)
+            s2.courses.add(c1)
+
+            # Query relationships
+            print(s1.courses.all())
+            print(c1.students.all())
+            ```
+
+            -   Useful methods for managing many-to-many relationships:
+                -   `.add(...)` → add one or more related objects
+                -   `.remove(...)` → remove a relationship
+                -   `.set(...)` → replace the full set of related objects
+                -   `.clear()` → remove all relationships
+
+            -   We define an intermediate join table explicitly when you need to store extra data about the relationship itself, use a custom `through` model instead of the default hidden join table.
+
+                -   Example:
+
+                    -   A Student can enroll in many Courses
+                    -   A Course can have many Students
+                    -   But you also want to store enrollment_date or grade
+                    -   In that case, Django cannot represent that with the default hidden join table, so you define your own model with a `through` argument.
+
+                    ```py
+                    from django.db import models
+
+                    class Student(models.Model):
+                        name = models.CharField(max_length=100)
+
+                    class Course(models.Model):
+                        title = models.CharField(max_length=200)
+                        students = models.ManyToManyField(Student,through='Enrollment')
+
+                    class Enrollment(models.Model):
+                        student = models.ForeignKey(Student, on_delete=models.CASCADE)
+                        course = models.ForeignKey(Course, on_delete=models.CASCADE)
+                        enrolled_on = models.DateField()
+                        grade = models.CharField(max_length=10, blank=True)
+                    ```
 
         -   **`GenericForeignKey`** and **`GenericRelation`**:
 

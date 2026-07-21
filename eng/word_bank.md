@@ -11,6 +11,7 @@
         -   **As an Object**: "The website includes a long disclaimer regarding the accuracy of its health advice."
         -   **With "Standard"**: "Before we begin the investment presentation, I must give the standard disclaimer that past performance does not guarantee future results."
 
+    -   phenomenal
     -   introspection
     -   fusion
     -   entourage
