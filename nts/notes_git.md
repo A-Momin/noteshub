@@ -41,10 +41,7 @@
         -   **origin** is the **default name** for the remote repository that you cloned from. It’s where you typically **push your changes** and **pull updates** from.
         -   **upstream** is A **second remote** name typically used to point to the **original repository** when you’ve forked one. It’s where you **pull the latest changes from the main project** so your fork stays updated.
 
-    -   **Master**:
-
-        -   The default branch name in Git is master. For both `remote` and local repository.
-
+    -   **Master**: The default branch name in Git is master. For both `remote` and local repository.
     -   **Tag**: A **Tag** is a permanent "bookmark" pointing to a specific point in your repository's history. While branches move every time you add a new commit, a tag **stays put**. It is typically used to mark specific release points (like **v1.0** or **v2.1**).
 
         1. **When to use a Tag**: Think of tags as **milestones**. You shouldn't tag every commit, but you should tag significant moments:
@@ -452,13 +449,14 @@
     -   `$ git remote show origin` → Displays detailed information about the remote named `origin`, including its fetch and push URLs, tracking branches, and status.
     -   `$ git remote add upstream <URL>` → Adds a new remote named `upstream` pointing to the given `<URL>`, typically used to track the original repository if you’ve forked it.
 
+    -   `$ git config --global --edit`
     -   `$ git config --global user.name 'Aminul Momin'`
     -   `$ git config --global user.email A.Momin.NYC@gmail.com`
     -   `$ git config --global init.defaultBranch <master_branch>` → setup the initial branch name to create in all new repositories.
     -   `$ git remote` → List out all the remote this git repo has been added to
     -   `$ git remote -v` → Listout all the remote’s URL this git repo has been added to
 
-    -   `$ git branch --set-upstream-to=origin/develop NETSEC-11111` → a feature branch (like one named after a ticket number) tracks its corresponding branch on the remote (e.g., origin/NETSEC-11111). By setting the upstream to origin/develop, your future git pull and git push commands (without arguments) will interact directly with the develop branch.
+    -   `$ git branch --set-upstream-to=origin/develop NETSEC-11111` → a feature branch (like one named after a ticket number) tracks its corresponding branch on the remote (e.g., origin/NETSEC-11111). By setting the upstream to origin/develop, your future `git pull` and `git push` commands (without arguments) will interact directly with the develop branch.
 
 
     ## CONFIGURATIONS
@@ -589,15 +587,11 @@
 
             -   `$ git checkout .` → discards all local changes in the working directory and resets the files to the latest committed state (HEAD); this does not affect untracked files.
             -   `$ git restore .` → restores all files in the current directory and subdirectories to their last committed state, effectively discarding all local changes; this is the modern replacement for `git checkout .`.
-
-            -   It can be used to undo the effects of `git add` and unstage changes you have previously added to the Staging Area.
-            -   It can also be used to discard local changes in a file, thereby restoring its last committed state.
-
         -   `$ git restore <path/to/filefile_name>` → Discard all the changes of the file.
         -   `$ git restore --source=HEAD~1 -- <path/to/filefile_name>` → Restore a file to exactly how it was in the previous commit (i,e HEAD~1)
         -   `$ git restore --source <COMMIT_ID> <file_name>` → Revert the file to how it is in the specified commit.
         -   `$ git restore --staged <path/to/filefile_name>` → Reset the file in the staging area (Index) back to what's in HEAD (your last commit)
-        -   `$ git clean -f` → Remove untracked files from the working tree.
+        -   `$ git clean -df` → Remove untracked directories/files from the working tree.
         -   `$ git rm --cached <file_name>` → Unstage the specified file (`file_name`) from Staging Area.
         -   `$ git rm --cached *_initial.py` → Unstage all the files name ended with `_initial.py` from Staging Area.
         -   `$ git rm -r --cached */migrations/` → Unstage all (`migrations/*`) files recursively from Staging Area. (`--cached` refere to 'Staging Area')
@@ -621,14 +615,17 @@
     -   🔥 [git branch](https://www.atlassian.com/git/tutorials/using-branches)
 
         -   `$ git branch -h`
+        -   `$ git branch -vv`
         -   `$ git checkout -h`
         -   `$ git branch –a` → Show all the name of branches that has been created so far.
         -   `$ git checkout -b <new_branch_name>` → Create & checkout the specified new_branch_name.
         -   `$ git branch <new_branch_name>` → Creates a brnch with the specified branch_name.
         -   `$ git branch –d <branch_name>` → Deleting a branch won’t delete the commits. It only deletes the label.
+        -   `$ git branch –D <branch_name>` → Delete a branch.
         -   `$ git branch <branch_name> <commit_id>`
         -   `$ git checkout <branch_name>` → Checkout the specified branch_name.
         -   `$ git log –graph –onetime <branch_name1 branch_name2 … >` → Visulize the branches Structure
+        -   `$ git branch --set-upstream-to=origin/develop NETSEC-11111` → a feature branch (like one named after a ticket number) **tracks** its corresponding branch on the remote (e.g., origin/NETSEC-11111). By setting the upstream to origin/develop, your future `git pull` and `git push` commands (without arguments) will interact directly with the develop branch.
 
     -   🔥 TAG:
 
@@ -696,7 +693,7 @@
                 -   **How it works**: It takes your local commits, "lifts" them up, pulls the new commits from the server, and then tries to stick your commits back on top of the new ones.
                 -   **Best for**: Keeping a linear project history without "Merge branch 'main' of..." commits clogging up the log.
                 -   **The Catch**: If your changes are uncommitted, `git pull --rebase` will often fail and tell you to "commit or stash" your changes anyway.
-                -   `git pull --rebase --autostash` -> ou can configure Git to automatically stash your uncommitted changes, perform a rebase, and then pop the stash for you in one command
+                -   `git pull origin develop --rebase --autostash` -> you can configure Git to automatically stash your uncommitted changes, perform a rebase, and then pop the stash for you in one command
                 -   `git pull --rebase origin develop`
 
         -   `$ git pull --rebase origin cpecs-12147` → fetches the latest changes from `origin/cpecs-12147` and rebases your local branch on top of it (instead of merging).

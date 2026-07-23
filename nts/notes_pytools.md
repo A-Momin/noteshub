@@ -781,6 +781,7 @@
     -   `$ uv run main.py` → Runs `main.py` inside the project's managed Python environment (like `poetry run` or `pipenv run`).
     -   `$ uv run --activate main.py` -> `--activae` prefer the active virtual environment over the project’s virtual environment. No active virtual environment, it has no eefect.
     -   `$ uv sync` → Synchronizes your environment with your `pyproject.toml` and `uv.lock` — installs all declared dependencies.
+    -   `$ uv sync --upgrade` → upgrade and sync environmnet with any changes.
     -   `$ uv add --dev ipykernel` → Adds `ipykernel` as a **development dependency**, useful for running Jupyter notebooks or using IPython.
 
     -   `$ uv `
@@ -794,7 +795,8 @@
     -   `$ uv add PyYaml`
     -   `$ uv pip freeze > requirements.txt` -> create `requirements.txt` file from an activated `uv` environment.(How to integrate packages of a existing `uv` environment)
     -   `$ uv add -r requirements.txt` -> Integrate packages from an `requirements.txt` file into current project.
-    -   `$ uv `
+    -   `$ uv export --format requirements.txt --no-hashes --no-emit-project -o requirements.txt`
+    -   `$ uv export --format requirements-txt --no-hashes --no-emit-project -o requirements.txt`
     -   `$ uv `
 
     #### Creating & Using a virtual environment
