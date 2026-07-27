@@ -210,6 +210,8 @@
             1. Users must enter a code sent to their email or phone.
             2. The system should log the attempt in the audit trail.
 
+    6. **Spike**: A Spike is a special type of task used for **research**, **investigation**, or **prototyping** when your team doesn't have enough information to estimate or plan a feature properly. Instead of writing production code or building a finished feature, the main output of a spike is knowledge or an answer.
+
     6. **Boards**: Board typically includes columns that represent different stages of the workflow, from when work is planned to when it is completed. Each work item (e.g., Story, Task, or Bug) is represented by a card that moves across the board as work progresses.
 
         - `Scrum Board`: Focused on iterative work, used in sprints.

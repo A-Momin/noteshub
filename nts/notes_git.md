@@ -722,8 +722,6 @@
     -   `$ gh ssh-key list`
     -   `$ gh ssh-key add ~/.ssh/id_rsa.pub --title "Your SSH Key Title"`
     -   `$ `
-    -   `$ `
-    -   `$ `
 
     ### Repository Management
 
