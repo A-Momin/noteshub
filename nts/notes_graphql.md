@@ -4,10 +4,8 @@
 - []()
 
 ---
--   Abstract Syntax Tree (AST)
 -   base query
 -   GraphQL operators
--   Django Lookup Suffix
 ---
 
 -   <details><summary style="font-size:25px;color:Orange">Native GraphQL: Components, Terms and Concepts</summary>
@@ -16,49 +14,18 @@
 
     > Think of REST as a vending machine where you press a button and get a pre-packaged snack. GraphQL is more like a high-end buffet where you tell the chef exactly which ingredients you want on your plate, and they assemble it for you in one go.
 
-    -   **Abstract Syntax Tree (AST)** is how GraphQL parses and represents a query internally. When you send a GraphQL query string like:
-        -   ```graphql
-            query GetUser {
-                user(id: "1") {
-                    name
-                    email
-                }
-            }
-            ```
-        -   The GraphQL server converts this text into a tree structure (the AST) where each part of the query—operations, fields, arguments, etc.—becomes a node. This tree representation allows the server to:
-            1. **Validate** the query against the schema
-            2. **Execute** the query by traversing the tree and calling resolvers
-            3. **Optimize** the execution path
+    ##### Core Concepts & Features
 
-    -   The **Schema** is the contract between the client and the server. It defines what data exists and how a client can ask for it.
+    -   **Schema**: The Schema is the contract between the client and the server. It defines what data exists and how a client can ask for it.
         -   **Schema Design Strategy**: The schema is the contract between the client and the server. How you build it determines your long-term maintenance burden.
             -   **Code-First**: You write the schema using your programming language’s native types (e.g., Python classes or TypeScript decorators). The SDL (Schema Definition Language) is auto-generated. This is great for keeping your implementation and schema in sync.
             -   **Schema-First**: You write the .graphql SDL file first, then write "resolvers" to match. This is often better for team collaboration, as frontend and backend developers can agree on the contract before coding starts.
 
-    -   **SDL (Schema Definition Language):** The human-readable syntax used to write GraphQL schemas.
-
-    -   **Object Types:** The basic components representing an object you can fetch (e.g., `User`, `Post`).
-
-    -   **Fields:** The specific pieces of data on an object (e.g., `name`, `email`).
-
-    -   **Scalars:** The "leaf" nodes of the tree. Built-in types include `ID`, `String`, `Int`, `Float`, and `Boolean`.
-
-    -   **Enums:** A special scalar that is restricted to a particular set of allowed values.
-
-    -   **Operation Types (The "Requests")**: There are three main types of operations a client can perform:
-        | Operation        | Purpose                                | Analogy                                                      |
-        | ---------------- | -------------------------------------- | ------------------------------------------------------------ |
-        | **Query**        | Fetch data (Read-only).                | Asking for a menu.                                           |
-        | **Mutation**     | Modify data (Create, Update, Delete).  | Placing an order.                                            |
-        | **Subscription** | Real-time data updates via WebSockets. | The waiter telling you "the soup is ready" the moment it is. |
-
-    ##### Core Concepts & Features
-
-    -   **Resolvers**: The "brains" of the operation. A resolver is a function on the server that is responsible for fetching the data for a single field. If you ask for a user's name, the `User.name` resolver runs to find that string in the database.
+    -   **Resolvers** (The "brains" of the operation): A resolver is a function on the server that is responsible for fetching the data for a single field. If you ask for a user's name, the `User.name` resolver runs to find that string in the database.
 
     -   **Operations**: In GraphQL, an **Operation** is a formal request sent by a client to a server. While people often use the word "query" to describe everything, "Operation" is the technically correct term that encompasses the three different ways you can interact with a GraphQL API. Think of an Operation as a **Unit of Work**. Every operation must have a **Type**, a **Name** (recommended), and a **Selection Set** (the fields you want back).
 
-        1. **The Three Operation Types**: The GraphQL specification defines exactly three types of operations, each with a specific behavior and "Root" execution strategy.
+        -   **The Three Operation Types**: The GraphQL specification defines exactly three types of operations, each with a specific behavior and "Root" execution strategy.
 
             -   **Query (Read)**: The most common operation. It is used to fetch data without changing anything on the server.
                 -   **Execution:** Servers can execute query fields in **parallel**, making them extremely fast for complex data fetching.
@@ -72,7 +39,15 @@
                 -   **Execution:** The server "pushes" data to the client whenever a specific event happens on the backend.
                 -   **Analogy:** WebSockets or Server-Sent Events (SSE).
 
-        2. **Anatomy of an Operation**: A well-structured operation has four distinct parts. Even if you omit the name, the server sees it as an "Anonymous Operation."
+        -   **Operations vs. Resolvers**: It is easy to get these confused. Here is the distinction:
+            -   **The Operation** is the **Client’s request** (The "Order" at a restaurant).
+            -   **The Resolver** is the **Server’s response logic** (The "Chef" cooking the specific dish).
+            -   One **Operation** (like a Query) can trigger dozens of different **Resolvers** if the query is deeply nested.
+            -   **Named Operations**: Always name your operations (e.g., `query GetUserProfile`). This makes debugging in APM tools (like Apollo Studio or Datadog) much easier because you can see exactly which operation is slow.
+            -   **Operation Idempotency**: Queries should always be **idempotent** (running them 10 times gives the same result). Mutations are not.
+            -   **Single Responsibility**: A single operation should ideally represent one specific UI intent (e.g., "Load Dashboard") rather than trying to fetch every piece of data the app might ever need.
+
+        -   **Anatomy of an Operation**: A well-structured operation has four distinct parts. Even if you omit the name, the server sees it as an "Anonymous Operation."
 
             ```graphql
             # 1. Operation Type: mutation
@@ -87,77 +62,94 @@
             }
             ```
 
-        3. **Operations vs. Resolvers**: It is easy to get these confused. Here is the distinction:
-            -   **The Operation** is the **Client’s request** (The "Order" at a restaurant).
-            -   **The Resolver** is the **Server’s response logic** (The "Chef" cooking the specific dish).
-            -   One **Operation** (like a Query) can trigger dozens of different **Resolvers** if the query is deeply nested.
-            -   **Named Operations**: Always name your operations (e.g., `query GetUserProfile`). This makes debugging in APM tools (like Apollo Studio or Datadog) much easier because you can see exactly which operation is slow.
-            -   **Operation Idempotency**: Queries should always be **idempotent** (running them 10 times gives the same result). Mutations are not.
-            -   **Single Responsibility**: A single operation should ideally represent one specific UI intent (e.g., "Load Dashboard") rather than trying to fetch every piece of data the app might ever need.
 
-    -   **Selection Sets**: Selection Set is the core of the request. It is the list of fields that you, the client, "select" to be returned by the server. If the **Operation** (Query, Mutation, Subscription) is the envelope, the **Selection Set** is the specific list of contents you are requesting inside that envelope.
+            -   **Selection Sets**: Selection Set is the core of the request. It is the list of fields that you, the client, "select" to be returned by the server. If the **Operation** (Query, Mutation, Subscription) is the envelope, the **Selection Set** is the specific list of contents you are requesting inside that envelope.
 
-        1. **The Anatomy of a Selection Set**: A selection set is wrapped in curly braces `{ }`. Every level of a GraphQL query—from the root down to the deepest child—is a selection set.
+                -   **The Anatomy of a Selection Set**: A selection set is wrapped in curly braces `{ }`. Every level of a GraphQL query—from the root down to the deepest child—is a selection set.
 
-            ```graphql
-            query GetUser { # Start of Root Selection Set
-                user(id: "1") {
-                    id
-                    username
-                    
-                    friends { # Start of a nested Selection Set
-                        name
-                        onlineStatus
-                    } # End of the nested Selection Set
-                }
-            } # --- End of Root Selection Set ---
-            ```
+                    ```graphql
+                    query GetUser { # Start of Root Selection Set
+                        user(id: "1") {
+                            id
+                            username
+                            
+                            friends { # Start of a nested Selection Set
+                                name
+                                onlineStatus
+                            } # End of the nested Selection Set
+                        }
+                    } # --- End of Root Selection Set ---
+                    ```
 
-        2. **Key Rules of Selection Sets**:
+                -   **Key Rules of Selection Sets**:
 
-            -   **Scalar Leaves**: A selection set must ultimately end in **Scalars** (fields like `String`, `Int`, `Boolean`, or `ID`). You cannot select an "Object" without providing a selection set for its internal fields.
-                -   **Wrong:** `query { user(id: "1") }` (The server doesn't know *which* user fields you want).
-                -   **Right:** `query { user(id: "1") { name } }`
+                    -   **Scalar Leaves**: A selection set must ultimately end in **Scalars** (fields like `String`, `Int`, `Boolean`, or `ID`). You cannot select an "Object" without providing a selection set for its internal fields.
+                        -   **Wrong:** `query { user(id: "1") }` (The server doesn't know *which* user fields you want).
+                        -   **Right:** `query { user(id: "1") { name } }`
 
-            -   **Nesting**: Selection sets can be nested infinitely (within the limits of the server's security). This allows you to follow the "edges" of your data graph to fetch related information in one go.
+                    -   **Nesting**: Selection sets can be nested infinitely (within the limits of the server's security). This allows you to follow the "edges" of your data graph to fetch related information in one go.
 
-            -   **Fragments**: You can use **Fragments** to spread a predefined selection set into another one. This keeps your code DRY (Don't Repeat Yourself).
-                ```graphql
-                fragment UserFields on User {
-                    id
-                    username
-                }
+                    -   **Fragments**: You can use **Fragments** to spread a predefined selection set into another one. This keeps your code DRY (Don't Repeat Yourself).
+                        ```graphql
+                        fragment UserFields on User {
+                            id
+                            username
+                        }
 
-                query {
-                    user(id: "1") {
-                        ...UserFields  # Spreading the selection set here
-                        email
+                        query {
+                            user(id: "1") {
+                                ...UserFields  # Spreading the selection set here
+                                email
+                            }
+                        }
+                        ```
+
+            -   **Arguments**: Every field and nested object can get its own set of arguments, eliminating the need for complex URL parameters.
+                -   *Example:* `user(id: "123") { profile_pic(size: 100) }`
+
+            -   **Variables**: Instead of hardcoding values into the query string, you use variables to make queries dynamic and secure.
+
+            -   **Directives**: Special instructions that tell the server to change the execution of a query.
+                -   `@include(if: Boolean)`: Only include this field if the argument is true.
+                -   `@skip(if: Boolean)`: Skip this field if the argument is true.
+
+            -   **Aliases**: Used when you want to query for the same field with different arguments in the same request.
+                -   `smallPic: profile_pic(size: 50)` and `largePic: profile_pic(size: 500)`.
+
+            -   **Unions and Interfaces**:
+                -   **Interfaces**: A set of common fields multiple types must implement (e.g., Node interface).
+                -   **Unions**: A field can return one of several different types (e.g., a Search result could be a User OR a Post).
+
+            -   **Abstract Syntax Tree (AST)** is how GraphQL parses and represents a query internally. When you send a GraphQL query string like:
+                -   ```graphql
+                    query GetUser {
+                        user(id: "1") {
+                            name
+                            email
+                        }
                     }
-                }
-                ```
+                    ```
+                -   The GraphQL server converts this text into a tree structure (the AST) where each part of the query—operations (fields, arguments, etc.) becomes a node. This tree representation allows the server to:
+                    1. **Validate** the query against the schema
+                    2. **Execute** the query by traversing the tree and calling resolvers
+                    3. **Optimize** the execution path
 
-    -   **Arguments**: Every field and nested object can get its own set of arguments, eliminating the need for complex URL parameters.
-        -   *Example:* `user(id: "123") { profile_pic(size: 100) }`
+            -   **SDL (Schema Definition Language):** The human-readable syntax used to write GraphQL schemas.
 
-    -   **Variables**: Instead of hardcoding values into the query string, you use variables to make queries dynamic and secure.
+            -   **Object Types:** The basic components representing an object you can fetch (e.g., `User`, `Post`).
 
-    -   **Directives**: Special instructions that tell the server to change the execution of a query.
-        -   `@include(if: Boolean)`: Only include this field if the argument is true.
-        -   `@skip(if: Boolean)`: Skip this field if the argument is true.
+            -   **Fields:** The specific pieces of data on an object (e.g., `name`, `email`).
 
-    -   **Aliases**: Used when you want to query for the same field with different arguments in the same request.
-        -   `smallPic: profile_pic(size: 50)` and `largePic: profile_pic(size: 500)`.
+            -   **Scalars:** The "leaf" nodes of the tree. Built-in types include `ID`, `String`, `Int`, `Float`, and `Boolean`.
 
-    -   **Unions and Interfaces**:
-        -   **Interfaces**: A set of common fields multiple types must implement (e.g., Node interface).
-        -   **Unions**: A field can return one of several different types (e.g., a Search result could be a User OR a Post).
+            -   **Enums:** A special scalar that is restricted to a particular set of allowed values.
+
 
     </details>
 
 ---
 
 -   <details><summary style="font-size:25px;color:Orange">Django Implementaion of GraphQL</summary>
-
 
     -   <details><summary style="font-size:25px;color:#C71585">Django GraphQL Libraries</summary>
 
@@ -166,19 +158,35 @@
             -   **Syntax:** It uses a very verbose, "manual" syntax. You define types by instantiating classes like `GraphQLObjectType` and `GraphQLField`.
             -   **Who uses it?** You rarely use this directly unless you are building your own GraphQL library. Both **Strawberry** and **Graphene** are built on top of `graphql-core`.
 
+            -   **NOTES and FACTS**:
+                -   `strawberry.UNSET`: `strawberry.UNSET` is a sentinel object used in Input Types and Mutation Arguments to distinguish between two different client behaviors:  
+                    -   Field omitted by the client (The user didn't include this field in the request body).
+                    -   Field explicitly passed as null (The user explicitly sent "field": null).
+                    -   In standard Python, if you annotate a field as `name: str | None = None`, both an omitted field and an explicit null evaluate to Python's `None`. This makes partial updates (like HTTP PATCH logic) difficult.
+
+                -   `strawberry.auto`: `strawberry.auto` is a type annotation marker used primarily when integrating Strawberry with ORM extensions (such as strawberry-django or strawberry-sqlalchemy).
+                    -   Instead of manually re-typing Python types on your GraphQL schema classes, strawberry.auto tells Strawberry: "Infer the GraphQL scalar type directly from the underlying ORM model field."
+
+                -   `strawberry.Maybe`: In newer releases of Strawberry, `strawberry.Maybe` is the recommended type-safe alternative to `strawberry.UNSET` (which relies on `Any` typing underneath).
+
         -   **Strawberry-GraphQL** (The Developer Experience (DX) Layer): `strawberry-graphql` (often just called **Strawberry**) is a "code-first" library that wraps `graphql-core` to make it "Pythonic."
             -   **Role:** It allows you to define your GraphQL schema using standard **Python Type Hints** and **Dataclasses**.
             -   **Key Feature:** Instead of manual type definitions, you use the `@strawberry.type` decorator. It automatically generates the `graphql-core` objects for you.
             -   **Framework Agnostic:** It doesn't care if you use FastAPI, Flask, Sanic, or even just a plain script. It focuses purely on turning Python classes into a GraphQL API.
+            -   **NOTES and FACTS**:
+                -   
 
         -   **Strawberry-GraphQL-Django** (The Integration Layer): `strawberry-graphql-django` (or `strawberry-django`) is an extension built specifically for the **Django** web framework.
             -   **Role:** It bridges the gap between **Django Models** and **Strawberry Types**.
             -   **The "Magic":** In standard Strawberry, you have to manually map your database fields to your GraphQL fields. `strawberry-django` automates this. You can say "Give me a GraphQL type based on this Django User model," and it will automatically handle the fields, relationships (ForeignKeys), and even create Filters/Ordering/Pagination logic.
             -   **Optimization:** It includes a "Query Optimizer" that automatically adds `.select_related()` and `.prefetch_related()` to your database calls to prevent the N+1 performance problem.
 
-        -   **Summary Comparison**
+            -   **NOTES and FACTS**:
+                -   
 
-            | Feature         | GraphQL-Core            | Strawberry-GraphQL           | Strawberry-Django         |
+        -   **Summary Comparison**:
+
+            | Feature         | **graphql-core**        | **strawberry-graphql**       | **strawberry-django**     |
             | :-------------- | :---------------------- | :--------------------------- | :------------------------ |
             | **Level**       | Core Engine (Low-level) | Library (Mid-level)          | Integration (High-level)  |
             | **Syntax**      | Verbose / Class-based   | Type Hints / Decorators      | Model-to-Type Mapping     |
@@ -345,6 +353,8 @@
         </details>
 
     </details>
+
+---
 
 -   <details><summary style="font-size:25px;color:Orange">Questions & Answers</summary>
 

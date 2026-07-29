@@ -505,10 +505,10 @@
 
     ## RECORD & EXAMIN CHANGES
 
-    -   `$ git status` → Check the current status.
+    -   `$ git diff develop --name-status` → shows the files that differ between your current working state and the develop branch, along with their change status.
     -   `$ git diff` → Difference between Working Directory and Staging Area
     -   `$ git diff --cached` → Show the difference between the index and the last commit.
-    -   `$ git diff branch` → Show a diff between the current working directory and the named branch.
+    -   `$ git diff another_branch` → Show a diff between the current working directory and the named branch.
     -   `$ git diff --staged` → Difference between Staging Area and Repository.
     -   `$ git diff --stat` → Shows an overview of changes.
     -   `$ git diff other-branch path/to/this_file` → Shows diff of this_file between this and it's other branch.
@@ -600,7 +600,6 @@
             -   `$ git reset` → Removes all files from the staging area, but keeps the changes in your working directory. It effectively "unstages" all changes.
             -   `$ git reset HEAD <file_name>` → Unstage the specified file from Staging Area.
             -   `$ git reset HEAD */.` → Unstage all the file from Staging Area
-            -   `$ git reset HEAD~1` → Discard the LAST commit from Local Repository (Committing Area). Discarted file kept in Working Area
             -   `$ git reset HEAD~3` → Discard the LAST THREE commit from Local Repository (Committing Area). Discarted file kept in Working Area
             -   `$ git reset --soft HEAD~3` → Discard the first three commit from Local Repository (Committing Area). Discarted file kept in Staging Area
             -   **$ git reset --hard** → It is used to reset the current commit or branch and the staging area to it's initial state or to a given commit. It moves the HEAD and the current branch pointer to the specified commit if given any.
