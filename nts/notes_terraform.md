@@ -138,7 +138,7 @@
 
                     -   **Common Example: Building an S3 Bucket Policy**: If you need to create an S3 bucket policy that references your own account ID, you can use the data source to inject it automatically:
 
-                        ```hcl
+                        ```ini
                         # 1. Look up the current AWS identity
                         data "aws_caller_identity" "current" {}
 
@@ -592,7 +592,7 @@
 
             **In the "Network" workspace:**
 
-            ```hcl
+            ```ini
             resource "aws_vpc" "main" {
                 cidr_block = "10.0.0.0/16"
             }
@@ -606,7 +606,7 @@
 
             **In the "App" workspace:**
 
-            ```hcl
+            ```ini
             data "terraform_remote_state" "network_layer" {
                 backend = "s3" # Or "local", "gcs", "remote", etc.
 
@@ -627,7 +627,7 @@
 
         3.  **Making it Dynamic**: Hardcoding `workspace = "dev"` defeats the purpose of workspaces. Usually, you want your "App" workspace to pull from the "Network" workspace of the **same name**. You can use the `${terraform.workspace}` variable to make this automatic.
 
-            ```hcl
+            ```ini
             data "terraform_remote_state" "network" {
                 backend = "s3"
                 config = {
@@ -651,7 +651,7 @@
 
         1. **The Producer (Network Workspace)**: In your network configuration, you create a "Resource" that writes the value to the Cloud provider's parameter store. You use the workspace name in the path to keep things organized.
 
-            ```hcl
+            ```ini
             # In the Network Workspace
             resource "aws_ssm_parameter" "vpc_id" {
                 name  = "/network/${terraform.workspace}/vpc_id"
@@ -662,7 +662,7 @@
 
         2. **The Consumer (App Workspace)**: In your application configuration, you simply use a **Data Source** to look up that specific path.
 
-            ```hcl
+            ```ini
             # In the App Workspace
             data "aws_ssm_parameter" "network_vpc" {
                 name = "/network/${terraform.workspace}/vpc_id"
@@ -821,9 +821,11 @@
 
     #### Collections
 
-    1. `Lists`:
+    - [Conversion of Complex Types](https://developer.hashicorp.com/terraform/language/expressions/type-constraints#conversion-of-complex-types)
 
-        - Lists define ordered collections of values. Example:
+    1. **Lists (`list(...)`)**: a sequence of values identified by consecutive whole numbers starting with zero.
+
+        -   The keyword list is a shorthand for `list(any)`, which accepts any element type as long as every element is the same type. This is for compatibility with older configurations; for new code, we recommend using the full form.
 
         ```ini
         # Declare a list of availability zones
@@ -833,7 +835,12 @@
         }
         ```
 
-    2. `Maps`:
+    2. **Tuple (`tuple(...)`)**: a sequence of elements identified by consecutive whole numbers starting with zero, where each element has its own type.
+
+        -   The schema for tuple types is `[<TYPE>, <TYPE>, ...]` — a pair of square brackets containing a comma-separated series of types. Values that match the tuple type must have exactly the same number of elements (no more and no fewer), and the value in each position must match the specified type for that position.
+        -    a tuple type of `tuple([string, number, bool])` would match a value like the following: `["a", 15, true]`
+
+    3. **Maps**:
 
         - Maps allow you to create key-value pairs for organizing and accessing data. Example:
 
@@ -844,6 +851,10 @@
             default = { "env" : "dev", "app" : "web" }
         }
         ```
+
+    4. **Object (`object(...)`)***: a collection of named attributes that each have their own type.
+
+        -   The schema for object types is `{ <KEY> = <TYPE>, <KEY> = <TYPE>, ... }` — a pair of curly braces containing a comma-separated series of `<KEY> = <TYPE>` pairs. Values that match the object type must contain all of the specified keys, and the value for each key must match its specified type. (Values with additional keys can still match an object type, but the extra attributes are discarded during type conversion.)
 
     3. `For Each`:
 
@@ -886,6 +897,22 @@
             }
         }
 
+        variable "database_config" {
+        description = "Configuration settings for the database cluster"
+        type = object({
+            instance_count = number
+            instance_class = string
+            allocated_gb   = number
+            publicly_accessible = bool
+        })
+
+        default = {
+            instance_count      = 2
+            instance_class      = "db.t3.micro"
+            allocated_gb        = 20
+            publicly_accessible = false
+        }
+        }
 
         # Define a map of instance configurations
         variable "instance_configurations" {
@@ -1570,7 +1597,7 @@ Here is the proper syntax and a breakdown of how to configure it depending on wh
 ### 1. The Syntax (Standard S3 Backend)
 If your "source" project stores its state in AWS S3, your data source block should look like this:
 
-```hcl
+```ini
 data "terraform_remote_state" "trs" {
   backend = "s3"
 
@@ -1585,7 +1612,7 @@ data "terraform_remote_state" "trs" {
 ### 2. How to access the data
 To actually use the data from the remote state, the source project **must** have defined `output` blocks. You access them like this:
 
-```hcl
+```ini
 # Example: Using a VPC ID from the remote state
 resource "aws_instance" "app_server" {
   ami           = "ami-xxxxxxxx"

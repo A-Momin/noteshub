@@ -578,7 +578,6 @@
         -   `$ git checkout master`
         -   `$ git checkout <file_name>` → Discard the specified file from Working Area.
         -   `$ git checkout .` → Discard all the changes to the Working Area.
-        -   `$ git checkout <commit_id>`
         -   `$ git checkout -- <file_name>` → just want to discard your recent edits to return to the last committed state
 
     -   🔥 [git reset]()
