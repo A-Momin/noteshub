@@ -118,6 +118,26 @@
             }
             ```
 
+            -   **`resource "aws_resourcegroups_group" "test"`**:
+
+                ```ini
+                resource "aws_resourcegroups_group" "test" {
+                    name = "test-group"
+
+                    resource_query {
+                        query = jsonencode({
+                            ResourceTypeFilters = ["AWS::EC2::Instance"]
+                            TagFilters = [
+                                {
+                                    Key    = "Stage"
+                                    Values = ["Test"]
+                                }
+                            ]
+                        })
+                    }
+                }
+                ```
+
         -   **[Data Block](https://developer.hashicorp.com/terraform/language/data-sources)** Block: In Terraform, a data block reads information from existing infrastructure or external services without creating new resources.
 
             -   Data sources are evaluated during planning, so Terraform can use that information to build the execution plan.
@@ -144,26 +164,26 @@
 
                         # 2. Use the account ID in a resource
                         resource "aws_s3_bucket_policy" "example" {
-                        bucket = aws_s3_bucket.my_bucket.id
+                            bucket = aws_s3_bucket.my_bucket.id
 
-                        policy = jsonencode({
-                            Version = "2012-10-17"
-                            Statement = [
-                            {
-                                Sid       = "AllowCurrentAccount"
-                                Effect    = "Allow"
-                                Principal = "*"
-                                Action    = "s3:*"
-                                Resource  = "${aws_s3_bucket.my_bucket.arn}/*"
-                                Condition = {
-                                StringEquals = {
-                                    # This dynamically inserts your 12-digit account ID
-                                    "aws:PrincipalAccount" = data.aws_caller_identity.current.account_id
-                                }
-                                }
-                            }
-                            ]
-                        })
+                            policy = jsonencode({
+                                Version = "2012-10-17"
+                                Statement = [
+                                    {
+                                        Sid       = "AllowCurrentAccount"
+                                        Effect    = "Allow"
+                                        Principal = "*"
+                                        Action    = "s3:*"
+                                        Resource  = "${aws_s3_bucket.my_bucket.arn}/*"
+                                        Condition = {
+                                            StringEquals = {
+                                                # This dynamically inserts your 12-digit account ID
+                                                "aws:PrincipalAccount" = data.aws_caller_identity.current.account_id
+                                            }
+                                        }
+                                    }
+                                ]
+                            })
                         }
 
                         ```
@@ -171,113 +191,122 @@
 
                     </details>
 
-                -   <details><summary style="font-size:20px;color:Magenta">Meta-Arguments</summary>
+            -   **`data "aws_cloudformation_export" "example_name"`**: The aws_cloudformation_export data source in Terraform is used to retrieve the value of an output exported by an AWS CloudFormation stack. This is especially useful when you need to bridge existing CloudFormation infrastructure with new resources managed by Terraform.
 
-                    In Terraform, a **meta-argument** is a special argument that can be used with resources to control aspects of how those resources are managed rather than specifying properties of the resource itself. `Meta-arguments` give more control over lifecycle, dependencies, and iteration.
+                ```ini
+                data "aws_cloudformation_export" "vpc_id" {
+                    name = "11111"
+                }
+                ```
 
-                    1. **count**: The `count` meta-argument allows you to create multiple instances of a resource based on a given number.
 
-                        ```ini
-                        resource "aws_instance" "example" {
-                            count         = 3  # Creates 3 instances
-                            ami           = "ami-0c55b159cbfafe1f0"
-                            instance_type = "t2.micro"
+    -   <details><summary style="font-size:20px;color:Magenta">Meta-Arguments</summary>
 
-                            tags = {
-                                Name = "ExampleInstance-${count.index}"
-                            }
-                        }
-                        ```
+        In Terraform, a **meta-argument** is a special argument that can be used with resources to control aspects of how those resources are managed rather than specifying properties of the resource itself. `Meta-arguments` give more control over lifecycle, dependencies, and iteration.
 
-                        - In this example, Terraform creates 3 instances. The `count.index` is used to give each instance a unique name tag like `ExampleInstance-0`, `ExampleInstance-1`, and `ExampleInstance-2`.
+        1. **count**: The `count` meta-argument allows you to create multiple instances of a resource based on a given number.
 
-                    2. **for_each**: The `for_each` meta-argument allows you to create resources based on a map or a set, where each item is uniquely identified by a key.
+            ```ini
+            resource "aws_instance" "example" {
+                count         = 3  # Creates 3 instances
+                ami           = "ami-0c55b159cbfafe1f0"
+                instance_type = "t2.micro"
 
-                        ```ini
-                        resource "aws_instance" "example" {
-                            for_each      = {
-                                "web" = "ami-0c55b159cbfafe1f0"
-                                "db"  = "ami-0a313d6098716f372"
-                            }
-                            ami           = each.value
-                            instance_type = "t2.micro"
+                tags = {
+                    Name = "ExampleInstance-${count.index}"
+                }
+            }
+            ```
 
-                            tags = {
-                                Name = "ExampleInstance-${each.key}"
-                            }
-                        }
-                        ```
+            - In this example, Terraform creates 3 instances. The `count.index` is used to give each instance a unique name tag like `ExampleInstance-0`, `ExampleInstance-1`, and `ExampleInstance-2`.
 
-                        - In this example, Terraform creates two instances with different AMIs, one for `web` and one for `db`. Each instance gets a tag name of either `ExampleInstance-web` or `ExampleInstance-db`.
+        2. **for_each**: The `for_each` meta-argument allows you to create resources based on a map or a set, where each item is uniquely identified by a key.
 
-                    3. **provider**: The `provider` meta-argument specifies which provider configuration should be used for a particular resource. This is useful if multiple provider configurations are defined.
+            ```ini
+            resource "aws_instance" "example" {
+                for_each      = {
+                    "web" = "ami-0c55b159cbfafe1f0"
+                    "db"  = "ami-0a313d6098716f372"
+                }
+                ami           = each.value
+                instance_type = "t2.micro"
 
-                        ```ini
-                        provider "aws" {
-                            alias  = "us_east"
-                            region = "us-east-1"
-                        }
+                tags = {
+                    Name = "ExampleInstance-${each.key}"
+                }
+            }
+            ```
 
-                        provider "aws" {
-                            alias  = "us_west"
-                            region = "us-west-2"
-                        }
+            - In this example, Terraform creates two instances with different AMIs, one for `web` and one for `db`. Each instance gets a tag name of either `ExampleInstance-web` or `ExampleInstance-db`.
 
-                        resource "aws_instance" "example" {
-                            provider      = aws.us_east  # Use the `us_east` provider configuration
-                            ami           = "ami-0c55b159cbfafe1f0"
-                            instance_type = "t2.micro"
-                        }
-                        ```
+        3. **provider**: The `provider` meta-argument specifies which provider configuration should be used for a particular resource. This is useful if multiple provider configurations are defined.
 
-                        - Here, Terraform uses the `us_east` provider configuration for this specific instance, even though other provider configurations are defined.
+            ```ini
+            provider "aws" {
+                alias  = "us_east"
+                region = "us-east-1"
+            }
 
-                    4. **depends_on**: The `depends_on` meta-argument explicitly specifies dependencies for a resource. This ensures that the resource is created only after the specified dependencies have been created.
+            provider "aws" {
+                alias  = "us_west"
+                region = "us-west-2"
+            }
 
-                        ```ini
-                        resource "aws_security_group" "example_sg" {
-                        # Security group configuration
-                        }
+            resource "aws_instance" "example" {
+                provider      = aws.us_east  # Use the `us_east` provider configuration
+                ami           = "ami-0c55b159cbfafe1f0"
+                instance_type = "t2.micro"
+            }
+            ```
 
-                        resource "aws_instance" "example_instance" {
-                            ami           = "ami-0c55b159cbfafe1f0"
-                            instance_type = "t2.micro"
-                            depends_on    = [aws_security_group.example_sg]  # Ensure SG is created first
-                        }
-                        ```
+            - Here, Terraform uses the `us_east` provider configuration for this specific instance, even though other provider configurations are defined.
 
-                        - In this example, `example_instance` will only be created after `example_sg` has been created, ensuring proper ordering.
+        4. **depends_on**: The `depends_on` meta-argument explicitly specifies dependencies for a resource. This ensures that the resource is created only after the specified dependencies have been created.
 
-                    5. **lifecycle**: The `lifecycle` meta-argument controls how Terraform manages changes to resources, including preventing deletion or customizing behavior during updates.
+            ```ini
+            resource "aws_security_group" "example_sg" {
+            # Security group configuration
+            }
 
-                        ```ini
-                        resource "aws_instance" "example" {
-                            ami           = "ami-0c55b159cbfafe1f0"
-                            instance_type = "t2.micro"
+            resource "aws_instance" "example_instance" {
+                ami           = "ami-0c55b159cbfafe1f0"
+                instance_type = "t2.micro"
+                depends_on    = [aws_security_group.example_sg]  # Ensure SG is created first
+            }
+            ```
 
-                            lifecycle {
-                                create_before_destroy = true  # Replace old instance only after new one is created
-                                prevent_destroy       = true  # Prevent accidental deletion
-                            }
-                        }
-                        ```
+            - In this example, `example_instance` will only be created after `example_sg` has been created, ensuring proper ordering.
 
-                        - Here, `create_before_destroy` ensures that if an update requires replacement, the new resource is created before the old one is destroyed. `prevent_destroy` protects this instance from being accidentally deleted.
+        5. **lifecycle**: The `lifecycle` meta-argument controls how Terraform manages changes to resources, including preventing deletion or customizing behavior during updates.
 
-                    6. **provisioner**: The `provisioner` meta-argument allows you to run scripts or commands on a resource after it has been created or destroyed. Common provisioners include `local-exec` (runs on the local machine) and `remote-exec` (runs on the remote resource).
+            ```ini
+            resource "aws_instance" "example" {
+                ami           = "ami-0c55b159cbfafe1f0"
+                instance_type = "t2.micro"
 
-                        ```ini
-                        resource "aws_instance" "example" {
-                            ami           = "ami-0c55b159cbfafe1f0"
-                            instance_type = "t2.micro"
+                lifecycle {
+                    create_before_destroy = true  # Replace old instance only after new one is created
+                    prevent_destroy       = true  # Prevent accidental deletion
+                }
+            }
+            ```
 
-                            provisioner "local-exec" {
-                                command = "echo ${self.private_ip} > instance_ip.txt"
-                            }
-                        }
-                        ```
+            - Here, `create_before_destroy` ensures that if an update requires replacement, the new resource is created before the old one is destroyed. `prevent_destroy` protects this instance from being accidentally deleted.
 
-                    </details>
+        6. **provisioner**: The `provisioner` meta-argument allows you to run scripts or commands on a resource after it has been created or destroyed. Common provisioners include `local-exec` (runs on the local machine) and `remote-exec` (runs on the remote resource).
+
+            ```ini
+            resource "aws_instance" "example" {
+                ami           = "ami-0c55b159cbfafe1f0"
+                instance_type = "t2.micro"
+
+                provisioner "local-exec" {
+                    command = "echo ${self.private_ip} > instance_ip.txt"
+                }
+            }
+            ```
+
+        </details>
 
                 </details>
 
@@ -1641,28 +1670,3 @@ resource "aws_instance" "app_server" {
 
 ---
 
-```ini
-resource "aws_resourcegroups_group" "test" {
-  name = "test-group"
-
-  resource_query {
-    query = jsonencode({
-      ResourceTypeFilters = [
-        "AWS::EC2::Instance"
-      ]
-      TagFilters = [
-        {
-          Key    = "Stage"
-          Values = ["Test"]
-        }
-      ]
-    })
-  }
-}
-```
-
-```ini
-data "aws_cloudformation_export" "vpc_id" {
-    name = "11111"
-}
-```
